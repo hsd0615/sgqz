@@ -16,6 +16,7 @@ import miscRoutes from './api/misc';
 
 const PORT = parseInt(process.env.PORT || '3000');
 const app = express();
+app.set('json spaces', 0);
 const server = http.createServer(app);
 
 // RAW body capture for debugging
