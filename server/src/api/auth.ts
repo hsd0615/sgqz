@@ -23,17 +23,11 @@ router.post('/login', (req: Request, res: Response) => {
     if (player) {
       const token = PlayerRepo.generateToken(player.id);
 
-      // 登录返回前5武将+精简roleModel（控制响应<1KB）
-      const allGenerals = GeneralRepo.findByPlayerId(player.id).slice(0, 5);
-      const armyModel: any[] = allGenerals.map((g: any) => ({
-        id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
-        feature: g.feature, evolution: g.evolution,
-        kezhi: `${g.kezhi1}:${g.kezhi1_level}|${g.kezhi2}:${g.kezhi2_level}|${g.kezhi3}:${g.kezhi3_level}`,
-      }));
-
+      // 登录仅返回身份信息，武将数据不随登录下发(避免Flash HTTP响应超限)
+      // 武将通过注册时获得，或游戏内招募系统获得
       response.data = {
         flag: 1, token: token, currentTime: Date.now(), dianka: player.dianka,
-        armyModel: armyModel, bagModel: [], process: {history: player.history||'', finished: player.finished_stages||''},
+        armyModel: [], bagModel: [], process: {history: player.history||'', finished: player.finished_stages||''},
         roleModel: {
           roleID: player.id,
           agent: player.agent,
