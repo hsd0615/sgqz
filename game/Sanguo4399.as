@@ -128,8 +128,7 @@ package game
          tabEnabled = false;
          Config.timer = 0;
 
-         // 启动 HTTP 连接测试
-         testServerConnection();
+         // 启动时不再做HTTP测试（影响启动速度）
          RoleModel.getInstance().agent = Config.AGENT;
          var _loc2_:ContextMenu = new ContextMenu();
          _loc2_.customItems.push(new ContextMenuItem("三国Q战4399版V" + Config.VER + " 网络版"));
