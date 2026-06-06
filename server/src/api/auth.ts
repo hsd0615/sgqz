@@ -23,25 +23,13 @@ router.post('/login', (req: Request, res: Response) => {
     if (player) {
       const token = PlayerRepo.generateToken(player.id);
 
-      // Load player's generals (max 5 for login to keep response small)
-      const generals = GeneralRepo.findByPlayerId(player.id).slice(0, 5);
-      const armyModel: any[] = generals.map((g: any) => ({
-        id: g.general_id,
-        code: g.code,
-        genius: g.tianfu,
-        level: g.level,
-        feature: g.feature,
-        evolution: g.evolution,
-        kezhi: `${g.kezhi1}:${g.kezhi1_level}|${g.kezhi2}:${g.kezhi2_level}|${g.kezhi3}:${g.kezhi3_level}`,
-      }));
-      const chooseCodes: string[] = generals.map((g: any) => g.code);
-
+      // Login returns minimal data only — generals loaded separately
       response.data = {
         flag: 1,
         token: token,
         currentTime: Date.now(),
         dianka: player.dianka,
-        armyModel: armyModel,
+        armyModel: [],
         bagModel: [],
         process: {history: player.history || '', finished: player.finished_stages || ''},
         roleModel: {
