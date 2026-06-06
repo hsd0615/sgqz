@@ -23,11 +23,18 @@ router.post('/login', (req: Request, res: Response) => {
     if (player) {
       const token = PlayerRepo.generateToken(player.id);
 
-      // 登录仅返回身份信息，武将数据不随登录下发(避免Flash HTTP响应超限)
-      // 武将通过注册时获得，或游戏内招募系统获得
+      // 加载全部武将数据（根因已修复：AES解密长字符串问题已解决）
+      const allGenerals = GeneralRepo.findByPlayerId(player.id);
+      const armyModel: any[] = allGenerals.map((g: any) => ({
+        id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
+        feature: g.feature, evolution: g.evolution,
+        kezhi: `${g.kezhi1}:${g.kezhi1_level}|${g.kezhi2}:${g.kezhi2_level}|${g.kezhi3}:${g.kezhi3_level}`,
+      }));
+      const chooseCodes: string[] = allGenerals.filter((g: any) => g.is_deployed).map((g: any) => g.code);
+
       response.data = {
         flag: 1, token: token, currentTime: Date.now(), dianka: player.dianka,
-        armyModel: [], bagModel: [], process: {history: player.history||'', finished: player.finished_stages||''},
+        armyModel: armyModel, bagModel: [], process: {history: player.history||'', finished: player.finished_stages||''},
         roleModel: {
           roleID: player.id,
           agent: player.agent,
@@ -109,8 +116,11 @@ router.post('/register', (req: Request, res: Response) => {
 
   // 初始武将（三国Q战新春版）
   const starterGenerals = [
-    { code: 'general_9_0', name: '鞠义', kezhi: '3:1|4:1|8:1' },
+    { code: 'general_1_0', name: '王平', kezhi: '5:1|7:1|9:1' },
+    { code: 'general_3_0', name: '吕翔', kezhi: '2:1|1:1|6:1' },
     { code: 'general_0_1', name: '投石车', kezhi: '3:1|8:1|9:1' },
+    { code: 'general_4_3', name: '陈震', kezhi: '6:1|1:1|8:1' },
+    { code: 'general_9_0', name: '鞠义', kezhi: '3:1|4:1|8:1' },
   ];
 
   const armyModel: any[] = [];

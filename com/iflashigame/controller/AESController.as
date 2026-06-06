@@ -452,15 +452,24 @@ package com.iflashigame.controller
          var rawData:String;
          var decodedData:Object;
 
-         try
+         // 根治: 检查响应头字符判断是否为纯JSON, 避免Base64/AES误解析长字符串
+         var httpResponse:String = URLLoader(param1.target).data as String;
+         if(httpResponse != null && httpResponse.length > 0 && httpResponse.charAt(0) == "{")
          {
-            // 尝试 AES 解密（兼容旧版协议）
-            rawData = AESTools.decrypt(URLLoader(param1.target).data, KEY, IV, _responseCode);
+            // 新服务器纯JSON，直接使用
+            rawData = httpResponse;
          }
-         catch(e:Error)
+         else
          {
-            // 如果不是 AES 加密的（新服务器直接返回 JSON）
-            rawData = URLLoader(param1.target).data;
+            // 旧版AES加密响应
+            try
+            {
+               rawData = AESTools.decrypt(httpResponse, KEY, IV, _responseCode);
+            }
+            catch(e:Error)
+            {
+               rawData = httpResponse;
+            }
          }
 
          if(_debug)
