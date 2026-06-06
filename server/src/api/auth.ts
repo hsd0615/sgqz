@@ -23,13 +23,25 @@ router.post('/login', (req: Request, res: Response) => {
     if (player) {
       const token = PlayerRepo.generateToken(player.id);
 
-      // Login returns minimal data only — generals loaded separately
+      // Return 2 key generals (keep response under ~1000 bytes for Flash)
+      const allGenerals = GeneralRepo.findByPlayerId(player.id);
+      const top2 = allGenerals.slice(0, 2);
+      const armyModel: any[] = top2.map((g: any) => ({
+        id: g.general_id,
+        code: g.code,
+        genius: g.tianfu || '',
+        level: g.level,
+        feature: g.feature,
+        evolution: g.evolution,
+        kezhi: `${g.kezhi1}:${g.kezhi1_level}|${g.kezhi2}:${g.kezhi2_level}|${g.kezhi3}:${g.kezhi3_level}`,
+      }));
+
       response.data = {
         flag: 1,
         token: token,
         currentTime: Date.now(),
         dianka: player.dianka,
-        armyModel: [],
+        armyModel: armyModel,
         bagModel: [],
         process: {history: player.history || '', finished: player.finished_stages || ''},
         roleModel: {
