@@ -995,9 +995,8 @@ package game
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
-               this._ui.removeCover();
-               this._ui.addMap();
-               MySound.getInstance().startByName(SoundCode.MAP);
+               this._ui.openSelectServerPanel();
+               this._ui.createNewsInfoPanel();
             }
             else if(int(param1.data.flag == 2))
             {

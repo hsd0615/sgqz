@@ -23,8 +23,8 @@ router.post('/login', (req: Request, res: Response) => {
     if (player) {
       const token = PlayerRepo.generateToken(player.id);
 
-      // Load player's generals
-      const generals = GeneralRepo.findByPlayerId(player.id);
+      // Load player's generals (max 5 for login to keep response small)
+      const generals = GeneralRepo.findByPlayerId(player.id).slice(0, 5);
       const armyModel: any[] = generals.map((g: any) => ({
         id: g.general_id,
         code: g.code,
@@ -34,7 +34,7 @@ router.post('/login', (req: Request, res: Response) => {
         evolution: g.evolution,
         kezhi: `${g.kezhi1}:${g.kezhi1_level}|${g.kezhi2}:${g.kezhi2_level}|${g.kezhi3}:${g.kezhi3_level}`,
       }));
-      const chooseCodes: string[] = generals.filter((g: any) => g.is_deployed).map((g: any) => g.code);
+      const chooseCodes: string[] = generals.map((g: any) => g.code);
 
       response.data = {
         flag: 1,
@@ -62,7 +62,7 @@ router.post('/login', (req: Request, res: Response) => {
           lostCount: player.lost_count,
           ranking: 0,
           score: 0,
-          choose: chooseCodes.join('|'),
+          choose: '',
           finished: player.finished_stages,
           history: player.history,
           loginServer: player.login_server,
