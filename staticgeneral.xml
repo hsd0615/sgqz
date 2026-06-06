@@ -283,8 +283,8 @@
     <kezhi>5:1|7:1|9:1</kezhi>
     <skin>generalSkin_1</skin>
     <hp>760</hp>
-    <attack>410</attack>
-    <defense>280</defense>
+    <attack>480</attack>
+    <defense>330</defense>
     <cd>6</cd>
     <mcd>6</mcd>
     <baoji>5</baoji>
@@ -923,7 +923,7 @@
     <code>general_3_3</code>
     <name>廖化</name>
     <type>3</type>
-    <title>3</title>
+    <title>2</title>
     <kezhi>2:1|1:1|6:1</kezhi>
     <skin>generalSkin_3</skin>
     <hp>950</hp>
@@ -1015,11 +1015,11 @@
     <code>general_3_7</code>
     <name>高顺</name>
     <type>3</type>
-    <title>2</title>
+    <title>1</title>
     <kezhi>2:1|1:1|6:1</kezhi>
     <skin>generalSkin_3</skin>
     <hp>990</hp>
-    <attack>290</attack>
+    <attack>420</attack>
     <defense>290</defense>
     <cd>5</cd>
     <mcd>5</mcd>
@@ -1433,7 +1433,7 @@
     <kezhi>6:1|1:1|8:1</kezhi>
     <skin>generalSkin_4</skin>
     <hp>1280</hp>
-    <attack>430</attack>
+    <attack>580</attack>
     <defense>380</defense>
     <cd>5</cd>
     <mcd>5</mcd>
@@ -1456,7 +1456,7 @@
     <kezhi>6:1|1:1|8:1</kezhi>
     <skin>generalSkin_4</skin>
     <hp>1280</hp>
-    <attack>240</attack>
+    <attack>550</attack>
     <defense>370</defense>
     <cd>5</cd>
     <mcd>5</mcd>
@@ -1479,8 +1479,8 @@
     <kezhi>6:1|1:1|8:1</kezhi>
     <skin>generalSkin_4</skin>
     <hp>1290</hp>
-    <attack>220</attack>
-    <defense>380</defense>
+    <attack>300</attack>
+    <defense>500</defense>
     <cd>5</cd>
     <mcd>5</mcd>
     <baoji>5</baoji>
@@ -1893,8 +1893,8 @@
     <kezhi>3:1|8:1|9:1</kezhi>
     <skin>generalSkin_5</skin>
     <hp>1400</hp>
-    <attack>240</attack>
-    <defense>420</defense>
+    <attack>500</attack>
+    <defense>450</defense>
     <cd>5</cd>
     <mcd>5</mcd>
     <baoji>5</baoji>
@@ -2031,7 +2031,7 @@
     <kezhi>3:1|8:1|9:1</kezhi>
     <skin>generalSkin_5</skin>
     <hp>1550</hp>
-    <attack>500</attack>
+    <attack>720</attack>
     <defense>400</defense>
     <cd>5</cd>
     <mcd>5</mcd>
@@ -3384,11 +3384,11 @@
     <code>general_9_7</code>
     <name>夏侯渊</name>
     <type>9</type>
-    <title>2</title>
+    <title>1</title>
     <kezhi>3:1|4:1|8:1</kezhi>
     <skin>generalSkin_9</skin>
     <hp>1600</hp>
-    <attack>260</attack>
+    <attack>400</attack>
     <defense>330</defense>
     <cd>5</cd>
     <mcd>5</mcd>
@@ -3752,12 +3752,12 @@
     <code>general_9_24</code>
     <name>袁绍</name>
     <type>9</type>
-    <title>3</title>
+    <title>0</title>
     <kezhi>3:1|4:1|8:1</kezhi>
     <skin>generalSkin_9</skin>
-    <hp>1450</hp>
-    <attack>210</attack>
-    <defense>300</defense>
+    <hp>2200</hp>
+    <attack>550</attack>
+    <defense>480</defense>
     <cd>5</cd>
     <mcd>5</mcd>
     <baoji>5</baoji>
@@ -3890,12 +3890,12 @@
     <code>general_9_30</code>
     <name>张角</name>
     <type>9</type>
-    <title>1</title>
+    <title>0</title>
     <kezhi>3:1|4:1|8:1</kezhi>
     <skin>generalSkin_9</skin>
-    <hp>1900</hp>
-    <attack>210</attack>
-    <defense>320</defense>
+    <hp>2500</hp>
+    <attack>700</attack>
+    <defense>420</defense>
     <cd>5</cd>
     <mcd>5</mcd>
     <baoji>5</baoji>

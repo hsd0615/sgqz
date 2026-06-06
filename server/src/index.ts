@@ -4,6 +4,7 @@ import { initDB, forceSave } from './db/database';
 import { LeitaiRepo } from './db/repository';
 import { setupWebSocket } from './ws/handler';
 import { setupTCPServer } from './tcp/handler';
+import { createTestAccounts } from './testdata';
 
 import authRoutes from './api/auth';
 import gameRoutes from './api/game';
@@ -78,6 +79,7 @@ const wss = setupWebSocket(server);
 const tcpServer = setupTCPServer(3001);
 initDB();
 LeitaiRepo.initDefaultRooms();
+createTestAccounts();
 
 server.listen(PORT, () => {
   console.log(`服务器已启动: http://localhost:${PORT}/api`);
