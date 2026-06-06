@@ -17,7 +17,11 @@ import miscRoutes from './api/misc';
 const PORT = parseInt(process.env.PORT || '3000');
 const app = express();
 app.set('json spaces', 0);
+app.disable('x-powered-by');
 const server = http.createServer(app);
+// 禁用keep-alive避免Flash URLLoader长响应截断
+server.on('connection', (socket) => { socket.setTimeout(5000); });
+server.keepAliveTimeout = 0;
 
 // RAW body capture for debugging
 app.use((req, res, next) => {
