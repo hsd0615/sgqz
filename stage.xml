@@ -1,0 +1,879 @@
+<data>
+  <copyright>西安乐境动漫创意有限公司</copyright>
+  <defaultArmy>
+    <general code="general_1_0" level="1"/>
+    <general code="general_3_0" level="1"/>
+    <general code="general_9_0" level="1"/>
+    <general code="general_4_3"	level="1"/>
+  </defaultArmy>
+  <gate id="1" part="1" partName="黄巾之乱" level="1" name="新手试炼" group="黄巾" ai="65" delay="4000">
+    <award soldier="general_3_4" recruit="" proto="" money="2000" reverence="100" exploit="500" wujiang="general_3_4"/>
+    <general code="general_1_1" level="1" name="黄巾杂兵"/>
+    <general code="general_3_1" level="1" name="黄巾兵"/>
+  </gate>
+  <gate id="2" part="1" partName="黄巾之乱" level="2" name="初战露峥嵘" group="黄巾" ai="65" delay="4000">
+    <award soldier="" recruit="" proto="" money="2000" reverence="100" exploit="500"/>
+    <general code="general_1_1" level="1" name="黄巾兵"/>
+    <general code="general_3_1" level="1" name="黄巾兵"/>
+    <general code="general_9_1" level="2" name="黄巾军"/>
+  </gate>
+  <gate id="3" part="1" partName="黄巾之乱" level="3" name="战火起黄巾" group="黄巾" ai="65" delay="4000">
+    <award soldier="" recruit="" proto="" money="2000" reverence="100" exploit="500"/>
+    <general code="general_1_1" level="2" name="黄巾兵"/>
+    <general code="general_3_1" level="3" name="黄巾兵"/>
+    <general code="general_9_1" level="3" name="黄巾校尉"/>
+  </gate>
+  <gate id="4" part="1" partName="黄巾之乱" level="4" name="涿郡破贼" group="黄巾" ai="65" delay="3800">
+    <award soldier="" recruit="邓茂" proto="" money="2000" reverence="200" exploit="500"/>
+    <general code="general_1_1" level="4" name="黄巾兵"/>
+    <general code="general_4_1" level="4" name="黄巾兵"/>
+    <general code="general_3_4" level="4" name="邓茂"/>
+    <general code="general_9_23" level="5" name="程远志"/>
+  </gate>
+  <gate id="5" part="1" partName="黄巾之乱" level="5" name="颍川之战" group="黄巾" ai="70" delay="3800">
+    <award soldier="general_0_1" recruit="" proto="" money="2000" reverence="200" exploit="500"/>
+    <general code="general_1_18" level="7" name="张宝"/>
+    <general code="general_1_17" level="7" name="张梁"/>
+    <general code="general_4_1" level="5" name="黄巾校尉"/>
+    <general code="general_3_1" level="5" name="黄巾校尉"/>
+  </gate>
+  <gate id="6" part="1" partName="黄巾之乱" level="6" name="攻阀南阳" group="黄巾" ai="70" delay="3800">
+    <award soldier="" recruit="" proto="" money="2000" reverence="300" exploit="500"/>
+    <general code="general_0_1" level="6" name="太平战车"/>
+    <general code="general_1_1" level="6" name="黄巾校尉"/>
+    <general code="general_3_1" level="6" name="黄巾校尉"/>
+    <general code="general_9_22" level="7" name="张曼成"/>
+  </gate>
+  <gate id="7" part="1" partName="黄巾之乱" level="7" name="解围青州" group="黄巾" ai="70" delay="3800">
+    <award soldier="" recruit="管亥" proto="" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="7" name="太平战车"/>
+    <general code="general_1_1" level="7" name="泰山贼"/>
+    <general code="general_3_1" level="7" name="泰山贼"/>
+    <general code="general_3_1" level="7" name="泰山贼"/>
+    <general code="general_6_5" level="9" name="管亥"/>
+  </gate>
+  <gate id="8" part="1" partName="黄巾之乱" level="8" name="平定黑山军" group="黄巾" ai="70" delay="3600">
+    <award soldier="" recruit="于毒" proto="" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="8" name="破虏战车"/>
+    <general code="general_1_1" level="8" name="黑山军"/>
+    <general code="general_4_18" level="10" name="张燕"/>
+    <general code="general_5_8" level="9" name="于毒"/>
+    <general code="general_3_1" level="8" name="黑山贼"/>
+  </gate>
+  <gate id="9" part="1" partName="黄巾之乱" level="9" name="剿灭余匪" group="黄巾" ai="70" delay="3600">
+    <award soldier="" recruit="" proto="" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="9" name="太平战车"/>
+    <general code="general_1_1" level="9" name="黄巾校尉"/>
+    <general code="general_5_1" level="10" name="黄巾都尉"/>
+    <general code="general_5_1" level="9" name="黄巾都尉"/>
+    <general code="general_9_21" level="12" name="马元义"/>
+  </gate>
+  <gate id="10" part="1" partName="黄巾之乱" level="10" name="不死天公" group="黄巾" ai="70" delay="3600">
+    <award soldier="" recruit="" proto="" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="11" name="太平战车"/>
+    <general code="general_1_18" level="10" name="张宝"/>
+    <general code="general_1_17" level="10" name="张梁"/>
+    <general code="general_3_1" level="10"  name="黄巾将领"/>
+    <general code="general_9_30" level="15" name="张角"/>
+  </gate>
+  <gate id="11" part="2" partName="洛阳兵变" level="12" name="皇城内乱" group="皇城叛军" ai="70" delay="3500">
+    <award soldier="" recruit="" proto="" money="1000" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="12" name="横野战车"/>
+    <general code="general_1_21" level="15" name="张让"/>
+    <general code="general_3_1" level="12" name="皇宫武卫"/>
+    <general code="general_3_1" level="12" name="皇宫武卫"/>
+    <general code="general_3_1" level="12" name="皇宫武卫"/>
+  </gate>
+  <gate id="12" part="2" partName="洛阳兵变" level="14" name="兵变封禅台" group="董卓" ai="70" delay="3500">
+    <award soldier="" recruit="" proto="" money="1000" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="14" name="横野战车"/>
+    <general code="general_1_1" level="14" name="西凉弓兵"/>
+    <general code="general_3_1" level="14" name="西凉刀盾兵"/>
+    <general code="general_6_5" level="14" name="西凉武斗兵"/>
+    <general code="general_9_11" level="16" name="徐荣"/>
+  </gate>
+  <gate id="13" part="2" partName="洛阳兵变" level="16" name="剑指函谷关" group="董卓" ai="70" delay="3500">
+    <award soldier="" recruit="" proto="" money="1000" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="16" name="横野战车"/>
+    <general code="general_1_1" level="16" name="西凉弓兵"/>
+    <general code="general_1_1" level="16" name="西凉弓兵"/>
+    <general code="general_4_16" level="18" name="牛辅"/>
+    <general code="general_5_1" level="16" name="西凉锤兵"/>
+  </gate>
+  <gate id="14" part="2" partName="洛阳兵变" level="18" name="西凉铁骑" group="董卓" ai="70" delay="3500">
+    <award soldier="" recruit="张济" proto="" money="1500" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="20" name="横野战车"/>
+    <general code="general_1_1" level="18" name="西凉弓兵"/>
+    <general code="general_1_1" level="18" name="西凉弓兵"/>
+    <general code="general_9_6" level="23" name="张济"/>
+    <general code="general_9_1" level="22" name="西凉骑兵"/>
+  </gate>
+  <gate id="15" part="2" partName="洛阳兵变" level="20" name="扬威虎牢关" group="董卓" ai="75" delay="3200">
+    <award soldier="" recruit="华雄" proto="" money="1500" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="20" name="横野战车"/>
+    <general code="general_1_1" level="20" name="西凉弓兵"/>
+    <general code="general_2_1" level="20" name="西凉飞刀兵"/>
+    <general code="general_4_11" level="25" name="华雄"/>
+    <general code="general_7_1" level="25" name="西凉长枪兵"/>
+  </gate>
+  <gate id="16" part="2" partName="洛阳兵变" level="22" name="鲁阳之战" group="董卓" ai="75" delay="3200">
+    <award soldier="" recruit="" proto="" money="1500" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="22" name="横野战车"/>
+    <general code="general_1_1" level="22" name="西凉弓兵"/>
+    <general code="general_2_1" level="22" name="西凉飞刀兵"/>
+    <general code="general_7_18" level="24" name="郭汜"/>
+    <general code="general_9_29" level="26" name="李傕"/>
+  </gate>
+  <gate id="17" part="2" partName="洛阳兵变" level="24" name="战神初临" group="董卓" ai="80" delay="3000">
+    <award soldier="" recruit="" proto="" money="3000" reverence="1000" exploit="1000"/>
+    <general code="general_0_1" level="24" name="横野战车"/>
+    <general code="general_1_1" level="24" name="西凉弓兵"/>
+    <general code="general_1_1" level="24" name="西凉弓兵"/>
+    <general code="general_3_1" level="24" name="西凉刀盾兵"/>
+    <general code="general_9_18" level="30" name="吕布" feature="2" evolution="1"/>
+  </gate>
+  <gate id="18" part="2" partName="洛阳兵变" level="26" name="会战华阴" group="董卓" ai="80" delay="2900">
+    <award soldier="" recruit="徐荣" proto="" money="1500" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="26" name="横野战车"/>
+    <general code="general_4_1" level="26" name="西凉斧兵"/>
+    <general code="general_5_1" level="26" name="西凉锤兵"/>
+    <general code="general_7_17" level="28" name="董越"/>
+    <general code="general_9_11" level="30" name="徐荣"/>
+  </gate>
+  <gate id="19" part="2" partName="洛阳兵变" level="28" name="攻战洛阳" group="董卓" ai="80" delay="2900">
+    <award soldier="" recruit="" proto="" money="1200" reverence="500" exploit="500"/>
+    <general code="general_0_1" level="28" name="横野战车"/>
+    <general code="general_2_1" level="28" name="西凉飞刀兵"/>
+    <general code="general_2_1" level="28" name="西凉飞刀兵"/>
+    <general code="general_5_16" level="30" name="段煨"/>
+    <general code="general_5_17" level="30" name="胡轸"/>
+  </gate>
+  <gate id="20" part="2" partName="洛阳兵变" level="30" name="长安平叛" group="董卓" ai="80" delay="2800">
+    <award soldier="" recruit="" proto="proto_1_0:1" money="3000" reverence="1000" exploit="1500"/>
+    <general code="general_0_1" level="30" name="横野战车" feature="2" evolution="1"/>
+    <general code="general_1_1" level="30" name="西凉弓兵"/>
+    <general code="general_4_16" level="32" name="牛辅" feature="4" evolution="1"/>
+    <general code="general_6_1" level="32" name="爆武禁卫"/>
+    <general code="general_9_31" level="35" name="董卓" feature="4" evolution="1"/>
+  </gate>
+  <gate id="21" part="3" partName="群雄逐鹿" level="32" name="征讨关中" group="西凉军" ai="80" delay="2800">
+    <award soldier="" recruit="阎行" proto="proto_1_9:1|proto_2_1:3" money="1500" reverence="200" exploit="500"/>
+    <general code="general_0_1" level="34" name="铁甲战车" feature="2" evolution="1"/>
+    <general code="general_1_1" level="32" name="天水弓兵"/>
+    <general code="general_1_1" level="32" name="天水弓兵"/>
+    <general code="general_9_8" level="35" name="阎行" feature="2" evolution="1"/>
+    <general code="general_9_28" level="35" name="韩遂" feature="4" evolution="1"/>
+  </gate>
+  <gate id="22" part="3" partName="群雄逐鹿" level="34" name="徐州攻防战" group="袁术" ai="80" delay="2800">
+    <award soldier="" recruit="纪灵" proto="proto_1_3:1|proto_2_2:3" money="1500" reverence="200" exploit="500"/>
+    <general code="general_0_1" level="34" name="铁甲战车" feature="1" evolution="1"/>
+    <general code="general_1_1" level="34" name="袁门弓兵"/>
+    <general code="general_3_1" level="34" name="袁门刀盾兵"/>
+    <general code="general_3_1" level="34" name="袁门刀盾兵"/>
+    <general code="general_7_10" level="36" name="纪灵" feature="3" evolution="1"/>
+  </gate>
+  <gate id="23" part="3" partName="群雄逐鹿" level="36" name="掩袭白马" group="袁术" ai="80" delay="2800">
+    <award soldier="" recruit="颜良" proto="proto_1_1:1|proto_2_3:3" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="38" name="铁甲战车" feature="3" evolution="1"/>
+    <general code="general_1_1" level="36" name="袁门弓兵"/>
+    <general code="general_2_1" level="36" name="袁门飞刀兵"/>
+    <general code="general_4_12" level="40" name="颜良" feature="4" evolution="2"/>
+    <general code="general_9_1" level="36" name="骁骑将"/>
+  </gate>
+  <gate id="24" part="3" partName="群雄逐鹿" level="38" name="独战延津" group="袁术" ai="80" delay="2800">
+    <award soldier="" recruit="文丑" proto="proto_1_4:1|proto_2_4:3" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="38" name="铁甲战车" feature="4" evolution="1"/>
+    <general code="general_2_1" level="38" name="袁门飞刀兵"/>
+    <general code="general_5_12" level="41" name="文丑" feature="1" evolution="2"/>
+    <general code="general_6_1" level="38" name="爆武禁卫"/>
+    <general code="general_7_1" level="38" name="银枪禁卫"/>
+  </gate>
+  <gate id="25" part="3" partName="群雄逐鹿" level="40" name="讨伐寿春" group="袁术" ai="80" delay="2700">
+    <award soldier="" recruit="" proto="proto_1_5:1|proto_2_5:3" money="3000" reverence="1000" exploit="2000"/>
+    <general code="general_0_1" level="40" name="铁甲战车" feature="2" evolution="1"/>
+    <general code="general_1_1" level="40" name="袁门弓兵"/>
+    <general code="general_4_17" level="42" name="雷薄" feature="2" evolution="2"/>
+    <general code="general_7_16" level="42" name="陈兰" feature="4" evolution="1"/>
+    <general code="general_9_27" level="45" name="袁术" feature="2" evolution="2"/>
+  </gate>
+  <gate id="26" part="3" partName="群雄逐鹿" level="42" name="易京之战" group="白马军" ai="80" delay="2700">
+    <award soldier="" recruit="" proto="proto_1_7:1|proto_2_2:3" money="1000" reverence="200" exploit="300"/>
+    <general code="general_0_1" level="43" name="铁甲战车" feature="1" evolution="1"/>
+    <general code="general_1_1" level="42" name="幽州弓兵"/>
+    <general code="general_3_1" level="42" name="陌刀禁卫"/>
+    <general code="general_9_12" level="45" name="公孙瓒" feature="4" evolution="2"/>
+    <general code="general_9_1" level="42" name="白马骑将"/>
+    <general code="general_9_1" level="42" name="白马骑将"/>
+  </gate>
+  <gate id="27" part="3" partName="群雄逐鹿" level="44" name="围攻下邳" group="吕布" ai="85" delay="2600">
+    <award soldier="" recruit="高顺、吕布" proto="proto_1_2:1|proto_2_3:3" money="5000" reverence="1000" exploit="2000"/>
+    <general code="general_0_1" level="44" name="铁甲战车" feature="3" evolution="1"/>
+    <general code="general_1_1" level="44" name="骁武神射"/>
+    <general code="general_4_1" level="44" name="狂斧禁卫"/>
+    <general code="general_3_7" level="46" name="高顺" feature="2" evolution="2"/>
+    <general code="general_9_18" level="50" name="吕布" feature="2" evolution="3"/>
+    <general code="general_3_1" level="44" name="陌刀禁卫"/>
+  </gate>
+  <gate id="28" part="3" partName="群雄逐鹿" level="46" name="奇袭乌巢" group="袁绍" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_8:1|proto_2_4:3" money="2000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="46" name="铁甲战车" feature="2" evolution="2"/>
+    <general code="general_1_20" level="49" name="淳于琼" feature="3" evolution="2"/>
+    <general code="general_2_1" level="46" name="袁门飞刀兵"/>
+    <general code="general_2_1" level="46" name="袁门飞刀兵"/>
+    <general code="general_6_1" level="46" name="爆武禁卫"/>
+    <general code="general_4_1" level="46" name="狂斧禁卫"/>
+  </gate>
+  <gate id="29" part="3" partName="群雄逐鹿" level="48" name="官渡之战" group="袁绍" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_6:1|proto_2_5:3" money="2000" reverence="800" exploit="1000"/>
+    <general code="general_0_1" level="48" name="铁甲战车" feature="1" evolution="2"/>
+    <general code="general_9_24" level="53" name="袁绍" feature="1" evolution="3"/>
+    <general code="general_5_1" level="53" name="巨锤禁卫" feature="4" evolution="1"/>
+    <general code="general_5_1" level="53" name="巨锤禁卫" feature="4" evolution="1"/>
+    <general code="general_3_10" level="52" name="张颌" feature="2" evolution="2"/>
+    <general code="general_1_1" level="50" name="骁武神射" feature="1" evolution="1"/>
+  </gate>
+  <gate id="30" part="3" partName="群雄逐鹿" level="50" name="十面埋伏" group="袁绍" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_0:1|proto_2_6:3" money="5000" reverence="800" exploit="1000"/>
+    <general code="general_0_1" level="52" name="威烈战车" feature="4" evolution="2"/>
+    <general code="general_1_1" level="50" name="御风射手" feature="4" evolution="1"/>
+    <general code="general_2_1" level="50" name="凤舞战将" feature="3" evolution="1"/>
+    <general code="general_9_24" level="55" name="袁绍" feature="1" evolution="3"/>
+    <general code="general_9_25" level="50" name="袁谭" feature="4" evolution="2"/>
+    <general code="general_9_26" level="50" name="袁熙" feature="3" evolution="2"/>
+  </gate>
+  <gate id="31" part="4" partName="赤壁之战" level="52" name="发兵新野" group="曹操" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_9:1|proto_2_3:3" money="3000" reverence="500" exploit="1500"/>
+    <general code="general_0_1" level="52" name="威烈战车" feature="2" evolution="2"/>
+    <general code="general_1_1" level="52" name="御风射手" feature="3" evolution="1"/>
+    <general code="general_7_13" level="55" name="李典" feature="1" evolution="2"/>
+    <general code="general_8_1" level="52" name="玄甲禁卫" feature="4" evolution="2"/>
+    <general code="general_8_1" level="52" name="玄甲禁卫" feature="4" evolution="2"/>
+    <general code="general_5_12" level="52" name="玄甲禁卫" feature="1" evolution="2"/>
+  </gate>
+  <gate id="32" part="4" partName="赤壁之战" level="54" name="襄阳攻略" group="曹操" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_3:1|proto_2_4:3" money="3000" reverence="500" exploit="1500"/>
+    <general code="general_0_1" level="54" name="威烈战车" feature="2" evolution="2"/>
+    <general code="general_1_1" level="54" name="御风射手" feature="1" evolution="1"/>
+    <general code="general_1_1" level="54" name="御风射手" feature="1" evolution="1"/>
+    <general code="general_4_13" level="58" name="曹仁" feature="3" evolution="2"/>
+    <general code="general_6_14" level="57" name="乐进" feature="3" evolution="2"/>
+    <general code="general_7_8" level="55" name="御风长枪兵" feature="1" evolution="2"/>
+  </gate>
+  <gate id="33" part="4" partName="赤壁之战" level="56" name="当阳之长坂" group="曹操" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_1:1|proto_2_1:3" money="3000" reverence="500" exploit="1500"/>
+    <general code="general_0_1" level="56" name="威烈战车" feature="3" evolution="2"/>
+    <general code="general_1_1" level="56" name="御风射手" feature="4" evolution="1"/>
+    <general code="general_4_1" level="56" name="狂斧禁卫" feature="2" evolution="2"/>
+    <general code="general_3_12" level="58" name="曹洪" feature="2" evolution="2"/>
+    <general code="general_7_11" level="59" name="于禁" feature="4" evolution="2"/>
+    <general code="general_8_8" level="59" name="御风藤甲" feature="1" evolution="2"/>
+  </gate>
+  <gate id="34" part="4" partName="赤壁之战" level="58" name="饮马江汉" group="曹操" ai="85" delay="2600">
+    <award soldier="" recruit="" proto="proto_1_4:1|proto_2_6:3" money="3500" reverence="500" exploit="1500"/>
+    <general code="general_0_1" level="58" name="威烈战车" feature="2" evolution="2"/>
+    <general code="general_2_1" level="58" name="凤舞战将" feature="1" evolution="2"/>
+    <general code="general_4_14" level="60" name="许褚" feature="1" evolution="2"/>
+    <general code="general_7_1" level="58" name="银枪禁卫" feature="1" evolution="1"/>
+    <general code="general_9_7" level="62" name="夏侯渊" feature="2" evolution="2"/>
+    <general code="general_2_1" level="58" name="凤舞战将" feature="1" evolution="2"/>
+  </gate>
+  <gate id="35" part="4" partName="赤壁之战" level="60" name="直取荆州" group="曹操" ai="90" delay="2500">
+    <award soldier="" recruit="" proto="proto_1_5:1|proto_2_3:3" money="5000" reverence="500" exploit="2000"/>
+    <general code="general_0_1" level="61" name="威烈战车" feature="3" evolution="3"/>
+    <general code="general_1_1" level="60" name="御风射手" feature="2" evolution="2"/>
+    <general code="general_4_1" level="60" name="狂斧禁卫" feature="4" evolution="2"/>
+    <general code="general_5_1" level="60" name="巨锤禁卫" feature="1" evolution="2"/>
+    <general code="general_3_10" level="67" name="张颌" feature="3" evolution="2"/>
+    <general code="general_6_13" level="68" name="曹彰" feature="1" evolution="3"/>
+  </gate>
+  <gate id="36" part="4" partName="赤壁之战" level="62" name="乌林渡江" group="曹操" ai="88" delay="2500">
+    <award soldier="" recruit="蔡瑁、张允" proto="proto_1_7:1|proto_2_4:3" money="3500" reverence="500" exploit="1500"/>
+    <general code="general_0_1" level="63" name="威烈战车" feature="1" evolution="3"/>
+    <general code="general_1_3" level="68" name="蔡瑁" feature="1" evolution="2"/>
+    <general code="general_1_4" level="69" name="张允" feature="3" evolution="2"/>
+    <general code="general_6_1" level="62" name="爆武禁卫" feature="2" evolution="2"/>
+    <general code="general_7_1" level="62" name="银枪禁卫" feature="3" evolution="2"/>
+    <general code="general_8_1" level="62" name="玄甲禁卫" feature="4" evolution="2"/>
+  </gate>
+  <gate id="37" part="4" partName="赤壁之战" level="64" name="火烧赤壁" group="曹操" ai="88" delay="2500">
+    <award soldier="" recruit="" proto="proto_1_2:1|proto_2_1:3" money="3500" reverence="800" exploit="1500"/>
+    <general code="general_0_1" level="64" name="威烈战车" feature="3" evolution="3"/>
+    <general code="general_1_1" level="64" name="御风射手" feature="3" evolution="2"/>
+    <general code="general_7_13" level="68" name="李典" feature="1" evolution="2"/>
+    <general code="general_9_34" level="69" name="曹操" feature="2" evolution="3"/>
+    <general code="general_9_16" level="65" name="夏侯惇" feature="3" evolution="2"/>
+    <general code="general_5_12" level="63" name="玄甲禁卫" feature="3" evolution="2"/>
+  </gate>
+  <gate id="38" part="4" partName="赤壁之战" level="66" name="华容道" group="曹操" ai="88" delay="2500">
+    <award soldier="" recruit="" proto="proto_1_8:1|proto_2_2:3" money="5000" reverence="1000" exploit="1500"/>
+    <general code="general_0_1" level="67" name="威烈战车" feature="1" evolution="3"/>
+    <general code="general_9_34" level="69" name="曹操" feature="2" evolution="3"/>
+    <general code="general_9_15" level="69" name="张辽" feature="4" evolution="2"/>
+    <general code="general_9_13" level="69" name="徐晃" feature="3" evolution="2"/>
+    <general code="general_9_1" level="66" name="虎豹铁骑" feature="1" evolution="1"/>
+    <general code="general_9_1" level="66" name="虎豹铁骑" feature="1" evolution="1"/>
+  </gate>
+  <gate id="39" part="4" partName="赤壁之战" level="68" name="合肥之战" group="曹操" ai="88" delay="2500">
+    <award soldier="" recruit="" proto="proto_1_6:1|proto_2_7:3" money="5000" reverence="500" exploit="1000"/>
+    <general code="general_0_1" level="68" name="威烈战车" feature="2" evolution="3"/>
+    <general code="general_1_19" level="71" name="满宠" feature="1" evolution="2"/>
+    <general code="general_2_1" level="68" name="凤舞战将" feature="3" evolution="2"/>
+    <general code="general_6_17" level="68" name="曹叡" feature="1" evolution="3"/>
+    <general code="general_8_1" level="68" name="玄甲禁卫" feature="4" evolution="2"/>
+    <general code="general_8_1" level="68" name="玄甲禁卫" feature="4" evolution="2"/>
+  </gate>
+  <gate id="40" part="4" partName="赤壁之战" level="70" name="潼关之战" group="曹操" ai="88" delay="2500">
+    <award soldier="" recruit="" proto="proto_1_0:1|proto_2_8:3" money="8000" reverence="1000" exploit="3000"/>
+    <general code="general_0_1" level="70" name="威烈战车" feature="3" evolution="3"/>
+    <general code="general_1_1" level="70" name="御风射手" feature="4" evolution="2"/>
+    <general code="general_4_13" level="75" name="曹仁" feature="3" evolution="3"/>
+    <general code="general_3_10" level="75" name="张颌" feature="2" evolution="3"/>
+    <general code="general_9_7" level="75" name="夏侯渊" feature="2" evolution="3"/>
+    <general code="general_1_1" level="70" name="御风射手" feature="4" evolution="2"/>
+  </gate>
+  <gate id="41" part="5" partName="鏖战三国" level="71" name="夺取葭萌关" group="刘备" ai="88" delay="2400">
+    <award soldier="" recruit="" proto="proto_2_5:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="72" name="魔焰战车" feature="3" evolution="3"/>
+    <general code="general_1_12" level="74" name="严颜" feature="2" evolution="3"/>
+    <general code="general_2_1" level="72" name="凤舞战将" feature="1" evolution="2"/>
+    <general code="general_9_1" level="72" name="禁卫铁骑" feature="2" evolution="2"/>
+    <general code="general_7_14" level="75" name="张飞" feature="2" evolution="3"/>
+    <general code="general_8_1" level="72" name="玄甲禁卫" feature="4" evolution="2"/>
+  </gate>
+  <gate id="42" part="5" partName="鏖战三国" level="72" name="再取荆州" group="刘备" ai="88" delay="2400">
+    <award soldier="" recruit="关平" proto="proto_2_6:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="74" name="魔焰战车" feature="3" evolution="3"/>
+    <general code="general_1_1" level="74" name="御风射手" feature="1" evolution="2"/>
+    <general code="general_9_1" level="74" name="禁卫铁骑" feature="2" evolution="2"/>
+    <general code="general_3_13" level="80" name="关羽" feature="3" evolution="3"/>
+    <general code="general_6_9" level="78" name="关平" feature="4" evolution="3"/>
+    <general code="general_1_1" level="74" name="御风射手" feature="1" evolution="2"/>
+  </gate>
+  <gate id="43" part="5" partName="鏖战三国" level="73" name="突袭逍遥津" group="曹操" ai="88" delay="2400">
+    <award soldier="" recruit="张辽" proto="proto_2_7:3" money="8000" reverence="2500" exploit="1000"/>
+    <general code="general_0_1" level="76" name="魔焰战车" feature="4" evolution="3"/>
+    <general code="general_1_1" level="76" name="御风射手" feature="3" evolution="2"/>
+    <general code="general_4_1" level="76" name="狂斧禁卫" feature="1" evolution="2"/>
+    <general code="general_7_13" level="80" name="李典" feature="2" evolution="3"/>
+    <general code="general_9_15" level="80" name="张辽" feature="4" evolution="3"/>
+    <general code="general_7_13" level="77" name="银枪禁卫" feature="1" evolution="3"/>
+  </gate>
+  <gate id="44" part="5" partName="鏖战三国" level="74" name="定军山" group="曹操" ai="88" delay="2400">
+    <award soldier="" recruit="夏侯渊" proto="proto_2_8:3" money="8000" reverence="2500" exploit="1000"/>
+    <general code="general_0_1" level="78" name="魔焰战车" feature="4" evolution="3"/>
+    <general code="general_2_1" level="78" name="凤舞战将" feature="2" evolution="2"/>
+    <general code="general_3_10" level="83" name="张颌" feature="3" evolution="3"/>
+    <general code="general_7_13" level="78" name="银枪禁卫" feature="1" evolution="3"/>
+    <general code="general_9_7" level="85" name="夏侯渊" feature="2" evolution="4"/>
+    <general code="general_1_1" level="80" name="御风射手" feature="1" evolution="3"/>
+  </gate>
+  <gate id="45" part="5" partName="鏖战三国" level="75" name="水淹七军" group="曹操" ai="88" delay="2400">
+    <award soldier="" recruit="于禁、庞德" proto="proto_2_5:3" money="8000" reverence="2500" exploit="1000"/>
+    <general code="general_0_1" level="80" name="魔焰战车" feature="3" evolution="3"/>
+    <general code="general_3_11" level="85" name="庞德" feature="2" evolution="3"/>
+    <general code="general_9_1" level="80" name="虎豹铁骑" feature="4" evolution="2"/>
+    <general code="general_4_13" level="85" name="曹仁" feature="1" evolution="3"/>
+    <general code="general_7_11" level="85" name="于禁" feature="3" evolution="3"/>
+    <general code="general_2_1" level="83" name="凤舞战将" feature="1" evolution="3"/>
+  </gate>
+  <gate id="46" part="5" partName="鏖战三国" level="76" name="白衣渡江" group="孙权" ai="90" delay="2400">
+    <award soldier="" recruit="吕蒙" proto="proto_2_6:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="82" name="魔焰战车" feature="3" evolution="4"/>
+    <general code="general_1_13" level="88" name="吕蒙" feature="2" evolution="3"/>
+    <general code="general_2_1" level="82" name="凤舞战将" feature="4" evolution="2"/>
+    <general code="general_5_13" level="88" name="甘宁" feature="1" evolution="3"/>
+    <general code="general_6_12" level="88" name="周泰" feature="2" evolution="3"/>
+    <general code="general_9_1" level="85" name="禁卫铁骑" feature="3" evolution="2"/>
+  </gate>
+  <gate id="47" part="5" partName="鏖战三国" level="77" name="夷陵之战" group="孙权" ai="90" delay="2400">
+    <award soldier="" recruit="黄盖" proto="proto_2_7:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="84" name="魔焰战车" feature="1" evolution="4"/>
+    <general code="general_1_14" level="90" name="陆逊" feature="2" evolution="3"/>
+    <general code="general_1_11" level="90" name="黄盖" feature="2" evolution="3"/>
+    <general code="general_7_12" level="90" name="程普" feature="4" evolution="3"/>
+    <general code="general_9_1" level="85" name="禁卫铁骑" feature="3" evolution="2"/>
+    <general code="general_1_1" level="85" name="御风射手" feature="1" evolution="3"/>
+  </gate>
+  <gate id="48" part="5" partName="鏖战三国" level="78" name="火烧连营" group="刘备" ai="90" delay="2400">
+    <award soldier="" recruit="沙摩柯" proto="proto_2_8:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="86" name="魔焰战车" feature="3" evolution="4"/>
+    <general code="general_1_15" level="92" name="黄忠" feature="2" evolution="3"/>
+    <general code="general_9_1" level="87" name="禁卫铁骑" feature="4" evolution="2"/>
+    <general code="general_6_10" level="92" name="沙摩柯" feature="1" evolution="3"/>
+    <general code="general_7_14" level="92" name="张飞" feature="2" evolution="4"/>
+    <general code="general_3_1" level="88" name="陌刀禁卫" feature="2" evolution="4"/>
+  </gate>
+  <gate id="49" part="5" partName="鏖战三国" level="79" name="入援白帝城" group="孙权" ai="90" delay="2400">
+    <award soldier="" recruit="" proto="proto_2_5:3" money="8000" reverence="2000" exploit="1000"/>
+    <general code="general_0_1" level="88" name="魔焰战车" feature="4" evolution="4"/>
+    <general code="general_3_1" level="88" name="陌刀禁卫" feature="2" evolution="2"/>
+    <general code="general_6_8" level="94" name="丁奉" feature="3" evolution="3"/>
+    <general code="general_8_11" level="94" name="韩当" feature="1" evolution="3"/>
+    <general code="general_9_17" level="94" name="太史慈" feature="2" evolution="4"/>
+    <general code="general_4_1" level="90" name="狂斧禁卫" feature="1" evolution="3"/>
+  </gate>
+  <gate id="50" part="5" partName="鏖战三国" level="80" name="濡须口之战" group="曹操" ai="90" delay="2300">
+    <award soldier="" recruit="王双" proto="proto_2_6:3" money="12000" reverence="3000" exploit="3000"/>
+    <general code="general_0_1" level="90" name="魔焰战车" feature="1" evolution="4"/>
+    <general code="general_9_1" level="90" name="虎豹铁骑" feature="2" evolution="2"/>
+    <general code="general_4_13" level="96" name="曹仁" feature="3" evolution="3"/>
+    <general code="general_5_11" level="96" name="王双" feature="4" evolution="3"/>
+    <general code="general_6_13" level="96" name="曹彰" feature="1" evolution="4"/>
+    <general code="general_4_1" level="92" name="狂斧禁卫" feature="2" evolution="3"/>
+  </gate>
+  <gate id="51" part="6" partName="奇袭蜀中" level="81" name="北伐出祁山" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="" proto="proto_2_5:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="92" name="魔焰战车" feature="4" evolution="4"/>
+    <general code="general_1_1" level="92" name="箭神将领" feature="3" evolution="3"/>
+    <general code="general_4_1" level="92" name="狂斧禁卫" feature="1" evolution="3"/>
+    <general code="general_3_3" level="98" name="廖化" feature="2" evolution="4"/>
+    <general code="general_9_14" level="98" name="姜维" feature="2" evolution="4"/>
+    <general code="general_1_1" level="92" name="箭神将领" feature="3" evolution="3"/>
+  </gate>
+  <gate id="52" part="6" partName="奇袭蜀中" level="82" name="街亭之役" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="" proto="proto_2_6:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="94" name="魔焰战车" feature="1" evolution="4"/>
+    <general code="general_9_1" level="94" name="禁卫铁骑" feature="3" evolution="3"/>
+    <general code="general_5_1" level="94" name="巨锤禁卫" feature="1" evolution="3"/>
+    <general code="general_1_9" level="100" name="马谡" feature="2" evolution="4"/>
+    <general code="general_3_2" level="100" name="张翼" feature="4" evolution="4"/>
+    <general code="general_1_1" level="95" name="箭神将领" feature="1" evolution="3"/>
+  </gate>
+  <gate id="53" part="6" partName="奇袭蜀中" level="83" name="围攻陈仓" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="" proto="proto_2_7:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="96" name="魔焰战车" feature="2" evolution="4"/>
+    <general code="general_9_1" level="96" name="禁卫铁骑" feature="3" evolution="3"/>
+    <general code="general_2_1" level="96" name="凤舞战将" feature="4" evolution="3"/>
+    <general code="general_6_15" level="102" name="魏延" feature="1" evolution="4"/>
+    <general code="general_7_14" level="102" name="张飞" feature="2" evolution="4"/>
+    <general code="general_4_1" level="98" name="狂斧禁卫" feature="4" evolution="3"/>
+  </gate>
+  <gate id="54" part="6" partName="奇袭蜀中" level="84" name="进军五丈原" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="廖化" proto="proto_2_8:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="98" name="魔焰战车" feature="3" evolution="4"/>
+    <general code="general_9_1" level="98" name="禁卫铁骑" feature="1" evolution="3"/>
+    <general code="general_4_1" level="98" name="狂斧禁卫" feature="4" evolution="3"/>
+    <general code="general_3_3" level="104" name="廖化" feature="2" evolution="4"/>
+    <general code="general_1_15" level="104" name="黄忠" feature="2" evolution="4"/>
+    <general code="general_4_1" level="100" name="南蛮部将" feature="3" evolution="3"/>
+  </gate>
+  <gate id="55" part="6" partName="奇袭蜀中" level="85" name="西行狄道" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="祝融夫人、孟优" proto="proto_2_5:3" money="10000" reverence="5000" exploit="2500"/>
+    <general code="general_0_1" level="100" name="蚩尤战车" feature="4" evolution="4"/>
+    <general code="general_2_8" level="106" name="祝融夫人" feature="1" evolution="4"/>
+    <general code="general_4_1" level="100" name="南蛮部将" feature="3" evolution="3"/>
+    <general code="general_8_10" level="106" name="孟优" feature="2" evolution="4"/>
+    <general code="general_8_12" level="108" name="孟获" feature="2" evolution="5"/>
+    <general code="general_1_1" level="103" name="御风射手" feature="4" evolution="4"/>
+  </gate>
+  <gate id="56" part="6" partName="奇袭蜀中" level="86" name="对峙子午谷" group="刘备" ai="90" delay="2300">
+    <award soldier="" recruit="张翼" proto="proto_2_6:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="102" name="蚩尤战车" feature="1" evolution="4"/>
+    <general code="general_9_1" level="102" name="禁卫铁骑" feature="2" evolution="3"/>
+    <general code="general_1_1" level="102" name="箭神将领" feature="3" evolution="3"/>
+    <general code="general_3_2" level="108" name="张翼" feature="4" evolution="4"/>
+    <general code="general_6_15" level="110" name="魏延" feature="1" evolution="5"/>
+    <general code="general_9_15" level="110" name="禁卫铁骑" feature="2" evolution="4"/>
+  </gate>
+  <gate id="57" part="6" partName="奇袭蜀中" level="87" name="大破阳平关" group="刘备" ai="95" delay="2200">
+    <award soldier="" recruit="" proto="proto_2_7:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="104" name="蚩尤战车" feature="2" evolution="4"/>
+    <general code="general_9_1" level="104" name="禁卫铁骑" feature="3" evolution="3"/>
+    <general code="general_4_1" level="104" name="狂斧禁卫" feature="4" evolution="3"/>
+    <general code="general_3_13" level="112" name="关羽" feature="1" evolution="5"/>
+    <general code="general_1_15" level="112" name="黄忠" feature="2" evolution="5"/>
+    <general code="general_9_15" level="110" name="禁卫铁骑" feature="2" evolution="4"/>
+  </gate>
+  <gate id="58" part="6" partName="奇袭蜀中" level="88" name="剑阁相持战" group="刘备" ai="95" delay="2200">
+    <award soldier="" recruit="孟获、严颜" proto="proto_2_8:3" money="10000" reverence="5000" exploit="2000"/>
+    <general code="general_0_1" level="106" name="蚩尤战车" feature="3" evolution="4"/>
+    <general code="general_9_1" level="106" name="禁卫铁骑" feature="4" evolution="3"/>
+    <general code="general_5_1" level="106" name="巨锤禁卫" feature="1" evolution="3"/>
+    <general code="general_8_12" level="115" name="孟获" feature="1" evolution="5"/>
+    <general code="general_1_12" level="115" name="严颜" feature="2" evolution="5"/>
+    <general code="general_7_1" level="108" name="银枪禁卫" feature="1" evolution="4"/>
+  </gate>
+  <gate id="59" part="6" partName="奇袭蜀中" level="89" name="轻取绵竹" group="刘备" ai="95" delay="2200">
+    <award soldier="" recruit="姜维、魏延" proto="proto_2_5:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="108" name="蚩尤战车" feature="4" evolution="4"/>
+    <general code="general_5_1" level="108" name="巨锤禁卫" feature="2" evolution="4"/>
+    <general code="general_7_1" level="108" name="银枪禁卫" feature="1" evolution="4"/>
+    <general code="general_6_15" level="118" name="魏延" feature="1" evolution="5"/>
+    <general code="general_9_14" level="118" name="姜维" feature="3" evolution="5"/>
+    <general code="general_9_15" level="110" name="禁卫铁骑" feature="2" evolution="4"/>
+  </gate>
+  <gate id="60" part="6" partName="奇袭蜀中" level="90" name="攻克成都" group="刘备" ai="95" delay="2000">
+    <award soldier="" recruit="关羽、黄忠、张飞" proto="proto_2_6:3" money="15000" reverence="10000" exploit="3000"/>
+    <general code="general_0_1" level="110" name="蚩尤战车" feature="4" evolution="5"/>
+    <general code="general_1_15" level="118" name="黄忠" feature="2" evolution="5"/>
+    <general code="general_7_14" level="118" name="张飞" feature="1" evolution="5"/>
+    <general code="general_3_13" level="118" name="关羽" feature="1" evolution="5"/>
+    <general code="general_9_33" level="130" name="刘备" feature="1" evolution="5"/>
+    <general code="general_9_15" level="115" name="禁卫铁骑" feature="2" evolution="5"/>
+  </gate>
+  <gate id="61" part="7" partName="进军东吴" level="91" name="击破丹阳" group="孙权" ai="95" delay="2200">
+    <award soldier="" recruit="" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="112" name="蚩尤战车" feature="2" evolution="4"/>
+    <general code="general_1_14" level="120" name="陆逊" feature="3" evolution="4"/>
+    <general code="general_6_12" level="120" name="周泰" feature="2" evolution="5"/>
+    <general code="general_8_11" level="120" name="韩当" feature="1" evolution="4"/>
+    <general code="general_9_1" level="112" name="虎豹铁骑" feature="4" evolution="4"/>
+    <general code="general_1_1" level="103" name="御风射手" feature="4" evolution="4"/>
+  </gate>
+  <gate id="62" part="7" partName="进军东吴" level="92" name="西陵之战" group="孙权" ai="95" delay="2200">
+    <award soldier="" recruit="" proto="proto_2_8:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="114" name="蚩尤战车" feature="3" evolution="4"/>
+    <general code="general_2_1" level="114" name="凤舞战将" feature="4" evolution="4"/>
+    <general code="general_5_1" level="114" name="巨锤禁卫" feature="2" evolution="4"/>
+    <general code="general_6_11" level="122" name="凌统" feature="1" evolution="4"/>
+    <general code="general_9_17" level="125" name="太史慈" feature="2" evolution="5"/>
+  </gate>
+  <gate id="63" part="7" partName="进军东吴" level="93" name="挥军夷道" group="孙权" ai="95" delay="2200">
+    <award soldier="" recruit="" proto="proto_2_5:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="116" name="蚩尤战车" feature="4" evolution="4"/>
+    <general code="general_1_1" level="116" name="箭神将领" feature="3" evolution="4"/>
+    <general code="general_6_8" level="124" name="丁奉" feature="2" evolution="5"/>
+    <general code="general_8_11" level="124" name="韩当" feature="1" evolution="4"/>
+    <general code="general_9_1" level="116" name="禁卫铁骑" feature="2" evolution="4"/>
+    <general code="general_3_1" level="118" name="陌刀禁卫" feature="4" evolution="4"/>
+  </gate>
+  <gate id="64" part="7" partName="进军东吴" level="94" name="袭取乐乡" group="孙权" ai="95" delay="2200">
+    <award soldier="" recruit="" proto="proto_2_6:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="118" name="蚩尤战车" feature="1" evolution="4"/>
+    <general code="general_3_1" level="118" name="陌刀禁卫" feature="4" evolution="4"/>
+    <general code="general_7_1" level="118" name="银枪禁卫" feature="3" evolution="4"/>
+    <general code="general_5_13" level="126" name="甘宁" feature="1" evolution="4"/>
+    <general code="general_9_17" level="126" name="太史慈" feature="2" evolution="5"/>
+    <general code="general_1_1" level="118" name="箭神将领" feature="2" evolution="5"/>
+  </gate>
+  <gate id="65" part="7" partName="进军东吴" level="95" name="攻占江陵" group="孙权" ai="95" delay="2000">
+    <award soldier="" recruit="" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="120" name="蚩尤战车" feature="2" evolution="4"/>
+    <general code="general_2_1" level="120" name="凤舞战将" feature="4" evolution="4"/>
+    <general code="general_9_1" level="120" name="禁卫铁骑" feature="3" evolution="4"/>
+    <general code="general_6_11" level="128" name="凌统" feature="1" evolution="4"/>
+    <general code="general_7_12" level="128" name="程普" feature="4" evolution="5"/>
+    <general code="general_4_13" level="120" name="狂斧禁卫" feature="4" evolution="5"/>
+  </gate>
+  <gate id="66" part="7" partName="进军东吴" level="96" name="轻取江安" group="孙权" ai="95" delay="2000">
+    <award soldier="" recruit="周泰" proto="proto_2_8:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="122" name="蚩尤战车" feature="3" evolution="5"/>
+    <general code="general_2_1" level="122" name="凤舞战将" feature="4" evolution="4"/>
+    <general code="general_9_1" level="122" name="禁卫铁骑" feature="2" evolution="4"/>
+    <general code="general_5_13" level="130" name="甘宁" feature="1" evolution="5"/>
+    <general code="general_6_12" level="130" name="周泰" feature="2" evolution="5"/>
+    <general code="general_4_13" level="125" name="狂斧禁卫" feature="1" evolution="5"/>
+  </gate>
+  <gate id="67" part="7" partName="进军东吴" level="97" name="围攻武昌" group="孙权" ai="95" delay="2000">
+    <award soldier="" recruit="韩当" proto="proto_2_5:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="124" name="蚩尤战车" feature="4" evolution="5"/>
+    <general code="general_7_1" level="124" name="银枪禁卫" feature="3" evolution="4"/>
+    <general code="general_9_1" level="124" name="禁卫铁骑" feature="2" evolution="4"/>
+    <general code="general_1_14" level="132" name="陆逊" feature="1" evolution="5"/>
+    <general code="general_8_11" level="132" name="韩当" feature="1" evolution="5"/>
+    <general code="general_2_1" level="120" name="凤舞战将" feature="4" evolution="4"/>
+  </gate>
+  <gate id="68" part="7" partName="进军东吴" level="98" name="战于版桥" group="孙权" ai="95" delay="2000">
+    <award soldier="" recruit="程普" proto="proto_2_6:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="126" name="蚩尤战车" feature="1" evolution="5"/>
+    <general code="general_9_1" level="126" name="禁卫铁骑" feature="2" evolution="4"/>
+    <general code="general_9_1" level="126" name="禁卫铁骑" feature="3" evolution="4"/>
+    <general code="general_6_11" level="134" name="凌统" feature="1" evolution="5"/>
+    <general code="general_7_12" level="134" name="程普" feature="4" evolution="5"/>
+    <general code="general_7_1" level="124" name="银枪禁卫" feature="3" evolution="4"/>
+  </gate>
+  <gate id="69" part="7" partName="进军东吴" level="99" name="铁索横江" group="孙权" ai="100" delay="1900">
+    <award soldier="" recruit="陆逊、甘宁、丁奉" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="128" name="蚩尤战车" feature="2" evolution="5"/>
+    <general code="general_9_1" level="128" name="禁卫铁骑" feature="3" evolution="5"/>
+    <general code="general_1_14" level="136" name="陆逊" feature="4" evolution="5"/>
+    <general code="general_5_13" level="136" name="甘宁" feature="1" evolution="5"/>
+    <general code="general_6_8" level="136" name="丁奉" feature="2" evolution="5"/>
+    <general code="general_2_1" level="125" name="凤舞战将" feature="4" evolution="4"/>
+  </gate>
+  <gate id="70" part="7" partName="进军东吴" level="100" name="再战建业" group="孙权" ai="100" delay="1800">
+    <award soldier="" recruit="凌统、太史慈" proto="proto_2_8:3" money="20000" reverence="12000" exploit="5000"/>
+    <general code="general_0_1" level="130" name="蚩尤战车" feature="3" evolution="5"/>
+    <general code="general_1_1" level="130" name="箭神将领" feature="2" evolution="5"/>
+    <general code="general_6_11" level="142" name="凌统" feature="1" evolution="5"/>
+    <general code="general_9_17" level="142" name="太史慈" feature="4" evolution="5"/>
+    <general code="general_9_32" level="160" name="孙权" feature="2" evolution="5"/>
+    <general code="general_8_12" level="140" name="禁卫藤甲" feature="2" evolution="5"/>
+  </gate>
+  <gate id="71" part="8" partName="马踏中原" level="101" name="兵进襄阳" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="张颌" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="150" name="蚩尤战车" feature="1" evolution="5"/>
+    <general code="general_9_1" level="150" name="虎豹铁骑" feature="2" evolution="5"/>
+    <general code="general_7_1" level="150" name="银枪禁卫" feature="3" evolution="5"/>
+    <general code="general_3_10" level="160" name="张颌" feature="4" evolution="5"/>
+    <general code="general_9_13" level="160" name="徐晃" feature="1" evolution="5"/>
+    <general code="general_9_1" level="150" name="虎豹铁骑" feature="2" evolution="5"/>
+  </gate>
+  <gate id="72" part="8" partName="马踏中原" level="102" name="光复荆州" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="徐晃" proto="proto_2_8:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="160" name="蚩尤战车" feature="2" evolution="5"/>
+    <general code="general_2_1" level="160" name="凤舞战将" feature="3" evolution="5"/>
+    <general code="general_6_14" level="170" name="乐进" feature="3" evolution="5"/>
+    <general code="general_7_13" level="170" name="李典" feature="4" evolution="5"/>
+    <general code="general_9_13" level="170" name="徐晃" feature="1" evolution="5"/>
+    <general code="general_1_1" level="160" name="箭神将领" feature="2" evolution="5"/>
+  </gate>
+  <gate id="73" part="8" partName="马踏中原" level="103" name="攻克寿春" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="proto_2_5:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="170" name="蚩尤战车" feature="3" evolution="5"/>
+    <general code="general_9_1" level="170" name="虎豹铁骑" feature="2" evolution="5"/>
+    <general code="general_1_1" level="170" name="箭神将领" feature="4" evolution="5"/>
+    <general code="general_5_14" level="180" name="典韦" feature="1" evolution="5"/>
+    <general code="general_9_13" level="180" name="徐晃" feature="1" evolution="5"/>
+    <general code="general_8_12" level="170" name="禁卫藤甲" feature="2" evolution="5"/>
+  </gate>
+  <gate id="74" part="8" partName="马踏中原" level="104" name="再取徐州" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="乐进" proto="proto_2_6:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="175" name="蚩尤战车" feature="4" evolution="5"/>
+    <general code="general_9_1" level="175" name="虎豹铁骑" feature="2" evolution="5"/>
+    <general code="general_2_1" level="175" name="凤舞战将" feature="3" evolution="5"/>
+    <general code="general_6_14" level="188" name="乐进" feature="3" evolution="5"/>
+    <general code="general_4_14" level="188" name="许褚" feature="1" evolution="5"/>
+    <general code="general_8_12" level="170" name="禁卫藤甲" feature="2" evolution="5"/>
+  </gate>
+  <gate id="75" part="8" partName="马踏中原" level="105" name="悍勇青州军" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="180" name="蚩尤战车" feature="1" evolution="5"/>
+    <general code="general_9_1" level="180" name="虎豹铁骑" feature="3" evolution="5"/>
+    <general code="general_9_1" level="180" name="虎豹铁骑" feature="2" evolution="5"/>
+    <general code="general_7_13" level="192" name="李典" feature="3" evolution="5"/>
+    <general code="general_5_14" level="192" name="典韦" feature="1" evolution="5"/>
+    <general code="general_7_1" level="184" name="银枪禁卫" feature="3" evolution="5"/>
+  </gate>
+  <gate id="76" part="8" partName="马踏中原" level="106" name="拥兵冀州" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="proto_2_8:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="185" name="蚩尤战车" feature="2" evolution="5"/>
+    <general code="general_1_1" level="185" name="箭神将领" feature="3" evolution="5"/>
+    <general code="general_8_1" level="185" name="玄甲禁卫" feature="4" evolution="5"/>
+    <general code="general_3_12" level="195" name="曹洪" feature="1" evolution="5"/>
+    <general code="general_9_16" level="195" name="夏侯惇" feature="2" evolution="5"/>
+    <general code="general_7_1" level="184" name="银枪禁卫" feature="3" evolution="5"/>
+  </gate>
+  <gate id="77" part="8" partName="马踏中原" level="107" name="马踏并州" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="曹仁" proto="proto_2_5:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="192" name="蚩尤战车" feature="3" evolution="5"/>
+    <general code="general_1_1" level="192" name="箭神将领" feature="2" evolution="5"/>
+    <general code="general_9_1" level="192" name="虎豹铁骑" feature="1" evolution="5"/>
+    <general code="general_4_13" level="198" name="曹仁" feature="4" evolution="5"/>
+    <general code="general_5_14" level="198" name="典韦" feature="1" evolution="5"/>
+    <general code="general_4_13" level="195" name="狂斧禁卫" feature="1" evolution="5"/>
+  </gate>
+  <gate id="78" part="8" partName="马踏中原" level="108" name="夺取长安" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="曹彰" proto="proto_2_6:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="195" name="蚩尤战车" feature="4" evolution="5"/>
+    <general code="general_1_1" level="195" name="箭神将领" feature="3" evolution="5"/>
+    <general code="general_2_1" level="195" name="凤舞战将" feature="2" evolution="5"/>
+    <general code="general_6_13" level="202" name="曹彰" feature="1" evolution="5"/>
+    <general code="general_9_16" level="202" name="夏侯惇" feature="2" evolution="5"/>
+    <general code="general_4_13" level="195" name="狂斧禁卫" feature="1" evolution="5"/>
+  </gate>
+  <gate id="79" part="8" partName="马踏中原" level="109" name="围攻许昌" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="李典、曹洪" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="198" name="蚩尤战车" feature="2" evolution="5"/>
+    <general code="general_9_1" level="198" name="虎豹铁骑" feature="1" evolution="5"/>
+    <general code="general_4_14" level="205" name="许褚" feature="1" evolution="5"/>
+    <general code="general_3_12" level="205" name="曹洪" feature="1" evolution="5"/>
+    <general code="general_7_13" level="205" name="李典" feature="3" evolution="5"/>
+    <general code="general_1_1" level="198" name="箭神将领" feature="3" evolution="5"/>
+  </gate>
+  <gate id="80" part="8" partName="马踏中原" level="110" name="血战洛阳" group="曹操" ai="100" delay="1800">
+    <award soldier="" recruit="夏侯惇、典韦、许褚" proto="proto_2_7:3" money="10000" reverence="8000" exploit="2000"/>
+    <general code="general_0_1" level="200" name="蚩尤战车" feature="2" evolution="5"/>
+    <general code="general_4_14" level="208" name="许褚" feature="1" evolution="5"/>
+    <general code="general_5_14" level="208" name="典韦" feature="1" evolution="5"/>
+    <general code="general_9_16" level="208" name="夏侯惇" feature="2" evolution="5"/>
+    <general code="general_9_34" level="210" name="曹操" feature="2" evolution="5"/>
+    <general code="general_1_12" level="198" name="箭神将领" feature="4" evolution="5"/>
+  </gate>
+  <gate id="81" part="9" partName="试炼之地" level="111" name="巨斧阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="10000" reverence="1000" exploit="10000"/>
+    <general code="general_0_1" level="205" name="伏魔战车" feature="1" evolution="6"/>
+    <general code="general_4_14" level="205" name="伏魔战将" feature="2" evolution="6" kezhi="6:2|1:2|8:2" tianfu="tf_18"/>
+    <general code="general_4_14" level="205" name="伏魔战将" feature="3" evolution="6" kezhi="6:2|1:2|8:2" tianfu="tf_6"/>
+    <general code="general_4_14" level="205" name="伏魔战将" feature="4" evolution="6" kezhi="6:2|1:2|8:2" tianfu="tf_9"/>
+    <general code="general_4_14" level="205" name="伏魔战将" feature="1" evolution="6" kezhi="6:2|1:2|8:2" tianfu="tf_12"/>
+    <general code="general_4_14" level="210" name="伏魔战将" feature="1" evolution="6" kezhi="6:2|1:2|8:2" tianfu="tf_15"/>
+  </gate>
+  <gate id="82" part="9" partName="试炼之地" level="112" name="银枪阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="20000" reverence="1000" exploit="20000"/>
+    <general code="general_0_1" level="206" name="破邪战车" feature="3" evolution="6"/>
+    <general code="general_7_14" level="205" name="破邪战将" feature="1" evolution="6" kezhi="9:3|4:3|6:3" tianfu="tf_18"/>
+    <general code="general_7_14" level="205" name="破邪战将" feature="2" evolution="6" kezhi="9:3|4:3|6:3" tianfu="tf_6"/>
+    <general code="general_7_14" level="205" name="破邪战将" feature="2" evolution="6" kezhi="9:3|4:3|6:3" tianfu="tf_9"/>
+    <general code="general_7_14" level="205" name="破邪战将" feature="3" evolution="6" kezhi="9:3|4:3|6:3" tianfu="tf_12"/>
+    <general code="general_7_14" level="210" name="破邪战将" feature="4" evolution="6" kezhi="9:3|4:3|6:3" tianfu="tf_15"/>
+  </gate>
+  <gate id="83" part="9" partName="试炼之地" level="113" name="狂骑阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="30000" reverence="1000" exploit="30000"/>
+    <general code="general_0_1" level="207" name="龙渊战车" feature="4" evolution="7"/>
+    <general code="general_9_18" level="205" name="龙渊战将" feature="1" evolution="7" kezhi="3:3|4:3|8:3" tianfu="tf_18"/>
+    <general code="general_9_18" level="205" name="龙渊战将" feature="2" evolution="7" kezhi="3:3|4:3|8:3" tianfu="tf_6"/>
+    <general code="general_9_18" level="205" name="龙渊战将" feature="3" evolution="7" kezhi="3:3|4:3|8:3" tianfu="tf_9"/>
+    <general code="general_9_18" level="205" name="龙渊战将" feature="3" evolution="7" kezhi="3:3|4:3|8:3" tianfu="tf_12"/>
+    <general code="general_9_18" level="210" name="龙渊战将" feature="4" evolution="7" kezhi="3:3|4:3|8:3" tianfu="tf_15"/>
+  </gate>
+  <gate id="84" part="9" partName="试炼之地" level="114" name="飞矢阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="40000" reverence="1000" exploit="40000"/>
+    <general code="general_0_1" level="208" name="落日战车" feature="4" evolution="7"/>
+    <general code="general_1_15" level="205" name="落日战将" feature="1" evolution="7" kezhi="5:4|7:4|9:4" tianfu="tf_18"/>
+    <general code="general_1_15" level="205" name="落日战将" feature="2" evolution="7" kezhi="5:4|7:4|9:4" tianfu="tf_6"/>
+    <general code="general_1_15" level="205" name="落日战将" feature="3" evolution="7" kezhi="5:4|7:4|9:4" tianfu="tf_9"/>
+    <general code="general_1_15" level="205" name="落日战将" feature="4" evolution="7" kezhi="5:4|7:4|9:4" tianfu="tf_12"/>
+    <general code="general_1_15" level="210" name="落日战将" feature="4" evolution="7" kezhi="5:4|7:4|9:4" tianfu="tf_15"/>
+  </gate>
+  <gate id="85" part="9" partName="试炼之地" level="115" name="铁拳阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="50000" reverence="1000" exploit="50000"/>
+    <general code="general_0_1" level="208" name="猛虎战车" feature="3" evolution="8"/>
+    <general code="general_6_15" level="205" name="猛虎战将" feature="1" evolution="8" kezhi="2:5|5:5|1:5" tianfu="tf_18"/>
+    <general code="general_6_15" level="205" name="猛虎战将" feature="2" evolution="8" kezhi="2:5|5:5|1:5" tianfu="tf_6"/>
+    <general code="general_6_15" level="205" name="猛虎战将" feature="3" evolution="8" kezhi="2:5|5:5|1:5" tianfu="tf_9"/>
+    <general code="general_6_15" level="205" name="猛虎战将" feature="4" evolution="8" kezhi="2:5|5:5|1:5" tianfu="tf_12"/>
+    <general code="general_6_15" level="210" name="猛虎战将" feature="1" evolution="8" kezhi="2:5|5:5|1:5" tianfu="tf_15"/>
+  </gate>
+  <gate id="86" part="9" partName="试炼之地" level="116" name="凤舞阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="60000" reverence="1000" exploit="60000"/>
+    <general code="general_0_1" level="208" name="朱雀战车" feature="2" evolution="8"/>
+    <general code="general_2_11" level="205" name="朱雀战将" feature="2" evolution="8" kezhi="5:6|4:6|7:6" tianfu="tf_18"/>
+    <general code="general_2_11" level="205" name="朱雀战将" feature="2" evolution="8" kezhi="5:6|4:6|7:6" tianfu="tf_6"/>
+    <general code="general_2_11" level="205" name="朱雀战将" feature="3" evolution="8" kezhi="5:6|4:6|7:6" tianfu="tf_9"/>
+    <general code="general_2_11" level="205" name="朱雀战将" feature="4" evolution="8" kezhi="5:6|4:6|7:6" tianfu="tf_12"/>
+    <general code="general_2_11" level="210" name="朱雀战将" feature="1" evolution="8" kezhi="5:6|4:6|7:6" tianfu="tf_15"/>
+  </gate>
+  <gate id="87" part="9" partName="试炼之地" level="117" name="铜锤阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="70000" reverence="1000" exploit="70000"/>
+    <general code="general_0_1" level="208" name="巨灵战车" feature="1" evolution="9"/>
+    <general code="general_5_14" level="205" name="巨灵战将" feature="2" evolution="9" kezhi="3:7|8:7|9:7" tianfu="tf_18"/>
+    <general code="general_5_14" level="205" name="巨灵战将" feature="3" evolution="9" kezhi="3:7|8:7|9:7" tianfu="tf_6"/>
+    <general code="general_5_14" level="205" name="巨灵战将" feature="3" evolution="9" kezhi="3:7|8:7|9:7" tianfu="tf_9"/>
+    <general code="general_5_14" level="205" name="巨灵战将" feature="4" evolution="9" kezhi="3:7|8:7|9:7" tianfu="tf_12"/>
+    <general code="general_5_14" level="210" name="巨灵战将" feature="1" evolution="9" kezhi="3:7|8:7|9:7" tianfu="tf_15"/>
+  </gate>
+  <gate id="88" part="9" partName="试炼之地" level="118" name="北斗七星阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="80000" reverence="1000" exploit="80000"/>
+    <general code="general_0_1" level="209" name="猛虎战车" feature="2" evolution="9"/>
+    <general code="general_1_15" level="208" name="落日战将" feature="2" evolution="9" kezhi="5:8|7:8|9:8" tianfu="tf_9"/>
+    <general code="general_7_14" level="208" name="破邪战将" feature="3" evolution="9" kezhi="9:8|4:8|6:8" tianfu="tf_9"/>
+    <general code="general_9_18" level="208" name="龙渊战将" feature="4" evolution="9" kezhi="3:8|4:8|8:8" tianfu="tf_15"/>
+    <general code="general_5_14" level="208" name="巨灵战将" feature="4" evolution="9" kezhi="3:8|8:8|9:8" tianfu="tf_18"/>
+    <general code="general_2_11" level="208" name="朱雀战将" feature="1" evolution="9" kezhi="5:8|4:8|7:8" tianfu="tf_9"/>
+  </gate>
+  <gate id="89" part="9" partName="试炼之地" level="119" name="八门金锁阵" group="试炼" ai="100" delay="1800">
+    <award soldier="" recruit="" proto="" money="90000" reverence="1000" exploit="90000"/>
+    <general code="general_0_1" level="210" name="龙渊战车" feature="3" evolution="9"/>
+    <general code="general_1_15" level="210" name="落日战将" feature="2" evolution="9" kezhi="5:9|7:9|9:9" tianfu="tf_9"/>
+    <general code="general_1_15" level="210" name="落日战将" feature="2" evolution="9" kezhi="5:9|7:9|9:9" tianfu="tf_9"/>
+    <general code="general_5_14" level="210" name="巨灵战将" feature="4" evolution="9" kezhi="3:9|8:9|9:9" tianfu="tf_18"/>
+    <general code="general_6_15" level="210" name="猛虎战将" feature="1" evolution="8" kezhi="2:9|5:9|1:9" tianfu="tf_9"/>
+    <general code="general_7_14" level="210" name="破邪战将" feature="3" evolution="9" kezhi="9:9|4:9|6:9" tianfu="tf_9"/>
+  </gate>
+  <gate id="90" part="9" partName="试炼之地" level="120" name="十面埋伏阵" group="试炼" ai="100" delay="1800">
+    <award soldier="general_8_13" recruit="" proto="" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="215" name="朱雀战车" feature="4" evolution="10"/>
+    <general code="general_1_15" level="215" name="落日战将" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_5_14" level="215" name="巨灵战将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="215" name="巨灵战将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_12"/>
+    <general code="general_7_14" level="215" name="破邪战将" feature="3" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+    <general code="general_7_14" level="215" name="破邪战将" feature="3" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+  </gate>
+<gate id="91" part="10" partName="外敌入侵" level="121" name="前哨遭遇战" group="匈奴" ai="100" delay="1750">
+    <award soldier="" recruit="" proto="proto_1_0:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+	<general code="general_0_1" level="218" name="匈奴战车" feature="1" evolution="10"/>
+    <general code="general_9_18" level="218" name="匈奴游骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
+    <general code="general_9_18" level="218" name="匈奴游骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_12"/>
+    <general code="general_9_18" level="220" name="匈奴游骑" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="220" name="匈奴游骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_21"/>
+    <general code="general_9_18" level="218" name="匈奴游骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+  </gate>
+  <gate id="92" part="10" partName="外敌入侵" level="122" name="伏击!伏击!" group="匈奴" ai="100" delay="1700">
+    <award soldier="" recruit="" proto="proto_1_4:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+	<general code="general_0_1" level="220" name="匈奴战车" feature="2" evolution="10"/>
+    <general code="general_9_18" level="220" name="匈奴游骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="220" name="匈奴游骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_1_15" level="222" name="匈奴长弓手" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_1_15" level="222" name="匈奴长弓手" feature="1" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_4_14" level="220" name="匈奴刀斧手" feature="4" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_18"/>
+  </gate>
+  <gate id="93" part="10" partName="外敌入侵" level="123" name="深入腹地" group="匈奴" ai="100" delay="1700">
+    <award soldier="" recruit="" proto="proto_1_3:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+	<general code="general_0_1" level="222" name="匈奴战车" feature="3" evolution="10"/>
+    <general code="general_9_18" level="222" name="匈奴巡骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="225" name="匈奴巡骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_1_15" level="223" name="匈奴长弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_5_14" level="225" name="匈奴锤将" feature="3" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_3"/>
+    <general code="general_7_14" level="222" name="匈奴大戟兵" feature="3" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+  </gate>
+  <gate id="94" part="10" partName="外敌入侵" level="124" name="圆弓阵" group="匈奴" ai="100" delay="1650">
+    <award soldier="" recruit="" proto="proto_1_1:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="225" name="匈奴战车" feature="4" evolution="10"/>
+	<general code="general_9_18" level="225" name="匈奴巡骑" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="223" name="匈奴巡骑" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_1_15" level="225" name="匈奴长弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_1_15" level="226" name="匈奴长弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_1_15" level="225" name="匈奴长弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+  </gate>
+  <gate id="95" part="10" partName="外敌入侵" level="125" name="深沟壁垒" group="匈奴" ai="100" delay="1650">
+    <award soldier="" recruit="" proto="proto_1_5:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="228" name="匈奴战车" feature="1" evolution="10"/>
+	<general code="general_9_18" level="227" name="匈奴重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_1_15" level="227" name="匈奴长弓手" feature="1" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_5_14" level="230" name="匈奴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_7_14" level="227" name="匈奴大戟兵" feature="1" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+    <general code="general_5_14" level="227" name="匈奴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+  </gate>
+  <gate id="96" part="10" partName="外敌入侵" level="126" name="铁骑踏踏" group="匈奴" ai="100" delay="1600">
+    <award soldier="" recruit="" proto="proto_1_9:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="230" name="匈奴战车" feature="2" evolution="10"/>
+    <general code="general_9_18" level="229" name="匈奴重骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="232" name="匈奴重骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="229" name="匈奴重骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="232" name="匈奴锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+	<general code="general_5_14" level="229" name="匈奴锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+  </gate>
+  <gate id="97" part="10" partName="外敌入侵" level="127" name="飞速驰援" group="匈奴" ai="100" delay="1600">
+    <award soldier="" recruit="" proto="proto_1_2:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="232" name="匈奴战车" feature="3" evolution="10"/>
+	<general code="general_9_18" level="232" name="匈奴重骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="232" name="匈奴重骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="235" name="匈奴锤将" feature="3" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="235" name="匈奴锤将" feature="3" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_7_14" level="233" name="匈奴大戟兵" feature="3" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+  </gate>
+  <gate id="98" part="10" partName="外敌入侵" level="128" name="烈火燎原" group="匈奴" ai="100" delay="1600">
+    <award soldier="" recruit="" proto="proto_1_6:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="235" name="匈奴战车" feature="2" evolution="10"/>
+	<general code="general_9_18" level="235" name="匈奴重骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="235" name="匈奴锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/> 
+    <general code="general_1_15" level="236" name="匈奴长弓手" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
+    <general code="general_5_14" level="236" name="匈奴锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>  
+    <general code="general_7_14" level="236" name="匈奴大戟兵" feature="2" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+  </gate>
+  <gate id="99" part="10" partName="外敌入侵" level="129" name="绝地反击" group="匈奴" ai="100" delay="1600">
+    <award soldier="" recruit="" proto="proto_1_7:2|proto_3_4:1" money="100000" reverence="10000" exploit="100000"/>
+    <general code="general_0_1" level="238" name="匈奴战车" feature="1" evolution="10"/>
+	<general code="general_9_18" level="240" name="匈奴重骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="238" name="匈奴重骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="238" name="匈奴锤将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="238" name="匈奴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_7_14" level="238" name="匈奴大戟兵" feature="2" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
+  </gate>
+  <gate id="100" part="10" partName="外敌入侵" level="130" name="一战扬名" group="匈奴" ai="100" delay="1600">
+    <award soldier="" recruit="" proto="proto_3_4:5" money="200000" reverence="20000" exploit="200000"/>
+    <general code="general_0_1" level="240" name="匈奴战车" feature="2" evolution="10"/>
+	<general code="general_9_18" level="243" name="匈奴左贤王" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="243" name="匈奴右贤王" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="245" name="匈奴大单于" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_1_15" level="240" name="匈奴长弓手" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/> 
+    <general code="general_5_14" level="240" name="匈奴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+  </gate>
+  <fuben stageID="1">
+    <general code="general_10_1" name="匈奴杂兵" ai="80" delay="3000"/>
+    <general code="general_11_1" name="匈奴前哨" ai="100" delay="5000"/>
+    <general code="general_12_1" name="匈奴长弓兵" ai="100" delay="7000"/>
+    <general code="general_13_1" name="匈奴头目" ai="100" delay="10000"/>
+  </fuben>
+</data>

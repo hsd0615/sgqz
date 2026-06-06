@@ -1,0 +1,542 @@
+package game.model
+{
+   import game.Config;
+   import game.Data;
+   import game.Logic;
+   
+   public class ArmyInfo
+   {
+       
+      
+      public var id:Number;
+      
+      public var code:String;
+      
+      public var name:String;
+      
+      public var type:int;
+      
+      public var skin:String;
+      
+      private var _level:String;
+      
+      public var title:int;
+      
+      private var _baseHp:String;
+      
+      private var _baseAttack:String;
+      
+      private var _baseDefense:String;
+      
+      private var _cd:String;
+      
+      private var _baoji:String;
+      
+      private var _attackDistance:String;
+      
+      private var _moveDistance:String;
+      
+      private var _energy:String;
+      
+      private var _feature:String;
+      
+      private var _evolution:String;
+      
+      public var sortFlag:int;
+      
+      public var proto:String;
+      
+      public var delay:int;
+      
+      public var ai:int;
+      
+      private var _hp:String;
+      
+      private var _tianfu:String;
+      
+      private var _kezhi1:int = -1;
+      
+      private var _kezhiLevel1:String;
+      
+      private var _kezhi2:int = -1;
+      
+      private var _kezhiLevel2:String;
+      
+      private var _kezhi3:int = -1;
+      
+      private var _kezhiLevel3:String;
+      
+      private var _tianfuHP:Number;
+      
+      private var _tianfuAttack:Number;
+      
+      private var _tianfuDefence:Number;
+      
+      private var _shanbi:Number;
+      
+      public function ArmyInfo()
+      {
+         super();
+      }
+      
+      public function clone() : ArmyInfo
+      {
+         var _loc1_:ArmyInfo = new ArmyInfo();
+         _loc1_.id = this.id;
+         _loc1_.code = this.code;
+         _loc1_.name = this.name;
+         _loc1_.type = this.type;
+         _loc1_.skin = this.skin;
+         _loc1_.level = this.level;
+         _loc1_.title = this.title;
+         _loc1_.baseHp = this.baseHp;
+         _loc1_.baseAttack = this.baseAttack;
+         _loc1_.baseDefense = this.baseDefense;
+         _loc1_.cd = this.cd;
+         _loc1_.baoji = this.baoji;
+         _loc1_.attackDistance = this.attackDistance;
+         _loc1_.moveDistance = this.moveDistance;
+         _loc1_.feature = this.feature;
+         _loc1_.evolution = this.evolution;
+         _loc1_.sortFlag = this.sortFlag;
+         _loc1_.proto = this.proto;
+         _loc1_.delay = this.delay;
+         _loc1_.ai = this.ai;
+         _loc1_.tianfu = this.tianfu;
+         _loc1_.setKezhiStr(this.getKezhiStr());
+         _loc1_.hp = this.hp;
+         return _loc1_;
+      }
+      
+      public function get level() : int
+      {
+         var _loc1_:int = int(this._level) - Config.timer;
+         if(_loc1_ < 1)
+         {
+            _loc1_ = 1;
+         }
+         return _loc1_;
+      }
+      
+      public function set level(param1:int) : *
+      {
+         if(param1 > 280)
+         {
+            param1 = 280;
+         }
+         if(param1 < 1)
+         {
+            param1 = 1;
+         }
+         this._level = (Config.timer + param1).toString();
+      }
+      
+      public function get baseHp() : int
+      {
+         return int(this._baseHp) - Config.timer;
+      }
+      
+      public function set baseHp(param1:int) : *
+      {
+         this._baseHp = (Config.timer + param1).toString();
+      }
+      
+      public function get baseAttack() : int
+      {
+         var _loc1_:int = int(this._baseAttack) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set baseAttack(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._baseAttack = (Config.timer + param1).toString();
+      }
+      
+      public function get baseDefense() : int
+      {
+         var _loc1_:int = int(this._baseDefense) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set baseDefense(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._baseDefense = (Config.timer + param1).toString();
+      }
+      
+      public function get cd() : int
+      {
+         var _loc1_:int = int(this._cd) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set cd(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._cd = (Config.timer + param1).toString();
+      }
+      
+      public function get baoji() : int
+      {
+         var _loc1_:int = int(this._baoji) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set baoji(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._baoji = (Config.timer + param1).toString();
+      }
+      
+      public function get attackDistance() : int
+      {
+         var _loc1_:int = int(this._attackDistance) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set attackDistance(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._attackDistance = (Config.timer + param1).toString();
+      }
+      
+      public function get moveDistance() : int
+      {
+         var _loc1_:int = int(this._moveDistance) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         return _loc1_;
+      }
+      
+      public function set moveDistance(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._moveDistance = (Config.timer + param1).toString();
+      }
+      
+      public function get feature() : int
+      {
+         var _loc1_:int = int(this._feature) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         else if(_loc1_ > 4)
+         {
+            _loc1_ = 4;
+         }
+         return _loc1_;
+      }
+      
+      public function set feature(param1:int) : *
+      {
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         else if(param1 > 4)
+         {
+            param1 = 4;
+         }
+         this._feature = (Config.timer + param1).toString();
+      }
+      
+      public function get evolution() : int
+      {
+         var _loc1_:int = int(this._evolution) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         else if(_loc1_ > 10)
+         {
+            _loc1_ = 10;
+         }
+         return _loc1_;
+      }
+      
+      public function set evolution(param1:int) : *
+      {
+         if(param1 > 10)
+         {
+            param1 = 10;
+         }
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._evolution = (Config.timer + param1).toString();
+      }
+      
+      public function setLevel(param1:int) : *
+      {
+         this.level = param1;
+         this.baseHp = Logic.getBaseHp(this.type,this.level,int(Data.getInstance().getAttributes("general",this.code,"hp")),this.title);
+         this.baseAttack = Logic.getBaseAttack(this.type,this.level,int(Data.getInstance().getAttributes("general",this.code,"attack")),this.title);
+         this.baseDefense = Logic.getBaseDefense(this.type,this.level,int(Data.getInstance().getAttributes("general",this.code,"defense")),this.title);
+         this.tianfu = this.tianfu;
+      }
+      
+      public function getAddtion() : Number
+      {
+         return Logic.getAddtion(this.evolution);
+      }
+      
+      public function get attackAddtion() : int
+      {
+         return int(this.baseAttack * this.getAddtion());
+      }
+      
+      public function get defenceAddion() : int
+      {
+         return int(this.baseDefense * this.getAddtion());
+      }
+      
+      public function get hpAddtion() : int
+      {
+         return int(this.baseHp * this.getAddtion());
+      }
+      
+      public function get tianfuAttack() : int
+      {
+         return int(this.baseAttack * this._tianfuAttack);
+      }
+      
+      public function get tianfuDefence() : int
+      {
+         return int(this.baseDefense * this._tianfuDefence);
+      }
+      
+      public function get tianfuHP() : int
+      {
+         return int(this.baseHp * this._tianfuHP);
+      }
+      
+      public function get shanbi() : Number
+      {
+         return this._shanbi;
+      }
+      
+      public function get attack() : int
+      {
+         return this.baseAttack + this.attackAddtion + this.tianfuAttack;
+      }
+      
+      public function get defense() : int
+      {
+         return this.baseDefense + this.defenceAddion + this.tianfuDefence;
+      }
+      
+      public function get hp() : int
+      {
+         return int(this._hp) - Config.timer;
+      }
+      
+      public function set hp(param1:int) : *
+      {
+         this._hp = (Config.timer + param1).toString();
+      }
+      
+      public function get energy() : int
+      {
+         var _loc1_:int = int(this._energy) - Config.timer;
+         if(_loc1_ < 0)
+         {
+            _loc1_ = 0;
+         }
+         if(_loc1_ > 100)
+         {
+            _loc1_ = 100;
+         }
+         return _loc1_;
+      }
+      
+      public function set energy(param1:int) : *
+      {
+         if(param1 > 100)
+         {
+            param1 = 100;
+         }
+         if(param1 < 0)
+         {
+            param1 = 0;
+         }
+         this._energy = (Config.timer + param1).toString();
+      }
+      
+      public function get tianfu() : String
+      {
+         return this._tianfu;
+      }
+      
+      public function set tianfu(param1:String) : *
+      {
+         this._tianfu = param1;
+         if(this._tianfu == null)
+         {
+            this._tianfuHP = 0;
+            this._tianfuAttack = 0;
+            this._tianfuDefence = 0;
+            this._shanbi = 0;
+            this.hp = this.baseHp + this.hpAddtion + this.tianfuHP;
+            return;
+         }
+         var _loc2_:int = int(Data.getInstance().getAttributes("tianfu",this._tianfu,"type"));
+         var _loc3_:Number = Number(Data.getInstance().getAttributes("tianfu",this._tianfu,"value"));
+         switch(_loc2_)
+         {
+            case 1:
+               this._tianfuHP = _loc3_;
+               this._tianfuAttack = 0;
+               this._tianfuDefence = 0;
+               this._shanbi = 0;
+               break;
+            case 2:
+               this._tianfuHP = 0;
+               this._tianfuAttack = 0;
+               this._tianfuDefence = _loc3_;
+               this._shanbi = 0;
+               break;
+            case 3:
+               this._tianfuHP = 0;
+               this._tianfuAttack = _loc3_;
+               this._tianfuDefence = 0;
+               this._shanbi = 0;
+               break;
+            case 7:
+               this._tianfuHP = 0;
+               this._tianfuAttack = 0;
+               this._tianfuDefence = 0;
+               this._shanbi = _loc3_;
+               break;
+            default:
+               this._tianfuHP = 0;
+               this._tianfuAttack = 0;
+               this._tianfuDefence = 0;
+               this._shanbi = 0;
+         }
+         this.hp = this.baseHp + this.hpAddtion + this.tianfuHP;
+      }
+      
+      public function get kezhi1() : int
+      {
+         return this._kezhi1;
+      }
+      
+      public function set kezhi1(param1:int) : void
+      {
+         this._kezhi1 = param1;
+      }
+      
+      public function get kezhi2() : int
+      {
+         return this._kezhi2;
+      }
+      
+      public function set kezhi2(param1:int) : void
+      {
+         this._kezhi2 = param1;
+      }
+      
+      public function get kezhi3() : int
+      {
+         return this._kezhi3;
+      }
+      
+      public function set kezhi3(param1:int) : void
+      {
+         this._kezhi3 = param1;
+      }
+      
+      public function get kezhiLevel1() : int
+      {
+         return int(this._kezhiLevel1) - Config.timer;
+      }
+      
+      public function set kezhiLevel1(param1:int) : void
+      {
+         this._kezhiLevel1 = (Config.timer + param1).toString();
+      }
+      
+      public function get kezhiLevel2() : int
+      {
+         return int(this._kezhiLevel2) - Config.timer;
+      }
+      
+      public function set kezhiLevel2(param1:int) : void
+      {
+         this._kezhiLevel2 = (Config.timer + param1).toString();
+      }
+      
+      public function get kezhiLevel3() : int
+      {
+         return int(this._kezhiLevel3) - Config.timer;
+      }
+      
+      public function set kezhiLevel3(param1:int) : void
+      {
+         this._kezhiLevel3 = (Config.timer + param1).toString();
+      }
+      
+      public function getKezhiStr() : String
+      {
+         return this._kezhi1 + ":" + this.kezhiLevel1 + "|" + this._kezhi2 + ":" + this.kezhiLevel2 + "|" + this._kezhi3 + ":" + this.kezhiLevel3;
+      }
+      
+      public function setKezhiStr(param1:String) : *
+      {
+         if(param1 == null || param1 == "")
+         {
+            return;
+         }
+         var _loc2_:Array = param1.split("|");
+         this._kezhi1 = int(_loc2_[0].split(":")[0]);
+         this.kezhiLevel1 = int(_loc2_[0].split(":")[1]);
+         this._kezhi2 = int(_loc2_[1].split(":")[0]);
+         this.kezhiLevel2 = int(_loc2_[1].split(":")[1]);
+         this._kezhi3 = int(_loc2_[2].split(":")[0]);
+         this.kezhiLevel3 = int(_loc2_[2].split(":")[1]);
+      }
+   }
+}

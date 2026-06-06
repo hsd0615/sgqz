@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(run)",
+      "Bash(cmd.exe *)",
+      "Bash(reg query *)",
+      "Bash(dir \"C:\\\\Program Files \\(x86\\)\\\\Common Files\\\\Adobe AIR\")",
+      "Bash(dir \"C:\\\\Program Files\\\\Common Files\\\\Adobe AIR\")",
+      "Bash(dir \"C:\\\\Program Files \\(x86\\)\\\\Adobe\")"
+    ]
+  }
+}

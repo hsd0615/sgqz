@@ -1,0 +1,5 @@
+1. data文件是存档文件，请放到C盘\用户\自己的电脑名称\AppData\Roaming\Main\Local Store目录下（若没有相应目录，则自己新建即可）
+
+2.  需要安装Adobe AIR应用，可以去浏览器搜索下载
+
+3.  全部配置好后，点开main.exe即可玩耍
