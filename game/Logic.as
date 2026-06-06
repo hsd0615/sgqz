@@ -443,7 +443,7 @@ package game
        * baseScale = 1 + level * 0.015  → Lv220时基础值放大4.3倍
        */
       private static function getBaseScale(param2:int) : Number {
-         return 1 + param2 * 0.015;
+         return 1 + param2 * 0.03;
       }
 
       public static function getBaseHp(param1:int, param2:int, param3:int, param4:int) : int
