@@ -109,11 +109,8 @@ router.post('/register', (req: Request, res: Response) => {
 
   // 初始武将（三国Q战新春版）
   const starterGenerals = [
-    { code: 'general_1_0', name: '王平', kezhi: '5:1|7:1|9:1' },
-    { code: 'general_3_0', name: '吕翔', kezhi: '2:1|1:1|6:1' },
+    { code: 'general_9_0', name: '鞠义', kezhi: '3:1|4:1|8:1' },
     { code: 'general_0_1', name: '投石车', kezhi: '3:1|8:1|9:1' },
-    { code: 'general_4_3', name: '陈震', kezhi: '6:1|1:1|8:1' },
-    { code: 'general_9_0', name: '鞠义', kezhi: '6:1|1:1|8:1' },
   ];
 
   const armyModel: any[] = [];
