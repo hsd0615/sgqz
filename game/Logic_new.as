@@ -438,25 +438,33 @@ package game
          return 0;
       }
       
+      /**
+       * 基础属性公式（修复：基础值随等级缩放）
+       * baseScale = 1 + level * 0.015  → Lv220时基础值放大4.3倍
+       */
+      private static function getBaseScale(param2:int) : Number {
+         return 1 + param2 * 0.03;
+      }
+
       public static function getBaseHp(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"hp"));
-         var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 50 * _loc5_ + _loc6_);
+         var baseScaled:Number = param3 * getBaseScale(param2);
+         return int((param2 - 1) * 50 * _loc5_ + baseScaled);
       }
 
       public static function getBaseAttack(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"attack"));
-         var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 30 * _loc5_ + _loc6_);
+         var baseScaled:Number = param3 * getBaseScale(param2);
+         return int((param2 - 1) * 30 * _loc5_ + baseScaled);
       }
 
       public static function getBaseDefense(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"defence"));
-         var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 30 * _loc5_ + _loc6_);
+         var baseScaled:Number = param3 * getBaseScale(param2);
+         return int((param2 - 1) * 30 * _loc5_ + baseScaled);
       }
    }
 }
