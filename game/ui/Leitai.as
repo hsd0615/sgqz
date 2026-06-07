@@ -306,6 +306,14 @@ package game.ui
                "text":_loc2_
             }));
          }
+         else if(this._data.mInfo != null && RoleModel.getInstance().roleID == Number(this._data.mInfo.id))
+         {
+            _loc2_ = "您已经是该擂台的擂主了。";
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+               "type":0,
+               "text":_loc2_
+            }));
+         }
          else
          {
             dispatchEvent(new UIEvent(UIEvent.GONGLEI,true,{"roomID":this._data.rID}));

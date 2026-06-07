@@ -308,7 +308,8 @@ package game.ui
       private function luntanBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();
-         navigateToURL(new URLRequest("http://my.4399.com/space-mtag-tagid-80194.html"),"_blank");
+         // 禁用4399论坛跳转 — 本地测试版
+         trace("forum blocked");
       }
       
       private function stage1BtnClickHandler(param1:MouseEvent) : *

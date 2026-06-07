@@ -1389,6 +1389,16 @@ package game
                   };
                   GlobalTimer.getInstance().addListener("leitaiFightResult",3,this.leitaiFightResult,1,_loc6_);
                }
+               else if(this._isOver == true)
+               {
+                  // 守方也派发本地结果，但不发送 p2pSend（避免重复消息）
+                  _loc6_ = {
+                     "leizhu":_loc3_,
+                     "flag":_loc2_,
+                     "relativeName":_loc5_
+                  };
+                  GlobalTimer.getInstance().addListener("leitaiFightResult",3,this.leitaiFightResult,1,_loc6_);
+               }
             }
             else
             {

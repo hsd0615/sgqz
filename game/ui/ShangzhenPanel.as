@@ -749,10 +749,10 @@ package game.ui
          }
          else
          {
-            dispatchEvent(new UIEvent(UIEvent.CLOSE,true));
+            this.sendToHttpNew();
          }
       }
-      
+
       private function checkSaberCount() : Boolean
       {
          var _loc1_:int = 0;

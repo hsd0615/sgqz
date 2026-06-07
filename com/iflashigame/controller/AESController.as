@@ -45,7 +45,7 @@ package com.iflashigame.controller
       private var _fun:Object;
       private var _funParamer:Object;
       private var _listenerCount:int = 0;
-      private var _timeOut:int = 30;  // 超时秒数（从 1800 改为 30）
+      private var _timeOut:int = 60;  // 超时秒数（60秒，给Flash充足处理时间）
       private var _timer:Timer;
 
       private var _disable:Boolean;
@@ -55,7 +55,7 @@ package com.iflashigame.controller
       private var _codeStrack:Dictionary;
 
       // 重试配置
-      private var _retryCount:int = 1;
+      private var _retryCount:int = 0;
       private var _retryMap:Dictionary;
 
       public function AESController(param1:SingletonEnforcer)

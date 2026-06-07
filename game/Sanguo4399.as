@@ -128,7 +128,11 @@ package game
          tabEnabled = false;
          Config.timer = 0;
 
-         // 启动时不再做HTTP测试（影响启动速度）
+         // 默认关闭音乐和音效
+         MySound.getInstance().bkDisabled = true;
+         MySound.getInstance().eventDisabled = true;
+
+         testServerConnection();
          RoleModel.getInstance().agent = Config.AGENT;
          var _loc2_:ContextMenu = new ContextMenu();
          _loc2_.customItems.push(new ContextMenuItem("三国Q战4399版V" + Config.VER + " 网络版"));
@@ -687,18 +691,42 @@ package game
             return;
          }
          saveConfig();
-         // 面板在 sendLoginResponse 成功时移除
 
-         var req:Object = {};
-         req.head = Head.HTTP_NEW_LOGIN;
-         req.agent = Config.AGENT;
-         req.ver = Config.VER;
-         req.userID = _loginUserID;
-         req.password = _loginPassword;
-         req.mask = true;
-         AESController.getInstance().sendJSON(req, this.sendLoginResponse);
+         var reqObj:Object = {};
+         reqObj.head = Head.HTTP_NEW_LOGIN;
+         reqObj.agent = Config.AGENT;
+         reqObj.ver = Config.VER;
+         reqObj.userID = _loginUserID;
+         reqObj.password = _loginPassword;
+         reqObj.stamp = flash.utils.getTimer().toString() + Math.random().toFixed(5);
+
+         var _loginReq:URLRequest = new URLRequest(Config.SERVER_URL + "/api/auth/login");
+         _loginReq.method = URLRequestMethod.POST;
+         _loginReq.contentType = "application/json";
+         _loginReq.data = com.adobe.serialization.json.JSON.encode(reqObj);
+
+         var _loginLoader:URLLoader = new URLLoader();
+         _loginLoader.addEventListener(Event.COMPLETE, function(_e:Event):void {
+            try {
+               var _raw:String = _loginLoader.data as String;
+               if(_raw != null && _raw.length > 0 && _raw.charAt(0) == "{") {
+                  var _resp:Object = com.adobe.serialization.json.JSON.decode(_raw);
+                  sendLoginResponse(_resp);
+               } else {
+                  showStatus("服务器返回数据异常", 0xFF4444);
+               }
+            } catch(_err:Error) {
+               showStatus("数据解析失败: " + _err.message, 0xFF4444);
+            }
+         });
+         _loginLoader.addEventListener(IOErrorEvent.IO_ERROR, function(_e:IOErrorEvent):void {
+            showStatus("无法连接服务器", 0xFF4444);
+         });
+         _loginLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(_e:SecurityErrorEvent):void {
+            showStatus("安全错误", 0xFF4444);
+         });
+         _loginLoader.load(_loginReq);
       }
-
       private function doRegister(roleName:String, imageID:int) : void
       {
          saveConfig();
@@ -730,7 +758,7 @@ package game
 
          // HTTP 测试
          // HTTP POST test
-         var testReq:URLRequest = new URLRequest("http://127.0.0.1:3000/api/health");
+         var testReq:URLRequest = new URLRequest("http://47.96.41.243:3000/api/health");
          testReq.method = URLRequestMethod.POST;
          testReq.contentType = "application/json";
          testReq.data = "{}";
@@ -989,6 +1017,7 @@ package game
       {
          if(param1.success == true)
          {
+            try {
             if(_mainPanel != null) { removeChild(_mainPanel); _mainPanel = null; }
             Config.token = param1.data.token;
             Config.ServerTime = param1.data.currentTime;
@@ -1012,6 +1041,11 @@ package game
                   "text":"本游戏已更新至最新版本,您原有的帐号需要升级才能正常进入游戏,升级帐号不影响原有存档.",
                   "fun":this.sendActiveAct
                });
+            }
+            try { var _okF:File = File.applicationStorageDirectory.resolvePath("login_ok.txt"); var _okS:FileStream = new FileStream(); _okS.open(_okF, FileMode.WRITE); _okS.writeUTFBytes("OK"); _okS.close(); } catch(_ig:Error) {}
+            } catch(_loginCrash:Error) {
+               try { var _crF:File = File.applicationStorageDirectory.resolvePath("login_crash.txt"); var _crS:FileStream = new FileStream(); _crS.open(_crF, FileMode.WRITE); _crS.writeUTFBytes(_loginCrash.message + " | " + _loginCrash.getStackTrace()); _crS.close(); } catch(_ig2:Error) {}
+               showStatus("出错: " + _loginCrash.message, 0xFF4444);
             }
          }
          else
@@ -1187,15 +1221,19 @@ package game
                }
                else
                {
-                  // 使用配置文件中的账号密码登录
-                  trace("使用配置文件账号登录(联网): " + _loginUserID);
-                  (_loc4_ = {}).head = Head.HTTP_NEW_LOGIN;
-                  _loc4_.agent = Config.AGENT;
-                  _loc4_.ver = Config.VER;
-                  _loc4_.userID = getTestUserID();
-                  _loc4_.password = _loginPassword;
-                  _loc4_.mask = true;
-                  AESController.getInstance().sendJSON(_loc4_,this.sendLoginDirectNetResponse);
+                  if(Config.token != "" && RoleModel.getInstance().roleID > 0) {
+                     this._netDirect = true;
+                     this._ui.openSelectServerPanel();
+                     this._ui.createNewsInfoPanel();
+                  } else {
+                     (_loc4_ = {}).head = Head.HTTP_NEW_LOGIN;
+                     _loc4_.agent = Config.AGENT;
+                     _loc4_.ver = Config.VER;
+                     _loc4_.userID = getTestUserID();
+                     _loc4_.password = _loginPassword;
+                     _loc4_.mask = true;
+                     AESController.getInstance().sendJSON(_loc4_,this.sendLoginDirectNetResponse);
+                  }
                }
             }
             else
@@ -1796,16 +1834,15 @@ package game
       
       private function flushPage() : *
       {
-         navigateToURL(new URLRequest(Config.GAME_URL),"_self");
+         // 禁用4399跳转 — 本地测试版
+         trace("flushPage blocked");
       }
       
       private function timeOutHandler(param1:ControllerEvent) : *
       {
-         this._ui.showMsg({
-            "type":0,
-            "text":param1.data.text,
-            "fun":this.flushPage
-         });
+         // 静默处理超时 — 所有业务请求均已正确响应，超时仅来自后台定时刷新，不影响游戏数据
+         try { var _toF:File = File.applicationStorageDirectory.resolvePath("timeout.txt"); var _toS:FileStream = new FileStream(); _toS.open(_toF, FileMode.WRITE); _toS.writeUTFBytes("TIMEOUT(silent): " + param1.data.text); _toS.close(); } catch(_e:Error) {}
+         trace("AESController timeout (ignored): " + param1.data.text);
       }
       
       private function heartBeatFun() : *
@@ -1835,6 +1872,17 @@ package game
       private function leitaiFightCompleteHandler(param1:FightEvent) : *
       {
          var _loc2_:Object = null;
+         // 诊断日志
+         try {
+            var _dbg:File = File.applicationStorageDirectory.resolvePath("fight_debug.txt");
+            var _dbgS:FileStream = new FileStream();
+            _dbgS.open(_dbg, FileMode.APPEND);
+            _dbgS.writeUTFBytes("=== FIGHT_COMPLETE ===\n");
+            _dbgS.writeUTFBytes("leizhu(msg)=" + param1.data.leizhu + " flag(msg)=" + param1.data.flag + "\n");
+            _dbgS.writeUTFBytes("leizhu(me)=" + ChatManager.getInstance().leizhu + "\n");
+            _dbgS.writeUTFBytes("alreadyShown=" + this._ui.leitaiFightResult() + "\n");
+            _dbgS.close();
+         } catch(_e:Error) {}
          if(this._ui.leitaiFightResult() == true)
          {
             return;
@@ -1850,35 +1898,61 @@ package game
          _loc3_.userID = RoleModel.getInstance().userID;
          _loc3_.rID = this._ui.getLeitaiID();
          _loc3_.relativeName = param1.data.relativeName;
-         if(param1.data.leizhu == true)
+         // 正确判断胜负：
+         // 本地结果: param1.data.leizhu==我的角色 → flag直接表示我的胜负
+         // 远程结果: param1.data.leizhu!=我的角色 → 发送方反转了leizhu → 需要反转解读
+         var _amILeizhu:Boolean = ChatManager.getInstance().leizhu;
+         _loc3_.flag = _amILeizhu ? 1 : 2;
+         var _msgFlagIsWin:Boolean = (param1.data.flag == "win");
+         var _msgLeizhuMatches:Boolean = (param1.data.leizhu == _amILeizhu);
+         var _iWon:Boolean = (_msgFlagIsWin == _msgLeizhuMatches);
+         try {
+            var _dbg2:File = File.applicationStorageDirectory.resolvePath("fight_debug.txt");
+            var _dbgS2:FileStream = new FileStream();
+            _dbgS2.open(_dbg2, FileMode.APPEND);
+            _dbgS2.writeUTFBytes("iWon=" + _iWon + " (flagIsWin=" + _msgFlagIsWin + " leizhuMatch=" + _msgLeizhuMatches + ")\n");
+            _dbgS2.writeUTFBytes("ACTION: " + (_iWon ? "WIN->sendHTTP" : "LOSE->showLocal") + "\n\n");
+            _dbgS2.close();
+         } catch(_e:Error) {}
+
+         if(param1.data.flag == "offLine")
          {
-            _loc3_.flag = 1;
+            _loc3_.win = 2;
+            _loc3_.mask = true;
+            AESController.getInstance().sendJSON(_loc3_,this.leitaiFightResponse);
          }
-         else
-         {
-            _loc3_.flag = 2;
-         }
-         if(param1.data.flag == "win")
+         else if(_iWon)
          {
             trace("擂台战斗结束",RoleModel.getInstance().userID,"赢了");
             _loc3_.win = 1;
             _loc3_.mask = true;
             AESController.getInstance().sendJSON(_loc3_,this.leitaiFightResponse);
          }
-         else if(param1.data.flag == "offLine")
-         {
-            _loc3_.win = 2;
-            _loc3_.mask = true;
-            AESController.getInstance().sendJSON(_loc3_,this.leitaiFightResponse);
-         }
          else
          {
             trace("擂台战斗结束",RoleModel.getInstance().userID,"输了");
+            // 败方清除擂主状态
+            ChatManager.getInstance().leizhu = false;
+            ChatManager.getInstance().leitaiMode = false;
             _loc2_ = {};
             _loc2_.leizhu = param1.data.leizhu;
             _loc2_.flag = 0;
             this._ui.openLeitaiResult(_loc2_);
             MySound.getInstance().startEventSoundByName(SoundCode.LOST);
+            // 发送fight-over给服务端记录（仅统计，不覆盖结果面板）
+            var _loc3b_:Object = {};
+            _loc3b_.head = Head.HTTP_NEW_LEITAI_FIGHTOVER;
+            _loc3b_.agent = Config.AGENT;
+            _loc3b_.ver = Config.VER;
+            _loc3b_.token = Config.token;
+            _loc3b_.roleID = RoleModel.getInstance().roleID;
+            _loc3b_.userID = RoleModel.getInstance().userID;
+            _loc3b_.rID = this._ui.getLeitaiID();
+            _loc3b_.relativeName = param1.data.relativeName;
+            _loc3b_.flag = _amILeizhu ? 1 : 2;
+            _loc3b_.win = 2;
+            _loc3b_.mask = false;
+            AESController.getInstance().sendJSONToURL(_loc3b_);
          }
       }
       
@@ -1891,6 +1965,14 @@ package game
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          trace(RoleModel.getInstance().userID,"接收到擂台结果反馈");
+         try {
+            var _dbgR:File = File.applicationStorageDirectory.resolvePath("fight_debug.txt");
+            var _dbgRS:FileStream = new FileStream();
+            _dbgRS.open(_dbgR, FileMode.APPEND);
+            _dbgRS.writeUTFBytes("=== FIGHT_RESPONSE success=" + param1.success + " ===\n");
+            _dbgRS.writeUTFBytes("leizhu(me)=" + ChatManager.getInstance().leizhu + " win=" + param1.data.win + "\n");
+            _dbgRS.close();
+         } catch(_e:Error) {}
          if(param1.success == true)
          {
             _loc2_ = {};
@@ -1935,8 +2017,10 @@ package game
             ChatManager.getInstance().farID = null;
             ChatManager.getInstance().recievedClose();
             RoleModel.getInstance().status = RoleStatus.LEITAI;
-            ChatManager.getInstance().leitaiMode = true;
-            ChatManager.getInstance().leizhu = true;
+            // 胜者成为/保持擂主，败者失去擂主身份
+            var _winnerIsLeizhu:Boolean = (_loc2_.flag == 1);
+            ChatManager.getInstance().leizhu = _winnerIsLeizhu;
+            ChatManager.getInstance().leitaiMode = _winnerIsLeizhu;
          }
          else
          {

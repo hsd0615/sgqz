@@ -243,6 +243,7 @@ package game.ui
          var _loc3_:String = null;
          if(param1.success == true)
          {
+            try {
             RoleModel.getInstance().status = RoleStatus.LEITAI;
             ChatManager.getInstance().leitaiMode = true;
             ChatManager.getInstance().leizhu = true;
@@ -260,11 +261,16 @@ package game.ui
             });
             this._rID = param1.data.rID;
             _loc2_ = this.findCountByrID(param1.data.rID,param1.data.leitai);
-            _loc3_ = TextFactory.makeLeitai(_loc2_.rLevel,_loc2_.mInfo.roleName);
-            dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-               "type":NetInfoType.SYSTEM,
-               "text":_loc3_
-            }));
+            if(_loc2_ != null) {
+               _loc3_ = TextFactory.makeLeitai(_loc2_.rLevel,_loc2_.mInfo.roleName);
+               dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
+                  "type":NetInfoType.SYSTEM,
+                  "text":_loc3_
+               }));
+            }
+            } catch(e:Error) {
+               // 静默处理，防止回调崩溃导致监听器泄漏
+            }
          }
          else
          {
@@ -302,6 +308,7 @@ package game.ui
          var _loc2_:Object = null;
          if(param1.success == true)
          {
+            try {
             RoleModel.getInstance().status = RoleStatus.LEITAI;
             ChatManager.getInstance().leitaiMode = true;
             ChatManager.getInstance().leizhu = false;
@@ -315,8 +322,11 @@ package game.ui
             GlobalTimer.getInstance().pauseListener(TimerStr.LEITAI_FLUSH);
             GlobalTimer.getInstance().pauseListener(TimerStr.PAIHANG_FLUSH);
             _loc2_ = this.findCountByrID(param1.data.rID,param1.data.leitai);
-            ChatManager.getInstance().p2pConnect(_loc2_.mInfo.pID,false,Config.LEITAI_TIMEOUT);
-            ChatManager.getInstance().dispatchEvent(new P2PEvent(P2PEvent.LEITAI_CONNECT_WAIT));
+            if(_loc2_ != null && _loc2_.mInfo != null && _loc2_.mInfo.pID) {
+               ChatManager.getInstance().p2pConnect(_loc2_.mInfo.pID,false,Config.LEITAI_TIMEOUT);
+               ChatManager.getInstance().dispatchEvent(new P2PEvent(P2PEvent.LEITAI_CONNECT_WAIT));
+            }
+            } catch(e:Error) {}
          }
          else
          {

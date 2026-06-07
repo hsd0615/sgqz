@@ -6,6 +6,7 @@ package com.iflashigame.talk
    {
       
       public static const NET_INFO:String = "netInfo";
+      public static const CHAT_PLAIN:String = "chatPlain";
        
       
       public var data:Object;

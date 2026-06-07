@@ -12,6 +12,8 @@ package com.iflashigame.net
    import game.model.Head;
    import game.model.RoleModel;
    import com.adobe.serialization.json.JSON;
+   import com.iflashigame.talk.TalkEvent;
+   import com.iflashigame.talk.NetInfoType;
 
    /**
     * ChatManager — 网络通信核心（单例）
@@ -252,43 +254,19 @@ package com.iflashigame.net
          }
          else
          {
-            // 擂台模式
+            // 擂台模式 — battle_request 已由服务端在 be-slave 中转发，客户端不再重复发送
             _leizhu = isServer;
             _farID = pID;
 
             if(_leizhu == true)
             {
-               // 擂主：等待攻擂者连接
-               _battleTargetPeerID = null;  // 等待任何人
-               if(_gongleiClock == null)
-               {
-                  _gongleiClock = new Timer(1000);
-                  _gongleiClock.addEventListener(TimerEvent.TIMER_COMPLETE, gongleiCloskCompleteHandler);
-               }
-               _gongleiReplayTime = replayTime;
-               _gongleiClock.repeatCount = replayTime;
-               _gongleiClock.reset();
-               _gongleiClock.start();
+               // 擂主：等待攻擂者连接（服务端管理超时）
+               _battleTargetPeerID = null;
             }
             else
             {
-               // 攻擂者：请求连接擂主
+               // 攻擂者：等待服务端转发 battle_request 给擂主
                _battleTargetPeerID = pID;
-               sendWS({
-                  type: "battle_request",
-                  targetPeerId: pID,
-                  server: false,
-                  leitai: true
-               });
-               if(_gongleiClock == null)
-               {
-                  _gongleiClock = new Timer(1000);
-                  _gongleiClock.addEventListener(TimerEvent.TIMER_COMPLETE, gongleiCloskCompleteHandler);
-               }
-               _gongleiReplayTime = replayTime;
-               _gongleiClock.repeatCount = replayTime;
-               _gongleiClock.reset();
-               _gongleiClock.start();
                dispatchEvent(new P2PEvent(P2PEvent.LEITAI_CONNECT_WAIT));
             }
          }
@@ -334,22 +312,22 @@ package com.iflashigame.net
       /**
        * 世界频道广播（替代 NetGroup.post）
        */
-      public function worldPost(param1:Object) : *
+      public function worldPost(param1:Object, plainText:String = null) : *
       {
          if(_connected)
          {
-            sendWS({type: "chat", room: "world", text: param1});
+            sendWS({type: "chat", room: "world", text: param1, plain: plainText});
          }
       }
 
       /**
        * 区域频道广播（替代 NetGroup.post）
        */
-      public function areaPost(param1:Object) : *
+      public function areaPost(param1:Object, plainText:String = null) : *
       {
          if(_connected)
          {
-            sendWS({type: "chat", room: "area", data: param1});
+            sendWS({type: "chat", room: "area", data: param1, plain: plainText});
          }
       }
 
@@ -572,6 +550,17 @@ package com.iflashigame.net
                handleBattleResult(msg);
                break;
 
+            case "battle_end":
+               // 战斗结束 — 攻方退出擂台模式，守方保持擂主状态继续等待
+               if(!_leizhu) {
+                  _leitaiMode = false;
+               }
+               _farID = null;
+               _battleTargetPeerID = null;
+               if(_gongleiClock != null) { _gongleiClock.reset(); _gongleiClock.removeEventListener(TimerEvent.TIMER_COMPLETE, gongleiCloskCompleteHandler); _gongleiClock = null; }
+               trace("battle_end received — state cleaned, leitaiMode=" + _leitaiMode);
+               break;
+
             case "battle_opponent_disconnected":
                handleOpponentDisconnected(msg);
                break;
@@ -693,6 +682,16 @@ package com.iflashigame.net
 
       private function handleChat(msg:Object):void
       {
+         // 如果有纯文本，直接派发 TalkEvent 给 UI 显示
+         if(msg.plain != null && msg.plain != "")
+         {
+            var chatData:Object = {
+               type: msg.room == "world" ? 5 : 2,  // NetInfoType.WORLD=5, PUBLIC=2
+               text: msg.plain
+            };
+            dispatchEvent(new TalkEvent(TalkEvent.CHAT_PLAIN, false, chatData));
+         }
+
          var ba:ByteArray = new ByteArray();
 
          // 根据聊天房间类型派发不同事件

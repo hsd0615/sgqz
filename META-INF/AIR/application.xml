@@ -38,4 +38,5 @@
   <icon/>
   <customUpdateUI>false</customUpdateUI>
   <allowBrowserInvocation>false</allowBrowserInvocation>
+  <allowMultipleInstances>true</allowMultipleInstances>
 </application>

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <data>
 	<!-- 网络连接地址 -->
-	<servera url="http://127.0.0.1:3000" />
-	<server url="http://127.0.0.1:3000" />
+	<servera url="http://47.96.41.243:3000" />
+	<server url="http://47.96.41.243:3000" />
 
 	<requestCode>gbk</requestCode>
 	<responseCode>utf-8</responseCode>

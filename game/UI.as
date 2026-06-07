@@ -186,6 +186,7 @@ package game
          addEventListener(UIEvent.JINHUA,this.jinhuaHandler);
          addEventListener(UIEvent.CHONGZHI_CLICK,this.onChongzhiClickHandler);
          addEventListener(TalkEvent.NET_INFO,this.onTalkEventHandler);
+         ChatManager.getInstance().addEventListener(TalkEvent.CHAT_PLAIN,this.onChatPlainHandler);
          addEventListener(UIEvent.FIGHT_REQUEST,this.onFightRequestClickHandler);
          ChatManager.getInstance().addEventListener(P2PEvent.WORLD_POST_NOTIFY,this.onWorldPostNotifyHandler);
          ChatManager.getInstance().addEventListener(P2PEvent.AREA_POST_NOTIFY,this.onAreaPostNotifyHandler);
@@ -2517,7 +2518,8 @@ package game
       
       private function onChongzhiClickHandler(param1:UIEvent) : *
       {
-         navigateToURL(new URLRequest(Config.CHONGZHI),"_blank");
+         // 禁用4399充值跳转 — 本地测试版
+         trace("chongzhi blocked: " + Config.CHONGZHI);
          dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
             "type":0,
             "text":"冲值完成后，请再次点击商城按钮以收取点卡。",
@@ -2810,16 +2812,26 @@ package game
          }
          _loc2_.writeObject(param1.data);
          _loc2_.writeFloat(Math.random());
+         var _plainText:String = param1.data.text;
          if(param1.data.type == NetInfoType.PUBLIC)
          {
-            ChatManager.getInstance().areaPost(_loc2_);
+            ChatManager.getInstance().areaPost(_loc2_, _plainText);
          }
          else
          {
-            ChatManager.getInstance().worldPost(_loc2_);
+            ChatManager.getInstance().worldPost(_loc2_, _plainText);
          }
       }
-      
+
+      /** 接收纯文本聊天消息（绕过ByteArray解码） */
+      private function onChatPlainHandler(param1:TalkEvent) : *
+      {
+         if(this._map != null)
+         {
+            this._map.recieveNetInfo(param1.data);
+         }
+      }
+
       private function netInfoProcess(param1:Object) : *
       {
          switch(param1.type)
@@ -3167,7 +3179,8 @@ package game
       
       public function shuangkaiChecked() : *
       {
-         navigateToURL(new URLRequest(Config.GAME_URL),"_self");
+         // 禁用4399跳转 — 本地测试版
+         trace("shuangkaiChecked blocked");
       }
       
       public function gameCenterOpened() : Boolean
@@ -3450,18 +3463,18 @@ package game
             {
                this._leitaiResultPanel.startTimer();
             }
-            else if(_loc2_.rCount == 0)
+            else if(_loc2_ != null)
             {
                this._leitaiPanel.openTipsPanel({
                   "rID":int(param1.data.rID),
-                  "type":1
+                  "type":_loc2_.rCount == 0 ? 1 : 2
                });
             }
             else
             {
                this._leitaiPanel.openTipsPanel({
                   "rID":int(param1.data.rID),
-                  "type":2
+                  "type":1
                });
             }
          }

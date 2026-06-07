@@ -40,10 +40,10 @@ package game
       public static const CHONGZHI:String = "http://my.4399.com/pay.php?ac=exchange&union=176";
       
       // 新版服务器配置（替代旧的局域网地址和 Adobe Cirrus）
-      public static const SERVER_URL:String = "http://127.0.0.1:3000";
-      public static var SERVER_HOST:String = "127.0.0.1";
+      public static const SERVER_URL:String = "http://47.96.41.243:3000";
+      public static var SERVER_HOST:String = "47.96.41.243";
       public static var SERVER_PORT:int = 3001;
-      public static var API_URL:String = "http://127.0.0.1:3000";
+      public static var API_URL:String = "http://47.96.41.243:3000";
       public static var USE_NEW_NETWORK:Boolean = true;
       
       public static const GAME_URL:String = "http://my.4399.com/game_sgqz.html";
@@ -76,7 +76,7 @@ package game
       
       public static const PAIHANG_FLUSH_DELAY:int = 120;
       
-      public static const LEITAI_TIMEOUT:int = 10;
+      public static const LEITAI_TIMEOUT:int = 120;
        
       
       public function Config()

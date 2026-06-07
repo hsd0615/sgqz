@@ -275,11 +275,13 @@ package game.model
          var _loc2_:Vector.<String> = this.getAllSoldierCode();
          if(_loc2_.indexOf(param1) == -1)
          {
+            try { var _f1:File = File.applicationStorageDirectory.resolvePath("choose_debug.txt"); var _s1:FileStream = new FileStream(); _s1.open(_f1, FileMode.APPEND); _s1.writeUTFBytes("SKIP " + param1 + " not in army(" + _loc2_.length + ")\n"); _s1.close(); } catch(_e:Error) {}
             return;
          }
          if(this._chooseSoldiers.length < 6 && this._chooseSoldiers.indexOf(param1) == -1)
          {
             this._chooseSoldiers.push(param1);
+            try { var _f2:File = File.applicationStorageDirectory.resolvePath("choose_debug.txt"); var _s2:FileStream = new FileStream(); _s2.open(_f2, FileMode.APPEND); _s2.writeUTFBytes("ADDED " + param1 + " (total:" + this._chooseSoldiers.length + ")\n"); _s2.close(); } catch(_e:Error) {}
          }
       }
       
@@ -733,6 +735,7 @@ package game.model
       
       public function importChoose(param1:String) : *
       {
+         try { var _f:File = File.applicationStorageDirectory.resolvePath("choose_debug.txt"); var _s:FileStream = new FileStream(); _s.open(_f, FileMode.WRITE); _s.writeUTFBytes("importChoose: '" + (param1||"(null)") + "'\n"); _s.close(); } catch(_e:Error) {}
          if(this._chooseSoldiers == null)
          {
             this._chooseSoldiers = new Vector.<String>();
@@ -744,12 +747,15 @@ package game.model
                this._chooseSoldiers.pop();
             }
          }
-         var _loc2_:Array = param1.split("|");
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc2_.length)
+         if(param1 != null && param1 != "")
          {
-            this.addChooseSoldier(_loc2_[_loc3_]);
-            _loc3_++;
+            var _loc2_:Array = param1.split("|");
+            var _loc3_:int = 0;
+            while(_loc3_ < _loc2_.length)
+            {
+               this.addChooseSoldier(_loc2_[_loc3_]);
+               _loc3_++;
+            }
          }
       }
       
