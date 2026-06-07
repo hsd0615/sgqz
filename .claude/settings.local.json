@@ -1,30 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Skill(run)",
-      "Bash(cmd.exe *)",
-      "Bash(reg query *)",
-      "Bash(dir \"C:\\\\Program Files \\(x86\\)\\\\Common Files\\\\Adobe AIR\")",
-      "Bash(dir \"C:\\\\Program Files\\\\Common Files\\\\Adobe AIR\")",
-      "Bash(dir \"C:\\\\Program Files \\(x86\\)\\\\Adobe\")",
-      "Read(//c/Users/houtongxiao/AppData/Roaming/Main/Local Store/**)",
-      "Read(//c/Users/houtongxiao/AppData/Roaming/**)",
-      "Bash(unzip -p main.exe \"META-INF/AIR/application.xml\")",
-      "Bash(python3 -c ' *)",
-      "Bash(python -c ' *)",
-      "Bash(node start_fixed.js)",
-      "Bash(curl *)",
-      "Bash(java -jar \"D:/BaiduNetdiskDownload/flex_home/lib/mxmlc.jar\" +flexlib=\"D:/BaiduNetdiskDownload/flex_home/frameworks\" -compiler.source-path=. -default-size=770,500 -target-player=32.0 -static-link-runtime-shared-libraries=true -external-library-path+=air_stubs.swc -- game/Sanguo4399.as -output main.swf)",
-      "Bash(java -jar \"D:/BaiduNetdiskDownload/flex_home/lib/mxmlc.jar\" +flexlib=\"D:/BaiduNetdiskDownload/flex_home/frameworks\" -compiler.source-path=. -default-size=770,500 -target-player=32.0 -static-link-runtime-shared-libraries=true -external-library-path+=air_stubs.swc -output main.swf -- game/Sanguo4399.as)",
-      "Bash(node -e ' *)",
-      "Bash(sed -i '131s|// 启动时不再做HTTP测试（影响启动速度）|// 启动时做HTTP诊断测试\\\\n         testServerConnection\\(\\);|' game/Sanguo4399.as)",
-      "Bash(sed -n '129,134p' game/Sanguo4399.as)",
-      "Bash(git checkout *)",
-      "Bash(sed -n '129,133p' game/Sanguo4399.as)",
-      "Bash(sed -n '989,1005p' game/Sanguo4399.as)",
-      "Bash(sed -n '1818,1830p' game/Sanguo4399.as)",
-      "Bash(taskkill //F //IM node.exe)",
-      "Bash(cd *)"
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "Skill(*)",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskStop",
+      "TaskOutput",
+      "Agent(*)",
+      "CronCreate",
+      "CronDelete"
     ]
   }
 }
