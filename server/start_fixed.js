@@ -358,9 +358,15 @@ function handleRequest(socket, req) {
       // === 升级 ===
       const g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
-      g.level = (g.level || 1) + 1;
-      respData.level = g.level;
-      console.log('[Upgrade] ' + p.role_name + ' ' + g.name + '(' + g.code + ') → Lv.' + g.level);
+      var lv=g.level||1;
+      var costMoney=2*lv*(lv-1)+100;
+      var costExploit=lv*(lv-1)+100;
+      if(p.money<costMoney)return jsonRawResponse(socket,{success:false,message:'银两不足'});
+      if(p.exploit<costExploit)return jsonRawResponse(socket,{success:false,message:'功勋不足'});
+      p.money-=costMoney;p.exploit-=costExploit;
+      g.level=lv+1;
+      respData.level=g.level;respData.money=p.money;respData.exploit=p.exploit;
+      console.log('[Upgrade] '+p.role_name+' '+g.name+'('+g.code+') → Lv.'+g.level+' cost:'+costMoney+'银+'+costExploit+'勋');
     } else if (headCode === 10005) {
       // === 进化 ===
       const g = findGeneralByGid(data.id);
