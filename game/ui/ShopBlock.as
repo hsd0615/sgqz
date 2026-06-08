@@ -275,6 +275,12 @@ package game.ui
          _loc1_.shopID = this._data.id;
          _loc1_.code = this._data.code;
          _loc1_.count = this._data.count;
+         _loc1_.price = this._data.newPrice;
+         _loc1_.payType = this._data.payType;
+         if(this._data.payType == 1) _loc1_.money = this._data.newPrice;
+         else if(this._data.payType == 2) _loc1_.dianka = this._data.newPrice;
+         else if(this._data.payType == 3) _loc1_.exploit = this._data.newPrice;
+         else if(this._data.payType == 4) _loc1_.reverence = this._data.newPrice;
          _loc1_.mask = true;
          AESController.getInstance().sendJSON(_loc1_,this.buyItemResponse);
       }
