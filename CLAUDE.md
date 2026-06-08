@@ -65,6 +65,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. `GlobalTimer` 每 5 秒检测时间流速，连续异常 6 次 → 判定变速作弊
 3. 战斗操作限时检测（`Config.ERROR` / `Config.NORMAL`）
 
+## 工具脚本
+
+- **`tools/read_image.ps1`** — 截图 OCR 识别（文件/剪贴板）。本项目 Read 工具可能无法读取某些 PNG，此时自动用此脚本进行 Windows OCR。
+  - 用法：`powershell -File tools/read_image.ps1 -ImagePath <path>` 或 `powershell -File tools/read_image.ps1`（读剪贴板）
+- **`tools/img2txt.ps1`** — 备用：将图片转 ASCII 亮度网格
+
 ## 关键数据流
 
 ```

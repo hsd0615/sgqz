@@ -230,6 +230,7 @@ package game
       private var _mainPanel:Sprite;
       private var _playerList:Array = [];
       private var _selectedUserID:String = "";
+      private var _userInputTF:TextField;
       private var _passInputTF:TextField;
       private var _statusTF:TextField;
       private var _isRegistering:Boolean = false;
@@ -240,15 +241,16 @@ package game
          _mainPanel = new Sprite();
          _isRegistering = false;
 
-         drawMainPanelBg(330, 370);
+         drawMainPanelBg(330, 400);
          drawTitle("将 士 录");
          drawPlayerList();
+         drawUserInput(330);
          drawPasswordInput(330);
          drawLoginButton();
          drawRegisterButton();
 
          _mainPanel.x = (770 - 330) / 2;
-         _mainPanel.y = (500 - 370) / 2 - 10;
+         _mainPanel.y = (500 - 400) / 2 - 10;
          addChild(_mainPanel);
 
          // 如果已保存用户，预选
@@ -338,22 +340,72 @@ package game
 
       private function loadPlayerList() : void
       {
-         var req:URLRequest = new URLRequest(Config.SERVER_URL + "/api/auth/players");
-         req.method = URLRequestMethod.GET;
-         var loader:URLLoader = new URLLoader();
-         loader.addEventListener(Event.COMPLETE, function(e:Event):void {
-            try {
-               var data:Object = com.adobe.serialization.json.JSON.decode(loader.data as String);
-               if(data.success) {
-                  _playerList = data.data as Array;
-                  renderPlayerList();
+         // 从本地缓存读取账号列表，不再从服务器拉取全部账号
+         var cachedUsers:Array = [];
+         var configFile:File = File.applicationStorageDirectory.resolvePath("user_config.txt");
+         try {
+            var fs:FileStream = new FileStream();
+            fs.open(configFile, FileMode.READ);
+            var raw:String = fs.readUTFBytes(fs.bytesAvailable);
+            fs.close();
+            var lines:Array = raw.split(/\r?\n/);
+               for(var i:int = 0; i < lines.length; i++) {
+                  var line:String = lines[i].replace(/^\s+|\s+$/g, "");
+                  if(line.length > 0 && line.charAt(0) != "#") {
+                     var colonPos:int = line.indexOf(":");
+                     var uid:String = (colonPos > 0) ? line.substring(0, colonPos) : line;
+                     if(uid.indexOf("new:") == 0) uid = uid.substring(4).split(":")[0];
+                     if(uid.length > 0 && cachedUsers.indexOf(uid) == -1) {
+                        cachedUsers.push(uid);
+                     }
+                  }
                }
-            } catch(err:Error) {}
-         });
-         loader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
-            showStatus("无法连接服务器", 0xFF4444);
-         });
-         loader.load(req);
+         } catch(e:Error) { trace("[Config] read cache failed: " + e.message); }
+
+         // 无缓存时显示空列表，用户可手动输入账号
+         if(cachedUsers.length == 0) {
+            _playerList = [];
+            renderPlayerList();
+            return;
+         }
+
+         // 逐个查询每个缓存账号的信息
+         _playerList = [];
+         var total:int = cachedUsers.length;
+         var loaded:int = 0;
+         var hasError:Boolean = false;
+
+         function tryRender():void {
+            loaded++;
+            if(loaded >= total) {
+               if(_playerList.length == 0 && !hasError) {
+                  showStatus("暂无将士，请招募新兵", 0x8B7355);
+               }
+               renderPlayerList();
+            }
+         }
+
+         for(var k:int = 0; k < total; k++) {
+            var cachedUid:String = cachedUsers[k];
+            var req:URLRequest = new URLRequest(Config.SERVER_URL + "/api/auth/player/" + cachedUid);
+            req.method = URLRequestMethod.GET;
+            var loader:URLLoader = new URLLoader();
+            loader.addEventListener(Event.COMPLETE, function(e:Event):void {
+               try {
+                  var data:Object = com.adobe.serialization.json.JSON.decode((e.currentTarget as URLLoader).data as String);
+                  if(data.success) {
+                     _playerList.push(data.data);
+                  }
+               } catch(err:Error) { trace("[Login] parse error: " + err.message); }
+               tryRender();
+            });
+            loader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
+               hasError = true;
+               tryRender();
+            });
+            loader.load(req);
+         }
+         if(total == 0) renderPlayerList();
       }
 
       private function renderPlayerList() : void
@@ -449,6 +501,7 @@ package game
             _selectedUserID = p.userID;
             if(_loginUserID != p.userID) { _loginPassword = ""; if(_passInputTF) _passInputTF.text = ""; }
             _loginUserID = p.userID;
+            if(_userInputTF) _userInputTF.text = p.userID;
             updatePlayerSelection();
             if(_passInputTF) stage.focus = _passInputTF;
          });
@@ -467,12 +520,44 @@ package game
          showStatus("◇ 选中: " + _loginUserID + "  |  请输入通关密令", 0xC8A020);
       }
 
+      private function drawUserInput(w:int) : void
+      {
+         var sep2:Shape = new Shape();
+         sep2.graphics.lineStyle(1, 0x5C4010, 0.4);
+         sep2.graphics.moveTo(20, 190); sep2.graphics.lineTo(w - 20, 190);
+         _mainPanel.addChild(sep2);
+
+         var uLabel:TextField = new TextField();
+         uLabel.defaultTextFormat = new TextFormat("_sans", 13, 0xB8A080);
+         uLabel.text = "军号:";
+         uLabel.width = 45; uLabel.height = 24;
+         uLabel.x = 22; uLabel.y = 196;
+         uLabel.selectable = false;
+         _mainPanel.addChild(uLabel);
+
+         _userInputTF = new TextField();
+         _userInputTF.type = TextFieldType.INPUT;
+         _userInputTF.defaultTextFormat = new TextFormat("_sans", 13, 0xD4C080);
+         _userInputTF.backgroundColor = 0x0A0A16;
+         _userInputTF.background = true;
+         _userInputTF.border = true;
+         _userInputTF.borderColor = 0x5C4010;
+         _userInputTF.width = 145; _userInputTF.height = 24;
+         _userInputTF.x = 68; _userInputTF.y = 196;
+         _userInputTF.maxChars = 20;
+         _userInputTF.text = _loginUserID;
+         _userInputTF.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void {
+            if(e.keyCode == 13) { stage.focus = _passInputTF; }
+         });
+         _mainPanel.addChild(_userInputTF);
+      }
+
       private function drawPasswordInput(w:int) : void
       {
          // 分隔线
          var sep:Shape = new Shape();
          sep.graphics.lineStyle(1, 0x5C4010, 0.4);
-         sep.graphics.moveTo(20, 226); sep.graphics.lineTo(w - 20, 226);
+         sep.graphics.moveTo(20, 232); sep.graphics.lineTo(w - 20, 232);
          _mainPanel.addChild(sep);
 
          var pwFmt:TextFormat = new TextFormat("_sans", 13, 0xB8A080);
@@ -480,7 +565,7 @@ package game
          pwLabel.defaultTextFormat = pwFmt;
          pwLabel.text = "密令:";
          pwLabel.width = 45; pwLabel.height = 24;
-         pwLabel.x = 22; pwLabel.y = 234;
+         pwLabel.x = 22; pwLabel.y = 240;
          pwLabel.selectable = false;
          _mainPanel.addChild(pwLabel);
 
@@ -493,7 +578,7 @@ package game
          _passInputTF.border = true;
          _passInputTF.borderColor = 0x5C4010;
          _passInputTF.width = 145; _passInputTF.height = 24;
-         _passInputTF.x = 68; _passInputTF.y = 234;
+         _passInputTF.x = 68; _passInputTF.y = 240;
          _passInputTF.maxChars = 20;
          _passInputTF.text = _loginPassword;
          _passInputTF.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void {
@@ -504,14 +589,14 @@ package game
 
       private function drawLoginButton() : void
       {
-         var btn:Sprite = makeThemedButton("入  营", 0x8B0000, 0xFF4444, 230, 232);
+         var btn:Sprite = makeThemedButton("入  营", 0x8B0000, 0xFF4444, 230, 272);
          btn.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void { doLogin(); });
          _mainPanel.addChild(btn);
       }
 
       private function drawRegisterButton() : void
       {
-         var btn:Sprite = makeThemedButton("招兵买马", 0x3A6010, 0x66AA22, 230, 268);
+         var btn:Sprite = makeThemedButton("招兵买马", 0x3A6010, 0x66AA22, 230, 308);
          btn.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void { showRegisterPanel(); });
          _mainPanel.addChild(btn);
 
@@ -519,14 +604,14 @@ package game
          _statusTF.defaultTextFormat = new TextFormat("_sans", 10, 0x7A6A4A);
          _statusTF.text = "请选择将士，输入通关密令方可入营";
          _statusTF.width = 300; _statusTF.height = 16;
-         _statusTF.x = 22; _statusTF.y = 310;
+         _statusTF.x = 22; _statusTF.y = 350;
          _statusTF.selectable = false;
          _mainPanel.addChild(_statusTF);
 
          // 底部装饰线
          var decoB:Shape = new Shape();
          decoB.graphics.lineStyle(1, 0xD4A017, 0.4);
-         decoB.graphics.moveTo(20, 305); decoB.graphics.lineTo(310, 305);
+         decoB.graphics.moveTo(20, 345); decoB.graphics.lineTo(310, 345);
          _mainPanel.addChild(decoB);
       }
 
@@ -672,17 +757,56 @@ package game
       {
          try {
             var configFile:File = File.applicationStorageDirectory.resolvePath("user_config.txt");
+            // 读取已有账号，合并写入（去重 + 追加新账号）
+            var existing:Object = {};
+            var lines:Array = [];
+            try {
+               var fsRead:FileStream = new FileStream();
+               fsRead.open(configFile, FileMode.READ);
+               var raw:String = fsRead.readUTFBytes(fsRead.bytesAvailable);
+               fsRead.close();
+               var oldLines:Array = raw.split(/\r?\n/);
+               for(var i:int = 0; i < oldLines.length; i++) {
+                  var line:String = oldLines[i].replace(/^\s+|\s+$/g, "");
+                  if(line.length > 0 && line.charAt(0) != "#") {
+                     var cp:int = line.indexOf(":");
+                     var oldUid:String = (cp > 0) ? line.substring(0, cp) : line;
+                     if(!existing[oldUid]) {
+                        existing[oldUid] = line;
+                        lines.push(line);
+                     }
+                  }
+               }
+            } catch(e:Error) { trace("[Config] no cache, creating new"); }
+            // 更新当前账号的行
+            var curEntry:String = _loginUserID + ":" + _loginPassword;
+            if(existing[_loginUserID]) {
+               for(var j:int = 0; j < lines.length; j++) {
+                  if(lines[j].indexOf(_loginUserID + ":") == 0 || lines[j] == _loginUserID) {
+                     lines[j] = curEntry;
+                     break;
+                  }
+               }
+            } else {
+               lines.push(curEntry);
+            }
+            // 写回
             var fs:FileStream = new FileStream();
             fs.open(configFile, FileMode.WRITE);
-            fs.writeUTFBytes(_loginUserID + ":" + _loginPassword);
+            fs.writeUTFBytes(lines.join("\n"));
             fs.close();
-         } catch(e:Error) {}
+            trace("[Config] 已缓存 " + lines.length + " 个账号");
+         } catch(e:Error) { trace("[Config] save failed: " + e.message); }
       }
 
       private function doLogin() : void
       {
+         // 优先使用手动输入的账号名
+         if(_userInputTF && _userInputTF.text.replace(/^\s+|\s+$/g, "") != "") {
+            _loginUserID = _userInputTF.text.replace(/^\s+|\s+$/g, "");
+         }
          if(_loginUserID == "") {
-            showStatus("请先选择一个角色!", 0xFF4444);
+            showStatus("请输入军号!", 0xFF4444);
             return;
          }
          if(_passInputTF) _loginPassword = _passInputTF.text;

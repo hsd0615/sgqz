@@ -1,0 +1,41 @@
+<html>
+<body>
+<script language="javascript">
+try {
+    var imgPath = new ActiveXObject("Scripting.FileSystemObject").GetAbsolutePathName(WSH.Arguments(0));
+
+    // Load image
+    var img = new ActiveXObject("WIA.ImageFile");
+    img.LoadFile(imgPath);
+
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var outFile = fso.GetAbsolutePathName(WSH.Arguments(0)) + ".txt";
+
+    // Get pixel dimensions for simple output
+    var w = img.Width;
+    var h = img.Height;
+    var text = "Image: " + w + "x" + h + "\n";
+
+    // Try to get text directly from image properties
+    text += "Properties:\n";
+    for (var p = new Enumerator(img.Properties); !p.atEnd(); p.moveNext()) {
+        try {
+            text += "  " + p.item().Name + " = " + p.item().Value + "\n";
+        } catch(e) {}
+    }
+
+    var f = fso.CreateTextFile(outFile, true);
+    f.Write(text);
+    f.Close();
+
+    window.close();
+} catch(e) {
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var outFile = "c:\\users\\houtongxiao\\desktop\\ocr_error.txt";
+    var f = fso.CreateTextFile(outFile, true);
+    f.Write("Error: " + e.message + "\n" + e.stack);
+    f.Close();
+}
+</script>
+</body>
+</html>

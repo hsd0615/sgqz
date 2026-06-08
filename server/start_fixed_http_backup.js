@@ -189,7 +189,7 @@ const server = http.createServer((req, res) => {
 
     // /api/game/fight-result
     if (url === '/api/game/fight-result') {
-      const p = findPlayer(String(data.roleID));
+      const p = db.players.find(p => String(p.id) === String(data.roleID));
       if (!p) return jsonResponse(res, { success: false, message: '玩家不存在' });
       p.money += 100 + data.part*50 + data.level*20;
       p.exploit += 50 + data.part*20 + data.level*10;

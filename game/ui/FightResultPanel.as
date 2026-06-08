@@ -169,7 +169,7 @@ package game.ui
                   _loc3_ += "\n";
                }
                this.__tipsTF.htmlText += "\n提示：武将升级或进化后，战斗力将得到很大提升。";
-               if(_loc8_ != null && _loc8_ != "")
+               if(_loc8_ != null && _loc8_ != "" && _loc8_ != "undefined")
                {
                   this.__tipsTF.htmlText += "<font color=\'#66CC33\'>（武将-" + _loc8_ + "在野，通过招募有机会获得。）";
                }

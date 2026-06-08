@@ -742,15 +742,15 @@ package game.ui
          param1.stopImmediatePropagation();
          if(this._chooseArmy.length == 0)
          {
-            dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
-               "text":"错误，至少需要设置一个上阵武将!",
-               "type":0
-            }));
+            // 无上阵武将时，自动选前6个可用武将
+            var allGens:Vector.<ArmyInfo> = RoleModel.getInstance().getAllSoldiers();
+            var autoCount:int = Math.min(6, allGens.length);
+            for(var ai:int = 0; ai < autoCount; ai++) {
+               this.addSoldierToChoose(allGens[ai].clone());
+               RoleModel.getInstance().addChooseSoldier(allGens[ai].code);
+            }
          }
-         else
-         {
-            this.sendToHttpNew();
-         }
+         this.sendToHttpNew();
       }
 
       private function checkSaberCount() : Boolean

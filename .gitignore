@@ -1,4 +1,18 @@
-server/node_modules/
-server/dist/
-server/data/
-*.exe
+# Compiled SWF
+*.swf
+!main.swf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+/tmp/
+/server/data/
+/server/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
