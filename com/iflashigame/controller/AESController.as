@@ -203,22 +203,7 @@ package com.iflashigame.controller
 
       private function createMask() : *
       {
-         if(_mask == null)
-         {
-            if(_maskDomain == null || _maskCode == "") return;
-            var maskClass:Class = _maskDomain.getDefinition(_maskCode) as Class;
-            _mask = new maskClass() as MovieClip;
-            if(_root == null || _root.stage == null) return;
-            _mask.graphics.beginFill(0, 0);
-            _mask.graphics.drawRect(
-               -_root.stage.stageWidth / 2,
-               -_root.stage.stageHeight / 2,
-               _root.stage.stageWidth,
-               _root.stage.stageHeight
-            );
-            _mask.x = _root.stage.stageWidth / 2;
-            _mask.y = _root.stage.stageHeight / 2;
-         }
+         // 遮罩已禁用 - 避免每次请求显示转圈动画
       }
 
       /**
