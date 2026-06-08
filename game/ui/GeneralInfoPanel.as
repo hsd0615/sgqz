@@ -706,8 +706,8 @@ package game.ui
          var _loc2_:String = null;
          if(param1.success == true)
          {
-            RoleModel.getInstance().money = param1.data.money + 100 - Logic.getMoneyByLevel(this._armyInfo.level);
-            RoleModel.getInstance().exploit = param1.data.exploit + 100 - Logic.getExploitByLevel(this._armyInfo.level);
+            RoleModel.getInstance().money = param1.data.money;
+            RoleModel.getInstance().exploit = param1.data.exploit;
             this._armyInfo.setLevel(param1.data.level);
             RoleModel.getInstance().throttleSave();
             this.flush();
