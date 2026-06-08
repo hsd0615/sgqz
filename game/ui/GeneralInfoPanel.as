@@ -11,6 +11,7 @@ package game.ui
    import flash.display.Shape;
    import flash.display.SimpleButton;
    import flash.display.Sprite;
+   import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.filters.BlurFilter;
    import flash.geom.Point;
@@ -135,6 +136,7 @@ package game.ui
       
       override protected function initEvent() : void
       {
+         RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
          this.__kezhi1Btn.addEventListener(MouseEvent.CLICK,this.kezhi1BtnClickHandler);
@@ -416,6 +418,12 @@ package game.ui
          this.__xiaohaoTF.text = "需要功勋 " + Logic.getExploitByLevel(this._armyInfo.level) + "\n需要银子 " + Logic.getMoneyByLevel(this._armyInfo.level);
       }
       
+      private function onRoleModelChange(param1:Event) : void
+      {
+         if(this.__moneyTF) this.__moneyTF.text = RoleModel.getInstance().money.toString();
+         if(this.__exploitTF) this.__exploitTF.text = RoleModel.getInstance().exploit.toString();
+      }
+
       private function shengjiBtnClickHandler(param1:MouseEvent) : *
       {
          var _loc2_:int = 0;
