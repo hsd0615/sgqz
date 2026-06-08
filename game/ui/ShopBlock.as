@@ -274,6 +274,7 @@ package game.ui
          _loc1_.userID = RoleModel.getInstance().userID;
          _loc1_.shopID = this._data.id;
          _loc1_.code = this._data.code;
+         _loc1_.count = this._data.count;
          _loc1_.mask = true;
          AESController.getInstance().sendJSON(_loc1_,this.buyItemResponse);
       }
