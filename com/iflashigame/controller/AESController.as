@@ -209,7 +209,7 @@ package com.iflashigame.controller
             var maskClass:Class = _maskDomain.getDefinition(_maskCode) as Class;
             _mask = new maskClass() as MovieClip;
             if(_root == null || _root.stage == null) return;
-            _mask.graphics.beginFill(0, 0.4);
+            _mask.graphics.beginFill(0, 0);
             _mask.graphics.drawRect(
                -_root.stage.stageWidth / 2,
                -_root.stage.stageHeight / 2,
