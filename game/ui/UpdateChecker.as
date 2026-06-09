@@ -113,53 +113,34 @@ package game.ui
             Object(_fs).writeBytes(param1, 0, param1.length);
             _fs.close();
 
-            // 2. 写入静默VBS脚本 (等待游戏自然退出→替换文件→重启→自删,不杀进程)
-            var _vbs:FileStream = new FileStream();
-            _vbs.open(new File(_appDir + "/restart.vbs"), FileMode.WRITE);
-            _vbs.writeUTFBytes("Dim ws, fso, dir, pid, exited, i\r\n");
-            _vbs.writeUTFBytes("Set ws = CreateObject(\"WScript.Shell\")\r\n");
-            _vbs.writeUTFBytes("Set fso = CreateObject(\"Scripting.FileSystemObject\")\r\n");
-            _vbs.writeUTFBytes("dir = fso.GetParentFolderName(WScript.ScriptFullName)\r\n");
-            _vbs.writeUTFBytes("WScript.Sleep 2000\r\n");
-            _vbs.writeUTFBytes("Do\r\n");
-            _vbs.writeUTFBytes("  WScript.Sleep 800\r\n");
-            _vbs.writeUTFBytes("  exited = True\r\n");
-            _vbs.writeUTFBytes("  On Error Resume Next\r\n");
-            _vbs.writeUTFBytes("  Dim out: out = ws.Exec(\"tasklist /fi \"\"imagename eq main.exe\"\" /fo csv /nh\").StdOut.ReadAll\r\n");
-            _vbs.writeUTFBytes("  If InStr(out, \"main.exe\") > 0 Then exited = False\r\n");
-            _vbs.writeUTFBytes("  On Error Goto 0\r\n");
-            _vbs.writeUTFBytes("Loop While Not exited\r\n");
-            _vbs.writeUTFBytes("WScript.Sleep 1000\r\n");
-            _vbs.writeUTFBytes("On Error Resume Next\r\n");
-            _vbs.writeUTFBytes("fso.DeleteFile dir & \"\\main_old.swf\", True\r\n");
-            _vbs.writeUTFBytes("fso.MoveFile dir & \"\\main.swf\", dir & \"\\main_old.swf\"\r\n");
-            _vbs.writeUTFBytes("fso.MoveFile dir & \"\\main_new.swf\", dir & \"\\main.swf\"\r\n");
-            _vbs.writeUTFBytes("On Error Goto 0\r\n");
-            _vbs.writeUTFBytes("If fso.FileExists(dir & \"\\main.swf\") Then\r\n");
-            _vbs.writeUTFBytes("  ws.Run Chr(34) & dir & \"\\main.exe\" & Chr(34), 1, False\r\n");
-            _vbs.writeUTFBytes("End If\r\n");
-            _vbs.writeUTFBytes("fso.DeleteFile WScript.ScriptFullName\r\n");
-            _vbs.close();
+            // 2. 写入批处理 (等待游戏退出→替换→重启→自删)
+            var _bat:FileStream = new FileStream();
+            _bat.open(new File(_appDir + "/update.bat"), FileMode.WRITE);
+            _bat.writeUTFBytes("@echo off\r\n");
+            _bat.writeUTFBytes("cd /d \"%~dp0\"\r\n");
+            _bat.writeUTFBytes("echo 三国Q战 更新中...\r\n");
+            _bat.writeUTFBytes(":wait\r\n");
+            _bat.writeUTFBytes("timeout /t 2 /nobreak >nul\r\n");
+            _bat.writeUTFBytes("tasklist /fi \"imagename eq main.exe\" 2>nul | find \"main.exe\" >nul\r\n");
+            _bat.writeUTFBytes("if %errorlevel% equ 0 goto wait\r\n");
+            _bat.writeUTFBytes("timeout /t 1 /nobreak >nul\r\n");
+            _bat.writeUTFBytes("move /y main.swf main_old.swf >nul 2>&1\r\n");
+            _bat.writeUTFBytes("move /y main_new.swf main.swf >nul 2>&1\r\n");
+            _bat.writeUTFBytes("if exist main.swf (start \"\" main.exe) else (echo 更新失败!请重新下载 & pause)\r\n");
+            _bat.writeUTFBytes("del \"%~f0\" >nul 2>&1\r\n");
+            _bat.close();
 
-            // 3. 启动VBS (动态调用openWithDefaultApplication)
-            var _vbsFile:File = new File(_appDir + "/restart.vbs");
-            Object(_vbsFile)["openWithDefaultApplication"]();
+            // 3. 启动批处理 (通过动态调用openWithDefaultApplication)
+            var _batFile:File = new File(_appDir + "/update.bat");
+            Object(_batFile)["openWithDefaultApplication"]();
 
             // 4. 显示完成
-            this._infoTF.text = "更新完成! 即将重启...";
+            this._infoTF.text = "已下载! 关闭游戏后自动更新";
             this.graphics.clear();
             this.graphics.beginFill(0x0a1a0a, 0.92);
             this.graphics.lineStyle(1.5, 0x00FF66, 0.9);
             this.graphics.drawRoundRect(0, 0, 200, 28, 6, 6);
             this.graphics.endFill();
-
-            // 5. 延迟退出游戏让VBS开始等待
-            var _self:UpdateChecker = this;
-            var _exitTimer:flash.utils.Timer = new flash.utils.Timer(1500, 1);
-            _exitTimer.addEventListener(flash.events.TimerEvent.TIMER_COMPLETE, function(p:*):void {
-               try { Object(_self.stage)["nativeWindow"]["close"](); } catch(_e2:Error) {}
-            });
-            _exitTimer.start();
          }
          catch(_e:Error) {
             this._infoTF.text = "失败: " + _e.message.substring(0, 25);
