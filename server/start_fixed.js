@@ -104,6 +104,41 @@ function loadAwardMap() {
   }
   console.log('[AwardMap] Loaded ' + Object.keys(AWARD_MAP).length + ' awards');
 }
+// 加载商城数据 (shop.xml)
+var SHOP_DATA = {};
+function loadShopData() {
+  if (!fs.existsSync('/opt/shop.xml')) return;
+  var xml = fs.readFileSync('/opt/shop.xml','utf8');
+  var blocks = xml.split('<RECORD>');
+  for (var i = 1; i < blocks.length; i++) {
+    var idm = blocks[i].match(/<id>([^<]+)<\/id>/);
+    var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
+    var nm = blocks[i].match(/<name>([^<]+)<\/name>/);
+    var pm = blocks[i].match(/<newPrice>(\d+)<\/newPrice>/);
+    var ptm = blocks[i].match(/<payType>(\d+)<\/payType>/);
+    var cntm = blocks[i].match(/<count>(\d+)<\/count>/);
+    if (idm && cm && pm) {
+      SHOP_DATA[idm[1]] = { code: cm[1], name: (nm?nm[1]:''), newPrice: parseInt(pm[1]), payType: parseInt(ptm?ptm[1]:'1'), count: parseInt(cntm?cntm[1]:'1') };
+    }
+  }
+  console.log('[ShopData] Loaded ' + Object.keys(SHOP_DATA).length + ' items');
+}
+// 加载道具数据 (staticproto.xml)
+var PROTO_DATA = {};
+function loadProtoData() {
+  if (!fs.existsSync('/opt/staticproto.xml')) return;
+  var xml = fs.readFileSync('/opt/staticproto.xml','utf8');
+  var blocks = xml.split('<RECORD>');
+  for (var i = 1; i < blocks.length; i++) {
+    var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
+    var nm = blocks[i].match(/<name>([^<]+)<\/name>/);
+    var tm = blocks[i].match(/<type>(\d+)<\/type>/);
+    if (cm) {
+      PROTO_DATA[cm[1]] = { name: (nm?nm[1]:''), type: parseInt(tm?tm[1]:'1') };
+    }
+  }
+  console.log('[ProtoData] Loaded ' + Object.keys(PROTO_DATA).length + ' items');
+}
 function getStageId(part, level) {
   return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
 }
@@ -205,6 +240,8 @@ if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE
 loadKezhiMap();     // 1. 加载XML克制类型映射
 loadStageMap();     // 1b. 加载关卡ID映射
 loadAwardMap();     // 1c. 加载关卡奖励数据
+loadShopData();     // 1d. 加载商城数据
+loadProtoData();    // 1e. 加载道具数据
 initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
@@ -362,7 +399,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.1.9', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.2.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -638,28 +675,28 @@ function handleRequest(socket, req) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
 
-    // 详细的购买处理：扣除金钱，返回最新资源
-    const itemPrice = parseInt(data.price) || 0;
-    const itemMoney = parseInt(data.money) || 0;
-    const itemDianka = parseInt(data.dianka) || 0;
-    const itemExploit = parseInt(data.exploit) || 0;
-    const itemReverence = parseInt(data.reverence) || 0;
+    // 从服务端shop.xml获取权威价格 (防止客户端修改)
+    var shopItem = SHOP_DATA[data.shopID];
+    if (!shopItem) return jsonRawResponse(socket, { success: false, message: '商品不存在' });
+    var itemCode = shopItem.code;
+    var itemCount = shopItem.count;
+    var itemPrice = shopItem.newPrice;
+    var payType = shopItem.payType;
+    var itemMoney = (payType === 1) ? itemPrice : 0;
+    var itemDianka = (payType === 2) ? itemPrice : 0;
+    var itemExploit = (payType === 3) ? itemPrice : 0;
+    var itemReverence = (payType === 4) ? itemPrice : 0;
 
-    var payType = parseInt(data.payType) || 0;
-    console.log('[Shop] 收到购买请求: shopID=' + data.shopID + ' code=' + data.code + ' count=' + data.count + ' payType=' + payType + ' price=' + itemPrice + ' money=' + itemMoney);
-    console.log('[Shop] 玩家余额: money=' + p.money + ' dianka=' + p.dianka + ' exploit=' + p.exploit + ' reverence=' + p.reverence);
+    console.log('[Shop] ' + p.role_name + ' buy ' + shopItem.name + ' x' + itemCount + ' price=' + itemPrice + ' payType=' + payType);
 
     if (p.money < itemMoney || p.dianka < itemDianka || p.exploit < itemExploit || p.reverence < itemReverence) {
-      console.log('[Shop] 资源不足，拒绝购买');
       return jsonRawResponse(socket, { success: false, message: '资源不足' });
     }
 
     p.money -= itemMoney; p.dianka -= itemDianka; p.exploit -= itemExploit; p.reverence -= itemReverence;
     console.log('[Shop] 扣费后余额: money=' + p.money + ' dianka=' + p.dianka + ' exploit=' + p.exploit + ' reverence=' + p.reverence);
 
-    // 创建/堆叠背包物品 - 按 code 查找已有物品进行堆叠
-    const itemCode = data.code || 'item_0';
-    const itemCount = parseInt(data.count) || 1;
+    // 创建/堆叠背包物品 - itemCode/itemCount已是服务端权威数据
     if (!db.bagItems) db.bagItems = [];
     var bagItem = null;
     // 查找该玩家是否已有同 code 的物品
@@ -1036,7 +1073,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.9' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.2.0' });
   }
 
   // 客户端文件下载
