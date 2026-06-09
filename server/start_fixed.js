@@ -72,6 +72,38 @@ function loadStageMap() {
   }
   console.log('[StageMap] Loaded ' + Object.keys(STAGE_MAP).length + ' stage IDs');
 }
+// 加载关卡奖励数据 (soldier/proto/money等)
+var AWARD_MAP = {};
+function loadAwardMap() {
+  if (!fs.existsSync('/opt/stage.xml')) return;
+  var xml = fs.readFileSync('/opt/stage.xml','utf8');
+  var blocks = xml.split('<gate');
+  for (var i = 1; i < blocks.length; i++) {
+    var pm = blocks[i].match(/part="(\d+)"/);
+    var lm = blocks[i].match(/level="(\d+)"/);
+    var aw = blocks[i].match(/<award\s+([^>]+)\/>/);
+    if (pm && lm && aw) {
+      var key = pm[1]+'_'+lm[1];
+      // 解析award属性
+      var attrs = aw[1];
+      var sm = attrs.match(/soldier="([^"]*)"/);
+      var rm = attrs.match(/recruit="([^"]*)"/);
+      var prm = attrs.match(/proto="([^"]*)"/);
+      var mom = attrs.match(/money="(\d+)"/);
+      var exm = attrs.match(/exploit="(\d+)"/);
+      var rem = attrs.match(/reverence="(\d+)"/);
+      AWARD_MAP[key] = {
+        soldier: (sm&&sm[1]) ? sm[1] : '',
+        recruit: (rm&&rm[1]) ? rm[1] : '',
+        proto: (prm&&prm[1]) ? prm[1] : '',
+        money: (mom&&mom[1]) ? parseInt(mom[1]) : 0,
+        exploit: (exm&&exm[1]) ? parseInt(exm[1]) : 0,
+        reverence: (rem&&rem[1]) ? parseInt(rem[1]) : 0
+      };
+    }
+  }
+  console.log('[AwardMap] Loaded ' + Object.keys(AWARD_MAP).length + ' awards');
+}
 function getStageId(part, level) {
   return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
 }
@@ -172,6 +204,7 @@ function createTestAccounts() {
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 loadKezhiMap();     // 1. 加载XML克制类型映射
 loadStageMap();     // 1b. 加载关卡ID映射
+loadAwardMap();     // 1c. 加载关卡奖励数据
 initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
@@ -417,12 +450,42 @@ function handleRequest(socket, req) {
       p.finished_stages = fin.join('|');
       p.level = Math.max(p.level, flevel);
 
-      // 首次通关额外奖励 (与客户端 Data.getAward 对应)
+      // 首次通关额外奖励 — 从stage.xml读取真实奖励数据
+      var awardKey = fpart + '_' + flevel;
+      var stageAward = AWARD_MAP[awardKey];
       awardData = { money: 0, exploit: 0, reverence: 0, soldier: [], item: [] };
-      var partBonus = [0, 500, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 20000, 25000][fpart] || 1000;
-      awardData.money = partBonus + flevel * 200;
-      awardData.exploit = Math.floor(partBonus/2) + flevel * 100;
-      awardData.reverence = Math.floor(partBonus/4) + flevel * 50;
+      if (stageAward) {
+        awardData.money = stageAward.money || 0;
+        awardData.exploit = stageAward.exploit || 0;
+        awardData.reverence = stageAward.reverence || 0;
+        // 武将奖励
+        if (stageAward.soldier && stageAward.soldier.length > 0) {
+          awardData.soldier.push({ id: Math.floor(Math.random()*100000), code: stageAward.soldier, level: 1, evolution: 0, feature: 0, genius: null });
+        }
+        // 道具奖励: "proto_1_9:1|proto_2_1:3"
+        if (stageAward.proto && stageAward.proto.length > 0) {
+          stageAward.proto.split('|').forEach(function(ps) {
+            var pp = ps.split(':');
+            if (pp.length >= 2) {
+              awardData.item.push({ id: Math.floor(Math.random()*10000), code: pp[0], count: parseInt(pp[1]) });
+            }
+          });
+        }
+        if (stageAward.recruit && stageAward.recruit.length > 0) {
+          awardData.recruit = stageAward.recruit;
+        }
+        // 奖励武将也加到玩家身上
+        if (stageAward.soldier && stageAward.soldier.length > 0) {
+          var newG = createGeneral(p.id, stageAward.soldier, '', 1, 0, 0, null, 0, 1, 0, 1, 0, 1);
+          console.log('[Fight] Award general ' + stageAward.soldier + ' to ' + p.role_name + ' id=' + newG.general_id);
+        }
+      } else {
+        // 无XML奖励时用默认值
+        var partBonus = [0, 500, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 20000, 25000][fpart] || 1000;
+        awardData.money = partBonus + flevel * 200;
+        awardData.exploit = Math.floor(partBonus/2) + flevel * 100;
+        awardData.reverence = Math.floor(partBonus/4) + flevel * 50;
+      }
     }
     p.finished_stages = fin.join('|');
     save();
