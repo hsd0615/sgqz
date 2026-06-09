@@ -540,13 +540,25 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, resp);
   }
 
+  // 每日重置副本数据
+  function dailyResetFuben(p) {
+    var today = new Date().toISOString().substring(0, 10); // YYYY-MM-DD
+    if (p.fuben_reset_date !== today) {
+      p.fuben_counts = {};
+      p.fuben_reset_date = today;
+      return true;
+    }
+    return false;
+  }
+
   // Fuben count
   if (url === '/api/fuben/count') {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
     if (!p.fuben_counts) p.fuben_counts = {};
+    dailyResetFuben(p);
     var fcKey = String(data.stageID||'0');
-    var remaining = 2 - (p.fuben_counts[fcKey] || 0);
+    var remaining = 6 - (p.fuben_counts[fcKey] || 0);
     console.log('[Fuben] Count ' + p.role_name + ' stage=' + fcKey + ' used=' + (p.fuben_counts[fcKey]||0) + ' remaining=' + remaining);
     return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, count: Math.max(0, remaining) } });
   }
@@ -556,6 +568,7 @@ function handleRequest(socket, req) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
     if (!p.fuben_counts) p.fuben_counts = {};
+    dailyResetFuben(p);
     var fcKey = String(data.stageID||'0');
     p.fuben_counts[fcKey] = (p.fuben_counts[fcKey] || 0) + 1;
     save();
