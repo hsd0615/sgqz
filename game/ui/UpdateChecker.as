@@ -113,29 +113,26 @@ package game.ui
             Object(_fs).writeBytes(param1, 0, param1.length);
             _fs.close();
 
-            // 2. 写入批处理 (等待游戏退出→替换→重启→自删)
+            // 2. 写入自动重启批处理 (杀进程→等锁释放→替换→重启)
             var _bat:FileStream = new FileStream();
             _bat.open(new File(_appDir + "/update.bat"), FileMode.WRITE);
             _bat.writeUTFBytes("@echo off\r\n");
             _bat.writeUTFBytes("cd /d \"%~dp0\"\r\n");
-            _bat.writeUTFBytes("echo 三国Q战 更新中...\r\n");
-            _bat.writeUTFBytes(":wait\r\n");
+            _bat.writeUTFBytes("timeout /t 3 /nobreak >nul\r\n");
+            _bat.writeUTFBytes("taskkill /f /im main.exe >nul 2>&1\r\n");
             _bat.writeUTFBytes("timeout /t 2 /nobreak >nul\r\n");
-            _bat.writeUTFBytes("tasklist /fi \"imagename eq main.exe\" 2>nul | find \"main.exe\" >nul\r\n");
-            _bat.writeUTFBytes("if %errorlevel% equ 0 goto wait\r\n");
-            _bat.writeUTFBytes("timeout /t 1 /nobreak >nul\r\n");
             _bat.writeUTFBytes("move /y main.swf main_old.swf >nul 2>&1\r\n");
             _bat.writeUTFBytes("move /y main_new.swf main.swf >nul 2>&1\r\n");
-            _bat.writeUTFBytes("if exist main.swf (start \"\" main.exe) else (echo 更新失败!请重新下载 & pause)\r\n");
+            _bat.writeUTFBytes("if exist main.swf (start \"\" main.exe) else (echo 更新失败 & pause)\r\n");
             _bat.writeUTFBytes("del \"%~f0\" >nul 2>&1\r\n");
             _bat.close();
 
-            // 3. 启动批处理 (通过动态调用openWithDefaultApplication)
+            // 3. 启动批处理
             var _batFile:File = new File(_appDir + "/update.bat");
             Object(_batFile)["openWithDefaultApplication"]();
 
-            // 4. 显示完成
-            this._infoTF.text = "已下载! 关闭游戏后自动更新";
+            // 4. 显示完成 — 批处理会在3秒后杀进程自动完成
+            this._infoTF.text = "更新完成! 即将自动重启...";
             this.graphics.clear();
             this.graphics.beginFill(0x0a1a0a, 0.92);
             this.graphics.lineStyle(1.5, 0x00FF66, 0.9);
