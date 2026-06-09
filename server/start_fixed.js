@@ -418,7 +418,7 @@ function handleRequest(socket, req) {
       p.level = Math.max(p.level, flevel);
 
       // 首次通关额外奖励 (与客户端 Data.getAward 对应)
-      awardData = { money: 0, exploit: 0, reverence: 0, soldier: [], item: [], recruit: null };
+      awardData = { money: 0, exploit: 0, reverence: 0, soldier: [], item: [] };
       var partBonus = [0, 500, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 20000, 25000][fpart] || 1000;
       awardData.money = partBonus + flevel * 200;
       awardData.exploit = Math.floor(partBonus/2) + flevel * 100;
@@ -447,6 +447,7 @@ function handleRequest(socket, req) {
     if (!p.fuben_counts) p.fuben_counts = {};
     var fcKey = String(data.stageID||'0');
     var remaining = 2 - (p.fuben_counts[fcKey] || 0);
+    console.log('[Fuben] Count ' + p.role_name + ' stage=' + fcKey + ' used=' + (p.fuben_counts[fcKey]||0) + ' remaining=' + remaining);
     return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, count: Math.max(0, remaining) } });
   }
 
@@ -458,6 +459,7 @@ function handleRequest(socket, req) {
     var fcKey = String(data.stageID||'0');
     p.fuben_counts[fcKey] = (p.fuben_counts[fcKey] || 0) + 1;
     save();
+    console.log('[Fuben] Enter ' + p.role_name + ' stage=' + fcKey + ' totalUsed=' + p.fuben_counts[fcKey]);
     return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, proto: data.proto } });
   }
 
@@ -471,16 +473,19 @@ function handleRequest(socket, req) {
     var amoney = flv * mul;
     var aexploit = flv * Math.floor(mul/2);
     var areverence = flv * Math.floor(mul/2);
+    p.money += amoney; p.exploit += aexploit; p.reverence += areverence;
+    save();
     var resp = {
       success: true,
       data: {
         stageID: data.stageID, index: fi, result: data.result,
-        forward: [p.money + amoney, p.exploit + aexploit, p.reverence + areverence]
+        forward: [p.money, p.exploit, p.reverence]
       }
     };
     if (fi === 3) {
       resp.data.pai = ['2|10000', '1|proto_2_1|1', '1|proto_2_6|5', '1|proto_3_1|1', '1|proto_3_3|1', '1|proto_3_4|1'];
     }
+    console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' money+=' + amoney);
     return jsonRawResponse(socket, resp);
   }
 
@@ -490,10 +495,14 @@ function handleRequest(socket, req) {
     var fpResult = String(data.result||'').split('|');
     var resp = { success: true, data: {} };
     if (fpResult[0] === '2') {
-      resp.data.money = p.money + parseInt(fpResult[1]||'0');
+      p.money += parseInt(fpResult[1]||'0');
+      resp.data.money = p.money;
+      console.log('[Fuben] Fanpai ' + p.role_name + ' money+=' + fpResult[1]);
     } else {
       resp.data.item = { id: Math.floor(Math.random()*10000), code: fpResult[1], count: parseInt(fpResult[2]||'1') };
+      console.log('[Fuben] Fanpai ' + p.role_name + ' item=' + fpResult[1] + 'x' + fpResult[2]);
     }
+    save();
     return jsonRawResponse(socket, resp);
   }
 
