@@ -399,7 +399,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.3.1', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.3.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -1094,7 +1094,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.3.1' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.3.0' });
   }
 
   // 客户端文件下载 (SWF + XML数据)
