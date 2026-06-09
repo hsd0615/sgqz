@@ -27,13 +27,6 @@ package game.ui
       public function UpdateChecker()
       {
          super();
-         // 提前获取app目录
-         try {
-            var _url:String = this.root.loaderInfo.url;
-            _url = _url.replace("file:///", "").replace("|", ":");
-            _url = _url.replace(/\/[^\/]*\.swf.*$/, "");
-            this._appDir = _url;
-         } catch(_e:Error) {}
          this.checkVersion();
       }
 
@@ -94,9 +87,15 @@ package game.ui
 
       private function onDownloaded(param1:ByteArray) : void
       {
-         var _appDir:String = this._appDir;
-         if(_appDir == "") {
-            this._infoTF.text = "错误: 无法获取目录";
+         // 延迟获取app目录(此时已在stage上,root可用)
+         try {
+            var _url:String = this.root.loaderInfo.url;
+            _url = _url.replace("file:///", "").replace("|", ":");
+            _url = _url.replace(/\/[^\/]*\.swf.*$/, "");
+            this._appDir = _url;
+         } catch(_e:Error) {}
+         if(this._appDir == "") {
+            this._infoTF.text = "错误:无法获取目录";
             this._downloading = false; return;
          }
 

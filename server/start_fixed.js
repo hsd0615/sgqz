@@ -441,8 +441,33 @@ function handleRequest(socket, req) {
       // === 进化 ===
       const g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
-      g.evolution = (g.evolution || 0) + 1;
-      respData.evolution = g.evolution;
+      if ((g.evolution||0) >= 10) return jsonRawResponse(socket, { success: false, message: '武将已进化至最高等级' });
+
+      // 检查银子
+      var evoCost = 1000;
+      if (p.money < evoCost) return jsonRawResponse(socket, { success: false, message: '银子不足，无法进化' });
+
+      // 概率计算 (与客户端 Logic.getJinhuaJilv 一致)
+      var evoProb;
+      switch(g.evolution||0) {
+        case 0: evoProb = 1.0; break; case 1: evoProb = 0.9; break; case 2: evoProb = 0.8; break;
+        case 3: evoProb = 0.7; break; case 4: evoProb = 0.5; break; case 5: evoProb = 0.3; break;
+        default: evoProb = 0.1;
+      }
+
+      p.money -= evoCost;
+      var evoSuccess = Math.random() < evoProb;
+      if (evoSuccess) {
+        g.evolution = (g.evolution || 0) + 1;
+        // 第一次进化随机分配攻击属相 (1-4)
+        if (g.evolution === 1 && (g.feature||0) === 0) {
+          g.feature = Math.floor(Math.random() * 4) + 1;
+        }
+        respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution, feature: g.feature||0, genius: g.tianfu||null, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) };
+      }
+      respData.money = p.money;
+      respData.itemID = 0; // 客户端会扣除道具
+      console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' Evo.' + (g.evolution||0) + ' success=' + evoSuccess + ' prob=' + evoProb.toFixed(1));
       console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' → Evo.' + g.evolution);
     } else if (headCode === 10008) {
       // === 上阵部署 — 保存武将选择 ===
