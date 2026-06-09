@@ -111,7 +111,8 @@ function makeArmyModel(playerId) {
   return findGenerals(playerId).map(g => ({
     id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
     feature: g.feature, evolution: g.evolution,
-    kezhi: g.kezhi1+'|'+g.kezhi2+'|'+g.kezhi3,
+    // 格式: "兵种:等级|兵种:等级|兵种:等级" (如 "6:3|1:1|8:2")
+    kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1),
   }));
 }
 function makeBagModel(playerId) {
@@ -235,7 +236,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.1.3', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.1.4', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -442,9 +443,27 @@ function handleRequest(socket, req) {
       p.choose = data.choose || '';
       respData.choose = p.choose;
       console.log('[Deploy] ' + p.role_name + ' choose=' + (p.choose||'').substring(0,50));
-    } else if (headCode === 10006 || headCode === 10007) {
-      // === 克制升级 / 天赋 ===
-      // 这些操作消耗道具，不做服务端验证，只返回当前资源
+    } else if (headCode === 10006) {
+      // === 克制升级 ===
+      var g = findGeneralByGid(data.id);
+      if (g) {
+        var ki = parseInt(data.index) || 0;
+        if (ki === 0) { g.kezhi1_level = (g.kezhi1_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) }; respData.index = ki; }
+        else if (ki === 1) { g.kezhi2_level = (g.kezhi2_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) }; respData.index = ki; }
+        else if (ki === 2) { g.kezhi3_level = (g.kezhi3_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) }; respData.index = ki; }
+        console.log('[Kezhi] ' + p.role_name + ' ' + g.name + ' kezhi' + (ki+1) + ' → Lv.' + (g['kezhi'+(ki+1)+'_level']||1));
+      }
+    } else if (headCode === 10007) {
+      // === 天赋激活/重洗 ===
+      var g = findGeneralByGid(data.id);
+      if (g) {
+        // 随机分配天赋
+        var tfPool = g.tianfu ? ['tf_1','tf_2','tf_3','tf_4','tf_5','tf_6','tf_7','tf_8','tf_9','tf_10','tf_11','tf_12','tf_13','tf_14','tf_15','tf_16','tf_17','tf_18','tf_19','tf_20','tf_21'] : ['tf_1','tf_4','tf_7','tf_10','tf_13','tf_16','tf_19'];
+        g.tianfu = tfPool[Math.floor(Math.random() * tfPool.length)];
+        respData.dianka = p.dianka;
+        respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) };
+        console.log('[Tianfu] ' + p.role_name + ' ' + g.name + ' → ' + g.tianfu);
+      }
     }
 
     save();
@@ -699,7 +718,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.3' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.4' });
   }
 
   // 客户端文件下载
