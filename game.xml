@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <data>
 	<!-- 网络连接地址 -->
 	<servera url="http://47.96.41.243:3000" />
@@ -6,30 +6,22 @@
 
 	<requestCode>gbk</requestCode>
 	<responseCode>utf-8</responseCode>
-	
-	<!-- 素材 -->
+
+	<!-- 素材 (本地加载) -->
 	<SWFLoader url="ui.swf" name="game01.skin.ui" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="superGeneral.swf" name="game01.skin.superGeneral" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="face.swf" name="game01.skin.face" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="general.swf" name="game01.skin.general" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="sound.swf" name="game01.sound" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="fubenui.swf" name="game01.skin.fubenui" load="true" autoPlay="false" context="own"/>
-	<DataLoader url="talkFilter.xml" name="game01.data.talkFilter" load="true" />
-	
-	<DataLoader url="staticgeneral.xml" name="game01.data.general" load="true" />
-	<DataLoader url="staticxishu.xml" name="game01.data.xishu" load="true" />
-	<DataLoader url="staticproto.xml" name="game01.data.proto" load="true" />
-	<DataLoader url="shop.xml" name="game01.data.shop" load="true" />
-	<DataLoader url="stage.xml" name="game01.data.stage" load="true" />
-	<DataLoader url="staticpaoma.xml" name="game01.data.paoma" load="true" />
-	<DataLoader url="statictf.xml" name="game01.data.tianfu" load="true" />
-	<!--
-	<DataLoader url="configure/staticgeneral.xml" name="game01.data.general" load="true" />
-	<DataLoader url="configure/staticxishu.xml" name="game01.data.xishu" load="true" />
-	<DataLoader url="configure/staticproto.xml" name="game01.data.proto" load="true" />
-	<DataLoader url="configure/shop.xml" name="game01.data.shop" load="true" />
-	<DataLoader url="configure/stage.xml" name="game01.data.stage" load="true" />
-	<DataLoader url="configure/staticpaoma.xml" name="game01.data.paoma" load="true" />
-	<DataLoader url="configure/statictf.xml" name="game01.data.tianfu" load="true" />
-	 -->
+
+	<!-- 游戏数据 (服务端加载，玩家无法修改) -->
+	<DataLoader url="http://47.96.41.243:3000/client/staticgeneral.xml" name="game01.data.general" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/staticxishu.xml" name="game01.data.xishu" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/staticproto.xml" name="game01.data.proto" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/shop.xml" name="game01.data.shop" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/stage.xml" name="game01.data.stage" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/staticpaoma.xml" name="game01.data.paoma" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/statictf.xml" name="game01.data.tianfu" load="true" />
+	<DataLoader url="http://47.96.41.243:3000/client/talkFilter.xml" name="game01.data.talkFilter" load="true" />
 </data>

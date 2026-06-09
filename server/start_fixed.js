@@ -411,17 +411,14 @@ function handleRequest(socket, req) {
       save();
       const allArmy = makeArmyModel(p.id);
       const bagModel = makeBagModel(p.id);
-      // Flash URLLoader对>1000B响应有限制,登录只返回前2个武将+道具
-      var loginArmy = allArmy.slice(0, 2);
-      var loginBag = bagModel.slice(0, 5);
-      console.log('[Login] ' + p.role_name + ' — 总武将:' + allArmy.length + ' 登录返回:' + loginArmy.length + ' 背包:' + bagModel.length + 'B');
+      console.log('[Login] ' + p.role_name + ' — 武将:' + allArmy.length + ' 背包:' + bagModel.length + ' playerID=' + p.id);
       if (bagModel.length > 0) {
         console.log('[Login-Bag] ' + JSON.stringify(bagModel.slice(0, 3)));
       }
       return jsonRawResponse(socket, {
         success: true, stamp: data.stamp||'', head: '9999',
         data: { flag: 1, token: p.token, currentTime: Date.now(), dianka: p.dianka,
-          armyModel: loginArmy, bagModel: loginBag,
+          armyModel: allArmy, bagModel: bagModel,
           process: { history: p.history||'', finished: p.finished_stages||'' },
           roleModel: makeRoleModel(p),
         }
@@ -1100,7 +1097,7 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.2.1' });
   }
 
-  // 客户端文件下载
+  // 客户端文件下载 (SWF + XML数据)
   if (url.startsWith('/client/')) {
     var clientFile = url.substring(8); // remove /client/
     if (clientFile.indexOf('..') >= 0) {
