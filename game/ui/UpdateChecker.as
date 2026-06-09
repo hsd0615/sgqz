@@ -87,14 +87,20 @@ package game.ui
 
       private function onDownloaded(param1:ByteArray) : void
       {
-         // 延迟获取app目录(此时已在stage上,root可用)
+         // 获取app目录 - AIR中loaderInfo.url可能是app:/格式
          try {
             var _url:String = this.root.loaderInfo.url;
-            _url = _url.replace("file:///", "").replace("|", ":");
-            _url = _url.replace(/\/[^\/]*\.swf.*$/, "");
-            this._appDir = _url;
+            if(_url.indexOf("app:/") == 0) {
+               // AIR打包应用: 用applicationDirectory (动态访问绕过stub)
+               this._appDir = File["applicationDirectory"]["nativePath"];
+            } else {
+               // 本地文件: file:///C:/path/main.swf
+               _url = _url.replace("file:///", "").replace("|", ":");
+               _url = _url.replace(/\/[^\/]*\.swf.*$/, "");
+               this._appDir = _url;
+            }
          } catch(_e:Error) {}
-         if(this._appDir == "") {
+         if(this._appDir == "" || this._appDir == null) {
             this._infoTF.text = "错误:无法获取目录";
             this._downloading = false; return;
          }
