@@ -113,17 +113,20 @@ package game.ui
             Object(_fs).writeBytes(param1, 0, param1.length);
             _fs.close();
 
-            // 2. 写入自动重启批处理 (杀进程→等锁释放→替换→重启)
+            // 2. 写入自动重启批处理 (杀进程→轮询等锁→替换→验证→重启)
             var _bat:FileStream = new FileStream();
             _bat.open(new File(_appDir + "/update.bat"), FileMode.WRITE);
             _bat.writeUTFBytes("@echo off\r\n");
             _bat.writeUTFBytes("cd /d \"%~dp0\"\r\n");
             _bat.writeUTFBytes("timeout /t 3 /nobreak >nul\r\n");
             _bat.writeUTFBytes("taskkill /f /im main.exe >nul 2>&1\r\n");
-            _bat.writeUTFBytes("timeout /t 2 /nobreak >nul\r\n");
+            _bat.writeUTFBytes(":wait_unlock\r\n");
+            _bat.writeUTFBytes("timeout /t 1 /nobreak >nul\r\n");
             _bat.writeUTFBytes("move /y main.swf main_old.swf >nul 2>&1\r\n");
+            _bat.writeUTFBytes("if exist main.swf goto wait_unlock\r\n");
             _bat.writeUTFBytes("move /y main_new.swf main.swf >nul 2>&1\r\n");
-            _bat.writeUTFBytes("if exist main.swf (start \"\" main.exe) else (echo 更新失败 & pause)\r\n");
+            _bat.writeUTFBytes("if not exist main.swf goto wait_unlock\r\n");
+            _bat.writeUTFBytes("start \"\" main.exe\r\n");
             _bat.writeUTFBytes("del \"%~f0\" >nul 2>&1\r\n");
             _bat.close();
 

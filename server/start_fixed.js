@@ -399,7 +399,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.2.2', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.3.1', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -1094,7 +1094,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.2.2' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.3.1' });
   }
 
   // 客户端文件下载 (SWF + XML数据)
@@ -1110,14 +1110,12 @@ function handleRequest(socket, req) {
       if (fs.existsSync(clientPath)) {
         var clientData = fs.readFileSync(clientPath);
         var ext = clientFile.split('.').pop().toLowerCase();
-        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8' };
         var mime = mimeMap[ext] || 'application/octet-stream';
-        sendRawHttpResponse(socket, 200, 'OK', {
-          'Content-Type': mime,
-          'Content-Length': String(clientData.length),
-          'Connection': 'close',
-          'Content-Disposition': 'attachment; filename="' + clientFile + '"'
-        }, clientData);
+        var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nConnection: close\r\n\r\n';
+        var headBuf = Buffer.from(headStr, 'utf-8');
+        var fullBuf = Buffer.concat([headBuf, clientData]);
+        socket.write(fullBuf, function() { try { socket.end(); } catch(e) {} });
         return;
       }
     } catch(e) {}
