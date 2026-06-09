@@ -1205,6 +1205,8 @@ package game.model
                this._bag.pop();
             }
          }
+         // 写入调试日志
+         try { var _logF:File = File.applicationStorageDirectory.resolvePath("bag_debug.txt"); var _logS:FileStream = new FileStream(); _logS.open(_logF, FileMode.WRITE); _logS.writeUTFBytes("initBagModel: " + param1.length + " items\n"); var _i:int = 0; while(_i < param1.length) { _logS.writeUTFBytes("  [" + _i + "] id=" + param1[_i].id + " code=" + param1[_i].code + " count=" + param1[_i].count + "\n"); _i++; } _logS.close(); } catch(_e:Error) {}
          var _loc2_:int = 0;
          while(_loc2_ < param1.length)
          {

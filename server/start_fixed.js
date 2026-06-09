@@ -116,9 +116,17 @@ function makeArmyModel(playerId) {
 }
 function makeBagModel(playerId) {
   if (!db.bagItems) return [];
-  return db.bagItems.filter(b => b.player_id === playerId).map(b => ({
-    id: b.id, code: b.code, count: b.count || 1
-  }));
+  return db.bagItems.filter(function(b) {
+    // player_id 可能是 number 或 string，用宽松比较
+    return b.player_id == playerId;
+  }).map(function(b) {
+    // 兼容旧数据 (item_code/item_count) 和新数据 (code/count)
+    return {
+      id: b.id,
+      code: b.code || b.item_code || 'item_unknown',
+      count: b.count || b.item_count || 1
+    };
+  });
 }
 // 获取当前玩家资源数据（用于各种API响应中携带资源）
 function getResourceData(p) {
@@ -227,7 +235,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.1.1', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.1.2', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -238,11 +246,15 @@ function handleRequest(socket, req) {
       p.lastSeen = Date.now();
       save();
       const allArmy = makeArmyModel(p.id);
-      console.log('[Login] ' + p.role_name + ' — 武将数:' + allArmy.length + ' 响应预估:' + (300 + allArmy.length*100) + 'B');
+      const bagModel = makeBagModel(p.id);
+      console.log('[Login] ' + p.role_name + ' — 武将:' + allArmy.length + ' 背包物品:' + bagModel.length + ' playerID=' + p.id + ' type=' + typeof p.id);
+      if (bagModel.length > 0) {
+        console.log('[Login-Bag] ' + JSON.stringify(bagModel.slice(0, 3)));
+      }
       return jsonRawResponse(socket, {
         success: true, stamp: data.stamp||'', head: '9999',
         data: { flag: 1, token: p.token, currentTime: Date.now(), dianka: p.dianka,
-          armyModel: allArmy, bagModel: makeBagModel(p.id),
+          armyModel: allArmy, bagModel: bagModel,
           process: { history: p.history||'', finished: p.finished_stages||'' },
           roleModel: makeRoleModel(p),
         }
@@ -687,7 +699,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.1' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.2' });
   }
 
   // 客户端文件下载
