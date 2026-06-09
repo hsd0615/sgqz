@@ -58,6 +58,24 @@ function loadKezhiMap() {
   console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries');
 }
 
+// 全局关卡ID映射 (part_level → stage_id, 从stage.xml加载)
+var STAGE_MAP = {};
+function loadStageMap() {
+  if (!fs.existsSync('/opt/stage.xml')) return;
+  var xml = fs.readFileSync('/opt/stage.xml','utf8');
+  var blocks = xml.split('<gate');
+  for (var i = 1; i < blocks.length; i++) {
+    var pm = blocks[i].match(/part="(\d+)"/);
+    var lm = blocks[i].match(/level="(\d+)"/);
+    var im = blocks[i].match(/id="(\d+)"/);
+    if (pm && lm && im) STAGE_MAP[pm[1]+'_'+lm[1]] = parseInt(im[1]);
+  }
+  console.log('[StageMap] Loaded ' + Object.keys(STAGE_MAP).length + ' stage IDs');
+}
+function getStageId(part, level) {
+  return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
+}
+
 // 获取武将克制字符串: XML类型(权威) + DB等级(可升级)
 function getKezhiStr(g) {
   var xmlKz = KEZHI_MAP[g.code];
@@ -153,6 +171,7 @@ function createTestAccounts() {
 
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 loadKezhiMap();     // 1. 加载XML克制类型映射
+loadStageMap();     // 1b. 加载关卡ID映射
 initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
@@ -388,8 +407,8 @@ function handleRequest(socket, req) {
     p.exploit += battleExploit;
     p.reverence += battleReverence;
 
-    // 首次通关奖励
-    var stageId = fpart + '_' + flevel;
+    // 首次通关奖励 — 使用正确的整数stageID
+    var stageId = String(getStageId(fpart, flevel));
     var fin = (p.finished_stages || '').split('|').filter(Boolean);
     var isFirstClear = !fin.includes(stageId);
     var awardData = null;
