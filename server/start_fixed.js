@@ -411,14 +411,17 @@ function handleRequest(socket, req) {
       save();
       const allArmy = makeArmyModel(p.id);
       const bagModel = makeBagModel(p.id);
-      console.log('[Login] ' + p.role_name + ' — 武将:' + allArmy.length + ' 背包物品:' + bagModel.length + ' playerID=' + p.id + ' type=' + typeof p.id);
+      // Flash URLLoader对>1000B响应有限制,登录只返回前2个武将+道具
+      var loginArmy = allArmy.slice(0, 2);
+      var loginBag = bagModel.slice(0, 5);
+      console.log('[Login] ' + p.role_name + ' — 总武将:' + allArmy.length + ' 登录返回:' + loginArmy.length + ' 背包:' + bagModel.length + 'B');
       if (bagModel.length > 0) {
         console.log('[Login-Bag] ' + JSON.stringify(bagModel.slice(0, 3)));
       }
       return jsonRawResponse(socket, {
         success: true, stamp: data.stamp||'', head: '9999',
         data: { flag: 1, token: p.token, currentTime: Date.now(), dianka: p.dianka,
-          armyModel: allArmy, bagModel: bagModel,
+          armyModel: loginArmy, bagModel: loginBag,
           process: { history: p.history||'', finished: p.finished_stages||'' },
           roleModel: makeRoleModel(p),
         }
@@ -449,6 +452,14 @@ function handleRequest(socket, req) {
         process: { history: '', finished: '' }, roleModel: makeRoleModel(p),
       }
     });
+  }
+
+  // Load remaining generals after login
+  if (url === '/api/game/load-generals') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    const allArmy = makeArmyModel(p.id);
+    return jsonRawResponse(socket, { success: true, data: { armyModel: allArmy } });
   }
 
   // Player list
