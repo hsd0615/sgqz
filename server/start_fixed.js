@@ -46,7 +46,11 @@ function ensureGenerals(pid, list, level, evo, feat, tf) {
   for (const [code, name, kezhi] of list) {
     if (findGenerals(pid).some(g => g.code === code)) continue;
     const kp = kezhi.split('|');
-    createGeneral(pid, code, name, level||1, evo||0, feat||0, tf||null, parseInt(kp[0].split(':')[0]),(kp[1]?parseInt(kp[1].split(':')[0]):1),parseInt(kp[2].split(':')[0]),(kp[2]?parseInt(kp[2].split(':')[0]):1));
+    // 参数: pid,code,name,level,evo,feat,tf, k1,k1l, k2,k2l, k3,k3l
+    createGeneral(pid, code, name, level||1, evo||0, feat||0, tf||null,
+      parseInt(kp[0].split(':')[0]), parseInt(kp[0].split(':')[1]||'1'),
+      parseInt(kp[1].split(':')[0]), parseInt(kp[1].split(':')[1]||'1'),
+      parseInt(kp[2].split(':')[0]), parseInt(kp[2].split(':')[1]||'1'));
   }
 }
 const ALL_SUPERS = [
@@ -111,8 +115,10 @@ function makeArmyModel(playerId) {
   return findGenerals(playerId).map(g => ({
     id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
     feature: g.feature, evolution: g.evolution,
-    // 格式: "兵种:等级|兵种:等级|兵种:等级" (如 "6:3|1:1|8:2")
-    kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1),
+    // 如果类型全为0(旧数据),返回空字符串让客户端用XML默认值
+    kezhi: ((g.kezhi1||0)+(g.kezhi2||0)+(g.kezhi3||0) === 0)
+      ? ''
+      : (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1),
   }));
 }
 function makeBagModel(playerId) {
@@ -236,7 +242,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.1.4', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.1.5', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -340,7 +346,7 @@ function handleRequest(socket, req) {
       // 招募成功 — 创建武将
       const g = createGeneral(p.id, data.code, '', 1, 0, 0, null,
         parseInt(String(data.kezhi1||0)), 1, parseInt(String(data.kezhi2||0)), 1, parseInt(String(data.kezhi3||0)), 1);
-      generalData = { id: g.general_id, code: g.code, level: 1, evolution: 0, feature: 0, kezhi: (data.kezhi1||0)+'|'+(data.kezhi2||0)+'|'+(data.kezhi3||0), genius: null };
+      generalData = { id: g.general_id, code: g.code, level: 1, evolution: 0, feature: 0, kezhi: (g.kezhi1||0)+':1|'+(g.kezhi2||0)+':1|'+(g.kezhi3||0)+':1', genius: null };
       console.log('[Recruit] ' + p.role_name + ' 招募成功: ' + data.code + ' id=' + g.general_id);
     } else {
       console.log('[Recruit] ' + p.role_name + ' 招募失败: ' + data.code);
@@ -457,12 +463,15 @@ function handleRequest(socket, req) {
       // === 天赋激活/重洗 ===
       var g = findGeneralByGid(data.id);
       if (g) {
-        // 随机分配天赋
-        var tfPool = g.tianfu ? ['tf_1','tf_2','tf_3','tf_4','tf_5','tf_6','tf_7','tf_8','tf_9','tf_10','tf_11','tf_12','tf_13','tf_14','tf_15','tf_16','tf_17','tf_18','tf_19','tf_20','tf_21'] : ['tf_1','tf_4','tf_7','tf_10','tf_13','tf_16','tf_19'];
+        var isReroll = !!(g.tianfu);  // 已有天赋→重洗(扣点卡)，无天赋→激活(免费)
+        var tfPool = isReroll
+          ? ['tf_1','tf_2','tf_3','tf_4','tf_5','tf_6','tf_7','tf_8','tf_9','tf_10','tf_11','tf_12','tf_13','tf_14','tf_15','tf_16','tf_17','tf_18','tf_19','tf_20','tf_21']
+          : ['tf_1','tf_4','tf_7','tf_10','tf_13','tf_16','tf_19'];
         g.tianfu = tfPool[Math.floor(Math.random() * tfPool.length)];
+        if (isReroll) { p.dianka -= 100; }  // 重洗扣100点卡
         respData.dianka = p.dianka;
         respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu, kezhi: (g.kezhi1||0)+':'+(g.kezhi1_level||1)+'|'+(g.kezhi2||0)+':'+(g.kezhi2_level||1)+'|'+(g.kezhi3||0)+':'+(g.kezhi3_level||1) };
-        console.log('[Tianfu] ' + p.role_name + ' ' + g.name + ' → ' + g.tianfu);
+        console.log('[Tianfu] ' + p.role_name + ' ' + g.name + (isReroll?' 重洗→':' 激活→') + g.tianfu + ' dianka:' + p.dianka);
       }
     }
 
@@ -718,7 +727,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.4' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.5' });
   }
 
   // 客户端文件下载
