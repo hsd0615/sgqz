@@ -474,6 +474,16 @@ function handleRequest(socket, req) {
       p.choose = data.choose || '';
       respData.choose = p.choose;
       console.log('[Deploy] ' + p.role_name + ' choose=' + (p.choose||'').substring(0,50));
+    } else if (headCode === 10020) {
+      // === 属性重洗 ===
+      var g = findGeneralByGid(data.id);
+      if (!g || (g.evolution||0) < 1) return jsonRawResponse(socket, { success: false, message: '此武将尚未进化，无法重洗属性' });
+      if (p.dianka < 100) return jsonRawResponse(socket, { success: false, message: '点卡不足，无法重洗武将属相' });
+      p.dianka -= 100;
+      g.feature = Math.floor(Math.random() * 4) + 1;
+      respData.dianka = p.dianka;
+      respData.feature = g.feature;
+      console.log('[Reforge] ' + p.role_name + ' ' + g.name + ' feature→' + g.feature + ' dianka:' + p.dianka);
     } else if (headCode === 10006) {
       // === 克制升级 ===
       var g = findGeneralByGid(data.id);
