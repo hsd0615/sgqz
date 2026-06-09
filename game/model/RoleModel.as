@@ -321,7 +321,7 @@ package game.model
          var _loc5_:int = 0;
          while(_loc5_ < this._bag.length)
          {
-            if(this._bag[_loc5_].code == param2 && this._bag[_loc5_].id == param1)
+            if(this._bag[_loc5_].code == param2)
             {
                if((_loc4_ = int(this._bag[_loc5_].count) - Config.timer + param3) > 99)
                {
@@ -352,7 +352,7 @@ package game.model
          var _loc4_:int = 0;
          while(_loc4_ < this._bag.length)
          {
-            if(this._bag[_loc4_].code == param2 && this._bag[_loc4_].id == param1)
+            if(this._bag[_loc4_].code == param2)
             {
                if(param3 > 99)
                {

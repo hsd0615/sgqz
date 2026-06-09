@@ -7,44 +7,53 @@ package game.ui
    import flash.display.SimpleButton;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import game.Config;
    import game.events.UIEvent;
    import game.model.Head;
    import game.model.RoleModel;
-   
+
    public class ShopBlock extends BaseUI
    {
-       
-      
+
+
       private var __nameTF:TextField;
-      
+
       private var __oldTF:TextField;
-      
+
       private var __newTF:TextField;
-      
+
       private var __infoTF:TextField;
-      
+
       private var __buyBtn:SimpleButton;
-      
+
       private var _img:Sprite;
-      
+
       private var _money:int;
-      
+
       private var _dianka:int;
-      
+
       private var _exploit:int;
-      
+
       private var _reverence:int;
-      
+
       private var _data:Object;
-      
+
+      // 购买前余额快照，用于检测服务端是否正确扣费
+      private var _preMoney:int;
+      private var _preDianka:int;
+      private var _preExploit:int;
+      private var _preReverence:int;
+
       public function ShopBlock(param1:String, param2:ApplicationDomain = null)
       {
          super(param1,param2);
       }
-      
+
       override protected function initView() : void
       {
          this.__nameTF = _skin.getChildByName("_nameTF") as TextField;
@@ -57,12 +66,12 @@ package game.ui
          this._img.y = 23;
          addChild(this._img);
       }
-      
+
       override protected function initEvent() : void
       {
          this.__buyBtn.addEventListener(MouseEvent.CLICK,this.buyBtnClickHandler);
       }
-      
+
       override public function initData(param1:Object) : void
       {
          if(param1 == null)
@@ -115,7 +124,7 @@ package game.ui
          var _loc3_:Bitmap = new Bitmap(new _loc2_());
          this._img.addChild(_loc3_);
       }
-      
+
       private function buyBtnClickHandler(param1:MouseEvent) : *
       {
          var _loc2_:* = null;
@@ -198,7 +207,7 @@ package game.ui
                }
          }
       }
-      
+
       private function pay() : *
       {
          var _loc1_:int = RoleModel.getInstance().getBagItemCount(this._data.code);
@@ -210,9 +219,15 @@ package game.ui
             }));
             return;
          }
+         // 保存购买前余额快照（用于检测服务端是否正确扣费）
+         this._preMoney = RoleModel.getInstance().money;
+         this._preDianka = RoleModel.getInstance().dianka;
+         this._preExploit = RoleModel.getInstance().exploit;
+         this._preReverence = RoleModel.getInstance().reverence;
+         this._logPurchase("BEFORE_SEND");
          this.sendToHttpNew();
       }
-      
+
       public function checkBtn(param1:int, param2:int, param3:int, param4:int) : *
       {
          this._money = param1;
@@ -262,10 +277,12 @@ package game.ui
                }
          }
       }
-      
+
       private function sendToHttpNew() : *
       {
          var _loc1_:Object = {};
+         var _payType:int = int(this._data.payType);
+         var _price:int = int(this._data.newPrice);
          _loc1_.head = Head.HTTP_NEW_BUYITEM;
          _loc1_.agent = Config.AGENT;
          _loc1_.ver = Config.VER;
@@ -275,37 +292,179 @@ package game.ui
          _loc1_.shopID = this._data.id;
          _loc1_.code = this._data.code;
          _loc1_.count = this._data.count;
-         _loc1_.price = this._data.newPrice;
-         _loc1_.payType = this._data.payType;
-         if(this._data.payType == 1) _loc1_.money = this._data.newPrice;
-         else if(this._data.payType == 2) _loc1_.dianka = this._data.newPrice;
-         else if(this._data.payType == 3) _loc1_.exploit = this._data.newPrice;
-         else if(this._data.payType == 4) _loc1_.reverence = this._data.newPrice;
+         _loc1_.price = _price;
+         _loc1_.payType = _payType;
+         if(_payType == 1) _loc1_.money = _price;
+         else if(_payType == 2) _loc1_.dianka = _price;
+         else if(_payType == 3) _loc1_.exploit = _price;
+         else if(_payType == 4) _loc1_.reverence = _price;
          _loc1_.mask = true;
          AESController.getInstance().sendJSON(_loc1_,this.buyItemResponse);
       }
-      
+
       private function buyItemResponse(param1:Object) : *
       {
+         var _payType:int = int(this._data.payType);
+         var _price:int = int(this._data.newPrice);
+
+         // 写入服务端原始响应到日志
+         this._logResponse("SERVER_RESPONSE",param1);
+
          if(param1.success == true)
          {
-            RoleModel.getInstance().money = param1.data.money;
-            RoleModel.getInstance().dianka = param1.data.dianka;
-            RoleModel.getInstance().exploit = param1.data.exploit;
-            RoleModel.getInstance().reverence = param1.data.reverence;
-            RoleModel.getInstance().modiBagItem(param1.data.item.id,param1.data.item.code,param1.data.item.count);
+            // 读取服务端返回的余额
+            var svrMoney:int = param1.data.money != undefined ? int(param1.data.money) : -1;
+            var svrDianka:int = param1.data.dianka != undefined ? int(param1.data.dianka) : -1;
+            var svrExploit:int = param1.data.exploit != undefined ? int(param1.data.exploit) : -1;
+            var svrReverence:int = param1.data.reverence != undefined ? int(param1.data.reverence) : -1;
+
+            // 核心逻辑：检测服务端是否正确扣费
+            // 如果服务端返回的余额 < 购买前余额，说明服务端已正确扣费，以服务端为准
+            // 否则说明服务端未扣费（旧版服务端），客户端本地扣费
+
+            // === 银子 ===
+            if(svrMoney >= 0 && svrMoney < this._preMoney)
+            {
+               // 服务端已扣费，以服务端为准
+               RoleModel.getInstance().money = svrMoney;
+               this._logPurchase("MONEY_FROM_SERVER",svrMoney);
+            }
+            else if(_payType == 1)
+            {
+               // 服务端未扣费（或余额没变），本地扣费
+               var localMoney:int = this._preMoney - _price;
+               RoleModel.getInstance().money = localMoney;
+               this._logPurchase("MONEY_LOCAL_FALLBACK",localMoney,this._preMoney,svrMoney);
+            }
+            else if(svrMoney >= 0)
+            {
+               // 非银子支付，同步服务端银子值
+               RoleModel.getInstance().money = svrMoney;
+            }
+
+            // === 点卡 ===
+            if(svrDianka >= 0 && svrDianka < this._preDianka)
+            {
+               RoleModel.getInstance().dianka = svrDianka;
+               this._logPurchase("DIANKA_FROM_SERVER",svrDianka);
+            }
+            else if(_payType == 2)
+            {
+               var localDianka:int = this._preDianka - _price;
+               RoleModel.getInstance().dianka = localDianka;
+               this._logPurchase("DIANKA_LOCAL_FALLBACK",localDianka);
+            }
+            else if(svrDianka >= 0)
+            {
+               RoleModel.getInstance().dianka = svrDianka;
+            }
+
+            // === 功勋 ===
+            if(svrExploit >= 0 && svrExploit < this._preExploit)
+            {
+               RoleModel.getInstance().exploit = svrExploit;
+               this._logPurchase("EXPLOIT_FROM_SERVER",svrExploit);
+            }
+            else if(_payType == 3)
+            {
+               var localExploit:int = this._preExploit - _price;
+               RoleModel.getInstance().exploit = localExploit;
+               this._logPurchase("EXPLOIT_LOCAL_FALLBACK",localExploit);
+            }
+            else if(svrExploit >= 0)
+            {
+               RoleModel.getInstance().exploit = svrExploit;
+            }
+
+            // === 声望 ===
+            if(svrReverence >= 0 && svrReverence < this._preReverence)
+            {
+               RoleModel.getInstance().reverence = svrReverence;
+               this._logPurchase("REVERENCE_FROM_SERVER",svrReverence);
+            }
+            else if(_payType == 4)
+            {
+               var localReverence:int = this._preReverence - _price;
+               RoleModel.getInstance().reverence = localReverence;
+               this._logPurchase("REVERENCE_LOCAL_FALLBACK",localReverence);
+            }
+            else if(svrReverence >= 0)
+            {
+               RoleModel.getInstance().reverence = svrReverence;
+            }
+
+            // 添加道具到背包
+            RoleModel.getInstance().modiBagItem(int(param1.data.item.id),param1.data.item.code,int(param1.data.item.count));
+
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,
                "text":"物品购买成功，已进入你的背包。"
             }));
             RoleModel.getInstance().throttleSave();
+
+            this._logPurchase("AFTER_PURCHASE");
          }
          else
          {
+            this._logResponse("PURCHASE_FAILED",param1);
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,
                "text":param1.message
             }));
+         }
+      }
+
+      // ========== 调试日志 ==========
+
+      private function _logPurchase(param1:String, param2:int = -1, param3:int = -1, param4:int = -1) : void
+      {
+         try
+         {
+            var _loc1_:File = File.applicationStorageDirectory.resolvePath("shop_debug.txt");
+            var _loc2_:FileStream = new FileStream();
+            _loc2_.open(_loc1_,FileMode.APPEND);
+            var _loc3_:* = new Date().toString() + " [" + param1 + "] ";
+            _loc3_ += "shopID=" + this._data.id + " code=" + this._data.code + " ";
+            _loc3_ += "payType=" + int(this._data.payType) + " price=" + int(this._data.newPrice) + " count=" + int(this._data.count) + " ";
+            _loc3_ += "preMoney=" + this._preMoney + " preDianka=" + this._preDianka + " ";
+            _loc3_ += "nowMoney=" + RoleModel.getInstance().money + " nowDianka=" + RoleModel.getInstance().dianka + " ";
+            _loc3_ += "nowExploit=" + RoleModel.getInstance().exploit + " nowReverence=" + RoleModel.getInstance().reverence;
+            if(param2 >= 0) _loc3_ += " val=" + param2;
+            if(param3 >= 0) _loc3_ += " pre=" + param3;
+            if(param4 >= 0) _loc3_ += " svr=" + param4;
+            _loc3_ += "\n";
+            _loc2_.writeUTFBytes(_loc3_);
+            _loc2_.close();
+         }
+         catch(_e:Error)
+         {
+            trace("ShopBlock debug log error: " + _e.message);
+         }
+      }
+
+      private function _logResponse(param1:String, param2:Object) : void
+      {
+         try
+         {
+            var _loc1_:File = File.applicationStorageDirectory.resolvePath("shop_debug.txt");
+            var _loc2_:FileStream = new FileStream();
+            _loc2_.open(_loc1_,FileMode.APPEND);
+            var _loc3_:* = new Date().toString() + " [" + param1 + "] ";
+            _loc3_ += "success=" + param2.success + " ";
+            if(param2.data)
+            {
+               _loc3_ += "svrMoney=" + param2.data.money + " svrDianka=" + param2.data.dianka + " ";
+               _loc3_ += "svrExploit=" + param2.data.exploit + " svrReverence=" + param2.data.reverence + " ";
+               if(param2.data.item) _loc3_ += "itemCode=" + param2.data.item.code + " itemCount=" + param2.data.item.count + " itemId=" + param2.data.item.id;
+            }
+            if(param2.message) _loc3_ += " msg=" + param2.message;
+            _loc3_ += "\n";
+            _loc2_.writeUTFBytes(_loc3_);
+            _loc2_.close();
+         }
+         catch(_e:Error)
+         {
+            trace("ShopBlock debug log error: " + _e.message);
          }
       }
    }

@@ -29,6 +29,7 @@ package game.ui
    import game.ui.list.ListItem;
    import game.ui.list.MyList;
    import game.ui.list.ScrollBar;
+   import game.ui.OnlineCountUI;
    
    public class GameCenterUI extends BaseUI
    {
@@ -111,6 +112,7 @@ package game.ui
       private var _paomadeng:Paomadeng;
       
       private var _oldTime:int;
+      private var _onlineCountUI:OnlineCountUI;
       
       public function GameCenterUI(param1:String, param2:ApplicationDomain = null)
       {
@@ -168,6 +170,10 @@ package game.ui
          this._faceList.y = this.__faceBtn.y - this._faceList.height - this.__faceBtn.height / 2;
          addChild(this._faceList);
          this._faceList.visible = false;
+         this._onlineCountUI = new OnlineCountUI();
+         this._onlineCountUI.x = -211;
+         this._onlineCountUI.y = -200;
+         addChild(this._onlineCountUI);
       }
       
       private function showAll(param1:Boolean) : *
@@ -434,6 +440,11 @@ package game.ui
       private function onRemoveFromStageHandler(param1:Event) : *
       {
          removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemoveFromStageHandler);
+         if(this._onlineCountUI != null)
+         {
+            this._onlineCountUI.stopPolling();
+            this._onlineCountUI = null;
+         }
          this._arr = null;
          this._roleModel = null;
       }

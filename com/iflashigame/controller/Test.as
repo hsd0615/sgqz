@@ -1096,20 +1096,12 @@ package com.iflashigame.controller
             _loc8_.count = RoleModel.getInstance().getBagItemCount(_loc4_) + _loc5_;
          }
          _loc2_.data = {};
-         if(_loc3_ == 1)
-         {
-            _loc2_.data.money = RoleModel.getInstance().money - _loc6_;
-            _loc2_.data.dianka = RoleModel.getInstance().dianka;
-            _loc2_.data.item = _loc8_;
-         }
-         else
-         {
-            _loc2_.data.money = RoleModel.getInstance().money;
-            _loc2_.data.dianka = RoleModel.getInstance().dianka - _loc6_;
-            _loc2_.data.item = _loc8_;
-         }
-         _loc2_.data.exploit = RoleModel.getInstance().exploit;
-         _loc2_.data.reverence = RoleModel.getInstance().reverence;
+         // 根据支付类型正确扣除对应资源
+         _loc2_.data.money = _loc3_ == 1 ? RoleModel.getInstance().money - _loc6_ : RoleModel.getInstance().money;
+         _loc2_.data.dianka = _loc3_ == 2 ? RoleModel.getInstance().dianka - _loc6_ : RoleModel.getInstance().dianka;
+         _loc2_.data.exploit = _loc3_ == 3 ? RoleModel.getInstance().exploit - _loc6_ : RoleModel.getInstance().exploit;
+         _loc2_.data.reverence = _loc3_ == 4 ? RoleModel.getInstance().reverence - _loc6_ : RoleModel.getInstance().reverence;
+         _loc2_.data.item = _loc8_;
          return _loc2_;
       }
       

@@ -51,6 +51,8 @@ package game
    import game.model.RoleStatus;
    import game.ui.SkinCode;
    import game.ui.TalkFrame;
+import game.ui.OnlineCountUI;
+import game.ui.UpdateChecker;
    import unit4399.events.SaveEvent;
    
    public class Sanguo4399 extends Sprite
@@ -66,6 +68,7 @@ package game
       private var _ui:UI;
       
       private var _fight:Fight;
+      private var _onlineCountUI:OnlineCountUI;
       
       private var _tipsLayer:Sprite;
       
@@ -1466,6 +1469,19 @@ package game
       {
          this._ui.removeCover();
          this._ui.addMap();
+         // 在线人数 - 加在根级别，不被皮肤遮挡
+         if(this._onlineCountUI == null)
+         {
+            this._onlineCountUI = new OnlineCountUI();
+            this._onlineCountUI.x = 2;
+            this._onlineCountUI.y = 2;
+            addChild(this._onlineCountUI);
+         }
+         // 自动更新检查 - 异步检测，有新版时显示浮动提示条
+         var _updateChecker:UpdateChecker = new UpdateChecker();
+         _updateChecker.x = (stage.stageWidth - 200) / 2;
+         _updateChecker.y = 28;
+         addChild(_updateChecker);
          MySound.getInstance().startByName(SoundCode.MAP);
          if(this._netDirect)
          {

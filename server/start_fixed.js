@@ -114,13 +114,21 @@ function makeArmyModel(playerId) {
     kezhi: g.kezhi1+'|'+g.kezhi2+'|'+g.kezhi3,
   }));
 }
+function makeBagModel(playerId) {
+  if (!db.bagItems) return [];
+  return db.bagItems.filter(b => b.player_id === playerId).map(b => ({
+    id: b.id, code: b.code, count: b.count || 1
+  }));
+}
 // 获取当前玩家资源数据（用于各种API响应中携带资源）
 function getResourceData(p) {
   return { money: p.money, dianka: p.dianka, exploit: p.exploit, reverence: p.reverence, rongyu: p.rongyu };
 }
 // 通过多种方式查找玩家
 function findPlayerByRequest(data) {
-  return findPlayer(String(data.userID)) || findPlayer(String(data.roleID)) || findPlayerByToken(data.token);
+  var p = findPlayer(String(data.userID)) || findPlayer(String(data.roleID)) || findPlayerByToken(data.token);
+  if (p) { p.lastSeen = Date.now(); }
+  return p;
 }
 // 通过 general_id 查找武将
 function findGeneralByGid(gid) {
@@ -204,18 +212,37 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { status: 'ok', timestamp: Date.now() });
   }
 
+  // 在线人数统计（5分钟内活跃的玩家）
+  if (url === '/api/online-count') {
+    var now = Date.now();
+    var activeCount = 0;
+    var fiveMinAgo = now - 5 * 60 * 1000;
+    for (var i = 0; i < db.players.length; i++) {
+      if (db.players[i].lastSeen && db.players[i].lastSeen > fiveMinAgo) {
+        activeCount++;
+      }
+    }
+    return jsonRawResponse(socket, { success: true, count: activeCount, timestamp: now });
+  }
+
+  // 客户端版本号
+  if (url === '/api/version') {
+    return jsonRawResponse(socket, { success: true, version: '2.1.1', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+  }
+
   // Login — 返回所有武将
   if (url === '/api/auth/login') {
     const p = findPlayerByPwd(data.userID, data.password);
     if (p) {
       p.token = uuidv4().replace(/-/g,'');
+      p.lastSeen = Date.now();
       save();
       const allArmy = makeArmyModel(p.id);
       console.log('[Login] ' + p.role_name + ' — 武将数:' + allArmy.length + ' 响应预估:' + (300 + allArmy.length*100) + 'B');
       return jsonRawResponse(socket, {
         success: true, stamp: data.stamp||'', head: '9999',
         data: { flag: 1, token: p.token, currentTime: Date.now(), dianka: p.dianka,
-          armyModel: allArmy, bagModel: [],
+          armyModel: allArmy, bagModel: makeBagModel(p.id),
           process: { history: p.history||'', finished: p.finished_stages||'' },
           roleModel: makeRoleModel(p),
         }
@@ -318,31 +345,55 @@ function handleRequest(socket, req) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
 
-    // 简单的购买处理：扣除金钱，返回最新资源
+    // 详细的购买处理：扣除金钱，返回最新资源
     const itemPrice = parseInt(data.price) || 0;
     const itemMoney = parseInt(data.money) || 0;
     const itemDianka = parseInt(data.dianka) || 0;
     const itemExploit = parseInt(data.exploit) || 0;
     const itemReverence = parseInt(data.reverence) || 0;
 
+    var payType = parseInt(data.payType) || 0;
+    console.log('[Shop] 收到购买请求: shopID=' + data.shopID + ' code=' + data.code + ' count=' + data.count + ' payType=' + payType + ' price=' + itemPrice + ' money=' + itemMoney);
+    console.log('[Shop] 玩家余额: money=' + p.money + ' dianka=' + p.dianka + ' exploit=' + p.exploit + ' reverence=' + p.reverence);
+
     if (p.money < itemMoney || p.dianka < itemDianka || p.exploit < itemExploit || p.reverence < itemReverence) {
+      console.log('[Shop] 资源不足，拒绝购买');
       return jsonRawResponse(socket, { success: false, message: '资源不足' });
     }
 
     p.money -= itemMoney; p.dianka -= itemDianka; p.exploit -= itemExploit; p.reverence -= itemReverence;
+    console.log('[Shop] 扣费后余额: money=' + p.money + ' dianka=' + p.dianka + ' exploit=' + p.exploit + ' reverence=' + p.reverence);
 
-    // 创建背包物品
-    const itemId = db.nextId.bagItems++;
-    const bagItem = { id: itemId, code: data.code || 'item_0', count: 1 };
+    // 创建/堆叠背包物品 - 按 code 查找已有物品进行堆叠
+    const itemCode = data.code || 'item_0';
+    const itemCount = parseInt(data.count) || 1;
     if (!db.bagItems) db.bagItems = [];
-    db.bagItems.push({ ...bagItem, player_id: p.id });
+    var bagItem = null;
+    // 查找该玩家是否已有同 code 的物品
+    for (var bi = 0; bi < db.bagItems.length; bi++) {
+      if (db.bagItems[bi].player_id === p.id && db.bagItems[bi].code === itemCode) {
+        db.bagItems[bi].count = (db.bagItems[bi].count || 1) + itemCount;
+        bagItem = db.bagItems[bi];
+        console.log('[Shop] 堆叠物品: code=' + itemCode + ' 新总数=' + bagItem.count);
+        break;
+      }
+    }
+    // 未找到则新建
+    if (!bagItem) {
+      const itemId = db.nextId.bagItems++;
+      bagItem = { id: itemId, code: itemCode, count: itemCount };
+      db.bagItems.push({ ...bagItem, player_id: p.id });
+      console.log('[Shop] 新建物品: id=' + itemId + ' code=' + itemCode + ' count=' + itemCount);
+    }
     save();
 
-    console.log('[Shop] ' + p.role_name + ' 购买: ' + (data.code||'item') + ' 剩余金币:' + p.money);
+    console.log('[Shop] ' + p.role_name + ' 购买: ' + itemCode + 'x' + itemCount + ' 剩余金币:' + p.money);
 
+    var respData = { money: p.money, dianka: p.dianka, exploit: p.exploit, reverence: p.reverence, rongyu: p.rongyu, item: bagItem };
+    console.log('[Shop] 响应数据: ' + JSON.stringify(respData));
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: '10010',
-      data: { money: p.money, dianka: p.dianka, exploit: p.exploit, reverence: p.reverence, rongyu: p.rongyu, item: bagItem }
+      data: respData
     });
   }
 
@@ -566,6 +617,104 @@ function handleRequest(socket, req) {
       'Content-Length': String(Buffer.byteLength(xml)),
       'Connection': 'close',
     }, xml);
+    return;
+  }
+
+  // ============ 管理接口：热更新部署 ============
+  if (url === '/api/admin/deploy') {
+    try {
+      var deploySecret = 'sanguoq_deploy_2024';
+      var deployCode, deployRaw;
+      if (typeof data === 'string') {
+        try { deployRaw = JSON.parse(data); } catch(e) { deployRaw = data; }
+      } else {
+        deployRaw = data;
+      }
+      if (deployRaw.secret !== deploySecret) {
+        return jsonRawResponse(socket, { success: false, message: '部署密钥错误' });
+      }
+      if (deployRaw.code) {
+        deployCode = Buffer.from(deployRaw.code, 'base64').toString('utf-8');
+      } else {
+        return jsonRawResponse(socket, { success: false, message: '缺少代码内容' });
+      }
+      if (!deployCode || deployCode.length < 100) {
+        return jsonRawResponse(socket, { success: false, message: '代码内容太短，无效' });
+      }
+
+      // 备份当前文件
+      var fs = require('fs');
+      var serverPath = '/opt/start_fixed.js';
+      var backupPath = '/opt/start_fixed_backup_' + Date.now() + '.js';
+      try {
+        if (fs.existsSync(serverPath)) {
+          fs.copyFileSync(serverPath, backupPath);
+          console.log('[Admin] 备份到: ' + backupPath);
+        }
+      } catch(e) { console.log('[Admin] 备份失败: ' + e.message); }
+
+      // 写入新代码
+      fs.writeFileSync(serverPath, deployCode, 'utf-8');
+      console.log('[Admin] 新代码已写入, 大小=' + deployCode.length + 'B');
+
+      // 语法检查
+      var cp = require('child_process');
+      var checkResult = cp.spawnSync('node', ['--check', serverPath], { encoding: 'utf-8', timeout: 5000 });
+      if (checkResult.status !== 0) {
+        // 语法错误，恢复备份
+        if (fs.existsSync(backupPath)) {
+          fs.copyFileSync(backupPath, serverPath);
+          console.log('[Admin] 语法错误，已恢复备份');
+        }
+        return jsonRawResponse(socket, { success: false, message: '代码语法错误: ' + (checkResult.stderr || 'unknown') });
+      }
+
+      // 发送成功响应
+      jsonRawResponse(socket, { success: true, message: '代码已部署，正在重启服务端...', backup: backupPath, size: deployCode.length });
+
+      // 2秒后重启（确保HTTP响应已发送）
+      var restartCmd = 'sleep 2; cd /opt; pkill -f "node start_fixed.js"; sleep 1; nohup node start_fixed.js > server.log 2>&1 &';
+      var restartChild = cp.spawn('sh', ['-c', restartCmd], { detached: true, stdio: 'ignore' });
+      restartChild.unref();
+      console.log('[Admin] 重启脚本已启动');
+      return;
+    } catch(e) {
+      console.log('[Admin] 部署异常: ' + e.message);
+      return jsonRawResponse(socket, { success: false, message: '部署异常: ' + e.message });
+    }
+  }
+
+  if (url === '/api/admin/status') {
+    var uptime = process.uptime();
+    var mem = process.memoryUsage();
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.1.1' });
+  }
+
+  // 客户端文件下载
+  if (url.startsWith('/client/')) {
+    var clientFile = url.substring(8); // remove /client/
+    if (clientFile.indexOf('..') >= 0) {
+      sendRawHttpResponse(socket, 403, 'Forbidden', {}, 'Forbidden');
+      return;
+    }
+    var clientPath = '/opt/client/' + clientFile;
+    try {
+      var fs = require('fs');
+      if (fs.existsSync(clientPath)) {
+        var clientData = fs.readFileSync(clientPath);
+        var ext = clientFile.split('.').pop().toLowerCase();
+        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+        var mime = mimeMap[ext] || 'application/octet-stream';
+        sendRawHttpResponse(socket, 200, 'OK', {
+          'Content-Type': mime,
+          'Content-Length': String(clientData.length),
+          'Connection': 'close',
+          'Content-Disposition': 'attachment; filename="' + clientFile + '"'
+        }, clientData);
+        return;
+      }
+    } catch(e) {}
+    sendRawHttpResponse(socket, 404, 'Not Found', {}, 'Not Found');
     return;
   }
 

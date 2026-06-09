@@ -17,6 +17,7 @@ package game.ui
    import game.SoundCode;
    import game.events.UIEvent;
    
+   import game.ui.OnlineCountUI;
    public class Map extends BaseUI
    {
        
@@ -83,6 +84,7 @@ package game.ui
       
       private var _paomadeng:Paomadeng;
       
+      private var _onlineCountUI:OnlineCountUI;
       private var _talkArea:TalkArea;
       
       public function Map(param1:String, param2:ApplicationDomain = null)
@@ -149,6 +151,11 @@ package game.ui
          this._talkArea.x = -width / 2;
          this._talkArea.y = height / 2;
          addChild(this._talkArea);
+         // 在线人数显示 - 主界面聊天框旁
+         this._onlineCountUI = new OnlineCountUI();
+         this._onlineCountUI.x = -width / 2 + 8;
+         this._onlineCountUI.y = -height / 2 + 8;
+         addChild(this._onlineCountUI);
          this.__buchangBtn.visible = false;
          var _loc1_:* = Config.actionMessage();
          switch(_loc1_)
