@@ -42,6 +42,48 @@ function initLeitai() {
 }
 
 // ============ 武将数据 ============
+// 启动时修复 k1=k2=k3=0 的武将 (从 staticgeneral.xml 读取正确克制类型)
+function migrateKezhi() {
+  if (!fs.existsSync('/opt/staticgeneral.xml')) return;
+  var xml = fs.readFileSync('/opt/staticgeneral.xml','utf8');
+  var kezhiMap = {};
+  var blocks = xml.split('<RECORD>');
+  for (var i = 0; i < blocks.length; i++) {
+    var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
+    var km = blocks[i].match(/<kezhi>([^<]+)<\/kezhi>/);
+    if (cm && km && km[1].length > 0) kezhiMap[cm[1]] = km[1];
+  }
+  var fixed = 0;
+  for (var j = 0; j < db.generals.length; j++) {
+    var g = db.generals[j];
+    if ((g.kezhi1||0) + (g.kezhi2||0) + (g.kezhi3||0) === 0) {
+      var kz = kezhiMap[g.code];
+      if (kz) {
+        var parts = kz.split('|');
+        if (parts.length >= 3) {
+          g.kezhi1 = parseInt(parts[0].split(':')[0]) || 0;
+          g.kezhi1_level = g.kezhi1_level || 1;
+          g.kezhi2 = parseInt(parts[1].split(':')[0]) || 0;
+          g.kezhi2_level = g.kezhi2_level || 1;
+          g.kezhi3 = parseInt(parts[2].split(':')[0]) || 0;
+          g.kezhi3_level = g.kezhi3_level || 1;
+          fixed++;
+        }
+      }
+    }
+  }
+  // 投石车(general_0_1) XML中kezhi为空，使用默认值
+  for (var k = 0; k < db.generals.length; k++) {
+    var h = db.generals[k];
+    if (h.code === 'general_0_1' && (h.kezhi1||0) + (h.kezhi2||0) + (h.kezhi3||0) === 0) {
+      h.kezhi1 = 3; h.kezhi2 = 8; h.kezhi3 = 9;
+      h.kezhi1_level = h.kezhi1_level || 1; h.kezhi2_level = h.kezhi2_level || 1; h.kezhi3_level = h.kezhi3_level || 1;
+      fixed++;
+    }
+  }
+  if (fixed > 0) { console.log('[Migrate] Fixed ' + fixed + ' generals kezhi'); }
+}
+
 function ensureGenerals(pid, list, level, evo, feat, tf) {
   for (const [code, name, kezhi] of list) {
     if (findGenerals(pid).some(g => g.code === code)) continue;
@@ -99,6 +141,8 @@ function createTestAccounts() {
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 initLeitai();
 createTestAccounts();
+migrateKezhi();  // 启动时自动修复零值克制数据
+save();
 
 // ============ 辅助函数 ============
 function makeRoleModel(p) {
