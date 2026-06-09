@@ -371,16 +371,131 @@ function handleRequest(socket, req) {
   if (url === '/api/game/fight-result') {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '玩家不存在' });
-    p.money += 100 + data.part*50 + data.level*20;
-    p.exploit += 50 + data.part*20 + data.level*10;
-    p.reverence += 30 + data.part*10 + data.level*5;
-    const stageId = data.part + '_' + data.level;
-    const fin = (p.finished_stages || '').split('|').filter(Boolean);
-    if (!fin.includes(stageId)) fin.push(stageId);
+
+    var fm = Math.max(1, parseInt(data.m) || 1);
+    var fn = Math.max(1, parseInt(data.n) || 1);
+    var fpart = parseInt(data.part) || 1;
+    var flevel = parseInt(data.level) || 1;
+    var isWin = (data.flag !== 'lost');
+
+    // 基本奖励
+    var battleMoney = 100 + fpart*50 + flevel*20;
+    var battleExploit = 50 + fpart*20 + flevel*10;
+    var battleReverence = 30 + fpart*10 + flevel*5;
+    if (!isWin) { battleMoney = 0; battleExploit = 0; battleReverence = 0; }
+
+    p.money += battleMoney;
+    p.exploit += battleExploit;
+    p.reverence += battleReverence;
+
+    // 首次通关奖励
+    var stageId = fpart + '_' + flevel;
+    var fin = (p.finished_stages || '').split('|').filter(Boolean);
+    var isFirstClear = !fin.includes(stageId);
+    var awardData = null;
+    if (isWin && isFirstClear) {
+      fin.push(stageId);
+      p.finished_stages = fin.join('|');
+      p.level = Math.max(p.level, flevel);
+
+      // 首次通关额外奖励 (与客户端 Data.getAward 对应)
+      awardData = { money: 0, exploit: 0, reverence: 0, soldier: [], item: [], recruit: null };
+      var partBonus = [0, 500, 1000, 2000, 3000, 5000, 8000, 10000, 15000, 20000, 25000][fpart] || 1000;
+      awardData.money = partBonus + flevel * 200;
+      awardData.exploit = Math.floor(partBonus/2) + flevel * 100;
+      awardData.reverence = Math.floor(partBonus/4) + flevel * 50;
+    }
     p.finished_stages = fin.join('|');
-    p.level = Math.max(p.level, data.level);
     save();
-    return jsonRawResponse(socket, { success: true, stamp: data.stamp, head: '10011', data: { m: p.money, e: p.exploit, r: p.reverence, part: data.part, level: data.level, finished: p.finished_stages, money: 100+data.part*50+data.level*20, exploit: 50+data.part*20+data.level*10, reverence: 30+data.part*10+data.level*5 } });
+
+    var resp = {
+      success: true, stamp: data.stamp, head: '10011',
+      data: {
+        m: p.money, e: p.exploit, r: p.reverence,
+        part: fpart, level: flevel,
+        finished: p.finished_stages,
+        money: battleMoney, exploit: battleExploit, reverence: battleReverence
+      }
+    };
+    if (awardData) resp.data.award = awardData;
+    return jsonRawResponse(socket, resp);
+  }
+
+  // Fuben count
+  if (url === '/api/fuben/count') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    if (!p.fuben_counts) p.fuben_counts = {};
+    var fcKey = String(data.stageID||'0');
+    var remaining = 2 - (p.fuben_counts[fcKey] || 0);
+    return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, count: Math.max(0, remaining) } });
+  }
+
+  // Fuben enter
+  if (url === '/api/fuben/enter') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    if (!p.fuben_counts) p.fuben_counts = {};
+    var fcKey = String(data.stageID||'0');
+    p.fuben_counts[fcKey] = (p.fuben_counts[fcKey] || 0) + 1;
+    save();
+    return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, proto: data.proto } });
+  }
+
+  // Fuben award — 副本通关奖励
+  if (url === '/api/fuben/award') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    var fi = parseInt(data.index) || 1;
+    var flv = parseInt(data.level) || 1;
+    var mul = fi === 1 ? 100 : (fi === 2 ? 200 : 300);
+    var amoney = flv * mul;
+    var aexploit = flv * Math.floor(mul/2);
+    var areverence = flv * Math.floor(mul/2);
+    var resp = {
+      success: true,
+      data: {
+        stageID: data.stageID, index: fi, result: data.result,
+        forward: [p.money + amoney, p.exploit + aexploit, p.reverence + areverence]
+      }
+    };
+    if (fi === 3) {
+      resp.data.pai = ['2|10000', '1|proto_2_1|1', '1|proto_2_6|5', '1|proto_3_1|1', '1|proto_3_3|1', '1|proto_3_4|1'];
+    }
+    return jsonRawResponse(socket, resp);
+  }
+
+  // Fuben fanpai — 翻牌
+  if (url === '/api/fuben/flip') {
+    const p = findPlayerByRequest(data);
+    var fpResult = String(data.result||'').split('|');
+    var resp = { success: true, data: {} };
+    if (fpResult[0] === '2') {
+      resp.data.money = p.money + parseInt(fpResult[1]||'0');
+    } else {
+      resp.data.item = { id: Math.floor(Math.random()*10000), code: fpResult[1], count: parseInt(fpResult[2]||'1') };
+    }
+    return jsonRawResponse(socket, resp);
+  }
+
+  // Save history
+  if (url === '/api/game/history') {
+    const p = findPlayerByRequest(data);
+    if (p && data.history) {
+      p.history = data.history;
+      save();
+    }
+    return jsonRawResponse(socket, { success: true, data: { history: data.history || '' } });
+  }
+
+  // Save deploy (choose)
+  if (url === '/api/game/deploy') {
+    const p = findPlayerByRequest(data);
+    if (p && data.choose !== undefined) {
+      p.choose = data.choose;
+      save();
+    }
+    return jsonRawResponse(socket, { success: true, data: { choose: p.choose || '' } });
   }
 
   // ============ 武将招募 ============
