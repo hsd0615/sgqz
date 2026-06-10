@@ -101,13 +101,81 @@ if ($ImagePath -and (Test-Path $ImagePath)) {
     Write-Host "[File: $fullPath]"
     $bitmap = New-Object System.Drawing.Bitmap($fullPath)
 } else {
-    # Try clipboard
-    if ([System.Windows.Forms.Clipboard]::ContainsImage()) {
-        $bitmap = [System.Windows.Forms.Clipboard]::GetImage()
-        $fromClipboard = $true
-        Write-Host "[From Clipboard]"
-    } else {
-        Write-Error "No image file specified and no image in clipboard."
+    # Try multiple clipboard methods
+    $gotImage = $false
+
+    # Method 1: Standard clipboard image check
+    try {
+        if ([System.Windows.Forms.Clipboard]::ContainsImage()) {
+            $bitmap = [System.Windows.Forms.Clipboard]::GetImage()
+            $gotImage = $true
+            Write-Host "[From Clipboard: standard image]"
+        }
+    } catch {}
+
+    # Method 2: Try clipboard file drop (screenshots saved as files)
+    if (-not $gotImage) {
+        try {
+            $fileList = [System.Windows.Forms.Clipboard]::GetFileDropList()
+            if ($fileList -and $fileList.Count -gt 0) {
+                $firstFile = $fileList[0]
+                if (Test-Path $firstFile) {
+                    $ext = [System.IO.Path]::GetExtension($firstFile).ToLower()
+                    if (@('.png','.jpg','.jpeg','.bmp','.gif','.tiff') -contains $ext) {
+                        $bitmap = New-Object System.Drawing.Bitmap($firstFile)
+                        $gotImage = $true
+                        Write-Host "[From Clipboard: file drop - $firstFile]"
+                    }
+                }
+            }
+        } catch {}
+    }
+
+    # Method 3: Try clipboard PNG/DIB format
+    if (-not $gotImage) {
+        try {
+            $dataObj = [System.Windows.Forms.Clipboard]::GetDataObject()
+            if ($dataObj) {
+                $formats = $dataObj.GetFormats()
+                foreach ($fmt in $formats) {
+                    if ($fmt -match 'PNG|Bitmap|DIB|DeviceIndependentBitmap|JPG|GIF|TIFF') {
+                        $imgData = $dataObj.GetData($fmt)
+                        if ($imgData -is [System.IO.MemoryStream]) {
+                            $bitmap = New-Object System.Drawing.Bitmap($imgData)
+                            $gotImage = $true
+                            Write-Host "[From Clipboard: $fmt format]"
+                            break
+                        } elseif ($imgData -is [System.Drawing.Image]) {
+                            $bitmap = $imgData
+                            $gotImage = $true
+                            Write-Host "[From Clipboard: $fmt image]"
+                            break
+                        } elseif ($imgData -is [byte[]]) {
+                            $ms = New-Object System.IO.MemoryStream(@(,$imgData))
+                            $bitmap = New-Object System.Drawing.Bitmap($ms)
+                            $gotImage = $true
+                            Write-Host "[From Clipboard: $fmt bytes]"
+                            break
+                        }
+                    }
+                }
+            }
+        } catch {}
+    }
+
+    if (-not $gotImage) {
+        # Show what formats ARE available
+        try {
+            $dataObj = [System.Windows.Forms.Clipboard]::GetDataObject()
+            if ($dataObj) {
+                $avail = ($dataObj.GetFormats() | ForEach-Object { $_ }) -join ', '
+                Write-Error "No image found in clipboard. Available formats: $avail"
+            } else {
+                Write-Error "Clipboard is empty or inaccessible."
+            }
+        } catch {
+            Write-Error "Cannot access clipboard. Try running PowerShell as STA mode: powershell -sta -File tools/read_image.ps1"
+        }
         Write-Host "Usage: .\read_image.ps1 [image_path]"
         Write-Host "       If no path given, reads from clipboard."
         exit 1

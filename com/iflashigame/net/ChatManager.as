@@ -36,8 +36,9 @@ package com.iflashigame.net
       private var _leitaiMode:Boolean = false;
       private var _leizhu:Boolean = true;
 
-      // ===== 新的 Socket 连接 =====
-      private var _socketConn:SocketConnection;
+      // ===== 双模式连接：桌面TCP / 网页HTTP轮询 =====
+      private var _socketConn:*; // SocketConnection 或 HttpPollConnection
+      private var _isWeb:Boolean = false;
       private var _connected:Boolean = false;
 
       // ===== 房间状态 =====
@@ -120,19 +121,50 @@ package com.iflashigame.net
        */
       public function connectToServer(host:String, port:int, authData:Object):void
       {
-         trace(RoleModel.getInstance().roleName, "connectToServer:", host, port);
+         trace(RoleModel.getInstance().roleName, "connectToServer:", host, port, "web=" + Config.IS_WEB);
+         _isWeb = Config.IS_WEB;
 
          if(_socketConn != null)
          {
             _socketConn.close();
          }
 
-         _socketConn = new SocketConnection();
+         if(_isWeb)
+         {
+            // 网页版：HTTP轮询
+            _socketConn = new HttpPollConnection();
+         }
+         else
+         {
+            // 桌面版：TCP Socket
+            _socketConn = new SocketConnection();
+         }
          _socketConn.addEventListener(SocketEvent.CONNECTED, onSocketConnected);
          _socketConn.addEventListener(SocketEvent.CONNECT_FAIL, onSocketConnectFail);
          _socketConn.addEventListener(SocketEvent.CLOSED, onSocketClosed);
          _socketConn.addEventListener(SocketEvent.DATA, onSocketData);
+         // 网页版使用HTTP端口3000，桌面版使用TCP端口3001
+         if(_isWeb) port = 3000;
          _socketConn.connect(host, port);
+
+         // 网页版：HTTP连接即时可用，跳过TCP握手直接完成连接
+         if(_isWeb)
+         {
+            _connected = true;
+            _helloMode = true;
+            _peerID = "web_" + new Date().getTime().toString(36);
+            _currentRooms = ["server:web", "world", "area:web"];
+            trace("[Web] 直接完成连接，peerID=" + _peerID);
+            dispatchEvent(new P2PEvent(P2PEvent.CIRRUS_CONNECT_SUCCESS));
+            var _self:ChatManager = this;
+            var _t:Timer = new Timer(400, 1);
+            _t.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
+               _self.dispatchEvent(new P2PEvent(P2PEvent.COM1_CONNECT_SUCCESS));
+               _self.dispatchEvent(new P2PEvent(P2PEvent.COM2_CONNECT_SUCCESS));
+               _self.dispatchEvent(new P2PEvent(P2PEvent.COM3_CONNECT_SUCCESS));
+            });
+            _t.start();
+         }
       }
 
       /**
@@ -456,6 +488,9 @@ package com.iflashigame.net
       private function onSocketConnected(event:SocketEvent):void
       {
          trace("Socket 连接成功，发送认证");
+
+         // 网页版已在 connectToServer 中处理，这里只处理桌面TCP
+         if(_isWeb) return;
 
          _connected = true;
          _helloMode = true;

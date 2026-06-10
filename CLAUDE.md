@@ -65,10 +65,54 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. `GlobalTimer` 每 5 秒检测时间流速，连续异常 6 次 → 判定变速作弊
 3. 战斗操作限时检测（`Config.ERROR` / `Config.NORMAL`）
 
+## 版本发布流程（每次修改代码必须完整执行）
+
+### 第一步：版本号
+同时修改3处版本号（当前 `2.7.0`，递增如 `2.8.0`）：
+1. `game/Config.as` → `CLIENT_VER`
+2. `server/start_fixed.js` → 搜索替换所有旧版本字符串
+3. `CHANGELOG.md` → 在顶部新增版本条目
+
+### 第二步：编译 SWF（仅当修改了 .as 源码时）
+```bash
+java -jar "D:/BaiduNetdiskDownload/flex_home/lib/mxmlc.jar" \
+  +flexlib="D:/BaiduNetdiskDownload/flex_home/frameworks" \
+  -compiler.source-path=. -default-size=770,500 -target-player=32.0 \
+  -static-link-runtime-shared-libraries=true \
+  -external-library-path=air_stubs.swc \
+  -- game/Sanguo4399.as
+cp game/Sanguo4399.swf main.swf
+```
+注意：只改了 XML 数据文件(staticxishu.xml/staticgeneral.xml)不需要重新编译。
+
+### 第三步：部署到云端
+```bash
+# 改了.as源码 → 编译+部署（包含SWF上传）
+node tools/cloud-deploy.js --full
+
+# 只改了XML/服务端 → 直接部署
+node tools/cloud-deploy.js
+
+# 查看服务器状态
+node tools/cloud-deploy.js --status
+```
+
+### 第四步：验证
+- 服务端版本：`curl -s -X POST http://47.96.41.243:3000/api/version -d '{}'`
+- SWF版本一致性：下载 `/client/main.swf`，解压检查 `CLIENT_VER` 字符串
+- 生成本地武将数值HTML：`node tools/gen_general_table.js`
+
+### 第五步：Git 提交
+```bash
+git add -A && git commit -m "vX.Y.Z: <描述>"
+```
+
 ## 工具脚本
 
-- **`tools/read_image.ps1`** — 截图 OCR 识别（文件/剪贴板）。本项目 Read 工具可能无法读取某些 PNG，此时自动用此脚本进行 Windows OCR。
-  - 用法：`powershell -File tools/read_image.ps1 -ImagePath <path>` 或 `powershell -File tools/read_image.ps1`（读剪贴板）
+- **`tools/cloud-deploy.js`** — 云端一键部署（编译SWF + 上传 + 重启 + 验证 + 生成HTML）
+- **`tools/gen_general_table.js`** — 武将数值表生成（读取XML → 计算公式 → 输出HTML到桌面）
+- **`tools/cloud-config.json`** — 阿里云 AccessKey + 实例ID（git-ignored）
+- **`tools/read_image.ps1`** — 截图 OCR 识别（文件/剪贴板）
 - **`tools/img2txt.ps1`** — 备用：将图片转 ASCII 亮度网格
 
 ## 关键数据流

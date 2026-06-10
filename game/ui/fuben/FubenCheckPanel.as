@@ -43,24 +43,28 @@ package game.ui.fuben
          this.__returnBtn.addEventListener(MouseEvent.CLICK,this.returnBtnClickHandler);
       }
       
+      private var _stageID:int = 1;
+
       override public function initData(param1:Object) : void
       {
-         this.__tf.text = "袭杀匈奴（副本）每天可挑战次数为" + COUNT + "次， 你当前已挑战次数为 " + (COUNT - int(param1.count)) + " 次，剩余可挑战次数为 " + param1.count + " 次。";
+         _stageID = param1.stageID ? int(param1.stageID) : 1;
+         var _fubenName:String = _stageID == 2 ? "荡平倭寇" : "袭杀匈奴";
+         this.__tf.text = _fubenName + "（副本）每天可挑战次数为" + COUNT + "次， 你当前已挑战次数为 " + (COUNT - int(param1.count)) + " 次，剩余可挑战次数为 " + param1.count + " 次。";
       }
-      
+
       private function adjustBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();
          dispatchEvent(new UIEvent(UIEvent.OPEN_BUDUI,true));
       }
-      
+
       private function okBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();
          if(XiongnuConfig.checkGeneralLevel(RoleModel.getInstance().getChooseSoldiers()) == true)
          {
             dispatchEvent(new UIEvent(UIEvent.INJOY_FUBEN,true,{
-               "stageID":1,
+               "stageID":_stageID,
                "index":1
             }));
          }

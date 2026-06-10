@@ -20,7 +20,7 @@
   <RECORD>
     <code>0_0</code>
     <hp>2.4</hp>
-    <attack>2.8</attack>
+    <attack>2.4</attack>
     <defence>1.5</defence>
   </RECORD>
   <RECORD>
@@ -44,7 +44,7 @@
   <RECORD>
     <code>1_0</code>
     <hp>2.6</hp>
-    <attack>2.5</attack>
+    <attack>2.1</attack>
     <defence>1.7</defence>
   </RECORD>
   <RECORD>
@@ -68,7 +68,7 @@
   <RECORD>
     <code>2_0</code>
     <hp>2.6</hp>
-    <attack>2.5</attack>
+    <attack>2.1</attack>
     <defence>1.7</defence>
   </RECORD>
   <RECORD>
@@ -92,7 +92,7 @@
   <RECORD>
     <code>3_0</code>
     <hp>3.6</hp>
-    <attack>2.4</attack>
+    <attack>2.0</attack>
     <defence>2.5</defence>
   </RECORD>
   <RECORD>
@@ -116,7 +116,7 @@
   <RECORD>
     <code>4_0</code>
     <hp>3.8</hp>
-    <attack>2.3</attack>
+    <attack>1.9</attack>
     <defence>2.7</defence>
   </RECORD>
   <RECORD>
@@ -140,7 +140,7 @@
   <RECORD>
     <code>5_0</code>
     <hp>4.0</hp>
-    <attack>2.2</attack>
+    <attack>1.8</attack>
     <defence>2.9</defence>
   </RECORD>
   <RECORD>
@@ -164,7 +164,7 @@
   <RECORD>
     <code>6_0</code>
     <hp>2.8</hp>
-    <attack>2.6</attack>
+    <attack>2.2</attack>
     <defence>1.8</defence>
   </RECORD>
   <RECORD>
@@ -188,7 +188,7 @@
   <RECORD>
     <code>7_0</code>
     <hp>2.9</hp>
-    <attack>2.7</attack>
+    <attack>2.3</attack>
     <defence>1.7</defence>
   </RECORD>
   <RECORD>
@@ -212,7 +212,7 @@
   <RECORD>
     <code>8_0</code>
     <hp>3.8</hp>
-    <attack>2.2</attack>
+    <attack>1.8</attack>
     <defence>3.2</defence>
   </RECORD>
   <RECORD>
@@ -236,7 +236,7 @@
   <RECORD>
     <code>9_0</code>
     <hp>4.2</hp>
-    <attack>2.5</attack>
+    <attack>2.1</attack>
     <defence>2.9</defence>
   </RECORD>
   <RECORD>

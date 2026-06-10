@@ -6,6 +6,8 @@ package game.fuben
    import com.iflashigame.utils.Tools;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   import flash.display.DisplayObject;
+   import flash.display.Graphics;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
    import flash.display.Sprite;
@@ -14,10 +16,12 @@ package game.fuben
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
    import flash.filters.GlowFilter;
+   import flash.geom.ColorTransform;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
+   import flash.text.TextFormat;
    import flash.ui.Mouse;
    import flash.utils.Timer;
    import game.Config;
@@ -38,6 +42,7 @@ package game.fuben
    import game.display.Shooter;
    import game.display.StoneWeapon;
    import game.display.WandaoSoldier;
+   import game.display.FrameSoldier;
    import game.display.Weapon;
    import game.events.ConEvent;
    import game.events.FightEvent;
@@ -87,7 +92,7 @@ package game.fuben
       
       private var _rightSoldiers:Array;
       
-      private var _bk:MovieClip;
+      private var _bk:DisplayObject;
       
       private var _yuanchengCon:AngleController;
       
@@ -204,7 +209,15 @@ package game.fuben
          this.createTF();
          this.createPauseBtn();
          this.setKilled(0);
-         this.showCover();
+         // 倭寇副本跳过过场动画，直接开战
+         if(param1 == 2)
+         {
+            this.skipIntro();
+         }
+         else
+         {
+            this.showCover();
+         }
       }
       
       private function showCover() : *
@@ -255,11 +268,72 @@ package game.fuben
       
       private function createBK() : *
       {
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.FUBEN_STAGE1) as Class;
-         this._bk = new _loc1_() as MovieClip;
-         this._bk.x = stage.stageWidth / 2;
-         this._bk.y = stage.stageHeight / 2;
-         addChild(this._bk);
+         if(this._currentStageID == 2)
+         {
+            // 倭寇海战背景 — 程序化绘制
+            this._bk = new Sprite();
+            var _g:Graphics = (this._bk as Sprite).graphics;
+            var _w:Number = stage.stageWidth;
+            var _h:Number = stage.stageHeight;
+            // 天空 — 黄昏血色（提亮）
+            _g.beginFill(0x2a1a0a); _g.drawRect(0,0,_w,_h); _g.endFill();
+            var _skyColors:Array = [0x6a2a10, 0x5a1a08, 0x4a1004, 0x3a0a02];
+            for(var _si:int=0;_si<4;_si++){
+               _g.beginFill(_skyColors[_si],0.4);
+               _g.drawRect(0,_si*60,_w,60); _g.endFill();
+            }
+            // 海面
+            _g.beginFill(0x1a3040,0.75);
+            _g.drawRect(0,_h*0.55,_w,_h*0.45); _g.endFill();
+            // 波浪纹理
+            _g.lineStyle(1,0x2a4a6a,0.25);
+            for(var _wi:int=0;_wi<15;_wi++){
+               var _wy:Number=_h*0.55+20+_wi*18;
+               _g.moveTo(0,_wy); _g.curveTo(_w*0.25,_wy-8,_w*0.5,_wy);
+               _g.curveTo(_w*0.75,_wy+8,_w,_wy);
+            }
+            // 左侧倭船剪影
+            _g.beginFill(0x0d0804,0.9);
+            _g.moveTo(60,_h*0.45); _g.lineTo(120,_h*0.45);
+            _g.lineTo(130,_h*0.38); _g.lineTo(50,_h*0.38); _g.lineTo(40,_h*0.42);
+            // 船帆
+            _g.beginFill(0x1a1008,0.7);
+            _g.moveTo(80,_h*0.42); _g.lineTo(100,_h*0.42);
+            _g.lineTo(95,_h*0.20); _g.lineTo(85,_h*0.20);
+            // 右侧倭船剪影
+            _g.beginFill(0x0d0804,0.9);
+            _g.moveTo(_w-60,_h*0.48); _g.lineTo(_w-120,_h*0.48);
+            _g.lineTo(_w-130,_h*0.41); _g.lineTo(_w-50,_h*0.41); _g.lineTo(_w-40,_h*0.45);
+            _g.beginFill(0x1a1008,0.7);
+            _g.moveTo(_w-80,_h*0.45); _g.lineTo(_w-100,_h*0.45);
+            _g.lineTo(_w-95,_h*0.23); _g.lineTo(_w-85,_h*0.23);
+            // 远处山峰/岛屿
+            _g.beginFill(0x080604,0.6);
+            _g.moveTo(0,_h*0.55); _g.lineTo(40,_h*0.42); _g.lineTo(90,_h*0.50);
+            _g.lineTo(150,_h*0.44); _g.lineTo(200,_h*0.52); _g.lineTo(250,_h*0.48);
+            _g.lineTo(310,_h*0.55); _g.lineTo(350,_h*0.50); _g.lineTo(380,_h*0.55);
+            _g.lineTo(_w,_h*0.55); _g.lineTo(_w,_h*0.60); _g.lineTo(0,_h*0.60);
+            // 战火烟雾
+            _g.beginFill(0x3a2a1a,0.15);
+            _g.drawCircle(_w*0.3,_h*0.3,40);
+            _g.drawCircle(_w*0.35,_h*0.25,30);
+            _g.drawCircle(_w*0.7,_h*0.35,35);
+            _g.drawCircle(_w*0.65,_h*0.28,25);
+            // 太阳 — 暗红日丸
+            _g.beginFill(0x8b2000,0.4);
+            _g.drawCircle(_w*0.5,_h*0.25,35);
+            _g.beginFill(0x8b3000,0.2);
+            _g.drawCircle(_w*0.5,_h*0.25,25);
+            addChild(this._bk);
+         }
+         else
+         {
+            var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.FUBEN_STAGE1) as Class;
+            this._bk = new _loc1_() as MovieClip;
+            this._bk.x = stage.stageWidth / 2;
+            this._bk.y = stage.stageHeight / 2;
+            addChild(this._bk);
+         }
       }
       
       private function createController() : *
@@ -474,11 +548,38 @@ package game.fuben
             removeChild(this._title);
             this._title = null;
          }
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition("title_fuben_1" + this._currentStageID) as Class;
-         this._title = new Bitmap(new _loc1_() as BitmapData);
-         addChild(this._title);
-         this._title.x = (stage.stageWidth - this._title.width) / 2;
-         this._title.y = 50;
+         if(this._currentStageID == 2)
+         {
+            // 倭寇标题：程序化绘制
+            var _titleSp:Sprite = new Sprite();
+            var _tf:TextField = new TextField();
+            _tf.defaultTextFormat = new TextFormat("SimHei",26,0xFFD700,true);
+            _tf.text = "荡 平 倭 寇";
+            _tf.selectable = false; _tf.mouseEnabled = false;
+            _tf.width = 300; _tf.height = 40;
+            _tf.x = (stage.stageWidth - _tf.width) / 2;
+            _tf.y = 30;
+            _titleSp.addChild(_tf);
+            // 副标题
+            var _tf2:TextField = new TextField();
+            _tf2.defaultTextFormat = new TextFormat("SimSun",12,0xC8A84E);
+            _tf2.text = "— 犯我疆土者，虽远必诛 —";
+            _tf2.selectable = false; _tf2.mouseEnabled = false;
+            _tf2.width = 300; _tf2.height = 20;
+            _tf2.x = (stage.stageWidth - _tf2.width) / 2;
+            _tf2.y = 72;
+            _titleSp.addChild(_tf2);
+            this._title = new Bitmap(new BitmapData(1,1,false,0));
+            addChild(_titleSp);
+         }
+         else
+         {
+            var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition("title_fuben_1" + this._currentStageID) as Class;
+            this._title = new Bitmap(new _loc1_() as BitmapData);
+            addChild(this._title);
+            this._title.x = (stage.stageWidth - this._title.width) / 2;
+            this._title.y = 50;
+         }
       }
       
       private function createMyArmy() : *
@@ -488,17 +589,19 @@ package game.fuben
          this._leftSoldiers = [];
          var _loc3_:int = int(this._leftArmy.length);
          var _loc4_:int = 0;
+         // 倭寇副本：部队直接在战场位置，不需要滑入偏移
+         var _offset:int = (this._currentStageID == 2) ? 0 : 300;
          while(_loc4_ < _loc3_)
          {
             _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
             if(_loc2_.type == Type.TOUSHICHE)
             {
-               _loc2_.x = Xiongnu.TS_POS.x - 300;
+               _loc2_.x = Xiongnu.TS_POS.x - _offset;
                _loc2_.y = Xiongnu.TS_POS.y;
             }
             else
             {
-               _loc2_.x = Xiongnu["POS" + _loc1_].x - 300;
+               _loc2_.x = Xiongnu["POS" + _loc1_].x - _offset;
                _loc2_.y = Xiongnu["POS" + _loc1_].y;
                _loc1_++;
             }
@@ -526,6 +629,12 @@ package game.fuben
                return new Boss(param1.clone(),param2,param3);
             case Type.JUNZHU:
                return new Junzhu(param1.clone(),param2,param3,this);
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+               // 倭寇兵种：近战(Saber)加载各自皮肤
+               return new Saber(param1.clone(),param2,param3,this);
             default:
                return new Shooter(param1.clone(),param2,param3,this);
          }
@@ -609,47 +718,55 @@ package game.fuben
       
       private function createEnemy2() : *
       {
-         var _loc1_:int = 0;
-         var _loc2_:AbstractSoldier = null;
+         var _loc1_:int = 0, _loc2_:int = 0, _loc3_:int = 0;
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
-         var _loc3_:int = 0;
+         // 玩家属性基准
          _loc3_ = 0;
-         while(_loc3_ < this._leftArmy.length)
-         {
-            this._rightArmy[_loc3_] = this._leftArmy[_loc3_].clone();
-            this._rightArmy[_loc3_].name = "匈奴铁卫";
-            this._rightArmy[_loc3_].ai = 85;
-            this._rightArmy[_loc3_].delay = 2300;
+         while(_loc3_ < this._leftArmy.length) {
+            _loc1_ += this._leftArmy[_loc3_].hp;
+            _loc2_ += this._leftArmy[_loc3_].defense;
             _loc3_++;
          }
-         this._rightSoldiers = [];
-         var _loc4_:int = int(this._rightArmy.length);
-         var _loc5_:int = int(this._leftArmy.length);
+         var _avgHp:int = int(_loc1_ / this._leftArmy.length);
+         var _avgDef:int = int(_loc2_ / this._leftArmy.length);
+         var _avgLv:int = 1;
          _loc3_ = 0;
-         while(_loc3_ < _loc4_)
-         {
-            _loc2_ = this.armyFactory(this._rightArmy[_loc3_],-1,this._direct == -1 ? true : false);
-            if(_loc2_.type == Type.TOUSHICHE)
-            {
-               _loc2_.x = 770 - Xiongnu.TS_POS.x;
-               _loc2_.y = Xiongnu.TS_POS.y;
-            }
-            else
-            {
-               _loc2_.x = 770 - Xiongnu["POS" + _loc1_].x;
-               _loc2_.y = Xiongnu["POS" + _loc1_].y;
-               _loc1_++;
-            }
-            if(_loc3_ < _loc5_)
-            {
-               addChildAt(_loc2_,getChildIndex(this._leftSoldiers[_loc3_] as AbstractSoldier));
-            }
-            else
-            {
-               addChild(_loc2_);
-            }
-            this._rightSoldiers.push(_loc2_);
+         while(_loc3_ < this._leftArmy.length) { _avgLv += this._leftArmy[_loc3_].level; _loc3_++; }
+         _avgLv = int(_avgLv / this._leftArmy.length);
+         if(_avgLv < 1) _avgLv = 1;
+         // 倭寇精兵 x12 — v3原版皮肤(generalSkin_14)
+         _loc3_ = 0;
+         while(_loc3_ < 12) {
+            var _zb:ArmyInfo = Data.getInstance().getArmyInfo("general_14_0", _avgLv, 0, 0, "倭寇精兵", 3000, 80);
+            _zb.hp = int(_avgHp * 0.5); _zb.baseDefense = _avgDef;
+            this._rightArmy.push(_zb); _loc3_++;
+         }
+         // 倭寇头目 — v3原版皮肤(generalSkin_15)
+         var _boss:ArmyInfo = Data.getInstance().getArmyInfo("general_15_1", _avgLv, 0, 0, "倭寇头目", 10000, 100);
+         _boss.hp = _avgHp * 10; _boss.baseDefense = _avgDef;
+         this._rightArmy.push(_boss);
+         // 敌军放置在战场右侧可见位置
+         this._rightSoldiers = [];
+         var _offsetX:int = 500; // 战场右半区
+         var _posArr:Array = [
+            {x:_offsetX+120, y:Xiongnu.POS1.y},
+            {x:_offsetX+80,  y:Xiongnu.POS2.y},
+            {x:_offsetX+140, y:Xiongnu.POS3.y}
+         ];
+         _loc3_ = 0;
+         while(_loc3_ < this._rightArmy.length) {
+            var _enemy:AbstractSoldier = this.armyFactory(this._rightArmy[_loc3_], -1, false);
+            var _pi:int = (_loc3_ < 3) ? _loc3_ : (_loc3_ % 3);
+            _enemy.x = _posArr[_pi].x; _enemy.y = _posArr[_pi].y;
+            addChild(_enemy);
+            this._rightSoldiers.push(_enemy);
+            // 隐藏SWF皮肤，覆盖AI帧动画精灵表
+            try{var _sk:*=_enemy.getChildAt(0);if(_sk)_sk.visible=false}catch(_e:Error){}
+            var _isBoss:Boolean = (_loc3_ == this._rightArmy.length - 1);
+            var _url:String = _isBoss ? '/client/wokou_boss_sheet.png' : '/client/wokou_soldier_sheet.png';
+            var _fs:FrameSoldier = new FrameSoldier(_enemy, _url, _isBoss ? 250 : 200, _isBoss ? 300 : 250);
+            _enemy.addChild(_fs);
             _loc3_++;
          }
       }
@@ -1795,6 +1912,22 @@ package game.fuben
          this._timer.start();
       }
       
+      private function skipIntro() : *
+      {
+         this.initEvent();
+         this._ai = new XiongnuAI(this,5000,-1,this._config);
+         this._ai.startAI();
+         if(this._timer != null)
+         {
+            this._timer.reset();
+            this._timer = null;
+         }
+         this._timer = new Timer(Config.NORMAL);
+         this._date = new Date().getTime();
+         this._timer.addEventListener(TimerEvent.TIMER,this.speedCheckHandler);
+         this._timer.start();
+      }
+
       private function createStartAni() : *
       {
          var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.XIONGNU_ANI) as Class;

@@ -7,6 +7,9 @@ package game.model
    import flash.filesystem.File;
    import flash.filesystem.FileMode;
    import flash.filesystem.FileStream;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.net.URLRequestMethod;
    import flash.utils.Timer;
    import game.Config;
    import game.Data;
@@ -1319,6 +1322,29 @@ package game.model
       
       private function saveToLocal() : void
       {
+         var _saveData:String = JsonFormatter.formatJson(this.toObject());
+
+         // 网页版：HTTP POST 到服务器
+         if(Config.IS_WEB)
+         {
+            try
+            {
+               var _webLoader:URLLoader = new URLLoader();
+               var _webReq:URLRequest = new URLRequest(Config.SERVER_URL + "/api/save");
+               _webReq.method = URLRequestMethod.POST;
+               // 使用URL编码格式发送（避免JSON转义问题）
+               _webReq.data = "token=" + encodeURIComponent(Config.token) + "&saveData=" + encodeURIComponent(_saveData);
+               _webLoader.load(_webReq);
+               trace("[Web] 存档已发送到服务器");
+            }
+            catch(e:Error)
+            {
+               trace("[Web] 存档发送失败：" + e.message);
+            }
+            return;
+         }
+
+         // 桌面版：写入本地文件
          var file:File = null;
          var fs:FileStream = null;
          try
@@ -1327,7 +1353,7 @@ package game.model
             trace("将尝试写入路径：" + file.nativePath);
             fs = new FileStream();
             fs.open(file,FileMode.WRITE);
-            fs.writeUTFBytes(JsonFormatter.formatJson(this.toObject()));
+            fs.writeUTFBytes(_saveData);
             fs.close();
             trace("保存成功：" + file.nativePath);
          }

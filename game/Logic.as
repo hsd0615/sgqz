@@ -7,7 +7,7 @@ package game
    {
       
       public static var kezhiXishu:Array = [1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4,1.45,1.5];
-      
+
       public static var kezhiBilv:Array = [0,5,10,15,20,25,30,35,40,45,50];
        
       
@@ -65,11 +65,13 @@ package game
          }
          if(_loc4_ == 0 && _loc5_ == 1)
          {
-            return (_loc6_ = param1.attack * 1.2 - param2.defense / 5) <= 0 ? 1 : _loc6_;
+            _loc6_ = param1.attack * 1.2 - param2.defense / 5;
+            return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 0 && _loc5_ == -1)
          {
-            return (_loc6_ = param1.attack - param2.defense * 1.2 / 5) <= 0 ? 1 : _loc6_;
+            _loc6_ = param1.attack - param2.defense * 1.2 / 5;
+            return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 1 && _loc5_ == 1)
          {
@@ -135,7 +137,8 @@ package game
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
-         return (_loc6_ = getHurtValeOld(param1,param2,param3)) <= 0 ? 1 : _loc6_;
+         _loc6_ = getHurtValeOld(param1,param2,param3);
+         return _loc6_ <= 0 ? 1 : _loc6_;
       }
       
       private static function getHurtByToushiche(param1:AbstractSoldier, param2:AbstractSoldier, param3:String = null) : int
@@ -166,7 +169,7 @@ package game
          }
          return _loc4_ <= 0 ? 1 : _loc4_;
       }
-      
+
       public static function checkBingzhongKezhi(param1:AbstractSoldier, param2:AbstractSoldier) : int
       {
          if(param1.armyInfo.kezhi1 == param2.type || param1.armyInfo.kezhi2 == param2.type || param1.armyInfo.kezhi3 == param2.type)
@@ -239,7 +242,8 @@ package game
          }
          if(param1.type == Type.TOUSHICHE && param2.type == Type.TOUSHICHE)
          {
-            return (_loc4_ = int(_loc7_ + _loc6_ - _loc9_ / 5)) <= 0 ? 1 : _loc4_;
+            _loc4_ = int(_loc7_ + _loc6_ - _loc9_ / 5);
+            return _loc4_ <= 0 ? 1 : _loc4_;
          }
          if((_loc11_ = _loc10_ - _loc5_) == -1 || _loc11_ == 3 || _loc11_ == 0)
          {

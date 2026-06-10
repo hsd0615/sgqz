@@ -125,8 +125,10 @@ package game
       private var _xiongnuFight:Xiongnu;
       
       private var _fubenCheckPanel:FubenCheckPanel;
-      
+
       private var _fubenResultPanel:FubenResultPanel;
+
+      private var _currentFubenStageID:int = 1;
       
       private var _fanpaiPanel:FanpaiPanel;
       
@@ -313,6 +315,21 @@ package game
       
       public function openNetStatusPanel(param1:Boolean = false) : *
       {
+         // 网页版：创建面板但不可见，走完整连接流程
+         if(Config.IS_WEB)
+         {
+            // 网页版直接用服务器地址作为房间标识
+            Config.server1 = Config.SERVER_HOST;
+            Config.server2 = Config.SERVER_HOST;
+            Config.server3 = Config.SERVER_HOST;
+            this._netStatusPanel = new NetStatusUI(SkinCode.CONNECT_STATUS);
+            this._netStatusPanel.x = -1000;
+            this._netStatusPanel.y = -1000;
+            this._netStatusPanel.visible = false;
+            addChild(this._netStatusPanel);
+            this.connectGoogle();
+            return;
+         }
          if(this._netStatusPanel == null)
          {
             this._netStatusPanel = new NetStatusUI(SkinCode.CONNECT_STATUS);
@@ -762,6 +779,12 @@ package game
       
       public function openSelectServerPanel(param1:Boolean = false) : *
       {
+         // 网页版：单服务器，跳过选择面板直接连接
+         if(Config.IS_WEB)
+         {
+            this.openNetStatusPanel(param1);
+            return;
+         }
          if(this._selectServerPanel == null)
          {
             this._selectServerPanel = new SelectServerPanel(SkinCode.SELECT_SERVER);
@@ -986,7 +1009,6 @@ package game
          _loc1_.image = RoleModel.getInstance().imageID;
          if(Config.USE_NEW_NETWORK == true)
          {
-            // 新版：直接连接新服务器
             this.connectCirrus();
          }
          else
@@ -1043,8 +1065,7 @@ package game
          }
          else if(param1.type == P2PEvent.CIRRUS_CONNECT_SUCCESS)
          {
-            this._netStatusPanel.setStatus1("1.连接云端服务器成功!");
-            this._netStatusPanel.setIcon1(true,2);
+            if(this._netStatusPanel) { this._netStatusPanel.setStatus1("1.连接云端服务器成功!"); this._netStatusPanel.setIcon1(true,2); }
             this.connectManageGroup();
          }
       }
@@ -1129,6 +1150,19 @@ package game
          {
             this._netStatusPanel.setStatus4("4.连接游戏服务器成功!");
             this._netStatusPanel.setIcon4(true,2);
+            // 网页版：连接完成关闭面板，添加地图进入游戏
+            if(Config.IS_WEB)
+            {
+               var _self:UI = this;
+               var _closeTimer:flash.utils.Timer = new flash.utils.Timer(500, 1);
+               _closeTimer.addEventListener(flash.events.TimerEvent.TIMER, function(e:*):void {
+                  _self.closeNetStatusPanel();
+                  _self.removeCover();
+                  _self.addMap();
+                  MySound.getInstance().startByName(SoundCode.MAP);
+               });
+               _closeTimer.start();
+            }
             this._netStatusPanel.setCancelBtnEnabled(true);
             this._netStatusPanel.setOkBtnEnabled(true);
          }
@@ -2920,7 +2954,8 @@ package game
             _loc2_.token = Config.token;
             _loc2_.roleID = RoleModel.getInstance().roleID;
             _loc2_.userID = RoleModel.getInstance().userID;
-            _loc2_.stageID = StageID.XI_SHA_XIONG_NU;
+            _currentFubenStageID = (param1.data && param1.data.stageID) ? int(param1.data.stageID) : StageID.XI_SHA_XIONG_NU;
+            _loc2_.stageID = _currentFubenStageID;
             _loc2_.mask = true;
             AESController.getInstance().sendJSON(_loc2_,this.getFubenCountResponse);
          }
@@ -2934,7 +2969,7 @@ package game
             if(int(param1.data.count) > 0)
             {
                this.openFubenCheckPanel();
-               this._fubenCheckPanel.initData({"count":param1.data.count});
+               this._fubenCheckPanel.initData({"count":param1.data.count, "stageID":_currentFubenStageID});
             }
             else
             {
@@ -2969,7 +3004,7 @@ package game
          _loc2_.token = Config.token;
          _loc2_.roleID = RoleModel.getInstance().roleID;
          _loc2_.userID = RoleModel.getInstance().userID;
-         _loc2_.stageID = StageID.XI_SHA_XIONG_NU;
+         _loc2_.stageID = _currentFubenStageID;
          _loc2_.proto = 0;
          _loc2_.mask = true;
          AESController.getInstance().sendJSON(_loc2_,this.enterFubenResponse);
@@ -3002,7 +3037,7 @@ package game
          _loc1_.token = Config.token;
          _loc1_.roleID = RoleModel.getInstance().roleID;
          _loc1_.userID = RoleModel.getInstance().userID;
-         _loc1_.stageID = StageID.XI_SHA_XIONG_NU;
+         _loc1_.stageID = _currentFubenStageID;
          _loc1_.proto = 1;
          _loc1_.mask = true;
          AESController.getInstance().sendJSON(_loc1_,this.enterFubenResponse);
@@ -3034,11 +3069,11 @@ package game
          switch(param1)
          {
             case 1:
-               this._xiongnuFight = new Xiongnu(RoleModel.getInstance().getChooseSoldiers(),param2);
+            case 2:
+               this._xiongnuFight = new Xiongnu(RoleModel.getInstance().getChooseSoldiers(),param1);
                addChild(this._xiongnuFight);
                MySound.getInstance().startByName(SoundCode.XIONGNU_SOUND1);
                break;
-            case 2:
          }
       }
       

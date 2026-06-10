@@ -468,10 +468,7 @@ package game.ui
       private function wokouBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();
-         dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
-            "type":0,
-            "text":"荡平倭寇副本暂未开放，请关注官方通知。"
-         }));
+         dispatchEvent(new UIEvent(UIEvent.XIONGNU_CLICK,true,{"stageID":2}));
       }
       
       private function mouseOverHandler(param1:MouseEvent) : *

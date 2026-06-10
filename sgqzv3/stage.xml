@@ -1,4 +1,4 @@
-<data>
+﻿<data>
   <copyright>西安乐境动漫创意有限公司</copyright>
   <defaultArmy>
     <general code="general_1_0" level="1"/>
@@ -7,7 +7,7 @@
     <general code="general_4_3"	level="1"/>
   </defaultArmy>
   <gate id="1" part="1" partName="黄巾之乱" level="1" name="新手试炼" group="黄巾" ai="65" delay="4000">
-    <award soldier="general_3_4" recruit="" proto="" money="2000" reverence="100" exploit="500" wujiang="general_3_4"/>
+    <award soldier="" recruit="" proto="" money="2000" reverence="100" exploit="500"/>
     <general code="general_1_1" level="1" name="黄巾杂兵"/>
     <general code="general_3_1" level="1" name="黄巾兵"/>
   </gate>
@@ -863,20 +863,20 @@
   </gate>
   <gate id="100" part="10" partName="外敌入侵" level="130" name="一战扬名" group="匈奴" ai="100" delay="1600">
     <award soldier="" recruit="" proto="proto_3_4:5" money="200000" reverence="20000" exploit="200000"/>
-    <general code="general_0_1" level="240" name="匈奴战车" feature="2" evolution="10"/>
-	<general code="general_9_18" level="243" name="匈奴左贤王" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
-    <general code="general_9_18" level="243" name="匈奴右贤王" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
-    <general code="general_9_18" level="245" name="匈奴大单于" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_0_1" level="240" name="匈奴战车" feature="1" evolution="10"/>
+	<general code="general_9_18" level="243" name="匈奴左贤王" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="243" name="匈奴右贤王" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
+    <general code="general_9_18" level="245" name="匈奴大单于" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_1_15" level="240" name="匈奴长弓手" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/> 
-    <general code="general_5_14" level="240" name="匈奴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
+    <general code="general_5_14" level="240" name="匈奴锤将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
   </gate>
   <fuben stageID="1">
     <general code="general_10_1" name="匈奴杂兵" ai="80" delay="3000"/>
     <general code="general_11_1" name="匈奴前哨" ai="100" delay="5000"/>
     <general code="general_12_1" name="匈奴长弓兵" ai="100" delay="7000"/>
     <general code="general_13_1" name="匈奴头目" ai="100" delay="10000"/>
-  </fuben>
-  <fuben stageID="2">
+ </fuben>
+<fuben stageID="2">
     <general code="general_14_0" name="倭寇精兵" ai="80" delay="3000"/>
     <general code="general_11_1" name="倭寇前哨" ai="100" delay="5000"/>
     <general code="general_12_1" name="倭寇长弓兵" ai="100" delay="7000"/>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<servera url="" />
+	<server url="" />
+	<requestCode>gbk</requestCode>
+	<responseCode>utf-8</responseCode>
+
+	<!-- 素材 (同源相对路径) -->
+	<SWFLoader url="/client/ui.swf" name="game01.skin.ui" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/superGeneral.swf" name="game01.skin.superGeneral" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/face.swf" name="game01.skin.face" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/general.swf" name="game01.skin.general" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/sound.swf" name="game01.sound" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/fubenui.swf" name="game01.skin.fubenui" load="true" autoPlay="false" context="own"/>
+
+	<!-- 游戏数据 -->
+	<DataLoader url="/client/staticgeneral.xml" name="game01.data.general" load="true" />
+	<DataLoader url="/client/staticxishu.xml" name="game01.data.xishu" load="true" />
+	<DataLoader url="/client/staticproto.xml" name="game01.data.proto" load="true" />
+	<DataLoader url="/client/shop.xml" name="game01.data.shop" load="true" />
+	<DataLoader url="/client/stage.xml" name="game01.data.stage" load="true" />
+	<DataLoader url="/client/staticpaoma.xml" name="game01.data.paoma" load="true" />
+	<DataLoader url="/client/statictf.xml" name="game01.data.tianfu" load="true" />
+	<DataLoader url="/client/talkFilter.xml" name="game01.data.talkFilter" load="true" />
+</data>

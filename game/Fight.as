@@ -7,6 +7,7 @@ package game
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
+   import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.KeyboardEvent;
@@ -17,6 +18,8 @@ package game
    import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
+   import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
    import flash.ui.Mouse;
    import flash.utils.Timer;
    import game.ai.AI;
@@ -120,7 +123,9 @@ package game
       public var _date:Number;
       
       private var _biansu:int = 0;
-      
+
+      private var _retreatBtn:Sprite;
+
       private var _fightUI:FightUI;
       
       private var _ammoTips:MovieClip;
@@ -199,6 +204,58 @@ package game
       
       private function createTF() : *
       {
+         // 撤退按钮 — 古铜风格匹配游戏UI
+         this._retreatBtn = new Sprite();
+         var _bg:Shape = new Shape();
+         _bg.graphics.lineStyle(1.5, 0x8B6914, 0.9);
+         _bg.graphics.beginFill(0x1a1008, 0.88);
+         _bg.graphics.drawRoundRect(0, 0, 56, 22, 4, 4);
+         _bg.graphics.endFill();
+         _bg.graphics.lineStyle(0.5, 0x5a4010, 0.5);
+         _bg.graphics.drawRoundRect(2, 2, 52, 18, 3, 3);
+         this._retreatBtn.addChild(_bg);
+         var _rtTF:TextField = new TextField();
+         _rtTF.defaultTextFormat = new TextFormat("SimSun", 11, 0xC8A84E, true);
+         _rtTF.text = "撤退";
+         _rtTF.selectable = false; _rtTF.mouseEnabled = false;
+         _rtTF.autoSize = TextFieldAutoSize.CENTER;
+         _rtTF.x = 8; _rtTF.y = 3;
+         this._retreatBtn.addChild(_rtTF);
+         this._retreatBtn.buttonMode = true;
+         this._retreatBtn.x = 710; this._retreatBtn.y = 2;
+         this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
+         addChild(this._retreatBtn);
+      }
+
+      private function retreatClickHandler(param1:MouseEvent) : *
+      {
+         param1.stopImmediatePropagation();
+         this.doRetreat();
+      }
+
+      public function doRetreat() : *
+      {
+         if(this._isOver == true) return;
+         this.clear();
+         this._isOver = true;
+         var _flag:String = "lost";
+         var _loc3_:Number = 0;
+         var _loc4_:Number = 0;
+         if(this._direct == 1)
+         {
+            _loc3_ = this.getRightLevelAverage();
+            _loc4_ = this.getLeftLevelAverage();
+         }
+         else
+         {
+            _loc3_ = this.getLeftLevelAverage();
+            _loc4_ = this.getRightLevelAverage();
+         }
+         dispatchEvent(new FightEvent(FightEvent.FIGHT_COMPLETE, true, {
+            "flag": _flag,
+            "m": _loc3_,
+            "n": _loc4_
+         }));
       }
       
       private function createGIcon() : *
@@ -1354,6 +1411,13 @@ package game
          this._yuanchengCon.stopBar();
          this._yuanchengCon.visible = false;
          this._miaozhunjing.visible = false;
+         // 清理撤退按钮
+         if(this._retreatBtn != null)
+         {
+            this._retreatBtn.removeEventListener(MouseEvent.CLICK, this.retreatClickHandler);
+            if(this._retreatBtn.parent) this._retreatBtn.parent.removeChild(this._retreatBtn);
+            this._retreatBtn = null;
+         }
       }
       
       public function setPartAndLevel(param1:int, param2:int) : *

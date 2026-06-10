@@ -44,6 +44,7 @@ function initLeitai() {
 // ============ 武将数据 ============
 // 全局克制类型映射 (从staticgeneral.xml加载, 服务端权威数据源)
 var KEZHI_MAP = {};
+var generalRecruitMap = {};
 function loadKezhiMap() {
   if (!fs.existsSync('/opt/staticgeneral.xml')) return;
   var xml = fs.readFileSync('/opt/staticgeneral.xml','utf8');
@@ -52,10 +53,15 @@ function loadKezhiMap() {
     var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
     var km = blocks[i].match(/<kezhi>([^<]+)<\/kezhi>/);
     if (cm && km && km[1].length > 0) KEZHI_MAP[cm[1]] = km[1];
+    // 同时加载招募概率
+    if (cm) {
+      var mm = blocks[i].match(/<money>(\d+)<\/money>/);
+      var dm = blocks[i].match(/<dianka>(\d+)<\/dianka>/);
+      if (mm && dm) generalRecruitMap[cm[1]] = { money: parseInt(mm[1]), dianka: parseInt(dm[1]) };
+    }
   }
-  // 投石车 XML 无 kezhi，手动补
   KEZHI_MAP['general_0_1'] = '3:1|8:1|9:1';
-  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries');
+  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length);
 }
 
 // 全局关卡ID映射 (part_level → stage_id, 从stage.xml加载)
@@ -343,7 +349,18 @@ function parseHttpRequest(raw) {
   }
 
   let jsonData = {};
-  try { jsonData = JSON.parse(body); } catch(e) {}
+  try { jsonData = JSON.parse(body); } catch(e) {
+    // 尝试URL编码解析
+    try {
+      var pairs = body.split('&');
+      for (var pi = 0; pi < pairs.length; pi++) {
+        var eq = pairs[pi].indexOf('=');
+        if (eq > 0) {
+          jsonData[decodeURIComponent(pairs[pi].substring(0,eq))] = decodeURIComponent(pairs[pi].substring(eq+1));
+        }
+      }
+    } catch(e2) {}
+  }
 
   return { method, url, body, jsonData };
 }
@@ -399,7 +416,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.3.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.7.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -654,14 +671,25 @@ function handleRequest(socket, req) {
 
     const headCode = parseInt(data.head) || 0;
     let costMoney = 0, costReverence = 0, costDianka = 0;
-    let successRate = 0.6;
+    let successRate = 0;
 
-    if (headCode === 10001) { // 普通招募
-      costMoney = 10000; costReverence = 1000; successRate = 0.65;
-    } else if (headCode === 10002) { // 求贤招募
-      costDianka = 100; successRate = 0.85;
-    } else if (headCode === 10003) { // 点卡招募
-      costDianka = 300; successRate = 1.0;
+    // 从 staticgeneral.xml 获取该武将的招募概率
+    var generalCode = data.code;
+    var genRecruitMoney = 30, genRecruitDianka = 45; // 默认值
+    if (generalCode && generalRecruitMap[generalCode]) {
+      genRecruitMoney = generalRecruitMap[generalCode].money || 30;
+      genRecruitDianka = generalRecruitMap[generalCode].dianka || 45;
+    }
+
+    if (headCode === 10001) { // 普通招募 — 使用XML中的money字段作为概率(%)
+      costMoney = 1000; costReverence = 1000;
+      successRate = genRecruitMoney / 100;
+    } else if (headCode === 10002) { // 求贤招募 — 使用XML中的dianka字段作为概率(%)
+      costDianka = 20; costReverence = 1000;
+      successRate = genRecruitDianka / 100;
+    } else if (headCode === 10003) { // 点卡招募 — 同样使用dianka概率
+      costDianka = 20; costReverence = 1000;
+      successRate = genRecruitDianka / 100;
     }
 
     // 检查资源
@@ -1016,9 +1044,9 @@ function handleRequest(socket, req) {
     return;
   }
 
-  // Crossdomain
+  // Crossdomain - 允许Flash POST请求
   if (url === '/crossdomain.xml') {
-    const xml = '<?xml version="1.0"?><cross-domain-policy><allow-access-from domain="*"/></cross-domain-policy>';
+    const xml = '<?xml version="1.0"?>\n<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">\n<cross-domain-policy>\n  <site-control permitted-cross-domain-policies="all"/>\n  <allow-access-from domain="*" to-ports="*" secure="false"/>\n  <allow-http-request-headers-from domain="*" headers="*" secure="false"/>\n</cross-domain-policy>';
     sendRawHttpResponse(socket, 200, 'OK', {
       'Content-Type': 'text/xml',
       'Content-Length': String(Buffer.byteLength(xml)),
@@ -1026,6 +1054,9 @@ function handleRequest(socket, req) {
     }, xml);
     return;
   }
+
+  // 删除下面的第二个 crossdomain 路由（已合并到上面）
+  // (保留着也没关系，但因为上面已经return了，不会执行到下面)
 
   // ============ 管理接口：热更新部署 ============
   if (url === '/api/admin/deploy') {
@@ -1094,12 +1125,29 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.3.0' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.7.0' });
+  }
+
+  // Flash安全策略文件
+  if (url === '/crossdomain.xml') {
+    try {
+      var fs = require('fs');
+      var cdmPath = '/opt/crossdomain.xml';
+      if (fs.existsSync(cdmPath)) {
+        var cdmData = fs.readFileSync(cdmPath, 'utf-8');
+        sendRawHttpResponse(socket, 200, 'OK', {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Content-Length': String(cdmData.length),
+          'Connection': 'close'
+        }, cdmData);
+        return;
+      }
+    } catch(e) {}
   }
 
   // 客户端文件下载 (SWF + XML数据)
   if (url.startsWith('/client/')) {
-    var clientFile = url.substring(8); // remove /client/
+    var clientFile = url.substring(8).split('?')[0]; // remove /client/, strip query
     if (clientFile.indexOf('..') >= 0) {
       sendRawHttpResponse(socket, 403, 'Forbidden', {}, 'Forbidden');
       return;
@@ -1110,9 +1158,10 @@ function handleRequest(socket, req) {
       if (fs.existsSync(clientPath)) {
         var clientData = fs.readFileSync(clientPath);
         var ext = clientFile.split('.').pop().toLowerCase();
-        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8' };
+        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8' };
         var mime = mimeMap[ext] || 'application/octet-stream';
-        var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nConnection: close\r\n\r\n';
+        // 禁止缓存，每次从服务器拉最新
+        var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nCache-Control: no-cache, no-store, must-revalidate\r\nPragma: no-cache\r\nExpires: 0\r\nConnection: close\r\n\r\n';
         var headBuf = Buffer.from(headStr, 'utf-8');
         var fullBuf = Buffer.concat([headBuf, clientData]);
         socket.write(fullBuf, function() { try { socket.end(); } catch(e) {} });
@@ -1121,6 +1170,82 @@ function handleRequest(socket, req) {
     } catch(e) {}
     sendRawHttpResponse(socket, 404, 'Not Found', {}, 'Not Found');
     return;
+  }
+
+  // ===== 网页版 API =====
+
+  // 存档加载
+  if (url === '/api/load' && data.token) {
+    const p = findPlayerByToken(data.token);
+    if (p) {
+      p.lastSeen = Date.now();
+      try {
+        const savePath = '/opt/data/save_' + p.id + '.json';
+        const fs = require('fs');
+        if (fs.existsSync(savePath)) {
+          const saveData = fs.readFileSync(savePath, 'utf-8');
+          return jsonRawResponse(socket, { success: true, data: saveData });
+        }
+      } catch(e) {}
+      return jsonRawResponse(socket, { success: true, data: null }); // 新玩家无存档
+    }
+    return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
+  }
+
+  // 存档保存
+  if (url === '/api/save' && data.token && data.saveData) {
+    const p = findPlayerByToken(data.token);
+    if (p) {
+      p.lastSeen = Date.now();
+      try {
+        const fs = require('fs');
+        const dir = '/opt/data';
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(dir + '/save_' + p.id + '.json', data.saveData, 'utf-8');
+        save();
+        return jsonRawResponse(socket, { success: true, message: 'Saved' });
+      } catch(e) {
+        return jsonRawResponse(socket, { success: false, message: e.message });
+      }
+    }
+    return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
+  }
+
+  // 消息轮询：发送消息（含业务处理 - 认证/加房/聊天/对战）
+  if (url === '/api/poll/send' && data.token) {
+    const p = findPlayerByToken(data.token);
+    if (!p) {
+      console.log('[Poll] send FAIL: invalid token ' + String(data.token).substring(0,10));
+      return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
+    }
+    p.lastSeen = Date.now();
+    const msg = typeof data.msg === 'string' ? JSON.parse(data.msg) : data.msg;
+    console.log('[Poll] ' + p.role_name + ' send type=' + (msg ? msg.type : 'null') + ' peerId=' + (p._pollPeerId||'(new)'));
+    if (msg) {
+      processPollMessage(p, msg);
+    }
+    return jsonRawResponse(socket, { success: true });
+  }
+
+  // 消息轮询：接收消息
+  if (url === '/api/poll/recv' && data.token) {
+    const p = findPlayerByToken(data.token);
+    if (!p) {
+      console.log('[Poll] recv FAIL: invalid token ' + String(data.token).substring(0,10));
+      return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
+    }
+    p.lastSeen = Date.now();
+    if (!p._pollQueue) p._pollQueue = [];
+    const since = data.since || 0;
+    const newMsgs = p._pollQueue.filter(m => m.time > since);
+    // 同时检查TCP relay消息
+    if (p._tcpRelayQueue) {
+      for (const rm of p._tcpRelayQueue) {
+        newMsgs.push(rm);
+      }
+      p._tcpRelayQueue = [];
+    }
+    return jsonRawResponse(socket, { success: true, messages: newMsgs, serverTime: Date.now() });
   }
 
   // Other API endpoints — 返回当前玩家资源（防止覆盖归零）
@@ -1187,6 +1312,163 @@ httpServer.listen(HTTP_PORT, '0.0.0.0', () => {
 // ============ TCP 大厅服务器 (port 3001) ============
 const tcpSessions = new Map();
 const tcpRooms = new Map();
+
+// TCP→Web轮询消息中继：当TCP对手不在线时，消息投递到玩家的poll队列
+function relayToWebPlayer(tcpPeerId, msg) {
+  if (!tcpPeerId) return;
+  // 通过peerId找到TCP session → 找到playerId → 投递poll消息
+  const ses = tcpSessions.get(tcpPeerId);
+  if (ses) return; // 对手在TCP在线，不需要relay
+  // 尝试通过peerId匹配到玩家（peerId存储在擂台中）
+  for (const room of db.leitaiRooms) {
+    if (room.mInfo && room.mInfo.pID === tcpPeerId && room.mInfo.id) {
+      const p = db.players.find(pl => pl.id === room.mInfo.id);
+      if (p) {
+        if (!p._tcpRelayQueue) p._tcpRelayQueue = [];
+        p._tcpRelayQueue.push({ time: Date.now(), msg: msg });
+        return;
+      }
+    }
+  }
+}
+
+// ===== 网页版消息处理（复用TCP业务逻辑） =====
+function processPollMessage(player, msg) {
+  if (!player._pollQueue) player._pollQueue = [];
+  if (!player._pollPeerId) {
+    // 首次认证：分配peerId
+    if (msg.type === 'auth') {
+      player._pollPeerId = 'w' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+      player._pollSession = {
+        peerId: player._pollPeerId,
+        playerId: player.id,
+        roleName: player.role_name,
+        rooms: []
+      };
+      // 加入全局web会话列表
+      if (!globalWebSessions) globalWebSessions = {};
+      globalWebSessions[player._pollPeerId] = player._pollSession;
+      // 返回认证成功+在线邻居列表
+      player._pollQueue.push({ time: Date.now(), msg: {
+        type: 'auth_success', peerId: player._pollPeerId, message: 'OK'
+      }});
+      // 返回邻居列表
+      var neighbors = [];
+      for (var pid in globalWebSessions) {
+        if (pid !== player._pollPeerId) {
+          var s = globalWebSessions[pid];
+          neighbors.push({ pID: s.peerId, roleName: s.roleName, level: 1, imageID: 1, status: 0 });
+        }
+      }
+      player._pollQueue.push({ time: Date.now(), msg: { type: 'neighbor_list', neighbors: neighbors } });
+      console.log('[Web] Auth OK: ' + player.role_name + ' (' + player._pollPeerId + ') queue=' + player._pollQueue.length);
+    }
+    return;
+  }
+
+  var session = player._pollSession;
+  if (!session) return;
+
+  // 房间操作
+  if (msg.type === 'join_room') {
+    var roomName = msg.room;
+    if (!session.rooms) session.rooms = [];
+    if (session.rooms.indexOf(roomName) < 0) session.rooms.push(roomName);
+    if (!globalWebRooms) globalWebRooms = {};
+    if (!globalWebRooms[roomName]) globalWebRooms[roomName] = [];
+    if (globalWebRooms[roomName].indexOf(player._pollPeerId) < 0) {
+      globalWebRooms[roomName].push(player._pollPeerId);
+    }
+    // 通知其他邻居，并返回当前邻居
+    var roomNeighbors = [];
+    for (var pid2 of globalWebRooms[roomName]) {
+      if (pid2 !== player._pollPeerId) {
+        var otherPlayer = findPlayerByPollPeerId(pid2);
+        if (otherPlayer && otherPlayer._pollQueue) {
+          otherPlayer._pollQueue.push({ time: Date.now(), msg: {
+            type: 'neighbor_join', peer: { pID: session.peerId, roleName: session.roleName, level: 1, imageID: 1, status: 0 }
+          }});
+        }
+        roomNeighbors.push({ pID: pid2, roleName: 'Player', level: 1, imageID: 1, status: 0 });
+      }
+    }
+    player._pollQueue.push({ time: Date.now(), msg: { type: 'room_joined', room: roomName, neighbors: roomNeighbors } });
+  }
+
+  // 聊天
+  else if (msg.type === 'chat') {
+    if (!globalWebRooms || !globalWebRooms[msg.room]) return;
+    for (var pid3 of globalWebRooms[msg.room]) {
+      if (pid3 !== player._pollPeerId) {
+        var chatTarget = findPlayerByPollPeerId(pid3);
+        if (chatTarget && chatTarget._pollQueue) {
+          chatTarget._pollQueue.push({ time: Date.now(), msg: {
+            type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName,
+            text: msg.text || msg.data, plain: msg.plain || null
+          }});
+        }
+      }
+    }
+  }
+
+  // 对战请求
+  else if (msg.type === 'battle_request') {
+    var targetPeer = msg.targetPeerId;
+    var targetPlayer = findPlayerByPollPeerId(targetPeer);
+    if (targetPlayer && targetPlayer._pollQueue) {
+      targetPlayer._pollQueue.push({ time: Date.now(), msg: {
+        type: 'battle_request', from: session.peerId, fromName: session.roleName, server: msg.server
+      }});
+    }
+  }
+
+  // 对战接受
+  else if (msg.type === 'battle_accept') {
+    var fromPeer = msg.fromPeerId;
+    var fromPlayer = findPlayerByPollPeerId(fromPeer);
+    if (fromPlayer && fromPlayer._pollQueue) {
+      fromPlayer._pollQueue.push({ time: Date.now(), msg: {
+        type: 'battle_start', direct: 1, opponentPID: session.peerId,
+        leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
+        rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
+      }});
+      player._pollQueue.push({ time: Date.now(), msg: {
+        type: 'battle_start', direct: -1, opponentPID: fromPlayer._pollPeerId,
+        leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
+        rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
+      }});
+    }
+  }
+
+  // 对战动作 & P2P消息 → 转发给对手
+  else if (msg.type === 'battle_action' || msg.type === 'p2p_message') {
+    var oppPeer = msg.to || session.farPeerId;
+    if (oppPeer) {
+      var oppPlayer = findPlayerByPollPeerId(oppPeer);
+      if (oppPlayer && oppPlayer._pollQueue) {
+        oppPlayer._pollQueue.push({ time: Date.now(), msg: {
+          type: msg.type, from: session.peerId, data: msg.data || msg
+        }});
+      }
+    }
+  }
+
+  // 存储 farPeerId (对战对手)
+  if (msg.to && !session.farPeerId) {
+    session.farPeerId = msg.to;
+  }
+}
+
+function findPlayerByPollPeerId(peerId) {
+  for (var i = 0; i < db.players.length; i++) {
+    if (db.players[i]._pollPeerId === peerId) return db.players[i];
+  }
+  return null;
+}
+
+// 全局Web会话存储
+var globalWebSessions = {};
+var globalWebRooms = {};
 
 function tcpSend(session, msg) {
   try {
@@ -1279,6 +1561,7 @@ function tcpHandleMessage(session, msg) {
     case 'battle_action': {
       const opp = session.farPeerId ? tcpSessions.get(session.farPeerId) : null;
       if (opp) tcpSend(opp, { type: 'battle_action', from: session.peerId, data: msg.data });
+      else relayToWebPlayer(session.farPeerId, { type: 'battle_action', from: session.peerId, data: msg.data });
       break;
     }
     case 'battle_start':
@@ -1289,6 +1572,7 @@ function tcpHandleMessage(session, msg) {
       if (session.farPeerId) {
         const opp = tcpSessions.get(session.farPeerId);
         if (opp) tcpSend(opp, { type: 'p2p_message', data: msg.data, from: session.peerId });
+        else relayToWebPlayer(session.farPeerId, { type: 'p2p_message', data: msg.data, from: session.peerId });
       }
       break;
     case 'battle_end':
@@ -1337,5 +1621,24 @@ const tcpServer = net.createServer((socket) => {
   socket.on('error', () => {});
 });
 tcpServer.listen(TCP_PORT, '0.0.0.0', () => console.log('TCP server on ' + TCP_PORT));
+
+// ============ 心跳：定期更新在线玩家 lastSeen ============
+// 修复：已关闭游戏的玩家仍显示在在线人数中的bug
+// 每60秒遍历所有活跃TCP连接，更新对应玩家的lastSeen时间戳
+setInterval(() => {
+  const now = Date.now();
+  for (const [peerId, session] of tcpSessions) {
+    if (session.playerId) {
+      const p = db.players.find(pl => pl.id === session.playerId);
+      if (p) {
+        p.lastSeen = now;
+      }
+    }
+  }
+  // 每5分钟保存一次（避免过于频繁的磁盘IO）
+  if (now % (5 * 60 * 1000) < 60000) {
+    save();
+  }
+}, 60000); // 60秒心跳
 
 console.log('Ready: HTTP ' + HTTP_PORT + ' + TCP ' + TCP_PORT + ' (raw TCP)');

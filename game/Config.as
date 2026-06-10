@@ -22,7 +22,7 @@ package game
       public static const GAME:String = "Sanguo";
       
       public static const VER:String = "2.1.4";
-      public static const CLIENT_VER:String = "2.3.0";
+      public static const CLIENT_VER:String = "2.7.0";
       
       public static var token:String = "";
       
@@ -46,6 +46,9 @@ package game
       public static var SERVER_PORT:int = 3001;
       public static var API_URL:String = "http://47.96.41.243:3000";
       public static var USE_NEW_NETWORK:Boolean = true;
+
+      // 网页版标志：通过 flashvars 传入 (isWeb=1)，桌面版默认 false
+      public static var IS_WEB:Boolean = false;
       
       public static const GAME_URL:String = "http://my.4399.com/game_sgqz.html";
       

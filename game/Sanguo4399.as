@@ -28,6 +28,8 @@ package game
    import flash.filesystem.File;
    import flash.filesystem.FileMode;
    import flash.filesystem.FileStream;
+   import flash.external.ExternalInterface;
+   import flash.net.SharedObject;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
    import flash.net.URLRequestMethod;
@@ -125,6 +127,12 @@ import game.ui.UpdateChecker;
          {
             serviceHold = {"isLog":{"uid":this.stage.loaderInfo.parameters.id}};
          }
+         // 网页版标志：通过 flashvars isWeb=1 传入
+         if(this.stage.loaderInfo.parameters.isWeb == "1")
+         {
+            Config.IS_WEB = true;
+            trace("[Web] 网页版模式已激活");
+         }
          stage.tabChildren = false;
          stage.stageFocusRect = false;
          tabChildren = false;
@@ -138,7 +146,7 @@ import game.ui.UpdateChecker;
          testServerConnection();
          RoleModel.getInstance().agent = Config.AGENT;
          var _loc2_:ContextMenu = new ContextMenu();
-         _loc2_.customItems.push(new ContextMenuItem("三国Q战4399版V" + Config.VER + " 网络版"));
+         _loc2_.customItems.push(new ContextMenuItem(Config.IS_WEB ? "三国Q战" : "三国Q战4399版V" + Config.VER + " 网络版"));
          this.contextMenu = _loc2_;
          LoaderMax.activate([SWFLoader,DataLoader]);
          if(DEBUG == true)
@@ -164,6 +172,23 @@ import game.ui.UpdateChecker;
        */
       private function getTestUserID() : String
       {
+         // 网页版：从 flashvars 读取上次登录账号
+         if(Config.IS_WEB)
+         {
+            try {
+               var _savedUser:String = this.stage.loaderInfo.parameters.savedUser;
+               var _savedPass:String = this.stage.loaderInfo.parameters.savedPass;
+               if(_savedUser && _savedPass) {
+                  _loginUserID = _savedUser;
+                  _loginPassword = _savedPass;
+                  trace("[Web] 从localStorage恢复账号: " + _loginUserID);
+                  return _loginUserID;
+               }
+            } catch(_e:Error) {}
+            _loginUserID = "";
+            _loginPassword = "";
+            return "";
+         }
          try {
             var configFile:File = File.applicationStorageDirectory.resolvePath("user_config.txt");
             var fs:FileStream = new FileStream();
@@ -758,6 +783,19 @@ import game.ui.UpdateChecker;
 
       private function saveConfig() : void
       {
+         // 网页版：同时写入SharedObject和HTML localStorage
+         if(Config.IS_WEB)
+         {
+            try {
+               var _so:SharedObject = SharedObject.getLocal("sanguo_login");
+               _so.data.credentials = _loginUserID + ":" + _loginPassword;
+               _so.flush();
+            } catch(_e:Error) {}
+            try {
+               ExternalInterface.call("_sgqzOnLogin", _loginUserID, _loginPassword);
+            } catch(_e:Error) {}
+            return;
+         }
          try {
             var configFile:File = File.applicationStorageDirectory.resolvePath("user_config.txt");
             // 读取已有账号，合并写入（去重 + 追加新账号）
@@ -972,7 +1010,8 @@ import game.ui.UpdateChecker;
       
       private function loadData() : *
       {
-         var _loc1_:XMLLoader = new XMLLoader("game.xml",{
+         var _gameXmlFile:String = Config.IS_WEB ? "game_web.xml" : "game.xml";
+         var _loc1_:XMLLoader = new XMLLoader(_gameXmlFile,{
             "name":"config",
             "estimatedBytes":5000000,
             "onInit":this.onInitHandler,
@@ -986,8 +1025,10 @@ import game.ui.UpdateChecker;
       
       private function onInitHandler(param1:LoaderEvent) : *
       {
-         AESController.getInstance().serverURL = XML(param1.target.content).server.@url;
-         AESController.getInstance().serverURL = XML(param1.target.content).server.@url;
+         var _svrUrl:String = XML(param1.target.content).server.@url;
+         if(_svrUrl && _svrUrl != "") AESController.getInstance().serverURL = _svrUrl;
+         var _svrUrl2:String = XML(param1.target.content).server.@url;
+         if(_svrUrl2 && _svrUrl2 != "") AESController.getInstance().serverURL = _svrUrl2;
          AESController.getInstance().requestCode = XML(param1.target.content).requestCode;
          AESController.getInstance().responseCode = XML(param1.target.content).responseCode;
          AESController.getInstance().setRoot(this,SkinCode.CONNECT_WAIT);
@@ -1469,7 +1510,7 @@ import game.ui.UpdateChecker;
       {
          this._ui.removeCover();
          this._ui.addMap();
-         // 在线人数 - 加在根级别，不被皮肤遮挡
+         // 在线人数 - 加在根级别，始终最上层
          if(this._onlineCountUI == null)
          {
             this._onlineCountUI = new OnlineCountUI();
@@ -1477,13 +1518,22 @@ import game.ui.UpdateChecker;
             this._onlineCountUI.y = 2;
             addChild(this._onlineCountUI);
          }
-         // 自动更新检查 - 异步检测，有新版时显示浮动提示条
-         var _updateChecker:UpdateChecker = new UpdateChecker();
-         _updateChecker.x = (stage.stageWidth - 200) / 2;
-         _updateChecker.y = 28;
-         addChild(_updateChecker);
+         // 确保在线人数始终在最上层
+         if(this._onlineCountUI && this.contains(this._onlineCountUI))
+         {
+            setChildIndex(this._onlineCountUI, this.numChildren - 1);
+         }
+         // 自动更新检查 - 仅桌面版，网页版每次刷新即最新
+         if(!Config.IS_WEB)
+         {
+            var _updateChecker:UpdateChecker = new UpdateChecker();
+            _updateChecker.x = (stage.stageWidth - 200) / 2;
+            _updateChecker.y = 28;
+            addChild(_updateChecker);
+         }
          MySound.getInstance().startByName(SoundCode.MAP);
-         if(this._netDirect)
+         // 网页版跳过自动进入联机大厅，保留在地图界面
+         if(this._netDirect && !Config.IS_WEB)
          {
             this._netDirect = false;
             this._ui.onConnectServerBtnClickHandler(null);
@@ -1664,11 +1714,21 @@ import game.ui.UpdateChecker;
       
       private function createGateHandler(param1:UIEvent) : *
       {
+         // 开局检查：防止没有武将就进入战斗导致卡死
+         var _chosenSoldiers:Vector.<ArmyInfo> = RoleModel.getInstance().getChooseSoldiers();
+         if(_chosenSoldiers == null || _chosenSoldiers.length == 0)
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE, true, {
+               "type": 0,
+               "text": "没有可用的武将！请前往\"武将管理\"招募或配置上阵武将后再挑战关卡。"
+            }));
+            return;
+         }
          if(this._fight != null)
          {
             this._ui.removeChild(this._fight);
          }
-         this._fight = new Fight(RoleModel.getInstance().getChooseSoldiers(),Data.getInstance().getGateArmys(param1.data.part,param1.data.level));
+         this._fight = new Fight(_chosenSoldiers, Data.getInstance().getGateArmys(param1.data.part,param1.data.level));
          RoleModel.getInstance().status = RoleStatus.GUANKA;
          this._ui.addChild(this._fight);
          MySound.getInstance().startByName(SoundCode.FIGHT);
