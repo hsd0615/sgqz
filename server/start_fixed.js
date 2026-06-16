@@ -416,7 +416,7 @@ function handleRequest(socket, req) {
 
   // 客户端版本号
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.7.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: '2.8.0', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -462,7 +462,7 @@ function handleRequest(socket, req) {
     }
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: '10000',
-      data: { token: p.token, dianka: 99999999, armyModel: army, bagModel: [],
+      data: { token: p.token, dianka: 0, armyModel: army, bagModel: [],
         process: { history: '', finished: '' }, roleModel: makeRoleModel(p),
       }
     });
@@ -492,11 +492,15 @@ function handleRequest(socket, req) {
     var flevel = parseInt(data.level) || 1;
     var isWin = (data.flag !== 'lost');
 
-    // 基本奖励
-    var battleMoney = 100 + fpart*50 + flevel*20;
-    var battleExploit = 50 + fpart*20 + flevel*10;
-    var battleReverence = 30 + fpart*10 + flevel*5;
-    if (!isWin) { battleMoney = 0; battleExploit = 0; battleReverence = 0; }
+    // 基本奖励 — 使用原游戏公式(Logic.as getMoneyByFight/getExploitByFight)
+    var levelDiff = fm - fn;
+    if (isWin) {
+      battleMoney = levelDiff < 0 ? 200 : Math.floor(600 + levelDiff * 10);
+      battleExploit = levelDiff < 0 ? 50 : Math.floor(100 + levelDiff * 10);
+      battleReverence = levelDiff < 0 ? 10 : Math.floor(50 + levelDiff * 2);
+    } else {
+      battleMoney = 0; battleExploit = 0; battleReverence = 0;
+    }
 
     p.money += battleMoney;
     p.exploit += battleExploit;
@@ -529,7 +533,21 @@ function handleRequest(socket, req) {
           stageAward.proto.split('|').forEach(function(ps) {
             var pp = ps.split(':');
             if (pp.length >= 2) {
-              awardData.item.push({ id: Math.floor(Math.random()*10000), code: pp[0], count: parseInt(pp[1]) });
+              var itemCode = pp[0];
+              var itemCount = parseInt(pp[1]) || 0;
+              awardData.item.push({ id: Math.floor(Math.random()*10000), code: itemCode, count: itemCount });
+              // 服务端同步写入背包，防止客户端负数显示
+              if (!db.bagItems) db.bagItems = [];
+              var found = false;
+              for (var bi = 0; bi < db.bagItems.length; bi++) {
+                if (db.bagItems[bi].player_id === p.id && db.bagItems[bi].code === itemCode) {
+                  db.bagItems[bi].count = (db.bagItems[bi].count || 0) + itemCount;
+                  found = true; break;
+                }
+              }
+              if (!found) {
+                db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: itemCode, count: itemCount });
+              }
             }
           });
         }
@@ -547,6 +565,15 @@ function handleRequest(socket, req) {
         awardData.money = partBonus + flevel * 200;
         awardData.exploit = Math.floor(partBonus/2) + flevel * 100;
         awardData.reverence = Math.floor(partBonus/4) + flevel * 50;
+      }
+      // 首通奖励计入玩家余额
+      p.money += awardData.money;
+      p.exploit += awardData.exploit;
+      p.reverence += awardData.reverence;
+      // 每个大关最后一关(10/20/30...130)奖励100点卡
+      if(flevel % 10 == 0 && flevel >= 10) {
+        awardData.dianka = 100;
+        p.dianka = (p.dianka||0) + 100;
       }
     }
     p.finished_stages = fin.join('|');
@@ -637,7 +664,21 @@ function handleRequest(socket, req) {
       resp.data.money = p.money;
       console.log('[Fuben] Fanpai ' + p.role_name + ' money+=' + fpResult[1]);
     } else {
-      resp.data.item = { id: Math.floor(Math.random()*10000), code: fpResult[1], count: parseInt(fpResult[2]||'1') };
+      var itemCode = fpResult[1];
+      var itemCount = parseInt(fpResult[2]||'1');
+      resp.data.item = { id: Math.floor(Math.random()*10000), code: itemCode, count: itemCount };
+      // 同步写入背包，防止客户端覆盖已有数量
+      if (!db.bagItems) db.bagItems = [];
+      var found2 = false;
+      for (var bi2 = 0; bi2 < db.bagItems.length; bi2++) {
+        if (db.bagItems[bi2].player_id === p.id && db.bagItems[bi2].code === itemCode) {
+          db.bagItems[bi2].count = (db.bagItems[bi2].count || 0) + itemCount;
+          found2 = true; break;
+        }
+      }
+      if (!found2) {
+        db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: itemCode, count: itemCount });
+      }
       console.log('[Fuben] Fanpai ' + p.role_name + ' item=' + fpResult[1] + 'x' + fpResult[2]);
     }
     save();
@@ -1125,7 +1166,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.7.0' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.8.0' });
   }
 
   // Flash安全策略文件

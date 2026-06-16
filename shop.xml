@@ -325,9 +325,9 @@
     <category>4</category>
     <code>proto_3_4</code>
     <count>1</count>
-    <payType>2</payType>
-    <oldPrice>50</oldPrice>
-    <newPrice>50</newPrice>
+    <payType>1</payType>
+    <oldPrice>5000</oldPrice>
+    <newPrice>3000</newPrice>
   </RECORD>
   <RECORD>
     <name>克制进阶符</name>
@@ -335,9 +335,9 @@
     <category>4</category>
     <code>proto_3_4</code>
     <count>5</count>
-    <payType>3</payType>
-    <oldPrice>250</oldPrice>
-    <newPrice>2500</newPrice>
+    <payType>1</payType>
+    <oldPrice>25000</oldPrice>
+    <newPrice>12000</newPrice>
   </RECORD>
   <RECORD>
     <name>爆炎火弹</name>

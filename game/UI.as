@@ -2233,7 +2233,10 @@ package game
                   _loc8_ = Data.getInstance().getAttributes("proto",_loc7_,"name");
                   _loc9_ = int(param1.data.item[_loc6_].count) - RoleModel.getInstance().getBagItemCount(_loc7_);
                   RoleModel.getInstance().modiBagItem(int(param1.data.item[_loc6_].id),_loc7_,int(param1.data.item[_loc6_].count));
-                  _loc2_ += _loc8_ + _loc9_ + "个、";
+                  if(_loc9_ > 0)
+                  {
+                     _loc2_ += _loc8_ + _loc9_ + "个、";
+                  }
                   _loc6_++;
                }
             }
@@ -3179,8 +3182,9 @@ package game
             }
             if(param1.data.item != null)
             {
-               _loc2_ = int(param1.data.item.count) - RoleModel.getInstance().getBagItemCount(param1.data.item.code);
-               RoleModel.getInstance().modiBagItem(param1.data.item.id,param1.data.item.code,param1.data.item.count);
+               _loc2_ = int(param1.data.item.count);
+               var _bagTotal2:int = RoleModel.getInstance().getBagItemCount(param1.data.item.code) + _loc2_;
+               RoleModel.getInstance().modiBagItem(param1.data.item.id,param1.data.item.code,_bagTotal2);
                _loc3_ = TextFactory.makeFuben(RoleModel.getInstance().roleName,param1.data.item.code,_loc2_);
                dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
                   "type":NetInfoType.SYSTEM,
