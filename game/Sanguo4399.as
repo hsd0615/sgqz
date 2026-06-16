@@ -1850,8 +1850,8 @@ import game.ui.UpdateChecker;
                   _loc8_ = 0;
                   while(_loc8_ < param1.data.award.item.length)
                   {
-                     _loc9_ = int(param1.data.award.item[_loc8_].count) - RoleModel.getInstance().getBagItemCount(param1.data.award.item[_loc8_].code);
-                     RoleModel.getInstance().modiBagItem(param1.data.award.item[_loc8_].id,param1.data.award.item[_loc8_].code,param1.data.award.item[_loc8_].count);
+                     _loc9_ = int(param1.data.award.item[_loc8_].count);
+                     RoleModel.getInstance().addBagItem(param1.data.award.item[_loc8_].id,param1.data.award.item[_loc8_].code,int(param1.data.award.item[_loc8_].count));
                      _loc4_.addition.proto.push(param1.data.award.item[_loc8_].code + ":" + _loc9_);
                      _loc8_++;
                   }
