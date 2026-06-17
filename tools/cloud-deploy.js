@@ -150,7 +150,7 @@ async function genHTML() {
 
 async function compileAndUploadSWF(host, port) {
   console.log('\n[编译SWF]');
-  const cmd = `java -jar ${FLEX_SDK}/lib/mxmlc.jar +flexlib=${FLEX_SDK}/frameworks -compiler.source-path=. -default-size=770,500 -target-player=32.0 -static-link-runtime-shared-libraries=true -external-library-path=air_stubs.swc -- game/Sanguo4399.as`;
+  const cmd = `java -jar ${FLEX_SDK}/lib/mxmlc.jar +flexlib=${FLEX_SDK}/frameworks -compiler.source-path=. -default-size=770,500 -target-player=32.0 -static-link-runtime-shared-libraries=true -library-path+=air_stubs.swc -- game/Sanguo4399.as`;
   try {
     const out = execSync(cmd, { cwd: BASE, encoding: 'utf-8', timeout: 120000, stdio: ['pipe','pipe','pipe'] });
     console.log('  ' + out.replace(/\n/g, '\n  ').substring(0, 300));

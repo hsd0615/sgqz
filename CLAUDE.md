@@ -79,7 +79,7 @@ java -jar "D:/BaiduNetdiskDownload/flex_home/lib/mxmlc.jar" \
   +flexlib="D:/BaiduNetdiskDownload/flex_home/frameworks" \
   -compiler.source-path=. -default-size=770,500 -target-player=32.0 \
   -static-link-runtime-shared-libraries=true \
-  -external-library-path=air_stubs.swc \
+  -library-path+=air_stubs.swc \
   -- game/Sanguo4399.as
 cp game/Sanguo4399.swf main.swf
 ```
