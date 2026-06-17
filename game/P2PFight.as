@@ -81,7 +81,7 @@ package game
       private var _direct:int;
       
       private var _delay:Number = 0;
-	      private var _lastKeyTime:int = 0;
+	      private var _lastKeyTime:Number = 0;
 	      private var _isProcessingSelection:Boolean = false;
 
       
@@ -1839,7 +1839,7 @@ package game
 
       private function onKeydownHandler(param1:KeyboardEvent) : *
       {
-         var _now:int = new Date().getTime();
+         var _now:Number = new Date().getTime();
          if(_now - this._lastKeyTime < 180)
          {
             return;

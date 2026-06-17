@@ -2,6 +2,23 @@
 
 ---
 
+## v2.9.5 (2026-06-18) — 🐛 紧急修复: 键盘完全失效 (int溢出)
+
+### 根因
+防抖变量 `_lastKeyTime:int` 声明为 32位 int，而 `Date.getTime()` 返回 1.78万亿（远超 int 上限 21 亿）。
+溢出后减法比较 `_now - _lastKeyTime < 180` 产生不可预测结果，导致**所有按键被拦截**。
+
+### 修复
+- `_lastKeyTime: int → Number`
+- `_now: int → Number` 
+- 桌面端 + Web端键盘恢复工作
+
+---
+
+## v2.9.4 (2026-06-18) — ExternalInterface调试增强
+
+---
+
 ## v2.9.3 (2026-06-18) — Web端键盘选择: JavaScript→Flash桥接
 
 ### ⌨️ Web端键盘输入彻底重写
