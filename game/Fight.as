@@ -1493,6 +1493,14 @@ package game
          return null;
       }
       
+            public function handleKeySelect(param1:int) : *
+      {
+         if(param1 >= 1 && param1 <= 5)
+         {
+            this._fightUI.setSelect(param1);
+         }
+      }
+
       private function onKeydownHandler(param1:KeyboardEvent) : *
       {
          var _now:int = new Date().getTime();

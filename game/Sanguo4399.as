@@ -130,8 +130,13 @@ import game.ui.UpdateChecker;
          // 网页版标志：通过 flashvars isWeb=1 传入
          if(this.stage.loaderInfo.parameters.isWeb == "1")
          {
-            Config.IS_WEB = true;
+                        Config.IS_WEB = true;
             trace("[Web] 网页版模式已激活");
+            if(ExternalInterface.available)
+            {
+               ExternalInterface.addCallback("handleKeyPress",this.onWebKeyPress);
+               trace("[Web] ExternalInterface键盘桥接已注册");
+            }
          }
          stage.tabChildren = false;
          stage.stageFocusRect = false;
@@ -170,6 +175,14 @@ import game.ui.UpdateChecker;
        *   登录:  userID:password
        *   注册:  new:userID:password:角色名:头像ID
        */
+      
+      private function onWebKeyPress(param1:int) : void
+      {
+         if(this._fight != null && this._fight.parent != null)
+         {
+            this._fight.handleKeySelect(param1);
+         }
+      }
       private function getTestUserID() : String
       {
          // 网页版：从 flashvars 读取上次登录账号

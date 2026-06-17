@@ -2,6 +2,25 @@
 
 ---
 
+## v2.9.3 (2026-06-18) — Web端键盘选择: JavaScript→Flash桥接
+
+### ⌨️ Web端键盘输入彻底重写
+- **根因**: 浏览器Flash插件中 `stage.addEventListener(KEY_DOWN)` 不可靠 (PPAPI沙箱不转发键盘事件)
+- **方案**: JavaScript捕获浏览器键盘事件 → ExternalInterface → Flash处理
+- index.html: 新增 `document.addEventListener('keydown')` 捕获按键1-5
+- Sanguo4399.as: 注册 `ExternalInterface.addCallback("handleKeyPress")` 
+- Fight.as / P2PFight.as: 新增 `handleKeySelect(index)` 公开方法
+- JS端内置180ms防抖，与Flash端防抖双重保护
+
+### 🔧 技术架构
+```
+浏览器按键 → JS document.keydown → ExternalInterface
+  → Sanguo4399.onWebKeyPress → Fight.handleKeySelect
+  → _fightUI.setSelect → 选中武将
+```
+
+---
+
 ## v2.9.2 (2026-06-18) — 键盘选择防抖 + 快速操作防卡顿
 
 ### ⌨️ 键盘选择优化
