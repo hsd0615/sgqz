@@ -1497,6 +1497,7 @@ package game
       {
          if(param1 >= 1 && param1 <= 5)
          {
+            trace("[Fight] handleKeySelect: " + param1);
             this._fightUI.setSelect(param1);
          }
       }

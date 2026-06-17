@@ -3073,7 +3073,7 @@ package game
          {
             case 1:
             case 2:
-               this._xiongnuFight = new Xiongnu(RoleModel.getInstance().getChooseSoldiers(),param1);
+               this._xiongnuFight = new Xiongnu(RoleModel.getInstance().getChooseSoldiers(),param2);
                addChild(this._xiongnuFight);
                MySound.getInstance().startByName(SoundCode.XIONGNU_SOUND1);
                break;

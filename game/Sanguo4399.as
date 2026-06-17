@@ -135,7 +135,12 @@ import game.ui.UpdateChecker;
             if(ExternalInterface.available)
             {
                ExternalInterface.addCallback("handleKeyPress",this.onWebKeyPress);
+               ExternalInterface.call("console.log","[Flash] ExternalInterface 键盘桥接已注册, handleKeyPress=" + (typeof document.getElementById("flashGame").handleKeyPress));
                trace("[Web] ExternalInterface键盘桥接已注册");
+            }
+            else
+            {
+               trace("[Web] ExternalInterface 不可用!");
             }
          }
          stage.tabChildren = false;
@@ -176,11 +181,15 @@ import game.ui.UpdateChecker;
        *   注册:  new:userID:password:角色名:头像ID
        */
       
-      private function onWebKeyPress(param1:int) : void
+      public function onWebKeyPress(param1:*) : void
       {
-         if(this._fight != null && this._fight.parent != null)
+         var idx:int = int(param1);
+         if(idx >= 1 && idx <= 5)
          {
-            this._fight.handleKeySelect(param1);
+            if(this._fight != null)
+            {
+               this._fight.handleKeySelect(idx);
+            }
          }
       }
       private function getTestUserID() : String
