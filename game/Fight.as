@@ -81,6 +81,9 @@ package game
       private var _part:int;
       
       private var _delay:Number = 0;
+	      private var _lastKeyTime:int = 0;
+	      private var _isProcessingSelection:Boolean = false;
+
       
       private var _timer:Timer;
       
@@ -164,8 +167,7 @@ package game
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.addToStageHandler);
          this.initView();
-         stage.focus = this;
-      }
+         }
       
       private function initView() : *
       {
@@ -812,6 +814,16 @@ package game
       
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
+         if(this._isProcessingSelection)
+         {
+            return;
+         }
+         this._isProcessingSelection = true;
+         if(this._currentSoldier != null && this._currentSoldier.armyInfo.id == param1.data.id && this._currentSoldier.armyInfo.code == param1.data.code)
+         {
+            this._isProcessingSelection = false;
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -826,6 +838,7 @@ package game
          }
          this.resetController();
          this.setCurrentSoldier(this.selectSoldier(param1.data.id,param1.data.code));
+         this._isProcessingSelection = false;
       }
       
       private function onEnemySelectedHandler(param1:SoldierEvent) : *
@@ -1482,6 +1495,16 @@ package game
       
       private function onKeydownHandler(param1:KeyboardEvent) : *
       {
+         var _now:int = new Date().getTime();
+         if(_now - this._lastKeyTime < 180)
+         {
+            return;
+         }
+         this._lastKeyTime = _now;
+         if(this._isProcessingSelection)
+         {
+            return;
+         }
          switch(param1.keyCode)
          {
             case 49:
