@@ -2,6 +2,15 @@
 
 ---
 
+## v2.9.1 (2026-06-18) — Web端键盘快捷键修复
+
+### 🐛 Web端键盘选择武将修复
+- Fight.as + P2PFight.as: `stage.addEventListener` 改用捕获阶段 (useCapture=true) 确保键盘事件不被子对象拦截
+- 新增 `stage.focus = this` 确保网页端Flash Player正确获取键盘焦点
+- 修复Web版按键12345无法选中武将的问题
+
+---
+
 ## v2.9.0 (2026-06-18) — 八旗绿营数值平衡 + 键盘快捷键
 
 ### ⚔️ 八旗军/绿营军数值重调

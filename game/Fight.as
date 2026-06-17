@@ -164,6 +164,7 @@ package game
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.addToStageHandler);
          this.initView();
+         stage.focus = this;
       }
       
       private function initView() : *
@@ -188,7 +189,7 @@ package game
          addEventListener(ConEvent.SELECT_SOLDIER,this.onSelectSoldierHandler);
          addEventListener(ConEvent.CREATE_MIAOZHUNJING,this.createMiaozhunjingHandler);
          addEventListener(ConEvent.FIRE,this.conFireHandler);
-         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler);
+         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler,true);
          this.initUnInteractiveEvent();
       }
       
