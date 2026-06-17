@@ -558,9 +558,9 @@
     <title>1</title>
     <kezhi>5:1|7:1|9:1</kezhi>
     <skin>generalSkin_1</skin>
-    <hp>1500</hp>
-    <attack>850</attack>
-    <defense>670</defense>
+    <hp>720</hp>
+    <attack>390</attack>
+    <defense>265</defense>
     <cd>6</cd>
     <mcd>6</mcd>
     <baoji>5</baoji>
@@ -4238,9 +4238,9 @@
     <title>1</title>
     <kezhi>5:1|4:1|7:1</kezhi>
     <skin>generalSkin_2</skin>
-    <hp>2000</hp>
-    <attack>1200</attack>
-    <defense>780</defense>
+    <hp>735</hp>
+    <attack>385</attack>
+    <defense>280</defense>
     <cd>6</cd>
     <mcd>6</mcd>
     <baoji>5</baoji>
@@ -4261,9 +4261,9 @@
     <title>0</title>
     <kezhi>5:1|4:1|7:1</kezhi>
     <skin>generalSkin_2</skin>
-    <hp>2000</hp>
-    <attack>1200</attack>
-    <defense>780</defense>
+    <hp>780</hp>
+    <attack>435</attack>
+    <defense>350</defense>
     <cd>6</cd>
     <mcd>6</mcd>
     <baoji>5</baoji>

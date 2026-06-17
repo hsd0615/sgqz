@@ -235,6 +235,7 @@ package game
          addEventListener(ConEvent.SELECT_SOLDIER,this.onSelectSoldierHandler);
          addEventListener(ConEvent.CREATE_MIAOZHUNJING,this.createMiaozhunjingHandler);
          addEventListener(ConEvent.FIRE,this.conFireHandler);
+         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler);
          this.initUnInteractiveEvent();
       }
       
