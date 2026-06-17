@@ -180,7 +180,7 @@ async function compileAndUploadSWF(host, port) {
     if (!r) { console.log('  ✗ 上传失败'); return false; }
   }
   const r = await execRemote(host, port,
-    'base64 -d /tmp/swf.b64 > /opt/client/main.swf && ls -la /opt/client/main.swf && rm /tmp/swf.b64 && echo SWF_OK', 'Decode');
+    'base64 -d /tmp/swf.b64 > /opt/client/main.swf && cp /opt/client/main.swf /opt/client/sanguo_web.swf && ls -la /opt/client/main.swf /opt/client/sanguo_web.swf && rm /tmp/swf.b64 && echo SWF_OK', 'Decode');
   if (r && r.stdout && r.stdout.includes('SWF_OK')) {
     console.log('  ✓ SWF已部署');
     return true;
