@@ -134,9 +134,7 @@ import game.ui.UpdateChecker;
             trace("[Web] 网页版模式已激活");
             if(ExternalInterface.available)
             {
-               ExternalInterface.addCallback("handleKeyPress",this.onWebKeyPress);
-               ExternalInterface.call("console.log","[Flash] ExternalInterface 键盘桥接已注册, handleKeyPress=" + (typeof document.getElementById("flashGame").handleKeyPress));
-               trace("[Web] ExternalInterface键盘桥接已注册");
+               trace("[Web] ExternalInterface可用");
             }
             else
             {
@@ -181,17 +179,7 @@ import game.ui.UpdateChecker;
        *   注册:  new:userID:password:角色名:头像ID
        */
       
-      public function onWebKeyPress(param1:*) : void
-      {
-         var idx:int = int(param1);
-         if(idx >= 1 && idx <= 5)
-         {
-            if(this._fight != null)
-            {
-               this._fight.handleKeySelect(idx);
-            }
-         }
-      }
+      
       private function getTestUserID() : String
       {
          // 网页版：从 flashvars 读取上次登录账号

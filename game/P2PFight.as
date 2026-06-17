@@ -13,6 +13,7 @@ package game
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.KeyboardEvent;
+   import flash.external.ExternalInterface;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
    import flash.filters.GlowFilter;
@@ -81,8 +82,6 @@ package game
       private var _direct:int;
       
       private var _delay:Number = 0;
-	      private var _lastKeyTime:Number = 0;
-	      private var _isProcessingSelection:Boolean = false;
 
       
       private var _timer:Timer;
@@ -201,6 +200,9 @@ package game
          {
             this.onMouseClickHandler(null);
             this.initUnInteractiveEvent();
+         // Web键盘轮询: Flash通过ExternalInterface.call获取JS按键
+         addEventListener(Event.ENTER_FRAME,this.pollWebKeys);
+
             this._autoAI = new AI(this,5000,this._direct,true);
             this._autoAI.startAI();
          }
@@ -238,7 +240,7 @@ package game
          addEventListener(ConEvent.SELECT_SOLDIER,this.onSelectSoldierHandler);
          addEventListener(ConEvent.CREATE_MIAOZHUNJING,this.createMiaozhunjingHandler);
          addEventListener(ConEvent.FIRE,this.conFireHandler);
-         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler,true);
+         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler);
          this.initUnInteractiveEvent();
       }
       
@@ -954,16 +956,6 @@ package game
       
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
-         if(this._isProcessingSelection)
-         {
-            return;
-         }
-         this._isProcessingSelection = true;
-         if(this._currentSoldier != null && this._currentSoldier.armyInfo.id == param1.data.id && this._currentSoldier.armyInfo.code == param1.data.code)
-         {
-            this._isProcessingSelection = false;
-            return;
-         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -978,7 +970,6 @@ package game
          }
          this.resetController();
          this.setCurrentSoldier(this.selectSoldier(param1.data.id,param1.data.code));
-         this._isProcessingSelection = false;
       }
       
       private function onEnemySelectedHandler(param1:SoldierEvent) : *
@@ -1828,27 +1819,10 @@ package game
          return null;
       }
       
-            public function handleKeySelect(param1:int) : *
-      {
-         if(param1 >= 1 && param1 <= 5)
-         {
-            trace("[Fight] handleKeySelect: " + param1);
-            this._fightUI.setSelect(param1);
-         }
-      }
+            
 
       private function onKeydownHandler(param1:KeyboardEvent) : *
       {
-         var _now:Number = new Date().getTime();
-         if(_now - this._lastKeyTime < 180)
-         {
-            return;
-         }
-         this._lastKeyTime = _now;
-         if(this._isProcessingSelection)
-         {
-            return;
-         }
          switch(param1.keyCode)
          {
             case 49:
