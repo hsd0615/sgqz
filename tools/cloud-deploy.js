@@ -235,6 +235,14 @@ async function main() {
       }
     }
 
+    // Sync XML to /opt/client/ for client downloads
+    console.log('\n[同步客户端文件]');
+    const syncCmd = 'cp /opt/*.xml /opt/client/ && echo SYNC_OK';
+    const syncResult = await execRemote(host, port, syncCmd, 'Sync XML to /opt/client/');
+    if (syncResult && syncResult.stdout && syncResult.stdout.includes('SYNC_OK')) {
+      console.log('  ✓ XML已同步到 /opt/client/');
+    }
+
     if (!args.includes('--no-restart')) {
       await restart(host, port);
       console.log('\n等待服务端重启...');
