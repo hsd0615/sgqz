@@ -313,23 +313,23 @@ package game
          }
          if(param1 == 5)
          {
-            return 0.08;
+            return 0.03;
          }
          if(param1 == 6)
          {
-            return 0.08;
+            return 0.02;
          }
          if(param1 == 7)
          {
-            return 0.05;
+            return 0.015;
          }
          if(param1 == 8)
          {
-            return 0.03;
+            return 0.01;
          }
          if(param1 == 9)
          {
-            return 0.01;
+            return 0.005;
          }
          return 0.01;
       }

@@ -342,7 +342,12 @@ package game.ui
          if(_idx != null && int(_idx) > 0)
          {
             var _b:Bitmap = EquipIconsWuxia.getIcon(int(_idx));
-            if(_b != null) { _b.smoothing = true; return _b; }
+            if(_b != null) {
+               var _sz:Number = 38 / Math.max(_b.width, _b.height);
+               _b.scaleX = _sz; _b.scaleY = _sz;
+               _b.smoothing = true;
+               return _b;
+            }
          }
          return null;
       }
