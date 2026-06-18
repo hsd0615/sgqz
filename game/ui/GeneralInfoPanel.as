@@ -159,37 +159,66 @@ package game.ui
 
       /**
        * 尝试在皮肤中找到6个装备槽元素, 支持多种命名模式
+       * 找不到则创建程序化Sprite并绘制可见的点击区域
        */
       private function findEquipSlots() : void
       {
          var _i:int = 0;
          var _disp:DisplayObject = null;
-         // 尝试的命名模式 (1-based)
-         var _patterns:Array = ["_equipSlot","_esMc","_slotMc","_equipMc","_equip"];
+         // 尝试的命名模式 (1-based和0-based都试)
+         var _patterns:Array = ["_equipSlot","_esMc","_slotMc","_equipMc","_equip","_slot"];
          while(_i < 6)
          {
             var _found:Boolean = false;
+            // 先试1-based名字
             var _pi:int = 0;
             while(_pi < _patterns.length && !_found)
             {
                _disp = _skin.getChildByName(_patterns[_pi] + (_i + 1));
                if(_disp != null)
                {
-                  if(_disp is MovieClip) (_disp as MovieClip).mouseChildren = false;
-                  if(_disp is Sprite) (_disp as Sprite).mouseChildren = false;
-                  this._equipSlots[_i] = _disp;
                   _found = true;
                }
                _pi++;
             }
-            if(!_found)
+            // 再试0-based名字
+            _pi = 0;
+            while(_pi < _patterns.length && !_found)
             {
-               // 皮肤中没有, 创建程序化Sprite占位
+               _disp = _skin.getChildByName(_patterns[_pi] + _i);
+               if(_disp != null)
+               {
+                  _found = true;
+               }
+               _pi++;
+            }
+            if(_found && _disp != null)
+            {
+               // 确保可交互
+               if(_disp is Sprite) (_disp as Sprite).mouseEnabled = true;
+               if(_disp is MovieClip) (_disp as MovieClip).mouseEnabled = true;
+               if(_disp is MovieClip) (_disp as MovieClip).mouseChildren = false;
+               if(_disp is Sprite) (_disp as Sprite).mouseChildren = false;
+               if(_disp is Sprite) (_disp as Sprite).buttonMode = true;
+               this._equipSlots[_i] = _disp;
+            }
+            else
+            {
+               // 皮肤中没有, 创建程序化Sprite (必须有可见内容才能点击)
                var _slot:Sprite = new Sprite();
-               _slot.name = "_equipSlot" + (_i + 1);
-               // 放在面板左上区域
-               _slot.x = 10 + (_i % 3) * 52;
-               _slot.y = 8 + int(_i / 3) * 52;
+               _slot.name = "equipSlot" + _i;
+               // 绘制可见背景 (半透明, 确保有点击区域)
+               var _bg:Shape = new Shape();
+               _bg.graphics.beginFill(0x1a1008, 0.85);
+               _bg.graphics.lineStyle(1, 0x8B6914, 0.6);
+               _bg.graphics.drawRoundRect(0, 0, 44, 44, 5, 5);
+               _bg.graphics.endFill();
+               _slot.addChild(_bg);
+               _slot.buttonMode = true;
+               _slot.mouseChildren = false;
+               // 左上区域 3列×2行布局
+               _slot.x = 8 + (_i % 3) * 50;
+               _slot.y = 8 + int(_i / 3) * 50;
                this._equipSlots[_i] = _slot;
                addChild(_slot);
             }
@@ -216,12 +245,11 @@ package game.ui
          while(_si < 6)
          {
             var _slot:DisplayObject = this._equipSlots[_si] as DisplayObject;
-            if(_slot != null && _slot is Sprite)
-            {
-               (_slot as Sprite).buttonMode = true;
-            }
             if(_slot != null)
             {
+               if(_slot is Sprite) (_slot as Sprite).mouseEnabled = true;
+               if(_slot is MovieClip) (_slot as MovieClip).mouseEnabled = true;
+               if(_slot is Sprite) (_slot as Sprite).buttonMode = true;
                _slot.addEventListener(MouseEvent.CLICK, this.onEquipSlotClick);
             }
             _si++;
