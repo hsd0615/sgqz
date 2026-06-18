@@ -321,23 +321,12 @@ package game.ui
       private function getEquipBmp(param1:String) : Bitmap
       {
          if(param1 == null || param1 == "") return null;
-         // 武侠新装备: 有iconIdx则用新图标
          var _idx:* = EquipData.get(param1, "iconIdx");
-         if(_idx != null && _idx != "" && _idx != "0")
+         if(_idx != null && _idx != "" && int(_idx) > 0)
          {
-            var _bmp:Bitmap = EquipIconsWuxia.getIcon(int(_idx));
-            if(_bmp != null) return _bmp;
+            return EquipIconsWuxia.getIcon(int(_idx));
          }
-         // 旧装备: 按编号范围映射
-         var _parts:Array = param1.split("_");
-         var _num:int = 0;
-         if(_parts.length >= 3) _num = int(_parts[_parts.length - 1]);
-         if(_num >= 26) return EquipIconAssets.accessory();
-         if(_num >= 21) return EquipIconAssets.accessory();
-         if(_num >= 16) return EquipIconAssets.boots();
-         if(_num >= 11) return EquipIconAssets.armor();
-         if(_num >= 6) return EquipIconAssets.helmet();
-         return EquipIconAssets.weapon();
+         return null;
       }
 
       private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF6600,0xFF4444,0xFF0000];

@@ -3,6 +3,7 @@ package game.ui
    import com.iflashigame.ui.BaseUI;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   import flash.display.DisplayObject;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.display.SimpleButton;
@@ -72,13 +73,13 @@ package game.ui
          function makeBtn(label:String, w:int):Sprite {
             var s:Sprite = new Sprite();
             var bg:Shape = new Shape();
-            bg.graphics.beginFill(0x2a1a0a,0.95);
-            bg.graphics.lineStyle(1,0x8B6914,0.6);
+            bg.graphics.beginFill(0x1a1008,0.92);
+            bg.graphics.lineStyle(1,0x8B6914,0.5);
             bg.graphics.drawRoundRect(0,0,w,_btnH,3,3);
             bg.graphics.endFill();
             s.addChild(bg);
             var t:TextField = new TextField();
-            t.defaultTextFormat = new TextFormat("SimSun",11,0xC8A84E);
+            t.defaultTextFormat = new TextFormat("SimSun",11,0x8B6914);
             t.text = label; t.selectable = false;
             t.width = w; t.height = 16; t.x = 0; t.y = 3;
             s.addChild(t);
@@ -103,20 +104,28 @@ package game.ui
          addChild(_next1Btn);
          addChild(this._nextBtn);
 
-         // 定位在格子下方
+         // 定位在格子区域下方
          var _btm:Number = 0;
-         var _g5:MovieClip = _skin.getChildByName("_grid21") as MovieClip;
-         if(_g5) _btm = _g5.y + _g5.height + 10;
+         var _gc:int = this._gridContainer.numChildren;
+         var _gi:int = 0;
+         while(_gi < _gc)
+         {
+            var _g:DisplayObject = this._gridContainer.getChildAt(_gi);
+            var _gy:Number = _g.y + _g.height;
+            if(_gy > _btm) _btm = _gy;
+            _gi++;
+         }
+         _btm += 14;
 
-         var _parts:Array = [this._prevBtn, _prev1Btn, this._pageTF, _next1Btn, this._nextBtn];
+         var _buttons:Array = [this._prevBtn, _prev1Btn, this._pageTF, _next1Btn, this._nextBtn];
          var _tw:int = 32+_gap+22+_gap+55+_gap+22+_gap+32;
          var _sx:int = (340 - _tw) / 2;
          var _cx:int = _sx;
-         for each(var _p:Sprite in _parts.slice(0,2)) { _p.x = _cx; _p.y = _btm; _cx += _p.width + _gap; }
-         _cx += 55 + _gap - 32 - _gap - 22 - _gap; // center pageTF
-         this._pageTF.x = _sx + 32+_gap+22+_gap; this._pageTF.y = _btm + 2;
-         _cx = _sx + 32+_gap+22+_gap+55+_gap;
-         for each(var _q:Sprite in _parts.slice(3)) { _q.x = _cx; _q.y = _btm; _cx += _q.width + _gap; }
+         this._prevBtn.x = _cx; this._prevBtn.y = _btm; _cx += 32 + _gap;
+         _prev1Btn.x = _cx; _prev1Btn.y = _btm; _cx += 22 + _gap;
+         this._pageTF.x = _cx; this._pageTF.y = _btm + 2; _cx += 55 + _gap;
+         _next1Btn.x = _cx; _next1Btn.y = _btm; _cx += 22 + _gap;
+         this._nextBtn.x = _cx; this._nextBtn.y = _btm;
 
          // 事件绑定
          var _self:BagPanel = this;

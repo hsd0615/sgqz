@@ -9,12 +9,11 @@ package game.model
          if(_data["proto_4_1"] != null) return;
 
          // ═══════════ 武器 (slot=1) ═══════════
-         // 主攻击, 不同类型: 均衡/狂暴/吸血/精准
-         _data["proto_4_1"]  = {slot:1,name:"铁剑",    attack:50,defense:8,hp:0,levelReq:1,quality:1};
-         _data["proto_4_2"]  = {slot:1,name:"精钢剑",  attack:130,defense:20,hp:30,levelReq:15,quality:2};
-         _data["proto_4_3"]  = {slot:1,name:"青釭剑",  attack:240,defense:40,hp:60,levelReq:30,quality:3};
-         _data["proto_4_4"]  = {slot:1,name:"倚天剑",  attack:380,attackPct:4,defense:70,hp:110,levelReq:50,quality:4};
-         _data["proto_4_5"]  = {slot:1,name:"方天画戟",attack:580,attackPct:7,defense:120,hp:190,levelReq:80,quality:5};
+         _data["proto_4_1"]  = {slot:1,name:"铁剑",    attack:50,defense:8,hp:0,levelReq:1,quality:1,iconIdx:1};
+         _data["proto_4_2"]  = {slot:1,name:"精钢剑",  attack:130,defense:20,hp:30,levelReq:15,quality:2,iconIdx:2};
+         _data["proto_4_3"]  = {slot:1,name:"青釭剑",  attack:240,defense:40,hp:60,levelReq:30,quality:3,iconIdx:3};
+         _data["proto_4_4"]  = {slot:1,name:"倚天剑",  attack:380,attackPct:4,defense:70,hp:110,levelReq:50,quality:4,iconIdx:4};
+         _data["proto_4_5"]  = {slot:1,name:"方天画戟",attack:580,attackPct:7,defense:120,hp:190,levelReq:80,quality:5,iconIdx:5};
          _data["proto_4_31"] = {slot:1,name:"柳叶刀",  attack:70,defense:12,hp:25,levelReq:8,quality:1,iconIdx:1};
          _data["proto_4_32"] = {slot:1,name:"雁翎刀",  attack:160,defense:28,hp:60,levelReq:20,quality:2,iconIdx:2};
          _data["proto_4_33"] = {slot:1,name:"鱼鳞刀",  attack:270,defense:52,hp:110,levelReq:35,quality:3,iconIdx:3};
@@ -29,11 +28,11 @@ package game.model
          _data["proto_4_38"] = {slot:1,name:"神罚",    attack:1800,attackPct:15,lifesteal:8,dmgBonus:6,defense:500,defensePct:5,hp:1100,hpPct:6,levelReq:160,quality:8,iconIdx:8};
 
          // ═══════════ 铠甲 (slot=2) ═══════════
-         _data["proto_4_11"] = {slot:2,name:"皮甲",    defense:35,attack:10,hp:15,levelReq:1,quality:1};
-         _data["proto_4_12"] = {slot:2,name:"锁子甲",  defense:110,attack:25,hp:50,levelReq:15,quality:2};
-         _data["proto_4_13"] = {slot:2,name:"明光铠",  defense:200,attack:50,hp:100,levelReq:30,quality:3};
-         _data["proto_4_14"] = {slot:2,name:"龙鳞甲",  defense:310,defensePct:4,attack:85,hp:180,levelReq:50,quality:4};
-         _data["proto_4_15"] = {slot:2,name:"玄武战甲",defense:480,defensePct:6,attack:140,hp:300,levelReq:80,quality:5};
+         _data["proto_4_11"] = {slot:2,name:"皮甲",    defense:35,attack:10,hp:15,levelReq:1,quality:1,iconIdx:9};
+         _data["proto_4_12"] = {slot:2,name:"锁子甲",  defense:110,attack:25,hp:50,levelReq:15,quality:2,iconIdx:10};
+         _data["proto_4_13"] = {slot:2,name:"明光铠",  defense:200,attack:50,hp:100,levelReq:30,quality:3,iconIdx:11};
+         _data["proto_4_14"] = {slot:2,name:"龙鳞甲",  defense:310,defensePct:4,attack:85,hp:180,levelReq:50,quality:4,iconIdx:12};
+         _data["proto_4_15"] = {slot:2,name:"玄武战甲",defense:480,defensePct:6,attack:140,hp:300,levelReq:80,quality:5,iconIdx:13};
          _data["proto_4_39"] = {slot:2,name:"藤甲",    defense:48,attack:12,hp:22,levelReq:8,quality:1,iconIdx:9};
          _data["proto_4_40"] = {slot:2,name:"铁叶甲",  defense:130,attack:30,hp:65,levelReq:20,quality:2,iconIdx:10};
          _data["proto_4_41"] = {slot:2,name:"连环甲",  defense:235,attack:60,hp:130,levelReq:35,quality:3,iconIdx:11};
@@ -48,11 +47,11 @@ package game.model
          _data["proto_4_46"] = {slot:2,name:"不灭金身",defense:1600,defensePct:16,dmgReduce:12,lifesteal:3,attack:500,attackPct:4,hp:1300,hpPct:8,levelReq:160,quality:8,iconIdx:16};
 
          // ═══════════ 饰品Ⅰ (slot=3) ═══════════
-         _data["proto_4_21"] = {slot:3,name:"护身符",  hp:250,attack:15,defense:20,levelReq:5,quality:1};
-         _data["proto_4_22"] = {slot:3,name:"翡翠环",  hp:550,attack:35,defense:50,levelReq:20,quality:2};
-         _data["proto_4_23"] = {slot:3,name:"护心镜",  hp:1000,attack:65,defense:90,levelReq:35,quality:3};
-         _data["proto_4_24"] = {slot:3,name:"和氏璧",  hp:1700,hpPct:4,attack:110,attackPct:3,defense:150,defensePct:2,levelReq:55,quality:4};
-         _data["proto_4_25"] = {slot:3,name:"传国玉玺",hp:2800,hpPct:6,attack:180,attackPct:5,defense:250,defensePct:4,levelReq:100,quality:5};
+         _data["proto_4_21"] = {slot:3,name:"护身符",  hp:250,attack:15,defense:20,levelReq:5,quality:1,iconIdx:17};
+         _data["proto_4_22"] = {slot:3,name:"翡翠环",  hp:550,attack:35,defense:50,levelReq:20,quality:2,iconIdx:18};
+         _data["proto_4_23"] = {slot:3,name:"护心镜",  hp:1000,attack:65,defense:90,levelReq:35,quality:3,iconIdx:19};
+         _data["proto_4_24"] = {slot:3,name:"和氏璧",  hp:1700,hpPct:4,attack:110,attackPct:3,defense:150,defensePct:2,levelReq:55,quality:4,iconIdx:20};
+         _data["proto_4_25"] = {slot:3,name:"传国玉玺",hp:2800,hpPct:6,attack:180,attackPct:5,defense:250,defensePct:4,levelReq:100,quality:5,iconIdx:21};
          _data["proto_4_47"] = {slot:3,name:"木符",    hp:320,attack:18,defense:25,levelReq:10,quality:1,iconIdx:17};
          _data["proto_4_48"] = {slot:3,name:"石符",    hp:700,attack:42,defense:60,levelReq:25,quality:2,iconIdx:18};
          _data["proto_4_49"] = {slot:3,name:"铜符",    hp:1250,attack:80,defense:110,levelReq:40,quality:3,iconIdx:19};
@@ -67,11 +66,11 @@ package game.model
          _data["proto_4_54"] = {slot:3,name:"天地令",  hp:10000,hpPct:17,lifesteal:6,dmgBonus:5,attack:700,attackPct:10,defense:900,defensePct:7,levelReq:165,quality:8,iconIdx:24};
 
          // ═══════════ 头盔 (slot=4) ═══════════
-         _data["proto_4_6"]  = {slot:4,name:"布帽",    hp:100,defense:12,levelReq:1,quality:1};
-         _data["proto_4_7"]  = {slot:4,name:"铁盔",    hp:320,defense:35,levelReq:15,quality:2};
-         _data["proto_4_8"]  = {slot:4,name:"银盔",    hp:650,defense:70,levelReq:30,quality:3};
-         _data["proto_4_9"]  = {slot:4,name:"金冠",    hp:1100,hpPct:4,defense:120,levelReq:50,quality:4};
-         _data["proto_4_10"] = {slot:4,name:"龙盔",    hp:1900,hpPct:7,defense:200,levelReq:80,quality:5};
+         _data["proto_4_6"]  = {slot:4,name:"布帽",    hp:100,defense:12,levelReq:1,quality:1,iconIdx:25};
+         _data["proto_4_7"]  = {slot:4,name:"铁盔",    hp:320,defense:35,levelReq:15,quality:2,iconIdx:26};
+         _data["proto_4_8"]  = {slot:4,name:"银盔",    hp:650,defense:70,levelReq:30,quality:3,iconIdx:27};
+         _data["proto_4_9"]  = {slot:4,name:"金冠",    hp:1100,hpPct:4,defense:120,levelReq:50,quality:4,iconIdx:28};
+         _data["proto_4_10"] = {slot:4,name:"龙盔",    hp:1900,hpPct:7,defense:200,levelReq:80,quality:5,iconIdx:29};
          _data["proto_4_55"] = {slot:4,name:"方巾",    hp:140,defense:18,levelReq:5,quality:1,iconIdx:25};
          _data["proto_4_56"] = {slot:4,name:"铜冠",    hp:400,defense:48,levelReq:20,quality:2,iconIdx:26};
          _data["proto_4_57"] = {slot:4,name:"镔铁盔",  hp:780,defense:95,levelReq:35,quality:3,iconIdx:27};
@@ -86,11 +85,11 @@ package game.model
          _data["proto_4_62"] = {slot:4,name:"九龙冠",  hp:7500,hpPct:17,defense:1000,defensePct:5,dmgReduce:10,levelReq:160,quality:8,iconIdx:32};
 
          // ═══════════ 战靴 (slot=5) ═══════════
-         _data["proto_4_16"] = {slot:5,name:"草鞋",    defense:22,attack:5,hp:25,levelReq:1,quality:1};
-         _data["proto_4_17"] = {slot:5,name:"皮靴",    defense:85,attack:15,hp:75,levelReq:15,quality:2};
-         _data["proto_4_18"] = {slot:5,name:"铁靴",    defense:165,attack:35,hp:150,levelReq:30,quality:3};
-         _data["proto_4_19"] = {slot:5,name:"银靴",    defense:260,defensePct:3,attack:65,hp:260,levelReq:50,quality:4};
-         _data["proto_4_20"] = {slot:5,name:"神行靴",  defense:400,defensePct:5,attack:110,hp:420,levelReq:80,quality:5};
+         _data["proto_4_16"] = {slot:5,name:"草鞋",    defense:22,attack:5,hp:25,levelReq:1,quality:1,iconIdx:33};
+         _data["proto_4_17"] = {slot:5,name:"皮靴",    defense:85,attack:15,hp:75,levelReq:15,quality:2,iconIdx:34};
+         _data["proto_4_18"] = {slot:5,name:"铁靴",    defense:165,attack:35,hp:150,levelReq:30,quality:3,iconIdx:35};
+         _data["proto_4_19"] = {slot:5,name:"银靴",    defense:260,defensePct:3,attack:65,hp:260,levelReq:50,quality:4,iconIdx:36};
+         _data["proto_4_20"] = {slot:5,name:"神行靴",  defense:400,defensePct:5,attack:110,hp:420,levelReq:80,quality:5,iconIdx:37};
          _data["proto_4_63"] = {slot:5,name:"麻鞋",    defense:32,attack:8,hp:35,levelReq:8,quality:1,iconIdx:33};
          _data["proto_4_64"] = {slot:5,name:"快靴",    defense:105,attack:22,hp:95,levelReq:20,quality:2,iconIdx:34};
          _data["proto_4_65"] = {slot:5,name:"虎头靴",  defense:200,attack:48,hp:195,levelReq:35,quality:3,iconIdx:35};
@@ -105,11 +104,11 @@ package game.model
          _data["proto_4_70"] = {slot:5,name:"风云靴",  defense:1400,defensePct:15,dmgReduce:8,lifesteal:3,attack:450,attackPct:4,hp:1600,hpPct:6,levelReq:160,quality:8,iconIdx:40};
 
          // ═══════════ 饰品Ⅱ (slot=6) ═══════════
-         _data["proto_4_26"] = {slot:6,name:"铜戒指",  attack:38,defense:8,hp:50,levelReq:10,quality:1};
-         _data["proto_4_27"] = {slot:6,name:"银戒指",  attack:95,defense:20,hp:130,levelReq:25,quality:2};
-         _data["proto_4_28"] = {slot:6,name:"金戒指",  attack:180,defense:40,hp:260,levelReq:40,quality:3};
-         _data["proto_4_29"] = {slot:6,name:"龙戒",    attack:300,attackPct:4,defense:75,hp:440,levelReq:60,quality:4};
-         _data["proto_4_30"] = {slot:6,name:"神戒",    attack:460,attackPct:7,defense:130,hp:700,levelReq:90,quality:5};
+         _data["proto_4_26"] = {slot:6,name:"铜戒指",  attack:38,defense:8,hp:50,levelReq:10,quality:1,iconIdx:41};
+         _data["proto_4_27"] = {slot:6,name:"银戒指",  attack:95,defense:20,hp:130,levelReq:25,quality:2,iconIdx:42};
+         _data["proto_4_28"] = {slot:6,name:"金戒指",  attack:180,defense:40,hp:260,levelReq:40,quality:3,iconIdx:43};
+         _data["proto_4_29"] = {slot:6,name:"龙戒",    attack:300,attackPct:4,defense:75,hp:440,levelReq:60,quality:4,iconIdx:44};
+         _data["proto_4_30"] = {slot:6,name:"神戒",    attack:460,attackPct:7,defense:130,hp:700,levelReq:90,quality:5,iconIdx:45};
          _data["proto_4_71"] = {slot:6,name:"骨戒",    attack:55,defense:12,hp:70,levelReq:12,quality:1,iconIdx:41};
          _data["proto_4_72"] = {slot:6,name:"银环",    attack:125,defense:28,hp:170,levelReq:28,quality:2,iconIdx:42};
          _data["proto_4_73"] = {slot:6,name:"玉扳指",  attack:220,defense:55,hp:330,levelReq:45,quality:3,iconIdx:43};
