@@ -170,48 +170,46 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         // 运行时根据皮肤元素的坐标推算装备槽位置
-         // 遍历所有已知皮肤元素, 找到最左上角的几个作为装备槽参考
-         var _knownElements:Array = [];
-         if(this.__nameTF != null) _knownElements.push({n:"_nameTF",x:this.__nameTF.x,y:this.__nameTF.y,w:this.__nameTF.width,h:this.__nameTF.height});
-         if(this.__closeBtn != null) _knownElements.push({n:"_closeBtn",x:this.__closeBtn.x,y:this.__closeBtn.y,w:this.__closeBtn.width,h:this.__closeBtn.height});
-         if(this.__shengjiBtn != null) _knownElements.push({n:"_shengjiBtn",x:this.__shengjiBtn.x,y:this.__shengjiBtn.y,w:this.__shengjiBtn.width,h:this.__shengjiBtn.height});
-         if(this.__kezhi1Btn != null) _knownElements.push({n:"_kezhi1Btn",x:this.__kezhi1Btn.x,y:this.__kezhi1Btn.y,w:this.__kezhi1Btn.width,h:this.__kezhi1Btn.height});
+         // SWF解析确认: 皮肤原点=面板中心, 所有SWF元素在(0,0)附近
+         // 武将模型在(_point=-235,-65), 克制图标在y=69
+         // 装备槽静态图形在皮肤中, 位于原点左上区域
+         // 尝试左上负坐标区: X<-235, Y<-65
+         var _slotPositions:Array = [
+            {x:-345, y:-155}, {x:-288, y:-155}, {x:-231, y:-155},
+            {x:-345, y:-100}, {x:-288, y:-100}, {x:-231, y:-100}
+         ];
+         var _sW:int = 48;
+         var _sH:int = 48;
 
-         // 找到Y最小的元素(最顶部)和X最小的元素(最左边)
-         var _minX:Number = 0; var _minY:Number = 0; var _first:Boolean = true;
-         for each(var _ek:Object in _knownElements) {
-            if(_first) { _minX = _ek.x; _minY = _ek.y; _first = false; }
-            if(_ek.x < _minX) _minX = _ek.x;
-            if(_ek.y < _minY) _minY = _ek.y;
-         }
-
-         // 装备槽位于已知元素左上区域
-         // 上排Y = 最顶部元素上方
-         var _slotW:int = 48;
-         var _slotH:int = 48;
-         var _gapX:int = 52;
-         var _gapY:int = 54;
-         var _startX:Number = _minX - 10;
-         var _startY:Number = _minY - _slotH - 80;
-
-         var _i:int = 0;
-         while(_i < 6)
+         var _j:int = 0;
+         while(_j < 6)
          {
-            var _slot:Sprite = new Sprite();
-            _slot.name = "equipSlot" + _i;
-            _slot.buttonMode = true;
-            _slot.mouseChildren = false;
-            _slot.x = _startX + (_i % 3) * _gapX;
-            _slot.y = _startY + int(_i / 3) * _gapY;
+            var _s:Sprite = new Sprite();
+            _s.name = "equipSlot" + _j;
+            _s.buttonMode = true;
+            _s.mouseChildren = false;
+            _s.x = _slotPositions[_j].x;
+            _s.y = _slotPositions[_j].y;
 
-            var _b:Shape = new Shape();
-            _b.graphics.lineStyle(1, 0xC8A84E, 0.8);
-            _b.graphics.drawRoundRect(0, 0, _slotW, _slotH, 5, 5);
-            _slot.addChild(_b);
+            // 金色边框
+            var _bb:Shape = new Shape();
+            _bb.graphics.beginFill(0x1a1008, 0.85);
+            _bb.graphics.lineStyle(1, 0xC8A84E, 0.8);
+            _bb.graphics.drawRoundRect(0, 0, _sW, _sH, 5, 5);
+            _bb.graphics.endFill();
+            _s.addChild(_bb);
 
-            this._equipSlots[_i] = _slot;
-            _i++;
+            // 槽位标签
+            var _ltf:TextField = new TextField();
+            _ltf.defaultTextFormat = new TextFormat("SimSun", 9, 0x8B6914);
+            _ltf.text = SLOT_LABELS[_j];
+            _ltf.selectable = false;
+            _ltf.width = _sW; _ltf.height = 14;
+            _ltf.x = 0; _ltf.y = _sH + 2;
+            _s.addChild(_ltf);
+
+            this._equipSlots[_j] = _s;
+            _j++;
          }
       }
 
