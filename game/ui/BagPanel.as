@@ -297,9 +297,14 @@ package game.ui
             return null;
          }
 
-         _type = Data.getInstance().getAttributes("proto",_code,"type");
+         _type = int(Data.getInstance().getAttributes("proto",_code,"type"));
+         // 新装备(proto_4_31+)不在staticproto中, 通过EquipData补充识别
+         if(_type != 4) {
+            var _eqSlot:* = EquipData.get(_code, "slot");
+            if(_eqSlot != null && int(_eqSlot) > 0) _type = 4;
+         }
 
-         // 装备类型: 使用真实装备图标,缩放到与普通道具一致
+         // 装备类型: 使用真实装备图标
          if(_type == 4)
          {
             return this.createEquipIcon(_code);

@@ -322,9 +322,10 @@ package game.model
          {
             return;
          }
-         // 装备物品(type=4)不堆叠，每个单独存放
+         // 装备物品(type=4)不堆叠，每个单独存放(检查proto表+EquipData)
          var _protoType:* = Data.getInstance().getAttributes("proto",param2,"type");
-         if(int(_protoType) == 4)
+         var _eqSlot:* = EquipData.get(param2, "slot");
+         if(int(_protoType) == 4 || (_eqSlot != null && int(_eqSlot) > 0))
          {
             this._bag.push({
                "id":param1,
