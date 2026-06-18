@@ -170,16 +170,13 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         // 图像识别v3: 反转检测(亮色槽vs暗色面板背景)
-         // 截图grid(90,107), panelCenter(257,234), offset(-167,-127)
-         // 槽内部RGB~100, 面板背景RGB~32 — 确认左上角位置!
-         var _slotW:int = 48;
-         var _slotH:int = 48;
-         var _gap:int = 8;
-
+         // 装备槽覆盖层-使用皮肤已知参考点定位
+         // 武将中心(-235,-65), 克制图标(-300~-163,69)
+         // 装备槽推测在武将上方+克制图标左侧区域
+         var _sW:int = 48, _sH:int = 48;
          var _slotPositions:Array = [
-            {x:-167, y:-127}, {x:-111, y:-127}, {x:-55, y:-127},
-            {x:-167, y:-71},  {x:-111, y:-71},  {x:-55, y:-71}
+            {x:-340, y:-150}, {x:-284, y:-150}, {x:-228, y:-150},
+            {x:-340, y:-96},  {x:-284, y:-96},  {x:-228, y:-96}
          ];
          var _sW:int = 48;
          var _sH:int = 48;
