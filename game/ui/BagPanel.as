@@ -16,7 +16,8 @@ package game.ui
    import game.Data;
    import game.events.UIEvent;
    import game.model.RoleModel;
-   import game.ui.EquipIconAssets;
+   import game.ui.EquipIconsWuxia;
+   import game.model.EquipData;
 
    public class BagPanel extends BaseUI
    {
@@ -199,10 +200,8 @@ package game.ui
                var _ci:int = _loc5_.numChildren - 1;
                while(_ci >= 0)
                {
-                  if(_loc5_.getChildAt(_ci) is Bitmap)
-                  {
-                     _loc5_.removeChildAt(_ci);
-                  }
+                  var _ch:* = _loc5_.getChildAt(_ci);
+                  if(_ch is Bitmap || _ch is Shape) _loc5_.removeChildAt(_ci);
                   _ci--;
                }
                _loc5_.code = null;
@@ -229,12 +228,24 @@ package game.ui
             _loc6_ = this.createItemIcon(_item);
             if(_loc6_ != null)
             {
-               // 动态居中: 根据格子大小和图标大小计算位置
+               // 装备品质背景色
+               if(_item.type == 4)
+               {
+                  var _eqQ:int = int(EquipData.get(_item.code, "quality"));
+                  if(_eqQ > 0)
+                  {
+                     var _qBg:Shape = new Shape();
+                     _qBg.graphics.beginFill(getEquipBgColor(_eqQ), 0.75);
+                     _qBg.graphics.drawRoundRect(2, 2, _loc5_.width - 4, _loc5_.height - 4, 4, 4);
+                     _qBg.graphics.endFill();
+                     _loc5_.addChildAt(_qBg, 0);
+                  }
+               }
                _loc6_.x = int((_loc5_.width - _loc6_.width) / 2);
                _loc6_.y = int((_loc5_.height - _loc6_.height) / 2);
                if(_loc6_.x < 0) _loc6_.x = 2;
                if(_loc6_.y < 0) _loc6_.y = 2;
-               _loc5_.addChildAt(_loc6_,0);
+               _loc5_.addChildAt(_loc6_, 1);
             }
 
             _loc4_++;
@@ -317,56 +328,18 @@ package game.ui
        * 创建装备图标 - 根据code判断武器/防具/饰品类型
        * 128x128 PNG缩放到约36x36以适配背包格子
        */
+      private static const _qualityBgColors:Array = [0x333333,0x555555,0x1a3a0a,0x0a2a3a,0x2a0a2a,0x3a3000,0x3a1a00,0x3a0a0a,0x3a0000];
+      private function getEquipBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
+
       private function createEquipIcon(param1:String) : Bitmap
       {
-         var _bmp:Bitmap = null;
-         // 提取proto_4_X中的数字部分
-         var _num:int = 0;
-         var _parts:Array = param1.split("_");
-         if(_parts.length >= 3)
+         var _idx:* = EquipData.get(param1, "iconIdx");
+         if(_idx != null && int(_idx) > 0)
          {
-            _num = int(_parts[_parts.length - 1]);
+            var _b:Bitmap = EquipIconsWuxia.getIcon(int(_idx));
+            if(_b != null) { _b.smoothing = true; return _b; }
          }
-
-         // 装备类型判断: _num后缀 → 槽位
-         // 1~5:武器  6~10:头盔  11~15:铠甲  16~20:战靴  21~25:饰品1  26~30:饰品2
-         if(_num >= 26)
-         {
-            _bmp = EquipIconAssets.accessory();
-         }
-         else if(_num >= 21)
-         {
-            _bmp = EquipIconAssets.accessory();
-         }
-         else if(_num >= 16)
-         {
-            _bmp = EquipIconAssets.boots();
-         }
-         else if(_num >= 11)
-         {
-            _bmp = EquipIconAssets.armor();
-         }
-         else if(_num >= 6)
-         {
-            _bmp = EquipIconAssets.helmet();
-         }
-         else
-         {
-            _bmp = EquipIconAssets.weapon();
-         }
-
-         if(_bmp == null)
-         {
-            return null;
-         }
-
-         // 128x128 PNG缩放到40px, 与其他道具图标大小一致
-         var _targetSize:Number = 40;
-         var _scale:Number = _targetSize / _bmp.width;
-         _bmp.scaleX = _scale;
-         _bmp.scaleY = _scale;
-         _bmp.smoothing = true;
-         return _bmp;
+         return null;
       }
 
       private function onPrevPageHandler(param1:MouseEvent) : *

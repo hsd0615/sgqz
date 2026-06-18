@@ -294,12 +294,34 @@ package game.ui
 
             _slot.name = "equipSlot" + _si;
 
+            // 清除旧的图标和背景(保留index0的透明点击区域)
+            if(_slot is Sprite) {
+               var _sp:Sprite = _slot as Sprite;
+               while(_sp.numChildren > 1) _sp.removeChildAt(1);
+            } else if(_slot is MovieClip) {
+               var _mp:MovieClip = _slot as MovieClip;
+               while(_mp.numChildren > 1) _mp.removeChildAt(1);
+            }
+            _slot.filters = [];
+
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
+               var _q:int = int(EquipData.get(_eqCode,"quality"));
+               var _qc:uint = getQualityBgColor(_q);
+
+               // 品质纯色背景
+               var _bg:Shape = new Shape();
+               _bg.graphics.beginFill(_qc, 0.7);
+               _bg.graphics.drawRoundRect(1, 1, 32, 32, 4, 4);
+               _bg.graphics.endFill();
+               if(_slot is Sprite) (_slot as Sprite).addChild(_bg);
+               else (_slot as MovieClip).addChild(_bg);
+
+               // 装备图标
                var _bmp:Bitmap = this.getEquipBmp(_eqCode);
                if(_bmp != null)
                {
-                  var _esz:Number = 36 / Math.max(_bmp.width, _bmp.height);
+                  var _esz:Number = 30 / Math.max(_bmp.width, _bmp.height);
                   _bmp.scaleX = _esz; _bmp.scaleY = _esz;
                   _bmp.smoothing = true;
                   _bmp.x = int((34 - _bmp.width) / 2);
@@ -307,12 +329,6 @@ package game.ui
                   if(_slot is Sprite) (_slot as Sprite).addChild(_bmp);
                   else (_slot as MovieClip).addChild(_bmp);
                }
-               var _q:int = int(EquipData.get(_eqCode,"quality"));
-               _slot.filters = [new GlowFilter(getQualityColor(_q), 0.5, 4, 4, 1)];
-            }
-            else
-            {
-               _slot.filters = [];
             }
             _si++;
          }
@@ -330,8 +346,10 @@ package game.ui
       }
 
       private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF6600,0xFF4444,0xFF0000];
+      private var _qualityBgColors:Array = [0x333333,0x555555,0x1a3a0a,0x0a2a3a,0x2a0a2a,0x3a3000,0x3a1a00,0x3a0a0a,0x3a0000];
       private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
+      private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
 
       private function onEquipSlotClick(param1:MouseEvent) : void
       {
