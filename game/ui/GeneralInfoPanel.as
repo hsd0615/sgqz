@@ -44,6 +44,8 @@ package game.ui
 
       private var __valueTF:TextField;
 
+      private var __specTF:TextField;
+
       private var __xiaohaoTF:TextField;
 
       private var __shengjiBtn:SimpleButton;
@@ -935,23 +937,32 @@ package game.ui
             _loc1_ += "    <font color=\'#e720f9\'>雷</font>";
             _loc1_ += " <font color=\'#f45415\'>克制冰，被风克制</font>\n";
          }
-         // 装备特殊属性 (始终显示以诊断)
+         this.__valueTF.htmlText = _loc1_;
+
+         // 装备特殊属性 — 右侧独立显示
          var _ls:int = this._armyInfo.equipLifesteal;
          var _db:int = this._armyInfo.equipDmgBonus;
          var _dr:int = this._armyInfo.equipDmgReduce;
          var _cr:int = this._armyInfo.equipCritRate;
          var _cd:int = this._armyInfo.equipCritDmg;
-         if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0)
-         {
-            _loc1_ += "<font color='#FF6600'>";
-            if(_ls > 0) _loc1_ += " 吸血+" + _ls + "%";
-            if(_db > 0) _loc1_ += " 增伤+" + _db + "%";
-            if(_dr > 0) _loc1_ += " 减伤+" + _dr + "%";
-            if(_cr > 0) _loc1_ += " 暴击+" + _cr + "%";
-            if(_cd > 0) _loc1_ += " 暴伤+" + _cd + "%";
-            _loc1_ += "</font>\n";
+         if(this.__specTF == null) {
+            this.__specTF = new TextField();
+            this.__specTF.width = 120; this.__specTF.height = 120;
+            this.__specTF.multiline = true; this.__specTF.wordWrap = true;
+            this.__specTF.selectable = false;
+            this.__specTF.x = -30; this.__specTF.y = 20;
+            addChild(this.__specTF);
          }
-         this.__valueTF.htmlText = _loc1_;
+         var _s:String = "";
+         if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0) {
+            _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font>\n";
+            if(_ls > 0) _s += "<font color='#FF6600'>吸血 +" + _ls + "%</font>\n";
+            if(_db > 0) _s += "<font color='#FF6600'>增伤 +" + _db + "%</font>\n";
+            if(_dr > 0) _s += "<font color='#FF6600'>减伤 +" + _dr + "%</font>\n";
+            if(_cr > 0) _s += "<font color='#FF6600'>暴击 +" + _cr + "%</font>\n";
+            if(_cd > 0) _s += "<font color='#FF6600'>暴伤 +" + _cd + "%</font>\n";
+         }
+         this.__specTF.htmlText = _s;
       }
 
       private function createXiaohaoTF() : void
