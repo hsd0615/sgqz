@@ -32,6 +32,7 @@ package game.ui
    import game.model.RoleModel;
    import game.model.Type;
    import game.ui.EquipIconAssets;
+   import game.ui.EquipIconsWuxia;
 
    public class GeneralInfoPanel extends BaseUI
    {
@@ -101,7 +102,6 @@ package game.ui
       private var _equipSlots:Array = [];
       // 槽位标签: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
       private static const SLOT_LABELS:Array = ["武器","铠甲","饰品Ⅰ","头盔","战靴","饰品Ⅱ"];
-      private var _equipBtn:Sprite;
       private var _bagList:Sprite;
       private var _selectingSlot:int = -1;
 
@@ -177,22 +177,17 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         var _sW:int = 30;
-         var _sH:int = 30;
+         var _sW:int = 34;
+         var _sH:int = 34;
 
-         // ═══════════════════════════════════════
-         // 修改下面6个坐标即可移动槽位
-         // ═══════════════════════════════════════
-         // 校准参考: 阴影中心截图(158,231) = Flash(-235,-65)
-         // 换算: Flash = 截图 - 393(X), Flash = 截图 - 296(Y)
-         // 对称: 左列64, 右列246, 上排80, 中排150, 下排211
+         // 布局: 左列=头盔/铠甲/战靴, 右列=武器/饰品Ⅰ/饰品Ⅱ
          var _slotPositions:Array = [
-            {x:-329, y:-216},  // 0:武器   (左列,上排)
-            {x:-147, y:-216},  // 1:铠甲   (右列,上排)
-            {x:-329, y:-146},  // 2:饰品Ⅰ (左列,中排)
-            {x:-147, y:-146},  // 3:头盔   (右列,中排)
-            {x:-329, y:-85},   // 4:战靴   (左列,下排)
-            {x:-147, y:-85}    // 5:饰品Ⅱ (右列,下排)
+            {x:-165, y:-208},  // 0:武器   (右,上)
+            {x:-329, y:-146},  // 1:铠甲   (左,中)
+            {x:-165, y:-146},  // 2:饰品Ⅰ (右,中)
+            {x:-329, y:-208},  // 3:头盔   (左,上)
+            {x:-329, y:-85},   // 4:战靴   (左,下)
+            {x:-165, y:-85}    // 5:饰品Ⅱ (右,下)
          ];
 
          var _j:int = 0;
@@ -205,22 +200,12 @@ package game.ui
             _s.x = _slotPositions[_j].x;
             _s.y = _slotPositions[_j].y;
 
+            // 纯透明覆盖层(仅用于点击区域, 无任何可见元素)
             var _bb:Shape = new Shape();
-            _bb.graphics.beginFill(0x1a1008, 0.85);
-            _bb.graphics.lineStyle(1, 0xC8A84E, 0.8);
+            _bb.graphics.beginFill(0x000000, 0);
             _bb.graphics.drawRoundRect(0, 0, _sW, _sH, 5, 5);
             _bb.graphics.endFill();
             _s.addChild(_bb);
-
-            var _ltf:TextField = new TextField();
-            _ltf.defaultTextFormat = new TextFormat("SimSun", 9, 0x8B6914);
-            _ltf.text = SLOT_LABELS[_j];
-            _ltf.selectable = false;
-            _ltf.width = _sW;
-            _ltf.height = 14;
-            _ltf.x = 0;
-            _ltf.y = _sH + 2;
-            _s.addChild(_ltf);
 
             this._equipSlots[_j] = _s;
             _j++;
@@ -274,35 +259,6 @@ package game.ui
          this.__moneyTF.text = RoleModel.getInstance().money.toString();
          this.__exploitTF.text = RoleModel.getInstance().exploit.toString();
          this.showEquipSlots();
-         this.showEquipBtn();
-      }
-
-      private function showEquipBtn() : void
-      {
-         if(this._equipBtn != null) { removeChild(this._equipBtn); this._equipBtn = null; }
-         this._equipBtn = new Sprite();
-         var _bg:Shape = new Shape();
-         _bg.graphics.beginFill(0x4a2010, 0.94);
-         _bg.graphics.lineStyle(2, 0xFFD700, 0.9);
-         _bg.graphics.drawRoundRect(0, 0, 80, 28, 6, 6);
-         _bg.graphics.endFill();
-         this._equipBtn.addChild(_bg);
-         var _tf:TextField = new TextField();
-         _tf.defaultTextFormat = new TextFormat("SimHei", 13, 0xFFD700, true);
-         _tf.text = "装 备";
-         _tf.selectable = false;
-         _tf.autoSize = TextFieldAutoSize.CENTER;
-         _tf.x = (80 - _tf.width) / 2; _tf.y = 4;
-         this._equipBtn.addChild(_tf);
-         this._equipBtn.buttonMode = true;
-         this._equipBtn.x = this.__shengjiBtn.x;
-         this._equipBtn.y = this.__shengjiBtn.y + this.__shengjiBtn.height + 6;
-         var _self:GeneralInfoPanel = this;
-         this._equipBtn.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
-            p.stopImmediatePropagation();
-            _self.dispatchEvent(new UIEvent(UIEvent.OPEN_EQUIP, true, _self._armyInfo));
-         });
-         addChild(this._equipBtn);
       }
 
       private function showEquipSlots() : void
@@ -343,21 +299,13 @@ package game.ui
                var _bmp:Bitmap = this.getEquipBmp(_eqCode);
                if(_bmp != null)
                {
-                  _bmp.scaleX = 0.3;
-                  _bmp.scaleY = 0.3;
+                  var _esz:Number = 36 / Math.max(_bmp.width, _bmp.height);
+                  _bmp.scaleX = _esz; _bmp.scaleY = _esz;
                   _bmp.smoothing = true;
-                  _bmp.x = int((_slot.width - _bmp.width) / 2);
-                  _bmp.y = int((_slot.height - _bmp.height) / 2);
-                  if(_bmp.x < 0) _bmp.x = 0;
-                  if(_bmp.y < 0) _bmp.y = 0;
-                  if(_slot is Sprite)
-                  {
-                     (_slot as Sprite).addChild(_bmp);
-                  }
-                  else
-                  {
-                     (_slot as MovieClip).addChild(_bmp);
-                  }
+                  _bmp.x = int((34 - _bmp.width) / 2);
+                  _bmp.y = int((34 - _bmp.height) / 2);
+                  if(_slot is Sprite) (_slot as Sprite).addChild(_bmp);
+                  else (_slot as MovieClip).addChild(_bmp);
                }
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                _slot.filters = [new GlowFilter(getQualityColor(_q), 0.5, 4, 4, 1)];
@@ -373,6 +321,14 @@ package game.ui
       private function getEquipBmp(param1:String) : Bitmap
       {
          if(param1 == null || param1 == "") return null;
+         // 武侠新装备: 有iconIdx则用新图标
+         var _idx:* = EquipData.get(param1, "iconIdx");
+         if(_idx != null && _idx != "" && _idx != "0")
+         {
+            var _bmp:Bitmap = EquipIconsWuxia.getIcon(int(_idx));
+            if(_bmp != null) return _bmp;
+         }
+         // 旧装备: 按编号范围映射
          var _parts:Array = param1.split("_");
          var _num:int = 0;
          if(_parts.length >= 3) _num = int(_parts[_parts.length - 1]);
@@ -384,8 +340,8 @@ package game.ui
          return EquipIconAssets.weapon();
       }
 
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700];
-      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说"];
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF6600,0xFF4444,0xFF0000];
+      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
 
       private function onEquipSlotClick(param1:MouseEvent) : void
@@ -422,11 +378,8 @@ package game.ui
          AESController.getInstance().sendJSON(_obj, function(param2:Object):void {
             if(param2.success == true)
             {
-               if(param2.data.general)
-               {
-                  _self._armyInfo.setEquipSlot(param1, "");
-                  _self._armyInfo.hp = _self._armyInfo.hp;
-               }
+               _self._armyInfo.setEquipSlot(param1, "");
+               _self._armyInfo.hp = _self._armyInfo.hp;
                if(param2.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param2.data.bagModel);
@@ -453,10 +406,16 @@ package game.ui
             return;
          }
 
-         this._bagList.x = 100;
-         this._bagList.y = 180;
-         var _listW:int = 240;
-         var _listH:int = Math.min(_items.length, 5) * 26 + 8;
+         // 图标网格: 4列, 每格 52×52(图标+标签)
+         var _cols:int = 4;
+         var _cellW:int = 52, _cellH:int = 60;
+         var _pad:int = 4;
+         var _rows:int = int(Math.ceil(_items.length / _cols));
+         var _listW:int = _cols * _cellW + _pad * 2;
+         var _listH:int = Math.min(_rows, 3) * _cellH + _pad * 2;
+         this._bagList.x = 80;
+         this._bagList.y = 200;
+
          this._bagList.graphics.clear();
          this._bagList.graphics.beginFill(0x1a1008, 0.97);
          this._bagList.graphics.lineStyle(1, 0x8B6914, 0.9);
@@ -468,35 +427,52 @@ package game.ui
          while(_ii < _items.length)
          {
             var _item:Object = _items[_ii];
-            var _elr:* = EquipData.get(_item.code,"levelReq");
-            var _row:Sprite = new Sprite();
-            _row.y = 4 + _ii * 26;
-            var _rowTF:TextField = new TextField();
-            _rowTF.defaultTextFormat = new TextFormat("SimSun", 11, 0xD4C8A0);
-            _rowTF.selectable = false;
-            _rowTF.width = _listW - 8; _rowTF.height = 20;
-            _rowTF.x = 4; _rowTF.y = 0;
-            var _txt:String = formatEquipInfo(_item.code);
-            _txt += "  Lv." + (int(_elr)||1);
-            if(this._armyInfo.level < (int(_elr)||1))
+            var _elr:int = int(EquipData.get(_item.code,"levelReq")) || 1;
+            var _q2:int = int(EquipData.get(_item.code,"quality"));
+            var _col:int = _ii % _cols;
+            var _row:int = int(_ii / _cols);
+
+            var _cell:Sprite = new Sprite();
+            _cell.x = _pad + _col * _cellW;
+            _cell.y = _pad + _row * _cellH;
+            _cell.buttonMode = (this._armyInfo.level >= _elr);
+            _cell.name = _item.code;
+
+            // 装备图标(等比缩放到36px)
+            var _bmp:Bitmap = this.getEquipBmp(_item.code);
+            if(_bmp != null)
             {
-               _txt += " (等级不足)";
-               _rowTF.textColor = 0x666666;
+               var _sc:Number = 40 / Math.max(_bmp.width, _bmp.height);
+               _bmp.scaleX = _sc; _bmp.scaleY = _sc;
+               _bmp.smoothing = true;
+               _bmp.x = int((_cellW - _bmp.width) / 2);
+               _bmp.y = 2;
+               _cell.addChild(_bmp);
             }
-            else
+
+            // 装备名(品质色)
+            var _ntf:TextField = new TextField();
+            _ntf.defaultTextFormat = new TextFormat("SimSun", 9, getQualityColor(_q2));
+            var _en:* = EquipData.get(_item.code,"name");
+            _ntf.text = String(_en||"?");
+            _ntf.selectable = false;
+            _ntf.width = _cellW; _ntf.height = 14;
+            _ntf.x = 0; _ntf.y = _cellH - 15;
+            _cell.addChild(_ntf);
+
+            // 等级不足灰化
+            if(this._armyInfo.level < _elr)
             {
-               var _q2:int = int(EquipData.get(_item.code,"quality"));
-               _rowTF.textColor = getQualityColor(_q2);
+               _cell.alpha = 0.4;
+               _ntf.text += " Lv" + _elr;
             }
-            _rowTF.text = _txt;
-            _row.addChild(_rowTF);
-            _row.buttonMode = (this._armyInfo.level >= (int(_elr)||1));
-            _row.name = _item.code;
-            _row.addEventListener(MouseEvent.CLICK, function(p:*):void {
+
+            _cell.addEventListener(MouseEvent.CLICK, function(p:*):void {
+               if(_self._armyInfo.level < _elr) return;
                var _code:String = p.currentTarget.name;
                _self.equipItem(_self._selectingSlot, _code);
             });
-            this._bagList.addChild(_row);
+            this._bagList.addChild(_cell);
             _ii++;
          }
          this._bagList.visible = true;
@@ -528,16 +504,16 @@ package game.ui
             {
                if(param3.data.general)
                {
-                  var _eqArr:Array = param3.data.general.equipment.split(",");
-                  if(_eqArr.length > param1 && _eqArr[param1] != "0")
-                  {
-                     _self._armyInfo.setEquipSlot(param1, _eqArr[param1]);
-                  }
-                  else
-                  {
-                     _self._armyInfo.setEquipSlot(param1, param2);
-                  }
+                  var _eqArr:Array = (param3.data.general.equipment || "").split(",");
+                  var _eqCode:String = (_eqArr.length > param1 && _eqArr[param1] && _eqArr[param1] != "0") ? _eqArr[param1] : param2;
+                  _self._armyInfo.setEquipSlot(param1, _eqCode);
                }
+               else
+               {
+                  _self._armyInfo.setEquipSlot(param1, param2);
+               }
+               // 强制属性重算
+               _self._armyInfo.hp = _self._armyInfo.hp;
                if(param3.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param3.data.bagModel);
@@ -758,9 +734,15 @@ package game.ui
       {
          var _loc1_:* = "";
          _loc1_ += Type.createType(this._armyInfo.type) + "\n";
-         _loc1_ += this._armyInfo.attack + "\n";
-         _loc1_ += this._armyInfo.defense + "\n";
-         _loc1_ += this._armyInfo.hp + "\n";
+         _loc1_ += this._armyInfo.attack;
+         if(this._armyInfo.equipAttackBonus > 0) _loc1_ += "<font color='#FFD700'>(+" + this._armyInfo.equipAttackFlat + (this._armyInfo.equipAttackPct>0?"+"+this._armyInfo.equipAttackPct+"%":"") + ")</font>";
+         _loc1_ += "\n";
+         _loc1_ += this._armyInfo.defense;
+         if(this._armyInfo.equipDefenseBonus > 0) _loc1_ += "<font color='#FFD700'>(+" + this._armyInfo.equipDefenseFlat + (this._armyInfo.equipDefensePct>0?"+"+this._armyInfo.equipDefensePct+"%":"") + ")</font>";
+         _loc1_ += "\n";
+         _loc1_ += this._armyInfo.hp;
+         if(this._armyInfo.equipHPBonus > 0) _loc1_ += "<font color='#FFD700'>(+" + this._armyInfo.equipHPFlat + (this._armyInfo.equipHPPct>0?"+"+this._armyInfo.equipHPPct+"%":"") + ")</font>";
+         _loc1_ += "\n";
          _loc1_ += this._armyInfo.attackDistance + "\n";
          if(this._armyInfo.evolution == 0)
          {
@@ -816,19 +798,6 @@ package game.ui
          {
             _loc1_ += "    <font color=\'#e720f9\'>雷</font>";
             _loc1_ += " <font color=\'#f45415\'>克制冰，被风克制</font>\n";
-         }
-         if(this._armyInfo.equipAttackBonus > 0 || this._armyInfo.equipDefenseBonus > 0 || this._armyInfo.equipHPBonus > 0)
-         {
-            _loc1_ += "<font color='#FFD700'>--装备加成--</font>\n";
-            if(this._armyInfo.equipAttackFlat > 0) _loc1_ += "攻击 <font color='#4bea13'>+" + this._armyInfo.equipAttackFlat + "</font>";
-            if(this._armyInfo.equipAttackPct > 0) _loc1_ += " <font color='#4bea13'>+" + this._armyInfo.equipAttackPct + "%</font>";
-            if(this._armyInfo.equipAttackFlat > 0 || this._armyInfo.equipAttackPct > 0) _loc1_ += " ";
-            if(this._armyInfo.equipDefenseFlat > 0) _loc1_ += "防御 <font color='#16d2fa'>+" + this._armyInfo.equipDefenseFlat + "</font>";
-            if(this._armyInfo.equipDefensePct > 0) _loc1_ += " <font color='#16d2fa'>+" + this._armyInfo.equipDefensePct + "%</font>";
-            if(this._armyInfo.equipDefenseFlat > 0 || this._armyInfo.equipDefensePct > 0) _loc1_ += " ";
-            if(this._armyInfo.equipHPFlat > 0) _loc1_ += "生命 <font color='#ff3333'>+" + this._armyInfo.equipHPFlat + "</font>";
-            if(this._armyInfo.equipHPPct > 0) _loc1_ += " <font color='#ff3333'>+" + this._armyInfo.equipHPPct + "%</font>";
-            _loc1_ += "\n";
          }
          this.__valueTF.htmlText = _loc1_;
       }

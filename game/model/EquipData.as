@@ -51,6 +51,60 @@ package game.model
          _data["proto_4_28"] = {slot:6,name:"金戒指",attack:150,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:40,quality:3};
          _data["proto_4_29"] = {slot:6,name:"龙戒",attack:250,attackPct:5,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:60,quality:4};
          _data["proto_4_30"] = {slot:6,name:"神戒",attack:400,attackPct:8,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:90,quality:5};
+
+         // === 武侠扩展装备 (46件) ===
+         // 武器 slot=1 (proto_4_31~38)
+         _data["proto_4_31"] = {slot:1,name:"柳叶刀",attack:80,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:8,quality:1,iconIdx:1};
+         _data["proto_4_32"] = {slot:1,name:"雁翎刀",attack:150,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:20,quality:2,iconIdx:2};
+         _data["proto_4_33"] = {slot:1,name:"鱼鳞刀",attack:230,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:35,quality:3,iconIdx:3};
+         _data["proto_4_34"] = {slot:1,name:"金背刀",attack:330,attackPct:3,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:55,quality:4,iconIdx:4};
+         _data["proto_4_35"] = {slot:1,name:"斩马刀",attack:450,attackPct:6,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:75,quality:5,iconIdx:5};
+         _data["proto_4_36"] = {slot:1,name:"青龙偃月",attack:600,attackPct:8,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:100,quality:6,iconIdx:6};
+         _data["proto_4_37"] = {slot:1,name:"丈八蛇矛",attack:800,attackPct:10,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:130,quality:7,iconIdx:7};
+         _data["proto_4_38"] = {slot:1,name:"神罚",attack:1200,attackPct:15,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:160,quality:8,iconIdx:8};
+         // 铠甲 slot=2 (proto_4_39~46)
+         _data["proto_4_39"] = {slot:2,name:"藤甲",attack:0,attackPct:0,defense:50,defensePct:0,hp:0,hpPct:0,levelReq:8,quality:1,iconIdx:9};
+         _data["proto_4_40"] = {slot:2,name:"铁叶甲",attack:0,attackPct:0,defense:120,defensePct:0,hp:0,hpPct:0,levelReq:20,quality:2,iconIdx:10};
+         _data["proto_4_41"] = {slot:2,name:"连环甲",attack:0,attackPct:0,defense:200,defensePct:0,hp:0,hpPct:0,levelReq:35,quality:3,iconIdx:11};
+         _data["proto_4_42"] = {slot:2,name:"犀牛甲",attack:0,attackPct:0,defense:280,defensePct:3,hp:0,hpPct:0,levelReq:55,quality:4,iconIdx:12};
+         _data["proto_4_43"] = {slot:2,name:"狻猊甲",attack:0,attackPct:0,defense:380,defensePct:6,hp:0,hpPct:0,levelReq:75,quality:5,iconIdx:13};
+         _data["proto_4_44"] = {slot:2,name:"麒麟铠",attack:0,attackPct:0,defense:500,defensePct:8,hp:0,hpPct:0,levelReq:100,quality:6,iconIdx:14};
+         _data["proto_4_45"] = {slot:2,name:"朱雀战袍",attack:0,attackPct:0,defense:650,defensePct:10,hp:0,hpPct:0,levelReq:130,quality:7,iconIdx:15};
+         _data["proto_4_46"] = {slot:2,name:"不灭金身",attack:0,attackPct:0,defense:900,defensePct:15,hp:0,hpPct:0,levelReq:160,quality:8,iconIdx:16};
+         // 饰品Ⅰ slot=3 (proto_4_47~54)
+         _data["proto_4_47"] = {slot:3,name:"木符",attack:0,attackPct:0,defense:0,defensePct:0,hp:400,hpPct:0,levelReq:10,quality:1,iconIdx:17};
+         _data["proto_4_48"] = {slot:3,name:"石符",attack:0,attackPct:0,defense:0,defensePct:0,hp:800,hpPct:0,levelReq:25,quality:2,iconIdx:18};
+         _data["proto_4_49"] = {slot:3,name:"铜符",attack:0,attackPct:0,defense:0,defensePct:0,hp:1300,hpPct:0,levelReq:40,quality:3,iconIdx:19};
+         _data["proto_4_50"] = {slot:3,name:"银符",attack:0,attackPct:0,defense:0,defensePct:0,hp:2000,hpPct:5,levelReq:60,quality:4,iconIdx:20};
+         _data["proto_4_51"] = {slot:3,name:"金符",attack:0,attackPct:0,defense:0,defensePct:0,hp:3000,hpPct:8,levelReq:80,quality:5,iconIdx:21};
+         _data["proto_4_52"] = {slot:3,name:"龙符",attack:0,attackPct:0,defense:0,defensePct:0,hp:4500,hpPct:10,levelReq:105,quality:6,iconIdx:22};
+         _data["proto_4_53"] = {slot:3,name:"凤符",attack:0,attackPct:0,defense:0,defensePct:0,hp:6500,hpPct:12,levelReq:135,quality:7,iconIdx:23};
+         _data["proto_4_54"] = {slot:3,name:"天地令",attack:0,attackPct:0,defense:0,defensePct:0,hp:10000,hpPct:18,levelReq:165,quality:8,iconIdx:24};
+         // 头盔 slot=4 (proto_4_55~62)
+         _data["proto_4_55"] = {slot:4,name:"方巾",attack:0,attackPct:0,defense:0,defensePct:0,hp:150,hpPct:0,levelReq:5,quality:1,iconIdx:25};
+         _data["proto_4_56"] = {slot:4,name:"铜冠",attack:0,attackPct:0,defense:0,defensePct:0,hp:400,hpPct:0,levelReq:20,quality:2,iconIdx:26};
+         _data["proto_4_57"] = {slot:4,name:"镔铁盔",attack:0,attackPct:0,defense:0,defensePct:0,hp:750,hpPct:0,levelReq:35,quality:3,iconIdx:27};
+         _data["proto_4_58"] = {slot:4,name:"凤翅冠",attack:0,attackPct:0,defense:0,defensePct:0,hp:1200,hpPct:5,levelReq:55,quality:4,iconIdx:28};
+         _data["proto_4_59"] = {slot:4,name:"紫金冠",attack:0,attackPct:0,defense:0,defensePct:0,hp:1800,hpPct:8,levelReq:75,quality:5,iconIdx:29};
+         _data["proto_4_60"] = {slot:4,name:"灵蛇盔",attack:0,attackPct:0,defense:0,defensePct:0,hp:2800,hpPct:10,levelReq:100,quality:6,iconIdx:30};
+         _data["proto_4_61"] = {slot:4,name:"虎头盔",attack:0,attackPct:0,defense:0,defensePct:0,hp:4200,hpPct:12,levelReq:130,quality:7,iconIdx:31};
+         _data["proto_4_62"] = {slot:4,name:"九龙冠",attack:0,attackPct:0,defense:0,defensePct:0,hp:6500,hpPct:18,levelReq:160,quality:8,iconIdx:32};
+         // 战靴 slot=5 (proto_4_63~70)
+         _data["proto_4_63"] = {slot:5,name:"麻鞋",attack:0,attackPct:0,defense:35,defensePct:0,hp:0,hpPct:0,levelReq:8,quality:1,iconIdx:33};
+         _data["proto_4_64"] = {slot:5,name:"快靴",attack:0,attackPct:0,defense:100,defensePct:0,hp:0,hpPct:0,levelReq:20,quality:2,iconIdx:34};
+         _data["proto_4_65"] = {slot:5,name:"虎头靴",attack:0,attackPct:0,defense:180,defensePct:0,hp:0,hpPct:0,levelReq:35,quality:3,iconIdx:35};
+         _data["proto_4_66"] = {slot:5,name:"飞云靴",attack:0,attackPct:0,defense:260,defensePct:3,hp:0,hpPct:0,levelReq:55,quality:4,iconIdx:36};
+         _data["proto_4_67"] = {slot:5,name:"踏云靴",attack:0,attackPct:0,defense:360,defensePct:6,hp:0,hpPct:0,levelReq:75,quality:5,iconIdx:37};
+         _data["proto_4_68"] = {slot:5,name:"凌波靴",attack:0,attackPct:0,defense:480,defensePct:8,hp:0,hpPct:0,levelReq:100,quality:6,iconIdx:38};
+         _data["proto_4_69"] = {slot:5,name:"追月靴",attack:0,attackPct:0,defense:620,defensePct:10,hp:0,hpPct:0,levelReq:130,quality:7,iconIdx:39};
+         _data["proto_4_70"] = {slot:5,name:"风云靴",attack:0,attackPct:0,defense:850,defensePct:15,hp:0,hpPct:0,levelReq:160,quality:8,iconIdx:40};
+         // 饰品Ⅱ slot=6 (proto_4_71~76)
+         _data["proto_4_71"] = {slot:6,name:"骨戒",attack:50,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:12,quality:1,iconIdx:41};
+         _data["proto_4_72"] = {slot:6,name:"银环",attack:100,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:28,quality:2,iconIdx:42};
+         _data["proto_4_73"] = {slot:6,name:"玉扳指",attack:180,attackPct:0,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:45,quality:3,iconIdx:43};
+         _data["proto_4_74"] = {slot:6,name:"血玉环",attack:300,attackPct:5,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:65,quality:4,iconIdx:44};
+         _data["proto_4_75"] = {slot:6,name:"龙环",attack:480,attackPct:8,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:95,quality:5,iconIdx:45};
+         _data["proto_4_76"] = {slot:6,name:"乾坤圈",attack:700,attackPct:12,defense:0,defensePct:0,hp:0,hpPct:0,levelReq:140,quality:6,iconIdx:46};
       }
 
       // 获取装备属性

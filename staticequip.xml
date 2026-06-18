@@ -209,7 +209,67 @@
     <icon>proto_4_20</icon><desc>防御+350，防御+8% [传说]</desc>
   </RECORD>
 
+  <!-- ====== 武侠扩展装备 ====== -->
+
+  <!-- ====== 武器 (slot=1) ====== -->
+  <RECORD><code>proto_4_31</code><slot>1</slot><name>柳叶刀</name><attack>80</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>8</levelReq><quality>1</quality><iconIdx>1</iconIdx><desc>攻击+80 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_32</code><slot>1</slot><name>雁翎刀</name><attack>150</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>20</levelReq><quality>2</quality><iconIdx>2</iconIdx><desc>攻击+150 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_33</code><slot>1</slot><name>鱼鳞刀</name><attack>230</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>35</levelReq><quality>3</quality><iconIdx>3</iconIdx><desc>攻击+230 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_34</code><slot>1</slot><name>金背刀</name><attack>330</attack><attackPct>3</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>55</levelReq><quality>4</quality><iconIdx>4</iconIdx><desc>攻击+330 攻击+3% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_35</code><slot>1</slot><name>斩马刀</name><attack>450</attack><attackPct>6</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>75</levelReq><quality>5</quality><iconIdx>5</iconIdx><desc>攻击+450 攻击+6% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_36</code><slot>1</slot><name>青龙偃月</name><attack>600</attack><attackPct>8</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>100</levelReq><quality>6</quality><iconIdx>6</iconIdx><desc>攻击+600 攻击+8% [神话]</desc></RECORD>
+  <RECORD><code>proto_4_37</code><slot>1</slot><name>丈八蛇矛</name><attack>800</attack><attackPct>10</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>130</levelReq><quality>7</quality><iconIdx>7</iconIdx><desc>攻击+800 攻击+10% [远古]</desc></RECORD>
+  <RECORD><code>proto_4_38</code><slot>1</slot><name>神罚</name><attack>1200</attack><attackPct>15</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>160</levelReq><quality>8</quality><iconIdx>8</iconIdx><desc>攻击+1200 攻击+15% [至尊]</desc></RECORD>
+
+  <!-- ====== 铠甲 (slot=2) ====== -->
+  <RECORD><code>proto_4_39</code><slot>2</slot><name>藤甲</name><attack>0</attack><attackPct>0</attackPct><defense>50</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>8</levelReq><quality>1</quality><iconIdx>9</iconIdx><desc>防御+50 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_40</code><slot>2</slot><name>铁叶甲</name><attack>0</attack><attackPct>0</attackPct><defense>120</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>20</levelReq><quality>2</quality><iconIdx>10</iconIdx><desc>防御+120 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_41</code><slot>2</slot><name>连环甲</name><attack>0</attack><attackPct>0</attackPct><defense>200</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>35</levelReq><quality>3</quality><iconIdx>11</iconIdx><desc>防御+200 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_42</code><slot>2</slot><name>犀牛甲</name><attack>0</attack><attackPct>0</attackPct><defense>280</defense><defensePct>3</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>55</levelReq><quality>4</quality><iconIdx>12</iconIdx><desc>防御+280 防御+3% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_43</code><slot>2</slot><name>狻猊甲</name><attack>0</attack><attackPct>0</attackPct><defense>380</defense><defensePct>6</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>75</levelReq><quality>5</quality><iconIdx>13</iconIdx><desc>防御+380 防御+6% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_44</code><slot>2</slot><name>麒麟铠</name><attack>0</attack><attackPct>0</attackPct><defense>500</defense><defensePct>8</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>100</levelReq><quality>6</quality><iconIdx>14</iconIdx><desc>防御+500 防御+8% [神话]</desc></RECORD>
+  <RECORD><code>proto_4_45</code><slot>2</slot><name>朱雀战袍</name><attack>0</attack><attackPct>0</attackPct><defense>650</defense><defensePct>10</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>130</levelReq><quality>7</quality><iconIdx>15</iconIdx><desc>防御+650 防御+10% [远古]</desc></RECORD>
+  <RECORD><code>proto_4_46</code><slot>2</slot><name>不灭金身</name><attack>0</attack><attackPct>0</attackPct><defense>900</defense><defensePct>15</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>160</levelReq><quality>8</quality><iconIdx>16</iconIdx><desc>防御+900 防御+15% [至尊]</desc></RECORD>
+
+  <!-- ====== 饰品Ⅰ (slot=3) ====== -->
+  <RECORD><code>proto_4_47</code><slot>3</slot><name>木符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>400</hp><hpPct>0</hpPct><levelReq>10</levelReq><quality>1</quality><iconIdx>17</iconIdx><desc>生命+400 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_48</code><slot>3</slot><name>石符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>800</hp><hpPct>0</hpPct><levelReq>25</levelReq><quality>2</quality><iconIdx>18</iconIdx><desc>生命+800 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_49</code><slot>3</slot><name>铜符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>1300</hp><hpPct>0</hpPct><levelReq>40</levelReq><quality>3</quality><iconIdx>19</iconIdx><desc>生命+1300 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_50</code><slot>3</slot><name>银符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>2000</hp><hpPct>5</hpPct><levelReq>60</levelReq><quality>4</quality><iconIdx>20</iconIdx><desc>生命+2000 生命+5% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_51</code><slot>3</slot><name>金符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>3000</hp><hpPct>8</hpPct><levelReq>80</levelReq><quality>5</quality><iconIdx>21</iconIdx><desc>生命+3000 生命+8% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_52</code><slot>3</slot><name>龙符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>4500</hp><hpPct>10</hpPct><levelReq>105</levelReq><quality>6</quality><iconIdx>22</iconIdx><desc>生命+4500 生命+10% [神话]</desc></RECORD>
+  <RECORD><code>proto_4_53</code><slot>3</slot><name>凤符</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>6500</hp><hpPct>12</hpPct><levelReq>135</levelReq><quality>7</quality><iconIdx>23</iconIdx><desc>生命+6500 生命+12% [远古]</desc></RECORD>
+  <RECORD><code>proto_4_54</code><slot>3</slot><name>天地令</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>10000</hp><hpPct>18</hpPct><levelReq>165</levelReq><quality>8</quality><iconIdx>24</iconIdx><desc>生命+10000 生命+18% [至尊]</desc></RECORD>
+
+  <!-- ====== 头盔 (slot=4) ====== -->
+  <RECORD><code>proto_4_55</code><slot>4</slot><name>方巾</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>150</hp><hpPct>0</hpPct><levelReq>5</levelReq><quality>1</quality><iconIdx>25</iconIdx><desc>生命+150 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_56</code><slot>4</slot><name>铜冠</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>400</hp><hpPct>0</hpPct><levelReq>20</levelReq><quality>2</quality><iconIdx>26</iconIdx><desc>生命+400 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_57</code><slot>4</slot><name>镔铁盔</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>750</hp><hpPct>0</hpPct><levelReq>35</levelReq><quality>3</quality><iconIdx>27</iconIdx><desc>生命+750 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_58</code><slot>4</slot><name>凤翅冠</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>1200</hp><hpPct>5</hpPct><levelReq>55</levelReq><quality>4</quality><iconIdx>28</iconIdx><desc>生命+1200 生命+5% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_59</code><slot>4</slot><name>紫金冠</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>1800</hp><hpPct>8</hpPct><levelReq>75</levelReq><quality>5</quality><iconIdx>29</iconIdx><desc>生命+1800 生命+8% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_60</code><slot>4</slot><name>灵蛇盔</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>2800</hp><hpPct>10</hpPct><levelReq>100</levelReq><quality>6</quality><iconIdx>30</iconIdx><desc>生命+2800 生命+10% [神话]</desc></RECORD>
+  <RECORD><code>proto_4_61</code><slot>4</slot><name>虎头盔</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>4200</hp><hpPct>12</hpPct><levelReq>130</levelReq><quality>7</quality><iconIdx>31</iconIdx><desc>生命+4200 生命+12% [远古]</desc></RECORD>
+  <RECORD><code>proto_4_62</code><slot>4</slot><name>九龙冠</name><attack>0</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>6500</hp><hpPct>18</hpPct><levelReq>160</levelReq><quality>8</quality><iconIdx>32</iconIdx><desc>生命+6500 生命+18% [至尊]</desc></RECORD>
+
+  <!-- ====== 战靴 (slot=5) ====== -->
+  <RECORD><code>proto_4_63</code><slot>5</slot><name>麻鞋</name><attack>0</attack><attackPct>0</attackPct><defense>35</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>8</levelReq><quality>1</quality><iconIdx>33</iconIdx><desc>防御+35 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_64</code><slot>5</slot><name>快靴</name><attack>0</attack><attackPct>0</attackPct><defense>100</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>20</levelReq><quality>2</quality><iconIdx>34</iconIdx><desc>防御+100 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_65</code><slot>5</slot><name>虎头靴</name><attack>0</attack><attackPct>0</attackPct><defense>180</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>35</levelReq><quality>3</quality><iconIdx>35</iconIdx><desc>防御+180 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_66</code><slot>5</slot><name>飞云靴</name><attack>0</attack><attackPct>0</attackPct><defense>260</defense><defensePct>3</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>55</levelReq><quality>4</quality><iconIdx>36</iconIdx><desc>防御+260 防御+3% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_67</code><slot>5</slot><name>踏云靴</name><attack>0</attack><attackPct>0</attackPct><defense>360</defense><defensePct>6</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>75</levelReq><quality>5</quality><iconIdx>37</iconIdx><desc>防御+360 防御+6% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_68</code><slot>5</slot><name>凌波靴</name><attack>0</attack><attackPct>0</attackPct><defense>480</defense><defensePct>8</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>100</levelReq><quality>6</quality><iconIdx>38</iconIdx><desc>防御+480 防御+8% [神话]</desc></RECORD>
+  <RECORD><code>proto_4_69</code><slot>5</slot><name>追月靴</name><attack>0</attack><attackPct>0</attackPct><defense>620</defense><defensePct>10</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>130</levelReq><quality>7</quality><iconIdx>39</iconIdx><desc>防御+620 防御+10% [远古]</desc></RECORD>
+  <RECORD><code>proto_4_70</code><slot>5</slot><name>风云靴</name><attack>0</attack><attackPct>0</attackPct><defense>850</defense><defensePct>15</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>160</levelReq><quality>8</quality><iconIdx>40</iconIdx><desc>防御+850 防御+15% [至尊]</desc></RECORD>
+
   <!-- ====== 饰品Ⅱ (slot=6) ====== -->
+  <RECORD><code>proto_4_71</code><slot>6</slot><name>骨戒</name><attack>50</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>12</levelReq><quality>1</quality><iconIdx>41</iconIdx><desc>攻击+50 [普通]</desc></RECORD>
+  <RECORD><code>proto_4_72</code><slot>6</slot><name>银环</name><attack>100</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>28</levelReq><quality>2</quality><iconIdx>42</iconIdx><desc>攻击+100 [精良]</desc></RECORD>
+  <RECORD><code>proto_4_73</code><slot>6</slot><name>玉扳指</name><attack>180</attack><attackPct>0</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>45</levelReq><quality>3</quality><iconIdx>43</iconIdx><desc>攻击+180 [稀有]</desc></RECORD>
+  <RECORD><code>proto_4_74</code><slot>6</slot><name>血玉环</name><attack>300</attack><attackPct>5</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>65</levelReq><quality>4</quality><iconIdx>44</iconIdx><desc>攻击+300 攻击+5% [史诗]</desc></RECORD>
+  <RECORD><code>proto_4_75</code><slot>6</slot><name>龙环</name><attack>480</attack><attackPct>8</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>95</levelReq><quality>5</quality><iconIdx>45</iconIdx><desc>攻击+480 攻击+8% [传说]</desc></RECORD>
+  <RECORD><code>proto_4_76</code><slot>6</slot><name>乾坤圈</name><attack>700</attack><attackPct>12</attackPct><defense>0</defense><defensePct>0</defensePct><hp>0</hp><hpPct>0</hpPct><levelReq>140</levelReq><quality>6</quality><iconIdx>46</iconIdx><desc>攻击+700 攻击+12% [神话]</desc></RECORD>
+
+  <!-- ====== 饰品Ⅱ 旧 ====== -->
   <RECORD>
     <code>proto_4_26</code><slot>6</slot><name>铜戒指</name>
     <attack>30</attack><attackPct>0</attackPct>
