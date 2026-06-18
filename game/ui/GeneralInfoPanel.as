@@ -170,28 +170,30 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         // 运行时根据已知皮肤元素的位置推算装备槽位置
-         // 皮肤中 _nameTF 通常在顶部, _closeBtn 在右上角
-         var _refX:Number = 0;
-         var _refY:Number = 0;
+         // 运行时根据皮肤元素的坐标推算装备槽位置
+         // 遍历所有已知皮肤元素, 找到最左上角的几个作为装备槽参考
+         var _knownElements:Array = [];
+         if(this.__nameTF != null) _knownElements.push({n:"_nameTF",x:this.__nameTF.x,y:this.__nameTF.y,w:this.__nameTF.width,h:this.__nameTF.height});
+         if(this.__closeBtn != null) _knownElements.push({n:"_closeBtn",x:this.__closeBtn.x,y:this.__closeBtn.y,w:this.__closeBtn.width,h:this.__closeBtn.height});
+         if(this.__shengjiBtn != null) _knownElements.push({n:"_shengjiBtn",x:this.__shengjiBtn.x,y:this.__shengjiBtn.y,w:this.__shengjiBtn.width,h:this.__shengjiBtn.height});
+         if(this.__kezhi1Btn != null) _knownElements.push({n:"_kezhi1Btn",x:this.__kezhi1Btn.x,y:this.__kezhi1Btn.y,w:this.__kezhi1Btn.width,h:this.__kezhi1Btn.height});
 
-         // 参考点1: 武将模型位置 (程序化设置, 可靠)
-         _refX = this._point.x;  // -235
-         _refY = this._point.y;  // -65
-
-         // 参考点2: 皮肤中的 _nameTF (如果在顶部)
-         if(this.__nameTF != null) {
-            // 名字通常在面板顶部
+         // 找到Y最小的元素(最顶部)和X最小的元素(最左边)
+         var _minX:Number = 0; var _minY:Number = 0; var _first:Boolean = true;
+         for each(var _ek:Object in _knownElements) {
+            if(_first) { _minX = _ek.x; _minY = _ek.y; _first = false; }
+            if(_ek.x < _minX) _minX = _ek.x;
+            if(_ek.y < _minY) _minY = _ek.y;
          }
 
-         // 推算: 装备槽在武将左侧 + 上方区域
-         // 武将中心在 (_refX, _refY), 装备槽应在左上偏移
-         var _startX:Number = _refX - 130;  // 武将左边130px
-         var _startY:Number = _refY - 100;  // 武将上方100px
-         var _gapX:Number = 56;
-         var _gapY:Number = 56;
+         // 装备槽位于已知元素左上区域
+         // 上排Y = 最顶部元素上方
          var _slotW:int = 48;
          var _slotH:int = 48;
+         var _gapX:int = 52;
+         var _gapY:int = 54;
+         var _startX:Number = _minX - 10;
+         var _startY:Number = _minY - _slotH - 80;
 
          var _i:int = 0;
          while(_i < 6)
@@ -203,10 +205,9 @@ package game.ui
             _slot.x = _startX + (_i % 3) * _gapX;
             _slot.y = _startY + int(_i / 3) * _gapY;
 
-            // 红色测试边框
             var _b:Shape = new Shape();
-            _b.graphics.lineStyle(2, 0xFF0000, 1.0);
-            _b.graphics.drawRect(0, 0, _slotW, _slotH);
+            _b.graphics.lineStyle(1, 0xC8A84E, 0.8);
+            _b.graphics.drawRoundRect(0, 0, _slotW, _slotH, 5, 5);
             _slot.addChild(_b);
 
             this._equipSlots[_i] = _slot;
