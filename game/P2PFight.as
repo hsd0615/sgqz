@@ -956,6 +956,15 @@ package game
       
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
+         // 输入锁定: 瞄准中或力度条调整中禁止键盘切换武将，防止打断攻击
+         if(Mouse.prototype.canFire == true)
+         {
+            return;
+         }
+         if(this._yuanchengCon.visible == true && this._yuanchengCon.getEnabled() == true)
+         {
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -1843,14 +1852,18 @@ package game
       }
 
       // Web键盘轮询: 每帧通过ExternalInterface向JS查询当前按键
+      // 边缘检测防止持续触发setSelect
+      private var _webKeyPrev:int = 0;
       private function pollWebKeys(param1:Event) : void
       {
          if(!Config.IS_WEB || !ExternalInterface.available) return;
          try {
             var _key:* = ExternalInterface.call("_sgqzPollKey");
-            if(_key is Number && int(_key) >= 1 && int(_key) <= 5) {
-               this._fightUI.setSelect(int(_key));
+            var _keyInt:int = (_key is Number) ? int(_key) : 0;
+            if(_keyInt >= 1 && _keyInt <= 5 && _keyInt != this._webKeyPrev) {
+               this._fightUI.setSelect(_keyInt);
             }
+            this._webKeyPrev = _keyInt;
          } catch(_e:Error) {}
       }
 

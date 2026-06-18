@@ -2,6 +2,19 @@
 
 ---
 
+## v2.9.8 (2026-06-18) — 🎯 快速按键打断攻击修复
+
+### 根因
+快速连续按数字键 1-5 切换武将时，`onSelectSoldierHandler` 会隐藏瞄准镜，
+导致紧接的鼠标点击攻击 `onEnemySelectedHandler` 检测到 `_miaozhunjing.visible == false` 直接跳过攻击。
+Web 端 `pollWebKeys` 每帧持续调用 `setSelect` 进一步放大了此问题。
+
+### 修复
+- **Fight.as / P2PFight.as**: `onSelectSoldierHandler` 增加输入锁 - 瞄准中(`canFire=true`)或力度条调整中禁止键盘切换武将
+- **Fight.as / P2PFight.as**: `pollWebKeys` 改用边缘检测，仅在按键状态变化时触发一次 `setSelect`，不再每帧重复
+
+---
+
 ## v2.9.7 (2026-06-18) — 🛡️ 自动更新死循环修复
 
 ### 根因
