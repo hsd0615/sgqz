@@ -28,6 +28,36 @@ function createPlayer(uid, name, img, agent, pwd) {
   return p;
 }
 function findGenerals(pid) { return db.generals.filter(g => g.player_id === pid); }
+function dedupeGenerals(pid) {
+  // 按code去重, 保留最高level的, 同时合并装备数据
+  var map = {}; var removed = 0;
+  var toKeep = [];
+  for (var gi = 0; gi < db.generals.length; gi++) {
+    var g = db.generals[gi];
+    if (g.player_id !== pid) { toKeep.push(g); continue; }
+    var key = g.code;
+    if (map[key]) {
+      var prev = map[key];
+      // 合并装备: 非'0'的equip保留
+      if ((g.equip1||'0') !== '0' && (prev.equip1||'0') === '0') prev.equip1 = g.equip1;
+      if ((g.equip2||'0') !== '0' && (prev.equip2||'0') === '0') prev.equip2 = g.equip2;
+      if ((g.equip3||'0') !== '0' && (prev.equip3||'0') === '0') prev.equip3 = g.equip3;
+      if ((g.equip4||'0') !== '0' && (prev.equip4||'0') === '0') prev.equip4 = g.equip4;
+      if ((g.equip5||'0') !== '0' && (prev.equip5||'0') === '0') prev.equip5 = g.equip5;
+      if ((g.equip6||'0') !== '0' && (prev.equip6||'0') === '0') prev.equip6 = g.equip6;
+      // 保留更高level的
+      if (g.level > prev.level || ((g.level === prev.level) && ((g.evolution||0) > (prev.evolution||0)))) {
+        toKeep = toKeep.filter(function(x) { return x !== prev; });
+        map[key] = g; toKeep.push(g);
+      }
+      removed++;
+    } else {
+      map[key] = g; toKeep.push(g);
+    }
+  }
+  db.generals = toKeep;
+  if (removed > 0) { console.log('[Dedupe] Removed ' + removed + ' duplicate generals for player ' + pid + ', kept ' + Object.keys(map).length); save(); }
+}
 function createGeneral(pid, code, name, level, evo, feat, tf, k1, k1l, k2, k2l, k3, k3l, eq1, eq2, eq3, eq4, eq5, eq6) {
   const g = { id: db.nextId.generals++, player_id: pid, general_id: Math.floor(Math.random()*100000), code, name, level:level||1, evolution:evo||0, feature:feat||0, tianfu:tf||null, kezhi1:k1||0, kezhi1_level:k1l||1, kezhi2:k2||0, kezhi2_level:k2l||1, kezhi3:k3||0, kezhi3_level:k3l||1, is_deployed: 0, equip1: eq1||'0', equip2: eq2||'0', equip3: eq3||'0', equip4: eq4||'0', equip5: eq5||'0', equip6: eq6||'0' };
   db.generals.push(g);
@@ -362,6 +392,9 @@ function createTestAccounts() {
   ensureGenerals(p3.id, NEWBIE_GENERALS, 1, 0, 0, null);
 
   save();
+  // 清理所有玩家的重复武将
+  var allPids = {}; db.generals.forEach(function(g){ allPids[g.player_id]=true; });
+  for (var _pid in allPids) dedupeGenerals(parseInt(_pid));
   console.log('[DB] Test accounts ready (gm_admin:' + findGenerals(p1.id).length + 'g, test_pro:' + findGenerals(p2.id).length + 'g, new_player:' + findGenerals(p3.id).length + 'g)');
 }
 
@@ -604,6 +637,7 @@ function handleRequest(socket, req) {
     if (p) {
       p.token = uuidv4().replace(/-/g,'');
       p.lastSeen = Date.now();
+      dedupeGenerals(p.id);  // 清理历史重复武将
       save();
       const allArmy = makeArmyModel(p.id);
       const bagModel = makeBagModel(p.id);
