@@ -947,12 +947,13 @@ package game.ui
          var _cd:int = this._armyInfo.equipCritDmg;
          if(this.__specTF == null) {
             this.__specTF = new TextField();
-            this.__specTF.width = 120; this.__specTF.height = 120;
+            this.__specTF.width = 110; this.__specTF.height = 130;
             this.__specTF.multiline = true; this.__specTF.wordWrap = true;
             this.__specTF.selectable = false;
-            this.__specTF.x = -30; this.__specTF.y = 20;
             addChild(this.__specTF);
          }
+         this.__specTF.x = this.__xiaohaoTF.x + this.__xiaohaoTF.width + 15;
+         this.__specTF.y = this.__xiaohaoTF.y;
          var _s:String = "";
          if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0) {
             _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font>\n";

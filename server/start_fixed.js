@@ -637,7 +637,7 @@ function handleRequest(socket, req) {
     for (const [code, name, kezhi] of starters) {
       const kp = kezhi.split('|');
       const g = createGeneral(p.id, code, name, 1, 0, 0, null, parseInt(kp[0].split(':')[0]),1,parseInt(kp[1].split(':')[0]),1,parseInt(kp[2].split(':')[0]),1);
-      army.push({ id: g.general_id, code: g.code, genius: null, level: 1, feature: 0, evolution: 0, kezhi });
+      army.push({ id: g.general_id, code: g.code, genius: null, level: 1, feature: 0, evolution: 0, kezhi, equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') });
     }
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: '10000',
