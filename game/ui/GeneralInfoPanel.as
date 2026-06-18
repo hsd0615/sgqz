@@ -317,20 +317,26 @@ package game.ui
             if(_slot == null) { _si++; continue; }
             var _eqCode:String = this._armyInfo.getEquipSlot(_si);
 
-            // 清除旧图标
+            // 清除旧图标 - 只移除Bitmap, 保留背景Shape(确保点击区域)
             if(_slot is Sprite)
             {
                var _spr:Sprite = _slot as Sprite;
-               while(_spr.numChildren > 0) _spr.removeChildAt(0);
+               var _ci:int = _spr.numChildren - 1;
+               while(_ci >= 0)
+               {
+                  var _child:* = _spr.getChildAt(_ci);
+                  if(_child is Bitmap) _spr.removeChildAt(_ci);
+                  _ci--;
+               }
             }
             if(_slot is MovieClip)
             {
                var _mc:MovieClip = _slot as MovieClip;
-               var _ci:int = _mc.numChildren - 1;
-               while(_ci >= 0)
+               var _cim:int = _mc.numChildren - 1;
+               while(_cim >= 0)
                {
-                  if(_mc.getChildAt(_ci) is Bitmap) _mc.removeChildAt(_ci);
-                  _ci--;
+                  if(_mc.getChildAt(_cim) is Bitmap) _mc.removeChildAt(_cim);
+                  _cim--;
                }
             }
 
