@@ -4,6 +4,7 @@ package game.ui
    import com.iflashigame.ui.BaseUI;
    import com.iflashigame.utils.Tools;
    import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.DisplayObject;
    import flash.display.Shape;
    import flash.display.SimpleButton;
@@ -122,32 +123,60 @@ package game.ui
          {
             this._img.removeChildAt(0);
          }
-         var _loadedIcon:DisplayObject = null;
          try {
             var _iconClass:Class = ApplicationDomain.currentDomain.getDefinition(param1.icon) as Class;
-            _loadedIcon = new _iconClass() as DisplayObject;
+            var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
+            this._img.addChild(_bmp);
          } catch(_e:Error) {
             // 图标类不存在, 绘制程序化占位图标(装备等新增物品)
-            _loadedIcon = createPlaceholderIcon(param1.icon);
+            this._img.addChild(createPlaceholderIcon(param1.icon));
          }
-         if(_loadedIcon != null) this._img.addChild(_loadedIcon);
       }
 
       private function createPlaceholderIcon(iconName:String) : DisplayObject
       {
          var _s:Sprite = new Sprite();
-         var _bg:Shape = new Shape();
-         // 根据slot类型绘制不同颜色的装备图标
-         var _color:uint = 0x8B6914;
-         if(iconName.indexOf("proto_4_1") == 0 || iconName == "proto_1_0") _color = 0xCC4444; // 武器-红
-         else if(iconName.indexOf("proto_4_2") == 0 || iconName == "proto_1_1") _color = 0x4488CC; // 防具-蓝
-         else _color = 0x44AA44; // 饰品-绿
-         _bg.graphics.beginFill(_color, 0.85);
-         _bg.graphics.lineStyle(1, 0xFFD700, 0.7);
-         _bg.graphics.drawRoundRect(0, 0, 40, 40, 6, 6);
-         _bg.graphics.endFill();
-         // 简写字母
-         _s.addChild(_bg);
+         var _g:Shape = new Shape();
+         var _isWeapon:Boolean = (iconName.indexOf("proto_4_1") >= 0);
+         var _isArmor:Boolean = (iconName.indexOf("proto_4_11") >= 0 || iconName.indexOf("proto_4_12") >= 0 || iconName.indexOf("proto_4_13") >= 0 || iconName.indexOf("proto_4_14") >= 0 || iconName.indexOf("proto_4_15") >= 0);
+         // 绘制40x40图标
+         if(_isWeapon)
+         {
+            // 剑形: 红色剑刃+金色剑柄
+            _g.graphics.beginFill(0xCC3333);
+            _g.graphics.moveTo(20,2); _g.graphics.lineTo(26,6); _g.graphics.lineTo(26,28);
+            _g.graphics.lineTo(30,34); _g.graphics.lineTo(20,32); _g.graphics.lineTo(10,34);
+            _g.graphics.lineTo(14,28); _g.graphics.lineTo(14,6); _g.graphics.lineTo(20,2);
+            _g.graphics.endFill();
+            _g.graphics.beginFill(0xC8A84E);
+            _g.graphics.drawRoundRect(15,34,10,6,2,2);
+            _g.graphics.endFill();
+         }
+         else if(_isArmor)
+         {
+            // 盾形: 蓝色盾牌
+            _g.graphics.beginFill(0x3366AA);
+            _g.graphics.moveTo(20,2); _g.graphics.lineTo(36,8); _g.graphics.lineTo(36,24);
+            _g.graphics.lineTo(20,38); _g.graphics.lineTo(4,24); _g.graphics.lineTo(4,8);
+            _g.graphics.lineTo(20,2);
+            _g.graphics.endFill();
+            _g.graphics.beginFill(0xFFD700);
+            _g.graphics.drawCircle(20,18,5);
+            _g.graphics.endFill();
+         }
+         else
+         {
+            // 宝石形: 绿色菱形
+            _g.graphics.beginFill(0x33AA55);
+            _g.graphics.moveTo(20,2); _g.graphics.lineTo(36,20);
+            _g.graphics.lineTo(20,38); _g.graphics.lineTo(4,20);
+            _g.graphics.lineTo(20,2);
+            _g.graphics.endFill();
+            _g.graphics.beginFill(0xFFFFFF,0.5);
+            _g.graphics.drawCircle(16,14,4);
+            _g.graphics.endFill();
+         }
+         _s.addChild(_g);
          return _s;
       }
 
