@@ -570,32 +570,25 @@ package game
       
       public function getShopData(param1:int) : Array
       {
-         var arr:Array = null;
-         var xmlList:XMLList = null;
-         var i:* = undefined;
-         var obj:Object = null;
-         var tmpXML:XMLList = null;
+         var arr:Array = [];
          var mycategory:int = param1;
-         arr = [];
-         xmlList = this._shopXML.RECORD.(category == mycategory);
-         for(i in xmlList)
+         // 从XML读取
+         if(this._shopXML != null)
          {
-            obj = {};
-            obj.id = xmlList[i].id.toString();
-            obj.code = xmlList[i].code.toString();
-            obj.count = int(xmlList[i].count);
-            obj.payType = int(xmlList[i].payType);
-            obj.oldPrice = int(xmlList[i].oldPrice);
-            obj.newPrice = int(xmlList[i].newPrice);
-            tmpXML = this._protoXML.RECORD.(code == obj.code);
-            obj.icon = tmpXML.icon;
-            obj.name = xmlList[i].name.toString();
-            obj.desc = tmpXML.desc;
-            arr.push(obj);
+            var xmlList:XMLList = this._shopXML.RECORD.(category == mycategory);
+            for each(var _rec:XML in xmlList)
+            {
+               var _tmpXML:XMLList = this._protoXML != null ? this._protoXML.RECORD.(code == _rec.code.toString()) : null;
+               arr.push({
+                  id: _rec.id.toString(), code: _rec.code.toString(),
+                  count: int(_rec.count), payType: int(_rec.payType),
+                  oldPrice: int(_rec.oldPrice), newPrice: int(_rec.newPrice),
+                  name: _rec.name.toString(), icon: _tmpXML != null ? _tmpXML.icon.toString() : "", desc: _tmpXML != null ? _tmpXML.desc.toString() : ""
+               });
+            }
          }
-         // 合并服务器JSON数据(装备等新增物品)
+         // 合并服务端JSON + 硬编码装备数据
          var _jsonItems:Array = this._shopJSON;
-         // 如果没有JSON数据(离线/加载失败), 使用内置硬编码数据
          if(_jsonItems == null) _jsonItems = EquipData.getShopEquipItems();
          if(_jsonItems != null)
          {
@@ -611,19 +604,12 @@ package game
                   }
                   if(!_dup)
                   {
-                     arr.push({
-                        id: _sitem.id, code: _sitem.code, count: _sitem.count,
-                        payType: _sitem.payType, oldPrice: _sitem.oldPrice, newPrice: _sitem.newPrice,
-                        name: _sitem.name, icon: "", desc: _sitem.name
-                     });
+                     arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:"", desc:_sitem.name});
                   }
                }
             }
          }
-         if(arr.length == 0)
-         {
-            return null;
-         }
+         if(arr.length == 0) return null;
          arr.sortOn("id");
          return arr;
       }

@@ -1,0 +1,2855 @@
+<report>
+  <scripts>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\SHA256.as" mod="1770810546869" size="1866" optimizedsize="1843">
+      <def id="com.hurlant.crypto.hash:SHA256" />
+      <pre id="com.hurlant.crypto.hash:IHash" />
+      <pre id="com.hurlant.crypto.hash:SHABase" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\LeitaiContainer.as" mod="1770810547083" size="1605" optimizedsize="1541">
+      <def id="game.ui:LeitaiContainer" />
+      <pre id="game.ui.list:IScrollElement" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:Leitai" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ai\IAI.as" mod="1770810546215" size="453" optimizedsize="453">
+      <def id="game.ai:IAI" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.display:AbstractSoldier" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GameCenterUI.as" mod="1781004011584" size="10858" optimizedsize="10463">
+      <def id="game.ui:GameCenterUI" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.talk:TalkField" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="fl.controls:CheckBox" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="flash.events:TextEvent" />
+      <dep id="game.ui:OnlineCountUI" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.ui.list:ListItem" />
+      <dep id="game.model:RoleModel" />
+      <dep id="com.iflashigame.talk:FaceList" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="game.ui.list:ScrollBar" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="RegExp" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.events:FocusEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.ui.list:MyList" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="com.iflashigame.utils:TextFilter" />
+      <dep id="com.iflashigame.ui:TipsFrame" />
+      <dep id="game.events:UIEvent" />
+      <dep id="com.iflashigame.ui:Paomadeng" />
+      <dep id="game:Config" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\LeitaiStatus.as" mod="1770810546314" size="245" optimizedsize="239">
+      <def id="game.model:LeitaiStatus" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralJinhuaPanel.as" mod="1770810547228" size="4425" optimizedsize="4234">
+      <def id="game.ui:GeneralJinhuaPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game:TextFactory" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="game:Logic" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\controls\LabelButton.as" mod="1770810547410" size="4348" optimizedsize="4107">
+      <def id="fl.controls:LabelButton" />
+      <pre id="fl.controls:BaseButton" />
+      <pre id="fl.managers:IFocusManagerComponent" />
+      <dep id="fl.core:UIComponent" />
+      <dep id="AS3" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="fl.controls:ButtonLabelPlacement" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="Math" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="fl.core:InvalidationType" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.text:TextFieldType" />
+      <dep id="fl.events:ComponentEvent" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\ListItem.as" mod="1770810547366" size="2724" optimizedsize="2623">
+      <def id="game.ui.list:ListItem" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\core\SimpleTimeline.as" mod="1770810546748" size="1060" optimizedsize="1031">
+      <def id="com.greensock.core:SimpleTimeline" />
+      <pre id="com.greensock.core:TweenCore" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\events\LoaderEvent.as" mod="1770810546598" size="985" optimizedsize="977">
+      <def id="com.greensock.events:LoaderEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\Type.as" mod="1770810546299" size="1887" optimizedsize="1806">
+      <def id="game.model:Type" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ai\SmartAttack.as" mod="1770810546353" size="1811" optimizedsize="1703">
+      <def id="game.ai:SmartAttack" />
+      <pre id="Object" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.ai:IAI" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.display:Saber" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.model:Head" />
+      <dep id="game:Fight" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\Cache.as" mod="1770810546845" size="486" optimizedsize="462">
+      <def id="game.model:Cache" />
+      <pre id="flash.events:EventDispatcher" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\TalkArea.as" mod="1770810547369" size="11610" optimizedsize="11141">
+      <def id="game.ui:TalkArea" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.talk:TalkField" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="flash.events:TextEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="com.iflashigame.talk:FaceList" />
+      <dep id="game.ui.list:ScrollBar" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="RegExp" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.events:FocusEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="com.iflashigame.utils:TextFilter" />
+      <dep id="com.iflashigame.ui:TipsFrame" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\IHash.as" mod="1770810546446" size="273" optimizedsize="273">
+      <def id="com.hurlant.crypto.hash:IHash" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\ui\Paomadeng.as" mod="1770810547083" size="1419" optimizedsize="1376">
+      <def id="com.iflashigame.ui:Paomadeng" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\IStreamCipher.as" mod="1770810546735" size="132" optimizedsize="131">
+      <def id="com.hurlant.crypto.symmetric:IStreamCipher" />
+      <pre id="Object" />
+      <pre id="com.hurlant.crypto.symmetric:ICipher" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\net\SocketConnection.as" mod="1780759169020" size="2627" optimizedsize="2550">
+      <def id="com.iflashigame.net:SocketConnection" />
+      <pre id="flash.events:EventDispatcher" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Endian" />
+      <dep id="com.adobe.serialization.json:JSON" />
+      <dep id="flash.events:IOErrorEvent" />
+      <dep id="flash.events:ProgressEvent" />
+      <dep id="com.iflashigame.net:SocketEvent" />
+      <dep id="Error" />
+      <dep id="flash.events:SecurityErrorEvent" />
+      <dep id="flash.net:Socket" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\bi_internal.as" mod="1770810546123" size="113" optimizedsize="112">
+      <def id="com.hurlant.math:bi_internal" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\DataLoader.as" mod="1770810546889" size="1305" optimizedsize="1248">
+      <def id="com.greensock.loading:DataLoader" />
+      <pre id="com.greensock.loading.core:LoaderItem" />
+      <dep id="AS3" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.events:ProgressEvent" />
+      <dep id="Error" />
+      <dep id="flash.events:Event" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\MyList.as" mod="1770810547109" size="3443" optimizedsize="3283">
+      <def id="game.ui.list:MyList" />
+      <pre id="game.ui.list:IScrollElement" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.ui.list:ListItem" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\ui\ProgressBar.as" mod="1770810547087" size="1303" optimizedsize="1271">
+      <def id="com.iflashigame.ui:ProgressBar" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.display:Shape" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\talk\TalkField.as" mod="1770810547087" size="3462" optimizedsize="3355">
+      <def id="com.iflashigame.talk:TalkField" />
+      <pre id="game.ui.list:IScrollElement" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.text:TextFormat" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Weapon.as" mod="1770810547018" size="1509" optimizedsize="1448">
+      <def id="game.display:Weapon" />
+      <pre id="flash.display:Sprite" />
+      <pre id="game.display:IWeapon" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\PKCS5.as" mod="1770810546739" size="745" optimizedsize="723">
+      <def id="com.hurlant.crypto.symmetric:PKCS5" />
+      <pre id="com.hurlant.crypto.symmetric:IPad" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="Error" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\JiantaSoldier.as" mod="1770810547377" size="3998" optimizedsize="3683">
+      <def id="game.display:JiantaSoldier" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.filters:BlurFilter" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.display:Shape" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\MD2.as" mod="1770810546781" size="1578" optimizedsize="1555">
+      <def id="com.hurlant.crypto.hash:MD2" />
+      <pre id="com.hurlant.crypto.hash:IHash" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\NumTips.as" mod="1770810547021" size="1642" optimizedsize="1581">
+      <def id="game.ui:NumTips" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\ECBMode.as" mod="1770810546867" size="1088" optimizedsize="1068">
+      <def id="com.hurlant.crypto.symmetric:ECBMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="Object" />
+      <pre id="com.hurlant.crypto.symmetric:ICipher" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:PKCS5" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="Error" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ShopPanel.as" mod="1781762766078" size="5226" optimizedsize="4914">
+      <def id="game.ui:ShopPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.ui:ShopBlock" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.display:Sprite" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.display:Shape" />
+      <dep id="game.model:RoleModel" />
+      <dep id="flash.text:TextFormat" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\net\P2PEvent.as" mod="1770810546601" size="1862" optimizedsize="1848">
+      <def id="com.iflashigame.net:P2PEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\IScrollElement.as" mod="1770810546486" size="370" optimizedsize="370">
+      <def id="game.ui.list:IScrollElement" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\prng\Random.as" mod="1770810546474" size="1846" optimizedsize="1782">
+      <def id="com.hurlant.crypto.prng:Random" />
+      <pre id="Object" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="AS3" />
+      <dep id="flash.system:Capabilities" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.text:Font" />
+      <dep id="com.hurlant.crypto.prng:IPRNG" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.prng:ARC4" />
+      <dep id="flash.system:System" />
+      <dep id="Math" />
+      <dep id="Date" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\talk\NetInfoType.as" mod="1770810546141" size="303" optimizedsize="297">
+      <def id="com.iflashigame.talk:NetInfoType" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\fuben\FubenResultPanel.as" mod="1770810547260" size="3020" optimizedsize="2900">
+      <def id="game.ui.fuben:FubenResultPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="game:SoundCode" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.sound:MySound" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\FightWait.as" mod="1770810547235" size="9365" optimizedsize="9050">
+      <def id="game.ui:FightWait" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="com.iflashigame.utils:TextFilter" />
+      <dep id="flash.geom:Point" />
+      <dep id="com.iflashigame.net:P2PEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\controls\BaseButton.as" mod="1770810547396" size="2962" optimizedsize="2842">
+      <def id="fl.controls:BaseButton" />
+      <pre id="fl.core:UIComponent" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="fl.events:ComponentEvent" />
+      <dep id="fl.core:InvalidationType" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\Fight.as" mod="1781759958447" size="17852" optimizedsize="16750">
+      <def id="game:Fight" />
+      <pre id="game.ai:IAI" />
+      <pre id="game.display:IWorld" />
+      <pre id="flash.display:Sprite" />
+      <dep id="game.ui:ConType" />
+      <dep id="game.display:Gunner" />
+      <dep id="game.ai:AI" />
+      <dep id="com.greensock.easing:Elastic" />
+      <dep id="Math" />
+      <dep id="flash.events:Event" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.display:Saber" />
+      <dep id="game.ui:AngleController" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="game.ui:NumTips" />
+      <dep id="game.display:Junzhu" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="game.model:MyPoint" />
+      <dep id="game:Logic" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.display:Shape" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.ui:Mouse" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+      <dep id="game.display:Weapon" />
+      <dep id="flash.external:ExternalInterface" />
+      <dep id="game.ai:SmartAttack" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="Error" />
+      <dep id="game.events:ConEvent" />
+      <dep id="Date" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game:Config" />
+      <dep id="game.ui:FightUI" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="game.display:StoneWeapon" />
+      <dep id="game.events:FightEvent" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\NullPad.as" mod="1770810546749" size="337" optimizedsize="331">
+      <def id="com.hurlant.crypto.symmetric:NullPad" />
+      <pre id="com.hurlant.crypto.symmetric:IPad" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\utils\JsonFormatter.as" mod="1770810546320" size="971" optimizedsize="903">
+      <def id="utils:JsonFormatter" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\controls\CheckBox.as" mod="1770810547409" size="2331" optimizedsize="2164">
+      <def id="fl.controls:CheckBox" />
+      <pre id="fl.controls:LabelButton" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="AS3" />
+      <dep id="fl.controls:ButtonLabelPlacement" />
+      <dep id="Error" />
+      <dep id="Math" />
+      <dep id="flash.display:Shape" />
+      <dep id="flash.display:Graphics" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\NetStatusUI.as" mod="1770810547137" size="2086" optimizedsize="2004">
+      <def id="game.ui:NetStatusUI" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\ISymmetricKey.as" mod="1770810546477" size="335" optimizedsize="335">
+      <def id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\controller\IControllerTest.as" mod="1770810546241" size="200" optimizedsize="200">
+      <def id="com.iflashigame.controller:IControllerTest" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\Data.as" mod="1781764324099" size="9323" optimizedsize="9033">
+      <def id="game:Data" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="XML" />
+      <dep id="game.model:EquipData" />
+      <dep id="XMLList" />
+      <dep id="game:Logic" />
+      <dep id="game.model:Type" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\prng\IPRNG.as" mod="1770810546515" size="287" optimizedsize="287">
+      <def id="com.hurlant.crypto.prng:IPRNG" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\WeaponEvent.as" mod="1770810546609" size="440" optimizedsize="426">
+      <def id="game.events:WeaponEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\util\Base64.as" mod="1770810546433" size="1304" optimizedsize="1273">
+      <def id="com.hurlant.util:Base64" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="Error" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\core\InvalidationType.as" mod="1770810546517" size="419" optimizedsize="413">
+      <def id="fl.core:InvalidationType" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\XMLLoader.as" mod="1770810546973" size="4840" optimizedsize="4571">
+      <def id="com.greensock.loading:XMLLoader" />
+      <pre id="com.greensock.loading:DataLoader" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="com.greensock.loading.core:LoaderCore" />
+      <dep id="XML" />
+      <dep id="Error" />
+      <dep id="XMLList" />
+      <dep id="flash.system:LoaderContext" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="com.greensock.loading:LoaderMax" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\fuben\Paimian.as" mod="1770810547376" size="1922" optimizedsize="1855">
+      <def id="game.ui.fuben:Paimian" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\EquipPanel.as" mod="1781764285993" size="6849" optimizedsize="6568">
+      <def id="game.ui:EquipPanel" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.model:EquipData" />
+      <dep id="game.model:Head" />
+      <dep id="Math" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.display:Shape" />
+      <dep id="game.model:RoleModel" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\IWorld.as" mod="1770810546249" size="316" optimizedsize="316">
+      <def id="game.display:IWorld" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.display:AbstractSoldier" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\controller\AESController.as" mod="1780921381057" size="7979" optimizedsize="7769">
+      <def id="com.iflashigame.controller:AESController" />
+      <pre id="flash.events:EventDispatcher" />
+      <pre id="Object" />
+      <pre id="com.iflashigame.controller:IController" />
+      <dep id="flash.net:sendToURL" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="flash.utils:Timer" />
+      <dep id="JSON" />
+      <dep id="flash.events:HTTPStatusEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="com.iflashigame.utils:AESTools" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.events:IOErrorEvent" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="com.iflashigame.controller:ControllerEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.controller:IControllerTest" />
+      <dep id="flash.events:SecurityErrorEvent" />
+      <dep id="com.iflashigame.controller:Test" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\SoldierEvent.as" mod="1770810546586" size="979" optimizedsize="965">
+      <def id="game.events:SoldierEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\ICipher.as" mod="1770810546439" size="314" optimizedsize="314">
+      <def id="com.hurlant.crypto.symmetric:ICipher" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\Logic.as" mod="1781071216858" size="4562" optimizedsize="4389">
+      <def id="game:Logic" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.model:Type" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Boss.as" mod="1770810547381" size="5026" optimizedsize="4591">
+      <def id="game.display:Boss" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.filters:BlurFilter" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.display:Shape" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\SoundCode.as" mod="1770810546147" size="981" optimizedsize="975">
+      <def id="game:SoundCode" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\net\HttpPollConnection.as" mod="1781759227839" size="2688" optimizedsize="2572">
+      <def id="com.iflashigame.net:HttpPollConnection" />
+      <pre id="flash.events:EventDispatcher" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.net:SocketEvent" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="Error" />
+      <dep id="flash.utils:Timer" />
+      <dep id="JSON" />
+      <dep id="Date" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Shooter.as" mod="1770810547366" size="5147" optimizedsize="4631">
+      <def id="game.display:Shooter" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="game:Config" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:Type" />
+      <dep id="game:Data" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\P2PFightTalk.as" mod="1770810547308" size="1181" optimizedsize="1141">
+      <def id="game.ui:P2PFightTalk" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\ui\BaseUI.as" mod="1770810546992" size="1589" optimizedsize="1489">
+      <def id="com.iflashigame.ui:BaseUI" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\SHABase.as" mod="1770810546795" size="766" optimizedsize="743">
+      <def id="com.hurlant.crypto.hash:SHABase" />
+      <pre id="com.hurlant.crypto.hash:IHash" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Endian" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\IMode.as" mod="1770810546626" size="124" optimizedsize="123">
+      <def id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="Object" />
+      <pre id="com.hurlant.crypto.symmetric:ICipher" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\TripleDESKey.as" mod="1770810546874" size="1046" optimizedsize="1002">
+      <def id="com.hurlant.crypto.symmetric:TripleDESKey" />
+      <pre id="com.hurlant.crypto.symmetric:DESKey" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\ScrollBar.as" mod="1770810547337" size="2823" optimizedsize="2685">
+      <def id="game.ui.list:ScrollBar" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.ui.list:IScrollElement" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\net\ChatManager.as" mod="1781080632267" size="8653" optimizedsize="8385">
+      <def id="com.iflashigame.net:ChatManager" />
+      <pre id="flash.events:EventDispatcher" />
+      <pre id="Object" />
+      <dep id="flash.net:NetGroup" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="com.iflashigame.net:SocketEvent" />
+      <dep id="Error" />
+      <dep id="game.model:Head" />
+      <dep id="flash.utils:Timer" />
+      <dep id="com.iflashigame.net:SocketConnection" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.iflashigame.net:HttpPollConnection" />
+      <dep id="Date" />
+      <dep id="com.iflashigame.net:P2PEvent" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.net:NetConnection" />
+      <dep id="game:Config" />
+      <dep id="flash.net:NetStream" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.model:RoleModel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\utils\Tools.as" mod="1770810546328" size="2668" optimizedsize="2554">
+      <def id="com.iflashigame.utils:Tools" />
+      <pre id="Object" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="AS3" />
+      <dep id="flash.filters:ColorMatrixFilter" />
+      <dep id="flash.geom:Point" />
+      <dep id="flash.geom:ColorTransform" />
+      <dep id="flash.display:InteractiveObject" />
+      <dep id="flash.geom:Matrix" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="Math" />
+      <dep id="flash.geom:Rectangle" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\easing\Elastic.as" mod="1770810546377" size="1077" optimizedsize="993">
+      <def id="com.greensock.easing:Elastic" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="Math" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\BigInteger.as" mod="1780759970270" size="15119" optimizedsize="14329">
+      <def id="com.hurlant.math:BigInteger" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:ClassicReduction" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="com.hurlant.math:IReduction" />
+      <dep id="com.hurlant.util:Hex" />
+      <dep id="com.hurlant.math:BarrettReduction" />
+      <dep id="com.hurlant.math:bi_internal" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="Math" />
+      <dep id="com.hurlant.crypto.prng:Random" />
+      <dep id="com.hurlant.math:MontgomeryReduction" />
+      <dep id="com.hurlant.math:NullReduction" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\StageList.as" mod="1770810547087" size="2308" optimizedsize="2230">
+      <def id="game.ui.list:StageList" />
+      <pre id="game.ui.list:IScrollElement" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui.list:StageListItem" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\managers\FocusManager.as" mod="1770810546816" size="8160" optimizedsize="7803">
+      <def id="fl.managers:FocusManager" />
+      <pre id="fl.managers:IFocusManager" />
+      <pre id="Object" />
+      <dep id="fl.core:UIComponent" />
+      <dep id="fl.managers:IFocusManagerGroup" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.events:FocusEvent" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="flash.display:Stage" />
+      <dep id="flash.display:InteractiveObject" />
+      <dep id="flash.text:TextFieldType" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="fl.controls:Button" />
+      <dep id="fl.managers:IFocusManagerComponent" />
+      <dep id="SecurityError" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\TalkFrame.as" mod="1770810547136" size="2182" optimizedsize="2103">
+      <def id="game.ui:TalkFrame" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.filters:DropShadowFilter" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.display:Sprite" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\prng\ARC4.as" mod="1770810546872" size="1134" optimizedsize="1099">
+      <def id="com.hurlant.crypto.prng:ARC4" />
+      <pre id="com.hurlant.crypto.symmetric:IStreamCipher" />
+      <pre id="Object" />
+      <pre id="com.hurlant.crypto.prng:IPRNG" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="Math" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\XTeaKey.as" mod="1770810546750" size="1267" optimizedsize="1236">
+      <def id="com.hurlant.crypto.symmetric:XTeaKey" />
+      <pre id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.prng:Random" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GameInfo.as" mod="1770810547188" size="885" optimizedsize="854">
+      <def id="game.ui:GameInfo" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\controls\ButtonLabelPlacement.as" mod="1770810546512" size="302" optimizedsize="296">
+      <def id="fl.controls:ButtonLabelPlacement" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\talk\TalkEvent.as" mod="1780845455360" size="486" optimizedsize="472">
+      <def id="com.iflashigame.talk:TalkEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\util\Hex.as" mod="1770810546393" size="720" optimizedsize="698">
+      <def id="com.hurlant.util:Hex" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\MontgomeryReduction.as" mod="1770810546797" size="1268" optimizedsize="1203">
+      <def id="com.hurlant.math:MontgomeryReduction" />
+      <pre id="com.hurlant.math:IReduction" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:bi_internal" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\RoleModel.as" mod="1781764310436" size="12734" optimizedsize="12492">
+      <def id="game.model:RoleModel" />
+      <pre id="flash.events:EventDispatcher" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="flash.filesystem:File" />
+      <dep id="utils:JsonFormatter" />
+      <dep id="game.model:EquipData" />
+      <dep id="Error" />
+      <dep id="flash.utils:Timer" />
+      <dep id="Math" />
+      <dep id="flash.events:Event" />
+      <dep id="com.iflashigame.utils:AESTools" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game:Config" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="flash.filesystem:FileStream" />
+      <dep id="flash.filesystem:FileMode" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\IVMode.as" mod="1770810546434" size="1202" optimizedsize="1171">
+      <def id="com.hurlant.crypto.symmetric:IVMode" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:PKCS5" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="Error" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.prng:Random" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Cover.as" mod="1770810547140" size="1165" optimizedsize="1112">
+      <def id="game.ui:Cover" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\air_stubs.swc(flash.filesystem:FileMode)" mod="1780759837016" size="512" optimizedsize="283">
+      <def id="flash.filesystem:FileMode" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Zhuanpan.as" mod="1770810547109" size="2286" optimizedsize="2187">
+      <def id="game.ui:Zhuanpan" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\IReduction.as" mod="1770810546519" size="261" optimizedsize="261">
+      <def id="com.hurlant.math:IReduction" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\core\LoaderCore.as" mod="1770810546874" size="5414" optimizedsize="5113">
+      <def id="com.greensock.loading.core:LoaderCore" />
+      <pre id="flash.events:EventDispatcher" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="flash.system:Capabilities" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="com.greensock.loading.core:LoaderItem" />
+      <dep id="flash.events:ProgressEvent" />
+      <dep id="com.greensock.loading:LoaderMax" />
+      <dep id="flash.net:LocalConnection" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\FightResultPanel.as" mod="1780911538437" size="3980" optimizedsize="3844">
+      <def id="game.ui:FightResultPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.events:FightEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\Config.as" mod="1781777663580" size="1930" optimizedsize="1886">
+      <def id="game:Config" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="Date" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\WandaoSoldier.as" mod="1770810547398" size="4536" optimizedsize="4127">
+      <def id="game.display:WandaoSoldier" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.utils:Tools" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\sound\MySound.as" mod="1770810546200" size="1153" optimizedsize="1106">
+      <def id="com.iflashigame.sound:MySound" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.media:Sound" />
+      <dep id="flash.media:SoundChannel" />
+      <dep id="flash.system:ApplicationDomain" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\LeitaiPanel.as" mod="1780847587877" size="6962" optimizedsize="6576">
+      <def id="game.ui:LeitaiPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game:TextFactory" />
+      <dep id="flash.ui:Keyboard" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:LeitaiTipsPanel" />
+      <dep id="com.iflashigame.utils:GlobalTimer" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.events:TimerStr" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="game.ui.list:ScrollBar" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="Error" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="com.iflashigame.net:P2PEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="game.ui:Leitai" />
+      <dep id="game.ui:LeitaiContainer" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\P2PFight.as" mod="1781759973775" size="21777" optimizedsize="20460">
+      <def id="game:P2PFight" />
+      <pre id="game.ai:IAI" />
+      <pre id="game.display:IWorld" />
+      <pre id="flash.display:Sprite" />
+      <dep id="game.ui:ConType" />
+      <dep id="com.iflashigame.talk:TalkField" />
+      <dep id="game.display:Gunner" />
+      <dep id="game.ai:AI" />
+      <dep id="game.model:Head" />
+      <dep id="com.greensock.easing:Elastic" />
+      <dep id="Math" />
+      <dep id="flash.events:Event" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.display:Saber" />
+      <dep id="game.ui:AngleController" />
+      <dep id="com.iflashigame.utils:GlobalTimer" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="game.ui:NumTips" />
+      <dep id="game.display:Junzhu" />
+      <dep id="game.ui:P2PFightTalk" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="game:Logic" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.ui:Mouse" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+      <dep id="game.display:Weapon" />
+      <dep id="flash.external:ExternalInterface" />
+      <dep id="game.ai:SmartAttack" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="Error" />
+      <dep id="game.events:ConEvent" />
+      <dep id="Date" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game:Config" />
+      <dep id="game.ui:FightUI" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="game.display:StoneWeapon" />
+      <dep id="game.events:FightEvent" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\util\Memory.as" mod="1770810546478" size="380" optimizedsize="370">
+      <def id="com.hurlant.util:Memory" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.system:System" />
+      <dep id="flash.net:LocalConnection" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralZhaomuPanel.as" mod="1770810547234" size="6719" optimizedsize="6365">
+      <def id="game.ui:GeneralZhaomuPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game:TextFactory" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+      <dep id="game:SoundCode" />
+      <dep id="flash.geom:Point" />
+      <dep id="com.iflashigame.sound:MySound" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\CBCMode.as" mod="1770810546840" size="979" optimizedsize="927">
+      <def id="com.hurlant.crypto.symmetric:CBCMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\BarrettReduction.as" mod="1770810546837" size="965" optimizedsize="938">
+      <def id="com.hurlant.math:BarrettReduction" />
+      <pre id="com.hurlant.math:IReduction" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:bi_internal" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONTokenType.as" mod="1770810546426" size="511" optimizedsize="505">
+      <def id="com.adobe.serialization.json:JSONTokenType" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\BlowFishKey.as" mod="1770810546789" size="11939" optimizedsize="11845">
+      <def id="com.hurlant.crypto.symmetric:BlowFishKey" />
+      <pre id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\managers\IFocusManager.as" mod="1770810546473" size="619" optimizedsize="619">
+      <def id="fl.managers:IFocusManager" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="flash.display:InteractiveObject" />
+      <dep id="fl.controls:Button" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\FightFromPanel.as" mod="1770810547139" size="3035" optimizedsize="2890">
+      <def id="game.ui:FightFromPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\managers\IFocusManagerGroup.as" mod="1770810546492" size="234" optimizedsize="234">
+      <def id="fl.managers:IFocusManagerGroup" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\MyPoint.as" mod="1770810546349" size="301" optimizedsize="295">
+      <def id="game.model:MyPoint" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\CTRMode.as" mod="1770810546837" size="978" optimizedsize="934">
+      <def id="com.hurlant.crypto.symmetric:CTRMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralInfoPanel.as" mod="1781762341398" size="14120" optimizedsize="13327">
+      <def id="game.ui:GeneralInfoPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game:TextFactory" />
+      <dep id="game.model:Head" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="flash.filters:BlurFilter" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="game:Logic" />
+      <dep id="flash.display:Sprite" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.display:Shape" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\HMAC.as" mod="1770810546473" size="873" optimizedsize="851">
+      <def id="com.hurlant.crypto.hash:HMAC" />
+      <pre id="Object" />
+      <dep id="com.hurlant.crypto.hash:IHash" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\ConEvent.as" mod="1770810546596" size="578" optimizedsize="564">
+      <def id="game.events:ConEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\core\DisplayObjectLoader.as" mod="1770810546952" size="3353" optimizedsize="3173">
+      <def id="com.greensock.loading.core:DisplayObjectLoader" />
+      <pre id="com.greensock.loading.core:LoaderItem" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="Error" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.net:LocalConnection" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:Loader" />
+      <dep id="flash.system:Capabilities" />
+      <dep id="flash.events:ProgressEvent" />
+      <dep id="flash.system:SecurityDomain" />
+      <dep id="flash.system:Security" />
+      <dep id="flash.system:LoaderContext" />
+      <dep id="flash.display:Sprite" />
+      <dep id="com.greensock.loading:LoaderMax" />
+      <dep id="com.greensock.loading.display:ContentDisplay" />
+      <dep id="flash.events:ErrorEvent" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\NullReduction.as" mod="1770810546812" size="457" optimizedsize="449">
+      <def id="com.hurlant.math:NullReduction" />
+      <pre id="com.hurlant.math:IReduction" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:bi_internal" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\TextFactory.as" mod="1770810546225" size="10119" optimizedsize="10074">
+      <def id="game:TextFactory" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="Math" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GameStory.as" mod="1770810547228" size="1667" optimizedsize="1572">
+      <def id="game.ui:GameStory" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\TweenLite.as" mod="1770810546811" size="5370" optimizedsize="5106">
+      <def id="com.greensock:TweenLite" />
+      <pre id="com.greensock.core:TweenCore" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="com.greensock.core:PropTween" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="com.greensock.core:SimpleTimeline" />
+      <dep id="flash.display:Shape" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\StoneWeapon.as" mod="1770810547084" size="2304" optimizedsize="2195">
+      <def id="game.display:StoneWeapon" />
+      <pre id="flash.display:Sprite" />
+      <pre id="game.display:IWeapon" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="game:Data" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\AngleController.as" mod="1770810547056" size="2381" optimizedsize="2264">
+      <def id="game.ui:AngleController" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.ui:ConType" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="game.events:ConEvent" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\FightEvent.as" mod="1770810546550" size="779" optimizedsize="765">
+      <def id="game.events:FightEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Map.as" mod="1781091390988" size="8648" optimizedsize="8245">
+      <def id="game.ui:Map" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.ui:TalkArea" />
+      <dep id="game:SoundCode" />
+      <dep id="com.iflashigame.sound:MySound" />
+      <dep id="com.iflashigame.ui:Paomadeng" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.ui:OnlineCountUI" />
+      <dep id="game:Config" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\SkinCode.as" mod="1770810546180" size="3796" optimizedsize="3792">
+      <def id="game.ui:SkinCode" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralFullInfoBlock.as" mod="1770810547321" size="4515" optimizedsize="4381">
+      <def id="game.ui:GeneralFullInfoBlock" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Logic" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\list\StageListItem.as" mod="1770810547356" size="2222" optimizedsize="2138">
+      <def id="game.ui.list:StageListItem" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Alert.as" mod="1770810547275" size="1761" optimizedsize="1689">
+      <def id="game.ui:Alert" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextFormat" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\CFBMode.as" mod="1770810546866" size="984" optimizedsize="940">
+      <def id="com.hurlant.crypto.symmetric:CFBMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\SHA224.as" mod="1770810546886" size="423" optimizedsize="413">
+      <def id="com.hurlant.crypto.hash:SHA224" />
+      <pre id="com.hurlant.crypto.hash:SHA256" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONToken.as" mod="1770810546390" size="373" optimizedsize="369">
+      <def id="com.adobe.serialization.json:JSONToken" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\fuben\XiongnuConfig.as" mod="1770810546372" size="3347" optimizedsize="3195">
+      <def id="game.fuben:XiongnuConfig" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game:Logic" />
+      <dep id="game.display:JiantaSoldier" />
+      <dep id="Math" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:Type" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\utils\YanzhengmaBitmap.as" mod="1770810547118" size="1751" optimizedsize="1680">
+      <def id="com.iflashigame.utils:YanzhengmaBitmap" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="Math" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\SelectServerPanel.as" mod="1770810547253" size="2282" optimizedsize="2167">
+      <def id="game.ui:SelectServerPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\QianggongWeapon.as" mod="1770810547109" size="1930" optimizedsize="1864">
+      <def id="game.display:QianggongWeapon" />
+      <pre id="flash.display:Sprite" />
+      <pre id="game.display:IWeapon" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="game.model:Type" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\RoleStatus.as" mod="1770810546146" size="380" optimizedsize="374">
+      <def id="game.model:RoleStatus" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\core\UIComponent.as" mod="1770810547145" size="8190" optimizedsize="7857">
+      <def id="fl.core:UIComponent" />
+      <pre id="flash.display:Sprite" />
+      <dep id="flash.utils:getDefinitionByName" />
+      <dep id="fl.managers:FocusManager" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="flash.utils:getQualifiedClassName" />
+      <dep id="flash.text:TextFormatAlign" />
+      <dep id="fl.managers:IFocusManager" />
+      <dep id="flash.system:IME" />
+      <dep id="Error" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.events:FocusEvent" />
+      <dep id="Math" />
+      <dep id="flash.system:IMEConversionMode" />
+      <dep id="fl.core:InvalidationType" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="flash.display:InteractiveObject" />
+      <dep id="fl.managers:StyleManager" />
+      <dep id="fl.managers:IFocusManagerComponent" />
+      <dep id="fl.events:ComponentEvent" />
+      <dep id="flash.text:TextFormat" />
+      <dep id="SecurityError" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\OnlineCountUI.as" mod="1781012617996" size="4841" optimizedsize="4615">
+      <def id="game.ui:OnlineCountUI" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.text:TextFormatAlign" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="flash.utils:Timer" />
+      <dep id="JSON" />
+      <dep id="Math" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\FightUI.as" mod="1770810547107" size="1762" optimizedsize="1684">
+      <def id="game.ui:FightUI" />
+      <pre id="flash.display:MovieClip" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.model:Type" />
+      <dep id="game.ui:GIcon" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\air_stubs.swc(flash.filesystem:File)" mod="1780759813580" size="654" optimizedsize="301">
+      <def id="flash.filesystem:File" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ShangzhenPanel.as" mod="1780909095485" size="10921" optimizedsize="10615">
+      <def id="game.ui:ShangzhenPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.model:Head" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="Math" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.ui:JunshiBlock" />
+      <dep id="com.iflashigame.net:P2PEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\controller\Test.as" mod="1781003022728" size="13922" optimizedsize="12941">
+      <def id="com.iflashigame.controller:Test" />
+      <pre id="com.iflashigame.controller:IControllerTest" />
+      <pre id="Object" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.filesystem:File" />
+      <dep id="Error" />
+      <dep id="game.model:Head" />
+      <dep id="Math" />
+      <dep id="game.model:Type" />
+      <dep id="com.adobe.serialization.json:JSON" />
+      <dep id="flash.filesystem:FileStream" />
+      <dep id="game:Logic" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.filesystem:FileMode" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game.model:LeitaiStatus" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\LoaderMax.as" mod="1770810546946" size="6719" optimizedsize="6312">
+      <def id="com.greensock.loading:LoaderMax" />
+      <pre id="com.greensock.loading.core:LoaderCore" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="com.greensock.loading.core:LoaderItem" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralBlock.as" mod="1770810547309" size="1751" optimizedsize="1702">
+      <def id="game.ui:GeneralBlock" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.filters:BlurFilter" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.display:Shape" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ai\AI.as" mod="1770810546318" size="3958" optimizedsize="3784">
+      <def id="game.ai:AI" />
+      <pre id="Object" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.ai:IAI" />
+      <dep id="game.display:Gunner" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.model:Head" />
+      <dep id="flash.utils:Timer" />
+      <dep id="Math" />
+      <dep id="flash.events:Event" />
+      <dep id="game.display:Junzhu" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:Saber" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.utils:Tools" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\MD5.as" mod="1770810546793" size="3892" optimizedsize="3853">
+      <def id="com.hurlant.crypto.hash:MD5" />
+      <pre id="com.hurlant.crypto.hash:IHash" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Endian" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\core\LoaderItem.as" mod="1770810546888" size="2498" optimizedsize="2390">
+      <def id="com.greensock.loading.core:LoaderItem" />
+      <pre id="com.greensock.loading.core:LoaderCore" />
+      <dep id="flash.net:URLStream" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="flash.events:ProgressEvent" />
+      <dep id="flash.net:URLVariables" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="Date" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\LoaderStatus.as" mod="1770810546345" size="342" optimizedsize="336">
+      <def id="com.greensock.loading:LoaderStatus" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\TimerStr.as" mod="1770810546339" size="293" optimizedsize="287">
+      <def id="game.events:TimerStr" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\FrameSoldier.as" mod="1781099776925" size="1213" optimizedsize="1180">
+      <def id="game.display:FrameSoldier" />
+      <pre id="flash.display:Sprite" />
+      <dep id="flash.display:Loader" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\AbstractSoldier.as" mod="1770810546997" size="6518" optimizedsize="6371">
+      <def id="game.display:AbstractSoldier" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.geom:Point" />
+      <dep id="flash.filters:BlurFilter" />
+      <dep id="game.display:IWorld" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.ui:ProgressBar" />
+      <dep id="flash.display:Shape" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\CreateRolePanel.as" mod="1770810547260" size="2063" optimizedsize="1955">
+      <def id="game.ui:CreateRolePanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.utils:TextFilter" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ConnectWait.as" mod="1770810547217" size="504" optimizedsize="486">
+      <def id="game.ui:ConnectWait" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.system:ApplicationDomain" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\fuben\Xiongnu.as" mod="1781099824901" size="25949" optimizedsize="24496">
+      <def id="game.fuben:Xiongnu" />
+      <pre id="game.ai:IAI" />
+      <pre id="game.display:IWorld" />
+      <pre id="flash.display:Sprite" />
+      <dep id="game.ui:ConType" />
+      <dep id="game.display:Gunner" />
+      <dep id="game.display:JiantaWeapon" />
+      <dep id="com.greensock.easing:Elastic" />
+      <dep id="Math" />
+      <dep id="game.display:JiantaSoldier" />
+      <dep id="flash.events:Event" />
+      <dep id="game.ai:XiongnuAI" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.display:Saber" />
+      <dep id="game.ui:AngleController" />
+      <dep id="game.display:QianggongWeapon" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="flash.display:Graphics" />
+      <dep id="game.ui:NumTips" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="game.display:Junzhu" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="game.fuben:XiongnuConfig" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.ui:Mouse" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.display:WandaoSoldier" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="game.display:FrameSoldier" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+      <dep id="game.display:Weapon" />
+      <dep id="game.ai:SmartAttack" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="Error" />
+      <dep id="game.events:ConEvent" />
+      <dep id="Date" />
+      <dep id="game.display:QianggongSoldier" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game:Config" />
+      <dep id="game.ui:FightUI" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="game.display:StoneWeapon" />
+      <dep id="game.events:FightEvent" />
+      <dep id="game.display:Boss" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\core\PropTween.as" mod="1770810546398" size="423" optimizedsize="416">
+      <def id="com.greensock.core:PropTween" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONDecoder.as" mod="1770810546315" size="1457" optimizedsize="1385">
+      <def id="com.adobe.serialization.json:JSONDecoder" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.adobe.serialization.json:JSONTokenType" />
+      <dep id="com.adobe.serialization.json:JSONTokenizer" />
+      <dep id="com.adobe.serialization.json:JSONToken" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSON.as" mod="1770810546226" size="341" optimizedsize="335">
+      <def id="com.adobe.serialization.json:JSON" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.adobe.serialization.json:JSONDecoder" />
+      <dep id="com.adobe.serialization.json:JSONEncoder" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONEncoder.as" mod="1770810546318" size="1839" optimizedsize="1770">
+      <def id="com.adobe.serialization.json:JSONEncoder" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:describeType" />
+      <dep id="XML" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\EquipData.as" mod="1781764262814" size="2516" optimizedsize="2442">
+      <def id="game.model:EquipData" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\CFB8Mode.as" mod="1770810546836" size="949" optimizedsize="900">
+      <def id="com.hurlant.crypto.symmetric:CFB8Mode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\fuben\StageID.as" mod="1770810546346" size="227" optimizedsize="221">
+      <def id="game.fuben:StageID" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\JunshiBlock.as" mod="1770810547309" size="1377" optimizedsize="1340">
+      <def id="game.ui:JunshiBlock" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\utils\GlobalTimer.as" mod="1770810546223" size="1793" optimizedsize="1737">
+      <def id="com.iflashigame.utils:GlobalTimer" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="Error" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\events\ComponentEvent.as" mod="1770810546593" size="583" optimizedsize="569">
+      <def id="fl.events:ComponentEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\events\UIEvent.as" mod="1781761662975" size="3381" optimizedsize="3370">
+      <def id="game.events:UIEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\utils\TextFilter.as" mod="1770810546296" size="1016" optimizedsize="980">
+      <def id="com.iflashigame.utils:TextFilter" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="RegExp" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\LeitaiResultPanel.as" mod="1770810547153" size="4913" optimizedsize="4702">
+      <def id="game.ui:LeitaiResultPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="game:TextFactory" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="game.model:LeitaiType" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game:Config" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.events:FightEvent" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\controls\Button.as" mod="1770810547402" size="1613" optimizedsize="1535">
+      <def id="fl.controls:Button" />
+      <pre id="fl.controls:LabelButton" />
+      <pre id="fl.managers:IFocusManagerComponent" />
+      <dep id="fl.core:UIComponent" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="AS3" />
+      <dep id="fl.core:InvalidationType" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\rsa\RSAKey.as" mod="1770810546520" size="3631" optimizedsize="3524">
+      <def id="com.hurlant.crypto.rsa:RSAKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="Math" />
+      <dep id="com.hurlant.crypto.prng:Random" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Leitai.as" mod="1780846846054" size="4482" optimizedsize="4299">
+      <def id="game.ui:Leitai" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="game.model:LeitaiType" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game.model:LeitaiStatus" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ConType.as" mod="1770810546337" size="212" optimizedsize="206">
+      <def id="game.ui:ConType" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\JiantaWeapon.as" mod="1770810547111" size="1825" optimizedsize="1735">
+      <def id="game.display:JiantaWeapon" />
+      <pre id="flash.display:Sprite" />
+      <pre id="game.display:IWeapon" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+      <dep id="game.model:Type" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ShopBlock.as" mod="1781003541042" size="6956" optimizedsize="6681">
+      <def id="game.ui:ShopBlock" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.filesystem:File" />
+      <dep id="Error" />
+      <dep id="game.model:Head" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="Date" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="flash.filesystem:FileStream" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.display:Sprite" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.filesystem:FileMode" />
+      <dep id="game.model:RoleModel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\fuben\FubenCheckPanel.as" mod="1781092008733" size="2020" optimizedsize="1925">
+      <def id="game.ui.fuben:FubenCheckPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="game.fuben:XiongnuConfig" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\LeitaiTipsPanel.as" mod="1770810547311" size="2749" optimizedsize="2631">
+      <def id="game.ui:LeitaiTipsPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="flash.utils:Timer" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\UpdateChecker.as" mod="1781759231910" size="4925" optimizedsize="4726">
+      <def id="game.ui:UpdateChecker" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="flash.filesystem:File" />
+      <dep id="Error" />
+      <dep id="JSON" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.net:URLLoaderDataFormat" />
+      <dep id="flash.events:IOErrorEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="flash.filesystem:FileStream" />
+      <dep id="flash.filesystem:FileMode" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\hash\SHA1.as" mod="1770810546883" size="1146" optimizedsize="1125">
+      <def id="com.hurlant.crypto.hash:SHA1" />
+      <pre id="com.hurlant.crypto.hash:IHash" />
+      <pre id="com.hurlant.crypto.hash:SHABase" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Guoqing2.as" mod="1770810547153" size="2571" optimizedsize="2433">
+      <def id="game.ui:Guoqing2" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\core\TweenCore.as" mod="1770810546398" size="3100" optimizedsize="3001">
+      <def id="com.greensock.core:TweenCore" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="com.greensock.core:SimpleTimeline" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\ArmyInfo.as" mod="1781764273430" size="5760" optimizedsize="5593">
+      <def id="game.model:ArmyInfo" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game:Config" />
+      <dep id="game.model:EquipData" />
+      <dep id="game:Logic" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ai\XiongnuAI.as" mod="1770810546432" size="5673" optimizedsize="5383">
+      <def id="game.ai:XiongnuAI" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="game.ai:IAI" />
+      <dep id="game.display:Gunner" />
+      <dep id="game.display:Shooter" />
+      <dep id="flash.utils:Timer" />
+      <dep id="Math" />
+      <dep id="game.display:JiantaSoldier" />
+      <dep id="game.display:WandaoSoldier" />
+      <dep id="flash.events:Event" />
+      <dep id="game.display:Junzhu" />
+      <dep id="game.display:QianggongSoldier" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:Saber" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game:Fight" />
+      <dep id="game.fuben:XiongnuConfig" />
+      <dep id="game.display:Boss" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\Crypto.as" mod="1770810546448" size="2679" optimizedsize="2633">
+      <def id="com.hurlant.crypto:Crypto" />
+      <pre id="Object" />
+      <dep id="com.hurlant.crypto.symmetric:XTeaKey" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:ICipher" />
+      <dep id="com.hurlant.crypto.rsa:RSAKey" />
+      <dep id="com.hurlant.crypto.hash:MD5" />
+      <dep id="com.hurlant.crypto.symmetric:ECBMode" />
+      <dep id="com.hurlant.crypto.hash:HMAC" />
+      <dep id="com.hurlant.crypto.symmetric:IMode" />
+      <dep id="com.hurlant.crypto.symmetric:PKCS5" />
+      <dep id="com.hurlant.util:Base64" />
+      <dep id="com.hurlant.crypto.hash:MD2" />
+      <dep id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="com.hurlant.crypto.symmetric:OFBMode" />
+      <dep id="com.hurlant.crypto.symmetric:NullPad" />
+      <dep id="com.hurlant.crypto.hash:SHA256" />
+      <dep id="com.hurlant.crypto.symmetric:CBCMode" />
+      <dep id="com.hurlant.crypto.symmetric:CFB8Mode" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:TripleDESKey" />
+      <dep id="com.hurlant.crypto.hash:SHA1" />
+      <dep id="com.hurlant.crypto.symmetric:BlowFishKey" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.hash:IHash" />
+      <dep id="com.hurlant.crypto.symmetric:SimpleIVMode" />
+      <dep id="com.hurlant.crypto.symmetric:CTRMode" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="com.hurlant.crypto.symmetric:AESKey" />
+      <dep id="com.hurlant.crypto.symmetric:CFBMode" />
+      <dep id="com.hurlant.crypto.prng:ARC4" />
+      <dep id="com.hurlant.crypto.hash:SHA224" />
+      <dep id="com.hurlant.crypto.symmetric:DESKey" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\QianggongSoldier.as" mod="1770810547398" size="4545" optimizedsize="4133">
+      <def id="game.display:QianggongSoldier" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.utils:Tools" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\Head.as" mod="1781761630939" size="3547" optimizedsize="3541">
+      <def id="game.model:Head" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONTokenizer.as" mod="1770810546391" size="3391" optimizedsize="3273">
+      <def id="com.adobe.serialization.json:JSONTokenizer" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.adobe.serialization.json:JSONParseError" />
+      <dep id="com.adobe.serialization.json:JSONTokenType" />
+      <dep id="com.adobe.serialization.json:JSONToken" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\talk\FaceList.as" mod="1770810547107" size="1659" optimizedsize="1578">
+      <def id="com.iflashigame.talk:FaceList" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="Math" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\StageListPanel.as" mod="1770810547136" size="2301" optimizedsize="2199">
+      <def id="game.ui:StageListPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game.ui.list:StageList" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="game.model:MyPoint" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Junzhu.as" mod="1770810547366" size="5576" optimizedsize="5010">
+      <def id="game.display:Junzhu" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="game:Config" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:Type" />
+      <dep id="game:Data" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\YanzhengPanel.as" mod="1770810547263" size="2797" optimizedsize="2682">
+      <def id="game.ui:YanzhengPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.model:Head" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="com.iflashigame.utils:YanzhengmaBitmap" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="game.ui:Zhuanpan" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="game.model:RoleModel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\DESKey.as" mod="1770810546801" size="5037" optimizedsize="4962">
+      <def id="com.hurlant.crypto.symmetric:DESKey" />
+      <pre id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\SWFLoader.as" mod="1770810546933" size="5046" optimizedsize="4679">
+      <def id="com.greensock.loading:SWFLoader" />
+      <pre id="com.greensock.loading.core:DisplayObjectLoader" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="AS3" />
+      <dep id="com.greensock.loading.core:LoaderCore" />
+      <dep id="flash.utils:getQualifiedClassName" />
+      <dep id="flash.media:SoundTransform" />
+      <dep id="Error" />
+      <dep id="com.greensock.loading:LoaderStatus" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="flash.display:AVM1Movie" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.greensock.loading:LoaderMax" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Guoqing1.as" mod="1770810547266" size="2173" optimizedsize="2078">
+      <def id="game.ui:Guoqing1" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Gunner.as" mod="1770810547368" size="4548" optimizedsize="4130">
+      <def id="game.display:Gunner" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.utils:Timer" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\SimpleIVMode.as" mod="1770810546838" size="771" optimizedsize="751">
+      <def id="com.hurlant.crypto.symmetric:SimpleIVMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="Object" />
+      <pre id="com.hurlant.crypto.symmetric:ICipher" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\BagPanel.as" mod="1770810547265" size="2348" optimizedsize="2253">
+      <def id="game.ui:BagPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:Bitmap" />
+      <dep id="flash.display:BitmapData" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.display:Sprite" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralManagerPanel.as" mod="1770810547190" size="2728" optimizedsize="2597">
+      <def id="game.ui:GeneralManagerPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.events:UIEvent" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.ui:GeneralFullInfoBlock" />
+      <dep id="game.model:RoleModel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\net\SocketEvent.as" mod="1780759169068" size="596" optimizedsize="576">
+      <def id="com.iflashigame.net:SocketEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GeneralListPanel.as" mod="1770810547190" size="6674" optimizedsize="6372">
+      <def id="game.ui:GeneralListPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.ui:GeneralBlock" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game.model:Type" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.events:UIEvent" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.display:Sprite" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\OFBMode.as" mod="1770810546867" size="881" optimizedsize="845">
+      <def id="com.hurlant.crypto.symmetric:OFBMode" />
+      <pre id="com.hurlant.crypto.symmetric:IMode" />
+      <pre id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\IWeapon.as" mod="1770810546340" size="101" optimizedsize="100">
+      <def id="game.display:IWeapon" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\UI.as" mod="1781707373326" size="50213" optimizedsize="46348">
+      <def id="game:UI" />
+      <pre id="flash.display:Sprite" />
+      <dep id="game:TextFactory" />
+      <dep id="game.ui:GeneralInfoPanel" />
+      <dep id="game.ui:LeitaiGuizePanel" />
+      <dep id="game.ui:StageListPanel" />
+      <dep id="game.model:Head" />
+      <dep id="Math" />
+      <dep id="game.ui:BagPanel" />
+      <dep id="game.ui:CreateRolePanel" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="game.ui.fuben:FubenResultPanel" />
+      <dep id="game.ui:GeneralListPanel" />
+      <dep id="game.ui:Alert" />
+      <dep id="com.iflashigame.utils:GlobalTimer" />
+      <dep id="com.iflashigame.controller:ControllerEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="game.events:TimerStr" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="game.ui:SelectServerPanel" />
+      <dep id="game.ui:YanzhengPanel" />
+      <dep id="game.ui:NetStatusUI" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="game.ui:GeneralZhaomuPanel" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:GeneralJinhuaPanel" />
+      <dep id="game.fuben:Xiongnu" />
+      <dep id="game.ui:GameCenterUI" />
+      <dep id="game.ui:Guoqing2" />
+      <dep id="game.ui:FightFromPanel" />
+      <dep id="game.ui:Guoqing1" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="game:SoundCode" />
+      <dep id="com.iflashigame.net:P2PEvent" />
+      <dep id="game.ui:ShangzhenPanel" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.ui.fuben:FubenCheckPanel" />
+      <dep id="game.ui:GameStory" />
+      <dep id="game.fuben:XiongnuConfig" />
+      <dep id="game.ui:LeitaiPanel" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="com.iflashigame.ui:BaseUI" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:GeneralManagerPanel" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game.ui:ShopPanel" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="game:P2PFight" />
+      <dep id="game.ui:Cover" />
+      <dep id="game.fuben:StageID" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:FightResultPanel" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="game.ui:ConnectWait" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game.ui.fuben:FanpaiPanel" />
+      <dep id="game:Data" />
+      <dep id="game.ui:GameInfo" />
+      <dep id="game.ui:Map" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="game.ui:Guide" />
+      <dep id="com.iflashigame.utils:AESTools" />
+      <dep id="com.iflashigame.sound:MySound" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game:Config" />
+      <dep id="game.ui:FightWait" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="game.events:FightEvent" />
+      <dep id="game.ui:LeitaiResultPanel" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\ui\TipsFrame.as" mod="1770810546919" size="1639" optimizedsize="1591">
+      <def id="com.iflashigame.ui:TipsFrame" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="flash.filters:DropShadowFilter" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\GIcon.as" mod="1770810547312" size="1831" optimizedsize="1765">
+      <def id="game.ui:GIcon" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.events:ConEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\fuben\FanpaiPanel.as" mod="1770810547264" size="2588" optimizedsize="2476">
+      <def id="game.ui.fuben:FanpaiPanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.filters:GlowFilter" />
+      <dep id="flash.utils:Timer" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.ui.fuben:Paimian" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\adobe\serialization\json\JSONParseError.as" mod="1770810546598" size="372" optimizedsize="366">
+      <def id="com.adobe.serialization.json:JSONParseError" />
+      <pre id="Error" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\IPad.as" mod="1770810546428" size="254" optimizedsize="254">
+      <def id="com.hurlant.crypto.symmetric:IPad" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.utils:ByteArray" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\managers\StyleManager.as" mod="1770810546547" size="2756" optimizedsize="2691">
+      <def id="fl.managers:StyleManager" />
+      <pre id="Object" />
+      <dep id="fl.core:UIComponent" />
+      <dep id="flash.utils:getDefinitionByName" />
+      <dep id="AS3" />
+      <dep id="flash.utils:Dictionary" />
+      <dep id="flash.utils:getQualifiedClassName" />
+      <dep id="flash.utils:getQualifiedSuperclassName" />
+      <dep id="Error" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\ChangelogPanel.as" mod="1781777654532" size="2762" optimizedsize="2664">
+      <def id="game.ui:ChangelogPanel" />
+      <pre id="flash.display:Sprite" />
+      <dep id="AS3" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="JSON" />
+      <dep id="flash.text:TextFieldAutoSize" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.text:TextField" />
+      <dep id="flash.events:Event" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="flash.display:Shape" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\controller\IController.as" mod="1770810546217" size="701" optimizedsize="701">
+      <def id="com.iflashigame.controller:IController" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="com.iflashigame.controller:IControllerTest" />
+      <dep id="flash.system:ApplicationDomain" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\display\Saber.as" mod="1770810547373" size="5181" optimizedsize="4663">
+      <def id="game.display:Saber" />
+      <pre id="game.display:AbstractSoldier" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="flash.events:TimerEvent" />
+      <dep id="game.display:IWorld" />
+      <dep id="game:Config" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.utils:Timer" />
+      <dep id="com.iflashigame.utils:Tools" />
+      <dep id="game.model:Type" />
+      <dep id="game:Data" />
+      <dep id="flash.events:Event" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\math\ClassicReduction.as" mod="1770810546813" size="572" optimizedsize="560">
+      <def id="com.hurlant.math:ClassicReduction" />
+      <pre id="com.hurlant.math:IReduction" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.math:bi_internal" />
+      <dep id="com.hurlant.math:BigInteger" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\greensock\loading\display\ContentDisplay.as" mod="1770810547063" size="3666" optimizedsize="3524">
+      <def id="com.greensock.loading.display:ContentDisplay" />
+      <pre id="flash.display:Sprite" />
+      <dep id="flash.display:DisplayObject" />
+      <dep id="flash.display:DisplayObjectContainer" />
+      <dep id="AS3" />
+      <dep id="com.greensock.loading.core:LoaderItem" />
+      <dep id="Error" />
+      <dep id="flash.geom:Rectangle" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\LeitaiGuizePanel.as" mod="1770810547269" size="836" optimizedsize="809">
+      <def id="game.ui:LeitaiGuizePanel" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="flash.events:MouseEvent" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\ui\Guide.as" mod="1770810547235" size="12590" optimizedsize="11926">
+      <def id="game.ui:Guide" />
+      <pre id="game.display:IWorld" />
+      <pre id="com.iflashigame.ui:BaseUI" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:ConType" />
+      <dep id="game.display:Gunner" />
+      <dep id="flash.ui:Mouse" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="com.greensock.easing:Elastic" />
+      <dep id="Math" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.geom:Point" />
+      <dep id="game.display:AbstractSoldier" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="game.ui:AngleController" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.display:SimpleButton" />
+      <dep id="game:Data" />
+      <dep id="game.display:Weapon" />
+      <dep id="com.greensock:TweenLite" />
+      <dep id="game.display:Shooter" />
+      <dep id="game.events:WeaponEvent" />
+      <dep id="game.events:ConEvent" />
+      <dep id="flash.system:ApplicationDomain" />
+      <dep id="game.model:Type" />
+      <dep id="flash.geom:Rectangle" />
+      <dep id="game.ui:NumTips" />
+      <dep id="game.events:UIEvent" />
+      <dep id="game.ui:FightUI" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="game:Logic" />
+      <dep id="game.display:StoneWeapon" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\utils\AESTools.as" mod="1770810546317" size="1024" optimizedsize="979">
+      <def id="com.iflashigame.utils:AESTools" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.crypto.symmetric:PKCS5" />
+      <dep id="com.hurlant.util:Base64" />
+      <dep id="com.hurlant.crypto.symmetric:IPad" />
+      <dep id="com.hurlant.crypto:Crypto" />
+      <dep id="com.hurlant.util:Hex" />
+      <dep id="com.hurlant.crypto.symmetric:IVMode" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.symmetric:ICipher" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\Sanguo4399.as" mod="1781777581745" size="35338" optimizedsize="34061">
+      <def id="game:Sanguo4399" />
+      <pre id="flash.display:Sprite" />
+      <dep id="com.greensock.events:LoaderEvent" />
+      <dep id="game:TextFactory" />
+      <dep id="flash.net:URLLoader" />
+      <dep id="BarMC" />
+      <dep id="game.model:Head" />
+      <dep id="Math" />
+      <dep id="flash.ui:ContextMenuItem" />
+      <dep id="flash.events:Event" />
+      <dep id="flash.utils:getTimer" />
+      <dep id="flash.net:navigateToURL" />
+      <dep id="com.iflashigame.utils:GlobalTimer" />
+      <dep id="com.iflashigame.controller:ControllerEvent" />
+      <dep id="game.model:RoleStatus" />
+      <dep id="com.iflashigame.talk:NetInfoType" />
+      <dep id="flash.ui:ContextMenu" />
+      <dep id="flash.filesystem:File" />
+      <dep id="flash.events:KeyboardEvent" />
+      <dep id="com.iflashigame.ui:TipsFrame" />
+      <dep id="game:SoundCode" />
+      <dep id="com.adobe.serialization.json:JSON" />
+      <dep id="game.ui:UpdateChecker" />
+      <dep id="flash.display:Shape" />
+      <dep id="com.iflashigame.controller:Test" />
+      <dep id="com.iflashigame.net:ChatManager" />
+      <dep id="AS3" />
+      <dep id="game.model:ArmyInfo" />
+      <dep id="game.ui:ChangelogPanel" />
+      <dep id="flash.net:SharedObject" />
+      <dep id="game.ui:SkinCode" />
+      <dep id="game:UI" />
+      <dep id="flash.events:MouseEvent" />
+      <dep id="com.greensock.loading:SWFLoader" />
+      <dep id="unit4399.events:SaveEvent" />
+      <dep id="game.ui:EquipPanel" />
+      <dep id="flash.text:TextField" />
+      <dep id="game.ui:TalkFrame" />
+      <dep id="game.ui:OnlineCountUI" />
+      <dep id="__AS3__.vec:Vector" />
+      <dep id="flash.text:TextFieldType" />
+      <dep id="flash.display:MovieClip" />
+      <dep id="flash.events:SecurityErrorEvent" />
+      <dep id="game:Fight" />
+      <dep id="com.iflashigame.talk:TalkEvent" />
+      <dep id="com.greensock.loading:LoaderMax" />
+      <dep id="game.model:RoleModel" />
+      <dep id="game:Data" />
+      <dep id="flash.external:ExternalInterface" />
+      <dep id="com.greensock.loading:XMLLoader" />
+      <dep id="flash.net:URLRequest" />
+      <dep id="Error" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="Date" />
+      <dep id="com.iflashigame.utils:TextFilter" />
+      <dep id="com.iflashigame.sound:MySound" />
+      <dep id="flash.system:Capabilities" />
+      <dep id="game.events:UIEvent" />
+      <dep id="flash.events:IOErrorEvent" />
+      <dep id="game.model:Cache" />
+      <dep id="game:Config" />
+      <dep id="com.greensock.loading:DataLoader" />
+      <dep id="com.iflashigame.controller:AESController" />
+      <dep id="XML" />
+      <dep id="flash.net:URLRequestMethod" />
+      <dep id="game.events:SoldierEvent" />
+      <dep id="flash.filesystem:FileStream" />
+      <dep id="flash.filesystem:FileMode" />
+      <dep id="game.events:FightEvent" />
+      <dep id="flash.text:TextFormat" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\iflashigame\controller\ControllerEvent.as" mod="1770810546527" size="311" optimizedsize="303">
+      <def id="com.iflashigame.controller:ControllerEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\unit4399\events\SaveEvent.as" mod="1770810546584" size="609" optimizedsize="595">
+      <def id="unit4399.events:SaveEvent" />
+      <pre id="flash.events:Event" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\fl\managers\IFocusManagerComponent.as" mod="1770810546485" size="321" optimizedsize="321">
+      <def id="fl.managers:IFocusManagerComponent" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\game\model\LeitaiType.as" mod="1770810546425" size="242" optimizedsize="236">
+      <def id="game.model:LeitaiType" />
+      <pre id="Object" />
+      <dep id="AS3" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\BarMC.as" mod="1770810547106" size="359" optimizedsize="341">
+      <def id="BarMC" />
+      <pre id="flash.display:MovieClip" />
+      <dep id="AS3" />
+      <dep id="flash.text:TextField" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\air_stubs.swc(flash.filesystem:FileStream)" mod="1780759818815" size="1077" optimizedsize="504">
+      <def id="flash.filesystem:FileStream" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="flash.filesystem:File" />
+    </script>
+    <script name="D:\BaiduNetdiskDownload\三国q战客户端文件\com\hurlant\crypto\symmetric\AESKey.as" mod="1770810546806" size="11231" optimizedsize="10745">
+      <def id="com.hurlant.crypto.symmetric:AESKey" />
+      <pre id="com.hurlant.crypto.symmetric:ISymmetricKey" />
+      <pre id="Object" />
+      <dep id="AS3" />
+      <dep id="com.hurlant.util:Memory" />
+      <dep id="flash.utils:ByteArray" />
+      <dep id="com.hurlant.crypto.prng:Random" />
+    </script>
+  </scripts>
+  <external-defs>
+    <ext id="flash.text:TextFormatAlign" />
+    <ext id="flash.display:DisplayObject" />
+    <ext id="flash.events:TimerEvent" />
+    <ext id="flash.net:Socket" />
+    <ext id="flash.system:IMEConversionMode" />
+    <ext id="flash.utils:ByteArray" />
+    <ext id="flash.net:LocalConnection" />
+    <ext id="flash.events:Event" />
+    <ext id="flash.net:URLVariables" />
+    <ext id="RegExp" />
+    <ext id="flash.display:AVM1Movie" />
+    <ext id="flash.net:SharedObject" />
+    <ext id="flash.ui:Mouse" />
+    <ext id="JSON" />
+    <ext id="flash.geom:Point" />
+    <ext id="flash.net:URLLoaderDataFormat" />
+    <ext id="flash.utils:describeType" />
+    <ext id="flash.events:ProgressEvent" />
+    <ext id="flash.system:SecurityDomain" />
+    <ext id="flash.filters:DropShadowFilter" />
+    <ext id="flash.events:FocusEvent" />
+    <ext id="flash.net:URLStream" />
+    <ext id="flash.system:Capabilities" />
+    <ext id="flash.net:URLLoader" />
+    <ext id="flash.ui:ContextMenuItem" />
+    <ext id="flash.net:NetConnection" />
+    <ext id="flash.ui:ContextMenu" />
+    <ext id="flash.utils:Timer" />
+    <ext id="flash.geom:Matrix" />
+    <ext id="flash.filters:BlurFilter" />
+    <ext id="flash.display:BitmapData" />
+    <ext id="flash.net:URLRequestMethod" />
+    <ext id="flash.utils:Endian" />
+    <ext id="flash.utils:getTimer" />
+    <ext id="flash.net:navigateToURL" />
+    <ext id="flash.display:InteractiveObject" />
+    <ext id="flash.media:SoundTransform" />
+    <ext id="flash.display:Graphics" />
+    <ext id="flash.events:HTTPStatusEvent" />
+    <ext id="flash.system:System" />
+    <ext id="flash.text:TextFieldAutoSize" />
+    <ext id="Error" />
+    <ext id="flash.display:DisplayObjectContainer" />
+    <ext id="flash.system:Security" />
+    <ext id="flash.geom:ColorTransform" />
+    <ext id="flash.ui:Keyboard" />
+    <ext id="flash.display:Bitmap" />
+    <ext id="flash.display:Sprite" />
+    <ext id="AS3" />
+    <ext id="flash.filters:ColorMatrixFilter" />
+    <ext id="flash.events:MouseEvent" />
+    <ext id="flash.media:Sound" />
+    <ext id="flash.display:Stage" />
+    <ext id="flash.text:TextFieldType" />
+    <ext id="flash.events:SecurityErrorEvent" />
+    <ext id="flash.utils:getQualifiedClassName" />
+    <ext id="flash.net:URLRequest" />
+    <ext id="flash.net:NetStream" />
+    <ext id="flash.utils:Dictionary" />
+    <ext id="flash.system:IME" />
+    <ext id="flash.geom:Rectangle" />
+    <ext id="flash.media:SoundChannel" />
+    <ext id="SecurityError" />
+    <ext id="flash.net:sendToURL" />
+    <ext id="__AS3__.vec:Vector" />
+    <ext id="flash.display:MovieClip" />
+    <ext id="flash.events:IOErrorEvent" />
+    <ext id="flash.filters:GlowFilter" />
+    <ext id="Math" />
+    <ext id="flash.display:SimpleButton" />
+    <ext id="flash.utils:getQualifiedSuperclassName" />
+    <ext id="flash.events:KeyboardEvent" />
+    <ext id="flash.system:ApplicationDomain" />
+    <ext id="Object" />
+    <ext id="flash.system:LoaderContext" />
+    <ext id="flash.events:ErrorEvent" />
+    <ext id="flash.net:NetGroup" />
+    <ext id="flash.external:ExternalInterface" />
+    <ext id="flash.events:EventDispatcher" />
+    <ext id="flash.text:Font" />
+    <ext id="flash.events:TextEvent" />
+    <ext id="flash.display:Shape" />
+    <ext id="flash.utils:getDefinitionByName" />
+    <ext id="flash.text:TextField" />
+    <ext id="XMLList" />
+    <ext id="Date" />
+    <ext id="flash.display:Loader" />
+    <ext id="XML" />
+    <ext id="flash.text:TextFormat" />
+  </external-defs>
+</report>
