@@ -363,6 +363,9 @@ package game.model
       private var _equip1:String = "";
       private var _equip2:String = "";
       private var _equip3:String = "";
+      private var _equip4:String = "";
+      private var _equip5:String = "";
+      private var _equip6:String = "";
 
       public function get equip1():String { return this._equip1 || ""; }
       public function set equip1(param1:String):void { this._equip1 = param1; }
@@ -370,12 +373,21 @@ package game.model
       public function set equip2(param1:String):void { this._equip2 = param1; }
       public function get equip3():String { return this._equip3 || ""; }
       public function set equip3(param1:String):void { this._equip3 = param1; }
+      public function get equip4():String { return this._equip4 || ""; }
+      public function set equip4(param1:String):void { this._equip4 = param1; }
+      public function get equip5():String { return this._equip5 || ""; }
+      public function set equip5(param1:String):void { this._equip5 = param1; }
+      public function get equip6():String { return this._equip6 || ""; }
+      public function set equip6(param1:String):void { this._equip6 = param1; }
 
       public function getEquipSlot(param1:int):String
       {
          if(param1 == 0) return this._equip1;
          if(param1 == 1) return this._equip2;
          if(param1 == 2) return this._equip3;
+         if(param1 == 3) return this._equip4;
+         if(param1 == 4) return this._equip5;
+         if(param1 == 5) return this._equip6;
          return "";
       }
 
@@ -384,6 +396,9 @@ package game.model
          if(param1 == 0) this._equip1 = param2;
          else if(param1 == 1) this._equip2 = param2;
          else if(param1 == 2) this._equip3 = param2;
+         else if(param1 == 3) this._equip4 = param2;
+         else if(param1 == 4) this._equip5 = param2;
+         else if(param1 == 5) this._equip6 = param2;
       }
 
       private function getEquipBonus(param1:String, param2:String):int
@@ -393,27 +408,33 @@ package game.model
          return _val ? int(_val) : 0;
       }
 
-      // 装备白值加成(攻/防/HP基础值)
+      // 装备白值加成(攻/防/HP基础值) -- 6槽汇总
       public function get equipAttackFlat():int
       {
-         return getEquipBonus(this._equip1,"attack") + getEquipBonus(this._equip2,"attack") + getEquipBonus(this._equip3,"attack");
+         return getEquipBonus(this._equip1,"attack") + getEquipBonus(this._equip2,"attack") + getEquipBonus(this._equip3,"attack")
+              + getEquipBonus(this._equip4,"attack") + getEquipBonus(this._equip5,"attack") + getEquipBonus(this._equip6,"attack");
       }
       public function get equipDefenseFlat():int
       {
-         return getEquipBonus(this._equip1,"defense") + getEquipBonus(this._equip2,"defense") + getEquipBonus(this._equip3,"defense");
+         return getEquipBonus(this._equip1,"defense") + getEquipBonus(this._equip2,"defense") + getEquipBonus(this._equip3,"defense")
+              + getEquipBonus(this._equip4,"defense") + getEquipBonus(this._equip5,"defense") + getEquipBonus(this._equip6,"defense");
       }
       public function get equipHPFlat():int
       {
-         return getEquipBonus(this._equip1,"hp") + getEquipBonus(this._equip2,"hp") + getEquipBonus(this._equip3,"hp");
+         return getEquipBonus(this._equip1,"hp") + getEquipBonus(this._equip2,"hp") + getEquipBonus(this._equip3,"hp")
+              + getEquipBonus(this._equip4,"hp") + getEquipBonus(this._equip5,"hp") + getEquipBonus(this._equip6,"hp");
       }
 
-      // 装备百分比加成(基于基础属性)
+      // 装备百分比加成(基于基础属性) -- 6槽汇总
       public function get equipAttackPct():int
       {
          var _total:int = 0;
          _total += getEquipBonus(this._equip1,"attackPct");
          _total += getEquipBonus(this._equip2,"attackPct");
          _total += getEquipBonus(this._equip3,"attackPct");
+         _total += getEquipBonus(this._equip4,"attackPct");
+         _total += getEquipBonus(this._equip5,"attackPct");
+         _total += getEquipBonus(this._equip6,"attackPct");
          return _total;
       }
       public function get equipDefensePct():int
@@ -422,6 +443,9 @@ package game.model
          _total += getEquipBonus(this._equip1,"defensePct");
          _total += getEquipBonus(this._equip2,"defensePct");
          _total += getEquipBonus(this._equip3,"defensePct");
+         _total += getEquipBonus(this._equip4,"defensePct");
+         _total += getEquipBonus(this._equip5,"defensePct");
+         _total += getEquipBonus(this._equip6,"defensePct");
          return _total;
       }
       public function get equipHPPct():int
@@ -430,6 +454,9 @@ package game.model
          _total += getEquipBonus(this._equip1,"hpPct");
          _total += getEquipBonus(this._equip2,"hpPct");
          _total += getEquipBonus(this._equip3,"hpPct");
+         _total += getEquipBonus(this._equip4,"hpPct");
+         _total += getEquipBonus(this._equip5,"hpPct");
+         _total += getEquipBonus(this._equip6,"hpPct");
          return _total;
       }
 
@@ -635,16 +662,21 @@ package game.model
 
       public function getEquipmentStr() : String
       {
-         return (this._equip1||"0") + "," + (this._equip2||"0") + "," + (this._equip3||"0");
+         return (this._equip1||"0") + "," + (this._equip2||"0") + "," + (this._equip3||"0")
+              + "," + (this._equip4||"0") + "," + (this._equip5||"0") + "," + (this._equip6||"0");
       }
 
       public function setEquipmentStr(param1:String) : *
       {
-         if(param1 == null || param1 == "" || param1 == "0,0,0") return;
+         if(param1 == null || param1 == "") return;
          var _parts:Array = param1.split(",");
+         // 兼容3段旧格式(自动扩展到6段, 新槽位默认空)
          if(_parts.length > 0 && _parts[0] != "0") this._equip1 = _parts[0];
          if(_parts.length > 1 && _parts[1] != "0") this._equip2 = _parts[1];
          if(_parts.length > 2 && _parts[2] != "0") this._equip3 = _parts[2];
+         if(_parts.length > 3 && _parts[3] != "0") this._equip4 = _parts[3];
+         if(_parts.length > 4 && _parts[4] != "0") this._equip5 = _parts[4];
+         if(_parts.length > 5 && _parts[5] != "0") this._equip6 = _parts[5];
       }
    }
 }

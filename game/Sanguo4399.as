@@ -1608,8 +1608,8 @@ import game.ui.UpdateChecker;
       private function openEquipHandler(param1:UIEvent) : void
       {
          var _panel:EquipPanel = new EquipPanel(param1.data as ArmyInfo);
-         _panel.x = (stage.stageWidth - 340) / 2;
-         _panel.y = (stage.stageHeight - 260) / 2;
+         _panel.x = (stage.stageWidth - 440) / 2;
+         _panel.y = (stage.stageHeight - 320) / 2;
          addChild(_panel);
       }
 

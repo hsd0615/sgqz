@@ -124,4 +124,130 @@
     <levelReq>100</levelReq><quality>5</quality>
     <icon>proto_4_25</icon><desc>全属性+8%，生命+3000 [传说]</desc>
   </RECORD>
+
+  <!-- ====== 头盔 (slot=4) ====== -->
+  <RECORD>
+    <code>proto_4_6</code><slot>4</slot><name>布帽</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>100</hp><hpPct>0</hpPct>
+    <levelReq>1</levelReq><quality>1</quality>
+    <icon>proto_4_6</icon><desc>生命+100 [普通]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_7</code><slot>4</slot><name>铁盔</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>300</hp><hpPct>0</hpPct>
+    <levelReq>15</levelReq><quality>2</quality>
+    <icon>proto_4_7</icon><desc>生命+300 [精良]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_8</code><slot>4</slot><name>银盔</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>600</hp><hpPct>0</hpPct>
+    <levelReq>30</levelReq><quality>3</quality>
+    <icon>proto_4_8</icon><desc>生命+600 [稀有]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_9</code><slot>4</slot><name>金冠</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>1000</hp><hpPct>5</hpPct>
+    <levelReq>50</levelReq><quality>4</quality>
+    <icon>proto_4_9</icon><desc>生命+1000，生命+5% [史诗]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_10</code><slot>4</slot><name>龙盔</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>2000</hp><hpPct>8</hpPct>
+    <levelReq>80</levelReq><quality>5</quality>
+    <icon>proto_4_10</icon><desc>生命+2000，生命+8% [传说]</desc>
+  </RECORD>
+
+  <!-- ====== 战靴 (slot=5) ====== -->
+  <RECORD>
+    <code>proto_4_16</code><slot>5</slot><name>草鞋</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>20</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>1</levelReq><quality>1</quality>
+    <icon>proto_4_16</icon><desc>防御+20 [普通]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_17</code><slot>5</slot><name>皮靴</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>80</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>15</levelReq><quality>2</quality>
+    <icon>proto_4_17</icon><desc>防御+80 [精良]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_18</code><slot>5</slot><name>铁靴</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>150</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>30</levelReq><quality>3</quality>
+    <icon>proto_4_18</icon><desc>防御+150 [稀有]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_19</code><slot>5</slot><name>银靴</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>220</defense><defensePct>5</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>50</levelReq><quality>4</quality>
+    <icon>proto_4_19</icon><desc>防御+220，防御+5% [史诗]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_20</code><slot>5</slot><name>神行靴</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>350</defense><defensePct>8</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>80</levelReq><quality>5</quality>
+    <icon>proto_4_20</icon><desc>防御+350，防御+8% [传说]</desc>
+  </RECORD>
+
+  <!-- ====== 饰品Ⅱ (slot=6) ====== -->
+  <RECORD>
+    <code>proto_4_26</code><slot>6</slot><name>铜戒指</name>
+    <attack>30</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>10</levelReq><quality>1</quality>
+    <icon>proto_4_26</icon><desc>攻击+30 [普通]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_27</code><slot>6</slot><name>银戒指</name>
+    <attack>80</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>25</levelReq><quality>2</quality>
+    <icon>proto_4_27</icon><desc>攻击+80 [精良]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_28</code><slot>6</slot><name>金戒指</name>
+    <attack>150</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>40</levelReq><quality>3</quality>
+    <icon>proto_4_28</icon><desc>攻击+150 [稀有]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_29</code><slot>6</slot><name>龙戒</name>
+    <attack>250</attack><attackPct>5</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>60</levelReq><quality>4</quality>
+    <icon>proto_4_29</icon><desc>攻击+250，攻击+5% [史诗]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_30</code><slot>6</slot><name>神戒</name>
+    <attack>400</attack><attackPct>8</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>90</levelReq><quality>5</quality>
+    <icon>proto_4_30</icon><desc>攻击+400，攻击+8% [传说]</desc>
+  </RECORD>
 </RECORDS>

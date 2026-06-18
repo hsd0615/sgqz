@@ -465,4 +465,22 @@
   <RECORD><name>护心镜</name><id>shop058</id><category>5</category><code>proto_4_23</code><count>1</count><payType>2</payType><oldPrice>700</oldPrice><newPrice>350</newPrice></RECORD>
   <RECORD><name>和氏璧</name><id>shop059</id><category>5</category><code>proto_4_24</code><count>1</count><payType>2</payType><oldPrice>1500</oldPrice><newPrice>800</newPrice></RECORD>
   <RECORD><name>传国玉玺</name><id>shop060</id><category>5</category><code>proto_4_25</code><count>1</count><payType>2</payType><oldPrice>5000</oldPrice><newPrice>2500</newPrice></RECORD>
+  <!-- 头盔 slot=4 -->
+  <RECORD><name>布帽</name><id>shop061</id><category>5</category><code>proto_4_6</code><count>1</count><payType>2</payType><oldPrice>60</oldPrice><newPrice>30</newPrice></RECORD>
+  <RECORD><name>铁盔</name><id>shop062</id><category>5</category><code>proto_4_7</code><count>1</count><payType>2</payType><oldPrice>200</oldPrice><newPrice>100</newPrice></RECORD>
+  <RECORD><name>银盔</name><id>shop063</id><category>5</category><code>proto_4_8</code><count>1</count><payType>2</payType><oldPrice>450</oldPrice><newPrice>220</newPrice></RECORD>
+  <RECORD><name>金冠</name><id>shop064</id><category>5</category><code>proto_4_9</code><count>1</count><payType>2</payType><oldPrice>900</oldPrice><newPrice>450</newPrice></RECORD>
+  <RECORD><name>龙盔</name><id>shop065</id><category>5</category><code>proto_4_10</code><count>1</count><payType>2</payType><oldPrice>2000</oldPrice><newPrice>1000</newPrice></RECORD>
+  <!-- 战靴 slot=5 -->
+  <RECORD><name>草鞋</name><id>shop066</id><category>5</category><code>proto_4_16</code><count>1</count><payType>2</payType><oldPrice>50</oldPrice><newPrice>25</newPrice></RECORD>
+  <RECORD><name>皮靴</name><id>shop067</id><category>5</category><code>proto_4_17</code><count>1</count><payType>2</payType><oldPrice>180</oldPrice><newPrice>90</newPrice></RECORD>
+  <RECORD><name>铁靴</name><id>shop068</id><category>5</category><code>proto_4_18</code><count>1</count><payType>2</payType><oldPrice>400</oldPrice><newPrice>200</newPrice></RECORD>
+  <RECORD><name>银靴</name><id>shop069</id><category>5</category><code>proto_4_19</code><count>1</count><payType>2</payType><oldPrice>800</oldPrice><newPrice>400</newPrice></RECORD>
+  <RECORD><name>神行靴</name><id>shop070</id><category>5</category><code>proto_4_20</code><count>1</count><payType>2</payType><oldPrice>1800</oldPrice><newPrice>900</newPrice></RECORD>
+  <!-- 饰品Ⅱ slot=6 -->
+  <RECORD><name>铜戒指</name><id>shop071</id><category>5</category><code>proto_4_26</code><count>1</count><payType>2</payType><oldPrice>80</oldPrice><newPrice>40</newPrice></RECORD>
+  <RECORD><name>银戒指</name><id>shop072</id><category>5</category><code>proto_4_27</code><count>1</count><payType>2</payType><oldPrice>250</oldPrice><newPrice>120</newPrice></RECORD>
+  <RECORD><name>金戒指</name><id>shop073</id><category>5</category><code>proto_4_28</code><count>1</count><payType>2</payType><oldPrice>550</oldPrice><newPrice>280</newPrice></RECORD>
+  <RECORD><name>龙戒</name><id>shop074</id><category>5</category><code>proto_4_29</code><count>1</count><payType>2</payType><oldPrice>1100</oldPrice><newPrice>550</newPrice></RECORD>
+  <RECORD><name>神戒</name><id>shop075</id><category>5</category><code>proto_4_30</code><count>1</count><payType>2</payType><oldPrice>2500</oldPrice><newPrice>1200</newPrice></RECORD>
 </RECORDS>

@@ -346,14 +346,27 @@ package game.ui
             _num = int(_parts[_parts.length - 1]);
          }
 
-         // proto_4_1~5: 武器, proto_4_11~15: 防具, proto_4_21~25: 饰品
-         if(_num >= 21)
+         // 装备类型判断: _num后缀 → 槽位
+         // 1~5:武器  6~10:头盔  11~15:铠甲  16~20:战靴  21~25:饰品1  26~30:饰品2
+         if(_num >= 26)
          {
             _bmp = EquipIconAssets.accessory();
+         }
+         else if(_num >= 21)
+         {
+            _bmp = EquipIconAssets.accessory();
+         }
+         else if(_num >= 16)
+         {
+            _bmp = EquipIconAssets.boots();
          }
          else if(_num >= 11)
          {
             _bmp = EquipIconAssets.armor();
+         }
+         else if(_num >= 6)
+         {
+            _bmp = EquipIconAssets.helmet();
          }
          else
          {

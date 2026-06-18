@@ -173,13 +173,26 @@ package game.ui
          {
             _num = int(_parts[_parts.length - 1]);
          }
+         // 1~5:武器 6~10:头盔 11~15:铠甲 16~20:战靴 21~25:饰品 26~30:饰品2
+         if(_num >= 26)
+         {
+            return EquipIconAssets.accessory();
+         }
          if(_num >= 21)
          {
             return EquipIconAssets.accessory();
          }
+         if(_num >= 16)
+         {
+            return EquipIconAssets.boots();
+         }
          if(_num >= 11)
          {
             return EquipIconAssets.armor();
+         }
+         if(_num >= 6)
+         {
+            return EquipIconAssets.helmet();
          }
          return EquipIconAssets.weapon();
       }

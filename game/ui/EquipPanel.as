@@ -1,6 +1,7 @@
 package game.ui
 {
    import com.iflashigame.controller.AESController;
+   import flash.display.Bitmap;
    import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
@@ -8,6 +9,7 @@ package game.ui
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
    import flash.filters.GlowFilter;
+   import flash.geom.Point;
    import game.Config;
    import game.Data;
    import game.model.ArmyInfo;
@@ -18,14 +20,22 @@ package game.ui
 
    public class EquipPanel extends Sprite
    {
+      // 6槽位: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
+      private var _slotLabels:Array = ["武器","铠甲","饰品Ⅰ","头盔","战靴","饰品Ⅱ"];
+      private var _slotIcons:Array = ["weapon","armor","accessory","helmet","boots","accessory"];
+      // 槽位布局坐标 (x,y)
+      private static const SLOT_POS:Array = [
+         new Point(90, 115),   // 0:武器  middle-left
+         new Point(260, 115),  // 1:铠甲  middle-right
+         new Point(175, 35),   // 2:头盔  top-center
+         new Point(5, 195),    // 3:饰品Ⅰ bottom-left
+         new Point(175, 115),  // 4:战靴  center (same as armor but different row - wait, let me redesign)
+         new Point(345, 195)   // 5:饰品Ⅱ bottom-right
+      ];
+
       private var _armyInfo:ArmyInfo;
-      private var _slotLabels:Array = ["武器","防具","饰品"];
-      private var _slotKeys:Array = ["equip1","equip2","equip3"];
-      private var _slotIdx:Array = [0,1,2];
-      private var _slotTFs:Array = [];
-      private var _slotBtns:Array = [];
+      private var _slotSprites:Array = [];
       private var _bagList:Sprite;
-      private var _bagItems:Array = [];
       private var _selectingSlot:int = -1;
 
       public function EquipPanel(param1:ArmyInfo)
@@ -37,8 +47,8 @@ package game.ui
 
       private function buildUI() : void
       {
-         var _w:int = 340;
-         var _h:int = 260;
+         var _w:int = 440;
+         var _h:int = 320;
 
          // 背景
          var _bg:Shape = new Shape();
@@ -46,8 +56,6 @@ package game.ui
          _bg.graphics.lineStyle(2, 0x8B6914, 0.9);
          _bg.graphics.drawRoundRect(0, 0, _w, _h, 10, 10);
          _bg.graphics.endFill();
-         _bg.graphics.lineStyle(1, 0xC8A84E, 0.5);
-         _bg.graphics.moveTo(10, 32); _bg.graphics.lineTo(_w - 10, 32);
          addChild(_bg);
 
          // 标题
@@ -60,52 +68,32 @@ package game.ui
          _titleTF.y = 6;
          addChild(_titleTF);
 
-         // 3个装备槽
-         for(var _i:int = 0; _i < 3; _i++)
+         // 6槽位 — RPG布局
+         // Layout:
+         //           [头盔]              y=35
+         //   [武器]  [铠甲]  [饰品Ⅰ]     y=115
+         //   [战靴]                     y=195
+         //           [饰品Ⅱ]            y=195
+         var _slotLayout:Array = [
+            {label:"头盔", x:195, y:35},       // slot 3, top-center
+            {label:"武器", x:5, y:115},        // slot 0, middle-left
+            {label:"铠甲", x:195, y:115},      // slot 1, middle-center
+            {label:"饰品Ⅰ", x:385, y:115},     // slot 2, middle-right
+            {label:"战靴", x:100, y:195},      // slot 4, bottom-left
+            {label:"饰品Ⅱ", x:290, y:195}      // slot 5, bottom-right
+         ];
+         var _slotIndices:Array = [3, 0, 1, 2, 4, 5];
+
+         for(var _si:int = 0; _si < 6; _si++)
          {
-            var _slotY:int = 40 + _i * 50;
-            // 槽位标签
-            var _labelTF:TextField = new TextField();
-            _labelTF.defaultTextFormat = new TextFormat("SimSun", 12, 0xC8A84E, true);
-            _labelTF.text = this._slotLabels[_i] + ":";
-            _labelTF.selectable = false;
-            _labelTF.width = 50; _labelTF.x = 14; _labelTF.y = _slotY;
-            addChild(_labelTF);
-
-            // 装备内容
-            var _contentTF:TextField = new TextField();
-            _contentTF.defaultTextFormat = new TextFormat("SimSun", 12, 0xD4C8A0);
-            _contentTF.selectable = false;
-            _contentTF.wordWrap = true;
-            _contentTF.width = 160; _contentTF.height = 42;
-            _contentTF.x = 64; _contentTF.y = _slotY;
-            addChild(_contentTF);
-            this._slotTFs.push(_contentTF);
-
-            // 操作按钮
-            var _btn:Sprite = new Sprite();
-            var _bs:Shape = new Shape();
-            _bs.graphics.beginFill(0x3a2010, 0.9);
-            _bs.graphics.lineStyle(1, 0xC8A84E, 0.7);
-            _bs.graphics.drawRoundRect(0, 0, 54, 22, 4, 4);
-            _bs.graphics.endFill();
-            _btn.addChild(_bs);
-            var _bTF:TextField = new TextField();
-            _bTF.defaultTextFormat = new TextFormat("SimSun", 11, 0xFFD700);
-            _bTF.selectable = false;
-            _bTF.width = 54; _bTF.height = 18;
-            _bTF.x = 0; _bTF.y = 3;
-            _bTF.text = "...";
-            _btn.addChild(_bTF);
-            _btn.buttonMode = true;
-            _btn.x = 234; _btn.y = _slotY;
-            this._slotBtns.push({btn:_btn, tf:_bTF, index:_i});
-            var _self:EquipPanel = this;
-            _btn.addEventListener(MouseEvent.CLICK, function(p:*):void {
-               _self.onSlotClick(int(p.currentTarget.name));
-            });
-            _btn.name = String(_i);
-            addChild(_btn);
+            var _slotIdx:int = _slotIndices[_si];
+            var _pos:Object = _slotLayout[_si];
+            var _cell:Sprite = this.createSlotCell(_slotIdx, _pos.label);
+            _cell.x = _pos.x;
+            _cell.y = _pos.y;
+            _cell.name = "slot" + _slotIdx;
+            this._slotSprites[_slotIdx] = _cell;
+            addChild(_cell);
          }
 
          // 关闭按钮
@@ -113,17 +101,18 @@ package game.ui
          var _cs:Shape = new Shape();
          _cs.graphics.beginFill(0x5a2010, 0.9);
          _cs.graphics.lineStyle(1, 0xC8A84E, 0.8);
-         _cs.graphics.drawRoundRect(0, 0, 70, 24, 5, 5);
+         _cs.graphics.drawRoundRect(0, 0, 80, 26, 5, 5);
          _cs.graphics.endFill();
          _closeBtn.addChild(_cs);
          var _cTF:TextField = new TextField();
          _cTF.defaultTextFormat = new TextFormat("SimHei", 12, 0xFFD700, true);
-         _cTF.text = "关闭";
+         _cTF.text = "关 闭";
          _cTF.selectable = false; _cTF.autoSize = TextFieldAutoSize.CENTER;
-         _cTF.x = (70 - _cTF.width) / 2; _cTF.y = 4;
+         _cTF.x = (80 - _cTF.width) / 2; _cTF.y = 5;
          _closeBtn.addChild(_cTF);
          _closeBtn.buttonMode = true;
-         _closeBtn.x = (_w - 70) / 2; _closeBtn.y = _h - 32;
+         _closeBtn.x = (_w - 80) / 2; _closeBtn.y = _h - 38;
+         var _self:EquipPanel = this;
          _closeBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
             _self.close();
          });
@@ -131,18 +120,50 @@ package game.ui
 
          // 背包选择列表(初始隐藏)
          this._bagList = new Sprite();
-         this._bagList.x = 64; this._bagList.y = 60;
          this._bagList.visible = false;
          addChild(this._bagList);
 
          this.refresh();
       }
 
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700];
+      private function createSlotCell(param1:int, param2:String) : Sprite
+      {
+         var _cell:Sprite = new Sprite();
+         _cell.mouseChildren = false;
+
+         // 图标框背景
+         var _frame:Shape = new Shape();
+         _frame.graphics.beginFill(0x1a1008, 0.9);
+         _frame.graphics.lineStyle(1.5, 0x8B6914, 0.7);
+         _frame.graphics.drawRoundRect(0, 0, 50, 50, 6, 6);
+         _frame.graphics.endFill();
+         _cell.addChild(_frame);
+
+         // 槽位标签
+         var _labelTF:TextField = new TextField();
+         _labelTF.defaultTextFormat = new TextFormat("SimHei", 11, 0xC8A84E, true);
+         _labelTF.text = param2;
+         _labelTF.selectable = false;
+         _labelTF.autoSize = TextFieldAutoSize.CENTER;
+         _labelTF.x = (50 - _labelTF.width) / 2;
+         _labelTF.y = 54;
+         _cell.addChild(_labelTF);
+
+         // 点击区域
+         _cell.buttonMode = true;
+         var _self:EquipPanel = this;
+         var _slotIdx:int = param1;
+         _cell.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
+            _self.onSlotClick(_slotIdx);
+         });
+
+         return _cell;
+      }
+
+      private var _qualityColors:Array = [0x999999, 0xCCCCCC, 0x4bea13, 0x16d2fa, 0xe720f9, 0xFFD700];
       private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说"];
 
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
-      private function getQualityName(param1:int):String { return _qualityNames[param1] || "?"; }
 
       private function formatEquipInfo(param1:String):String
       {
@@ -155,7 +176,7 @@ package game.ui
          var _hp:* = EquipData.get(param1,"hp");
          var _hpp:* = EquipData.get(param1,"hpPct");
          var _q:int = int(EquipData.get(param1,"quality"));
-         var _s:String = "[" + this.getQualityName(_q) + "] " + String(_n||"?");
+         var _s:String = "[" + this._qualityNames[_q] + "] " + String(_n||"?");
          if(int(_atk) > 0) _s += " 攻+" + int(_atk);
          if(int(_atkp) > 0) _s += " 攻+" + int(_atkp) + "%";
          if(int(_def) > 0) _s += " 防+" + int(_def);
@@ -167,26 +188,58 @@ package game.ui
 
       private function refresh() : void
       {
-         for(var _i:int = 0; _i < 3; _i++)
+         for(var _i:int = 0; _i < 6; _i++)
          {
+            var _cell:Sprite = this._slotSprites[_i] as Sprite;
+            if(_cell == null) continue;
             var _eqCode:String = this._armyInfo.getEquipSlot(_i);
-            var _tf:TextField = this._slotTFs[_i];
-            var _btnData:Object = this._slotBtns[_i];
+            // 清除旧图标 (保留frame和label)
+            while(_cell.numChildren > 2) _cell.removeChildAt(2);
+
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
-               _tf.text = this.formatEquipInfo(_eqCode);
+               // 显示装备图标
+               var _bmp:Bitmap = this.getEquipIcon(_eqCode);
+               if(_bmp != null)
+               {
+                  _bmp.scaleX = 0.35;
+                  _bmp.scaleY = 0.35;
+                  _bmp.smoothing = true;
+                  _bmp.x = (50 - _bmp.width) / 2;
+                  _bmp.y = (50 - _bmp.height) / 2;
+                  _cell.addChild(_bmp);
+               }
+               // 添加品质光晕
                var _q:int = int(EquipData.get(_eqCode,"quality"));
-               _tf.textColor = this.getQualityColor(_q);
-               _btnData.tf.text = "卸下";
+               var _glow:GlowFilter = new GlowFilter(this.getQualityColor(_q), 0.6, 6, 6, 2);
+               _cell.filters = [_glow];
             }
             else
             {
-               _tf.text = "空";
-               _tf.textColor = 0x666666;
-               _btnData.tf.text = "装备";
+               // 空槽 - 灰色占位
+               _cell.filters = [];
+               var _empty:Shape = new Shape();
+               _empty.graphics.beginFill(0x333333, 0.5);
+               _empty.graphics.drawRoundRect(12, 12, 26, 26, 3, 3);
+               _empty.graphics.endFill();
+               _cell.addChild(_empty);
             }
          }
          this.hideBagList();
+      }
+
+      private function getEquipIcon(param1:String) : Bitmap
+      {
+         if(param1 == null || param1 == "") return null;
+         var _parts:Array = param1.split("_");
+         var _num:int = 0;
+         if(_parts.length >= 3) _num = int(_parts[_parts.length - 1]);
+         if(_num >= 26) return EquipIconAssets.accessory();
+         if(_num >= 21) return EquipIconAssets.accessory();
+         if(_num >= 16) return EquipIconAssets.boots();
+         if(_num >= 11) return EquipIconAssets.armor();
+         if(_num >= 6) return EquipIconAssets.helmet();
+         return EquipIconAssets.weapon();
       }
 
       private function onSlotClick(param1:int) : void
@@ -194,12 +247,10 @@ package game.ui
          var _eqCode:String = this._armyInfo.getEquipSlot(param1);
          if(_eqCode != null && _eqCode != "" && _eqCode != "0")
          {
-            // 卸下操作
             this.unequip(param1);
          }
          else
          {
-            // 显示背包中对应类型的装备
             this.showBagList(param1);
          }
       }
@@ -244,6 +295,7 @@ package game.ui
       {
          this.hideBagList();
          this._selectingSlot = param1;
+         // slot 0→1, 1→2, 2→3, 3→4, 4→5, 5→6 (EquipData slot从1开始)
          var _items:Array = RoleModel.getInstance().getBagEquipItems(param1 + 1);
          if(_items.length == 0)
          {
@@ -251,31 +303,28 @@ package game.ui
             return;
          }
 
-         // 绘制背包列表背景
-         this._bagList.graphics.clear();
+         // 弹出列表 - 放在面板中央偏右
+         this._bagList.x = 100;
+         this._bagList.y = 240;
+         var _listW:int = 240;
          var _listH:int = Math.min(_items.length, 5) * 28 + 8;
-         this._bagList.graphics.beginFill(0x1a1008, 0.95);
-         this._bagList.graphics.lineStyle(1, 0x8B6914, 0.8);
-         this._bagList.graphics.drawRoundRect(0, 0, 200, _listH, 5, 5);
+         this._bagList.graphics.clear();
+         this._bagList.graphics.beginFill(0x1a1008, 0.97);
+         this._bagList.graphics.lineStyle(1, 0x8B6914, 0.9);
+         this._bagList.graphics.drawRoundRect(0, 0, _listW, _listH, 5, 5);
          this._bagList.graphics.endFill();
 
          var _self:EquipPanel = this;
          for(var _i:int = 0; _i < _items.length; _i++)
          {
             var _item:Object = _items[_i];
-            var _en:* = EquipData.get(_item.code,"name");
-            var _ea:* = EquipData.get(_item.code,"attack");
-            var _ed:* = EquipData.get(_item.code,"defense");
-            var _eh:* = EquipData.get(_item.code,"hp");
             var _elr:* = EquipData.get(_item.code,"levelReq");
-
             var _row:Sprite = new Sprite();
             _row.y = 4 + _i * 28;
-
             var _rowTF:TextField = new TextField();
             _rowTF.defaultTextFormat = new TextFormat("SimSun", 11, 0xD4C8A0);
             _rowTF.selectable = false;
-            _rowTF.width = 195; _rowTF.height = 20;
+            _rowTF.width = _listW - 8; _rowTF.height = 20;
             _rowTF.x = 4; _rowTF.y = 0;
             var _txt:String = this.formatEquipInfo(_item.code);
             _txt += "  Lv." + (int(_elr)||1);
@@ -291,7 +340,6 @@ package game.ui
             }
             _rowTF.text = _txt;
             _row.addChild(_rowTF);
-
             _row.buttonMode = (this._armyInfo.level >= (int(_elr)||1));
             _row.name = _item.code;
             _row.addEventListener(MouseEvent.CLICK, function(p:*):void {
@@ -329,8 +377,15 @@ package game.ui
             {
                if(param3.data.general)
                {
-                  _self._armyInfo.setEquipSlot(param1, param3.data.general.equipment ?
-                     param3.data.general.equipment.split(",")[param1] : param2);
+                  var _eqArr:Array = param3.data.general.equipment.split(",");
+                  if(_eqArr.length > param1 && _eqArr[param1] != "0")
+                  {
+                     _self._armyInfo.setEquipSlot(param1, _eqArr[param1]);
+                  }
+                  else
+                  {
+                     _self._armyInfo.setEquipSlot(param1, param2);
+                  }
                }
                if(param3.data.bagModel)
                {

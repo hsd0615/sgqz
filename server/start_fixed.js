@@ -28,8 +28,8 @@ function createPlayer(uid, name, img, agent, pwd) {
   return p;
 }
 function findGenerals(pid) { return db.generals.filter(g => g.player_id === pid); }
-function createGeneral(pid, code, name, level, evo, feat, tf, k1, k1l, k2, k2l, k3, k3l, eq1, eq2, eq3) {
-  const g = { id: db.nextId.generals++, player_id: pid, general_id: Math.floor(Math.random()*100000), code, name, level:level||1, evolution:evo||0, feature:feat||0, tianfu:tf||null, kezhi1:k1||0, kezhi1_level:k1l||1, kezhi2:k2||0, kezhi2_level:k2l||1, kezhi3:k3||0, kezhi3_level:k3l||1, is_deployed: 0, equip1: eq1||'0', equip2: eq2||'0', equip3: eq3||'0' };
+function createGeneral(pid, code, name, level, evo, feat, tf, k1, k1l, k2, k2l, k3, k3l, eq1, eq2, eq3, eq4, eq5, eq6) {
+  const g = { id: db.nextId.generals++, player_id: pid, general_id: Math.floor(Math.random()*100000), code, name, level:level||1, evolution:evo||0, feature:feat||0, tianfu:tf||null, kezhi1:k1||0, kezhi1_level:k1l||1, kezhi2:k2||0, kezhi2_level:k2l||1, kezhi3:k3||0, kezhi3_level:k3l||1, is_deployed: 0, equip1: eq1||'0', equip2: eq2||'0', equip3: eq3||'0', equip4: eq4||'0', equip5: eq5||'0', equip6: eq6||'0' };
   db.generals.push(g);
   save();
   return g;
@@ -280,6 +280,9 @@ function migrateEquipment() {
     if (g.equip1 === undefined) { g.equip1 = '0'; changed = true; }
     if (g.equip2 === undefined) { g.equip2 = '0'; changed = true; }
     if (g.equip3 === undefined) { g.equip3 = '0'; changed = true; }
+    if (g.equip4 === undefined) { g.equip4 = '0'; changed = true; }
+    if (g.equip5 === undefined) { g.equip5 = '0'; changed = true; }
+    if (g.equip6 === undefined) { g.equip6 = '0'; changed = true; }
     if (changed) fixed++;
   }
   if (fixed > 0) { console.log('[Migrate] Added equipment slots to ' + fixed + ' generals'); }
@@ -369,7 +372,7 @@ function makeArmyModel(playerId) {
     id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
     feature: g.feature, evolution: g.evolution,
     kezhi: getKezhiStr(g),  // XML类型权威 + DB等级
-    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0'),
+    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
   }));
 }
 function makeBagModel(playerId) {
@@ -430,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.10';
+  _cachedClientVersion = '2.10.11';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -552,7 +555,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '2.10.10', title: '\u{1F4CB} 装备系统完善',
+      { version: '2.10.11', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
       { version: '2.10.0', title: '\u{1F4CB} 装备系统上线',
         body: '【新功能】\n• 武将装备系统正式上线！15件装备，5个品质等级\n• 装备分为武器、防具、饰品三类\n• 装备提供攻击/防御/生命加成，高品质装备还有百分比属性\n• 商城新增装备分类，点卡购买\n• 武将详情页新增装备按钮，可随时装备和卸下' },
@@ -1066,9 +1069,9 @@ function handleRequest(socket, req) {
       // === 装备物品 ===
       var g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
-      var slotMap = { 0: 'equip1', 1: 'equip2', 2: 'equip3' };
+      var slotMap = { 0: 'equip1', 1: 'equip2', 2: 'equip3', 3: 'equip4', 4: 'equip5', 5: 'equip6' };
       var slotIdx = parseInt(data.slot) || 0;
-      if (slotIdx < 0 || slotIdx > 2) return jsonRawResponse(socket, { success: false, message: '槽位无效' });
+      if (slotIdx < 0 || slotIdx > 5) return jsonRawResponse(socket, { success: false, message: '槽位无效' });
       var itemCode = String(data.itemCode);
       var edef = EQUIP_DATA[itemCode];
       if (!edef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
@@ -1105,16 +1108,16 @@ function handleRequest(socket, req) {
 
       // 设置装备
       g[slotMap[slotIdx]] = itemCode;
-      respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0') };
+      respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') };
       respData.bagModel = makeBagModel(p.id);
       console.log('[Equip] ' + p.role_name + ' ' + g.name + ' 装备 ' + edef.name + ' 到槽位' + (slotIdx+1));
     } else if (headCode === 10051) {
       // === 卸下装备 ===
       var g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
-      var slotMap = { 0: 'equip1', 1: 'equip2', 2: 'equip3' };
+      var slotMap = { 0: 'equip1', 1: 'equip2', 2: 'equip3', 3: 'equip4', 4: 'equip5', 5: 'equip6' };
       var slotIdx = parseInt(data.slot) || 0;
-      if (slotIdx < 0 || slotIdx > 2) return jsonRawResponse(socket, { success: false, message: '槽位无效' });
+      if (slotIdx < 0 || slotIdx > 5) return jsonRawResponse(socket, { success: false, message: '槽位无效' });
       var curCode = g[slotMap[slotIdx]];
       if (!curCode || curCode === '0') return jsonRawResponse(socket, { success: false, message: '该槽位没有装备' });
 
@@ -1131,7 +1134,7 @@ function handleRequest(socket, req) {
       }
 
       g[slotMap[slotIdx]] = '0';
-      respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0') };
+      respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') };
       respData.bagModel = makeBagModel(p.id);
       console.log('[Unequip] ' + p.role_name + ' ' + g.name + ' 卸下槽位' + (slotIdx+1));
     }
