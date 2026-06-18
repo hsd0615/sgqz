@@ -81,7 +81,16 @@ package game.model {
          _data["proto_4_97"]={slot:6,name:"星辰令",attack:2000,attackPct:25,critRate:12,critDmg:22,defense:650,hp:3600,levelReq:195,quality:9,iconIdx:25};
          _data["proto_4_98"]={slot:6,name:"轮回印",attack:2600,attackPct:30,dmgReduce:10,lifesteal:8,defense:850,hp:4600,levelReq:200,quality:10,iconIdx:29};
       }
-      public static function get(c:String,k:String):* { init(); return (_data[c]&&_data[c][k]!=undefined)?_data[c][k]:null; }
+      // 兼容旧装备码(proto_4_1~30) → 映射到新数据
+      private static var _compat:Object = {
+         "proto_4_1":"proto_4_31","proto_4_2":"proto_4_32","proto_4_3":"proto_4_33","proto_4_4":"proto_4_34","proto_4_5":"proto_4_35",
+         "proto_4_11":"proto_4_39","proto_4_12":"proto_4_40","proto_4_13":"proto_4_41","proto_4_14":"proto_4_42","proto_4_15":"proto_4_43",
+         "proto_4_21":"proto_4_47","proto_4_22":"proto_4_48","proto_4_23":"proto_4_49","proto_4_24":"proto_4_50","proto_4_25":"proto_4_51",
+         "proto_4_6":"proto_4_55","proto_4_7":"proto_4_56","proto_4_8":"proto_4_57","proto_4_9":"proto_4_58","proto_4_10":"proto_4_59",
+         "proto_4_16":"proto_4_63","proto_4_17":"proto_4_64","proto_4_18":"proto_4_65","proto_4_19":"proto_4_66","proto_4_20":"proto_4_67",
+         "proto_4_26":"proto_4_71","proto_4_27":"proto_4_72","proto_4_28":"proto_4_73","proto_4_29":"proto_4_74","proto_4_30":"proto_4_75"
+      };
+      public static function get(c:String,k:String):* { init(); var _r=_data[c]; if(!_r&&_compat[c]) _r=_data[_compat[c]]; return (_r&&_r[k]!=undefined)?_r[k]:null; }
       public static function getBySlot(s:int):Array { init(); var a:Array=[]; for(var k:String in _data) if(_data[k].slot==s) a.push(k); return a; }
       public static function getAllCodes():Array { init(); var a:Array=[]; for(var k:String in _data) a.push(k); return a; }
       public static function getShopEquipItems():Array { return [

@@ -263,6 +263,7 @@ package game.ui
 
       private function showEquipSlots() : void
       {
+         var _self:GeneralInfoPanel = this;
          var _si:int = 0;
          while(_si < 6)
          {
@@ -309,10 +310,10 @@ package game.ui
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                var _qc:uint = getQualityBgColor(_q);
 
-               // 品质纯色背景
+               // 品质纯色背景(不透明覆盖)
                var _bg:Shape = new Shape();
-               _bg.graphics.beginFill(_qc, 0.7);
-               _bg.graphics.drawRoundRect(1, 1, 32, 32, 4, 4);
+               _bg.graphics.beginFill(_qc, 0.95);
+               _bg.graphics.drawRoundRect(0, 0, 34, 34, 4, 4);
                _bg.graphics.endFill();
                if(_slot is Sprite) (_slot as Sprite).addChild(_bg);
                else (_slot as MovieClip).addChild(_bg);
@@ -329,6 +330,28 @@ package game.ui
                   if(_slot is Sprite) (_slot as Sprite).addChild(_bmp);
                   else (_slot as MovieClip).addChild(_bmp);
                }
+
+               // 悬停显示装备属性
+               var _eqC:String = _eqCode;
+               _slot.addEventListener(MouseEvent.MOUSE_OVER, function(p:*):void {
+                  var _n:* = EquipData.get(_eqC,"name"); var _a:int=int(EquipData.get(_eqC,"attack"))||0;
+                  var _ap:int=int(EquipData.get(_eqC,"attackPct"))||0; var _d:int=int(EquipData.get(_eqC,"defense"))||0;
+                  var _dp:int=int(EquipData.get(_eqC,"defensePct"))||0; var _h:int=int(EquipData.get(_eqC,"hp"))||0;
+                  var _hp:int=int(EquipData.get(_eqC,"hpPct"))||0; var _ls:int=int(EquipData.get(_eqC,"lifesteal"))||0;
+                  var _db:int=int(EquipData.get(_eqC,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_eqC,"dmgReduce"))||0;
+                  var _cr:int=int(EquipData.get(_eqC,"critRate"))||0; var _cd:int=int(EquipData.get(_eqC,"critDmg"))||0;
+                  var _t:String = "<b>"+_n+"</b>\n";
+                  if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
+                  if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
+                  if(_h||_hp) _t+="气血:"+(_h>0?"+"+_h:_h)+(_hp>0?"+"+_hp+"%":"")+"\n";
+                  if(_ls>0) _t+="吸血:"+_ls+"%\n"; if(_db>0) _t+="增伤:"+_db+"%\n";
+                  if(_dr>0) _t+="减伤:"+_dr+"%\n"; if(_cr>0) _t+="暴击:"+_cr+"%\n";
+                  if(_cd>0) _t+="暴伤:"+_cd+"%\n";
+                  _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:130,height:120}));
+               });
+               _slot.addEventListener(MouseEvent.MOUSE_OUT, function(p:*):void {
+                  _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true));
+               });
             }
             _si++;
          }
