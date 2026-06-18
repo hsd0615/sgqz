@@ -352,9 +352,12 @@ package game.ui
       private var _debugLayer:Sprite = null;
 
       /**
-       * 增强像素扫描: 检测高对比度圆形/blob区域
-       * 不限定颜色 — 检测亮度边缘, 找环形/圆形特征
-       * @return [{x,y}, ...] 候选中心点
+       * 圆形环检测器 — 在皮肤bitmap中搜索"亮色圆环+暗色中心"图案
+       *
+       * 算法: 对每个候选中心, 比较环形采样点(半径~22px)与内部采样点
+       * (半径~8px)的亮度差。高分 = 亮环围暗心 = 装备槽
+       *
+       * @return [{x,y,score}, ...] 按score降序
        */
       private function scanPixelsForSlots() : Array
       {
@@ -364,19 +367,18 @@ package game.ui
          var _sb:Rectangle = _skin.getBounds(_skin);
          if(_sb.width < 20 || _sb.height < 20) return _result;
 
-         // 扫描范围: 皮肤全区域
          var _scanX:int = int(_sb.x);
          var _scanY:int = int(_sb.y);
          var _scanW:int = int(_sb.width);
          var _scanH:int = int(_sb.height);
-         if(_scanW < 80 || _scanH < 80) return _result;
          if(_scanW > 500) _scanW = 500;
          if(_scanH > 400) _scanH = 400;
+         if(_scanW < 80 || _scanH < 80) return _result;
 
          var _bmd:BitmapData = null;
          try
          {
-            _bmd = new BitmapData(_scanW, _scanH, true, 0);
+            _bmd = new BitmapData(_scanW, _scanH, false, 0);
             var _mtx:Matrix = new Matrix();
             _mtx.translate(-_scanX, -_scanY);
             _bmd.draw(_skin, _mtx, null, null, null, true);
@@ -387,55 +389,107 @@ package game.ui
             return _result;
          }
 
-         // ── 方法: 检测高对比度边缘 → 找圆形闭合轮廓 ──
-         // 先转灰度, 然后找亮度峰值(亮色圆圈)和暗色中心
-         var _step:int = 3;
-         var _edgeHits:Array = [];
+         // ── 环形采样参数 ──
+         var _ringRadius:int = 22;     // 圆环半径(槽位典型半径)
+         var _innerRadius:int = 8;     // 内部采样半径
+         var _sampleCount:int = 16;    // 采样方向数
+         var _stride:int = 5;          // 扫描步长(性能vs精度)
+         var _minScore:Number = 30;    // 最低环形得分
 
-         var _py:int = _step;
-         while(_py < _scanH - _step)
+         var _candidates:Array = [];
+         var _angles:Array = [];
+         var _ai:int = 0;
+         while(_ai < _sampleCount)
          {
-            var _px:int = _step;
-            while(_px < _scanW - _step)
+            _angles.push(2 * Math.PI * _ai / _sampleCount);
+            _ai++;
+         }
+
+         // 预计算采样偏移
+         var _ringOffsets:Array = [];
+         var _innerOffsets:Array = [];
+         var _di:int = 0;
+         while(_di < _sampleCount)
+         {
+            var _ang:Number = _angles[_di];
+            _ringOffsets.push({
+               x: int(_ringRadius * Math.cos(_ang)),
+               y: int(_ringRadius * Math.sin(_ang))
+            });
+            _innerOffsets.push({
+               x: int(_innerRadius * Math.cos(_ang)),
+               y: int(_innerRadius * Math.sin(_ang))
+            });
+            _di++;
+         }
+
+         // ── 扫描每个候选中心 ──
+         var _margin:int = _ringRadius + 2;
+         var _cy:int = _margin;
+         while(_cy < _scanH - _margin)
+         {
+            var _cx:int = _margin;
+            while(_cx < _scanW - _margin)
             {
-               var _c:uint = _bmd.getPixel32(_px, _py);
-               var _a:int = (_c >> 24) & 0xFF;
-               if(_a < 80) { _px += _step; continue; }
+               var _ringSum:Number = 0;
+               var _innerSum:Number = 0;
+               var _validSamples:int = 0;
 
-               // 检测局部区域对比度: 中心 vs 环形邻域
-               var _cl:uint = _bmd.getPixel32(_px - _step, _py);
-               var _cr:uint = _bmd.getPixel32(_px + _step, _py);
-               var _cu:uint = _bmd.getPixel32(_px, _py - _step);
-               var _cd:uint = _bmd.getPixel32(_px, _py + _step);
-
-               var _lumC:Number = rgbLum(_c);
-               var _lumL:Number = rgbLum(_cl);
-               var _lumR:Number = rgbLum(_cr);
-               var _lumU:Number = rgbLum(_cu);
-               var _lumD:Number = rgbLum(_cd);
-
-               // 高对比度: 中心与邻域亮度差 > 60
-               var _contrast:Number = Math.max(
-                  Math.abs(_lumC - _lumL), Math.abs(_lumC - _lumR),
-                  Math.abs(_lumC - _lumU), Math.abs(_lumC - _lumD)
-               );
-
-               if(_contrast > 55)
+               var _si:int = 0;
+               while(_si < _sampleCount)
                {
-                  _edgeHits.push({x: _scanX + _px, y: _scanY + _py});
+                  var _rx:int = _cx + _ringOffsets[_si].x;
+                  var _ry:int = _cy + _ringOffsets[_si].y;
+                  var _ix:int = _cx + _innerOffsets[_si].x;
+                  var _iy:int = _cy + _innerOffsets[_si].y;
+
+                  if(_rx >= 0 && _rx < _scanW && _ry >= 0 && _ry < _scanH
+                     && _ix >= 0 && _ix < _scanW && _iy >= 0 && _iy < _scanH)
+                  {
+                     _ringSum += rgbLum(_bmd.getPixel(_rx, _ry));
+                     _innerSum += rgbLum(_bmd.getPixel(_ix, _iy));
+                     _validSamples++;
+                  }
+                  _si++;
                }
-               _px += _step;
+
+               if(_validSamples >= 12)
+               {
+                  // 环形得分 = 环亮度 - 内部亮度 (越大说明越像圆环)
+                  var _score:Number = (_ringSum - _innerSum) / _validSamples;
+                  if(_score > _minScore)
+                  {
+                     _candidates.push({
+                        x: _scanX + _cx,
+                        y: _scanY + _cy,
+                        score: _score
+                     });
+                  }
+               }
+               _cx += _stride;
             }
-            _py += _step;
+            _cy += _stride;
          }
          _bmd.dispose();
 
-         if(DEBUG_SCAN) debugDrawMarkers(_edgeHits, 0xFF00FF); // 洋红色 = 像素扫描候选
+         if(DEBUG_SCAN && _candidates.length > 0)
+         {
+            // 画环形检测候选(黄色=高得分)
+            debugDrawRingCandidates(_candidates);
+         }
 
-         if(_edgeHits.length < 20) return _result;
+         if(_candidates.length < 6) return _result;
 
-         // 密度聚类: 将边沿命中点聚合成候选中心
-         return densityCluster(_edgeHits, 25);
+         // 按得分降序, 然后非极大值抑制(去掉重叠候选)
+         _candidates.sortOn("score", Array.NUMERIC | Array.DESCENDING);
+         _candidates = nonMaxSuppress(_candidates, 30);
+
+         if(DEBUG_SCAN && _candidates.length > 0)
+         {
+            debugDrawMarkers(_candidates, 0x00FFFF); // 青色 = 最终候选
+         }
+
+         return _candidates;
       }
 
       /** RGB转感知亮度 (0~255) */
@@ -447,81 +501,58 @@ package game.ui
       }
 
       /**
-       * 密度聚类: 将散点按距离合并, 返回簇中心
-       * @param points [{x,y}...]
-       * @param radius 聚类半径(px)
-       * @return [{x,y}...] 簇中心, 按y再x排序
+       * 非极大值抑制: 在半径内只保留得分最高的候选
        */
-      private function densityCluster(param1:Array, param2:int) : Array
+      private function nonMaxSuppress(param1:Array, param2:int) : Array
       {
-         if(param1.length == 0) return [];
-
-         var _clusters:Array = [];
-         var _used:Object = {};
+         var _kept:Array = [];
+         var _suppressed:Object = {};
 
          for each(var _p:Object in param1)
          {
-            if(_used[_p.x + "_" + _p.y]) continue;
+            if(_suppressed[_p.x + "_" + _p.y]) continue;
 
-            var _group:Array = [_p];
-            _used[_p.x + "_" + _p.y] = true;
-
-            // 扩张: 找半径内所有点
-            var _changed:Boolean = true;
-            while(_changed)
+            _kept.push(_p);
+            // 抑制半径内的其他候选
+            for each(var _q:Object in param1)
             {
-               _changed = false;
-               for each(var _q:Object in param1)
+               if(_q == _p) continue;
+               var _dx:Number = _q.x - _p.x;
+               var _dy:Number = _q.y - _p.y;
+               if(_dx * _dx + _dy * _dy < param2 * param2)
                {
-                  var _key:String = _q.x + "_" + _q.y;
-                  if(_used[_key]) continue;
-                  for each(var _m:Object in _group)
-                  {
-                     var _dx:Number = _q.x - _m.x;
-                     var _dy:Number = _q.y - _m.y;
-                     if(_dx*_dx + _dy*_dy < param2*param2)
-                     {
-                        _group.push(_q);
-                        _used[_key] = true;
-                        _changed = true;
-                        break;
-                     }
-                  }
+                  _suppressed[_q.x + "_" + _q.y] = true;
                }
             }
-
-            // 簇中心 = 平均
-            var _sx:Number = 0, _sy:Number = 0;
-            for each(var _n:Object in _group) { _sx += _n.x; _sy += _n.y; }
-            _clusters.push({x: _sx / _group.length, y: _sy / _group.length, size: _group.length});
          }
+         return _kept;
+      }
 
-         // 过滤: 至少3个点才算有效簇
-         _clusters = _clusters.filter(function(item:*, idx:int, arr:Array):Boolean {
-            return item.size >= 3;
-         });
-
-         // 按y再x排序
-         _clusters.sortOn("y", Array.NUMERIC);
-         var _sorted:Array = [];
-         var _ki:int = 0;
-         while(_ki < _clusters.length)
+      /**
+       * Debug: 用黄色大圆标记环形检测候选(高得分)
+       */
+      private function debugDrawRingCandidates(param1:Array) : void
+      {
+         if(_debugLayer == null)
          {
-            var _rowGroup:Array = [_clusters[_ki]];
-            var _kj:int = _ki + 1;
-            while(_kj < _clusters.length && Math.abs(_clusters[_kj].y - _clusters[_ki].y) < 35)
-            {
-               _rowGroup.push(_clusters[_kj]);
-               _kj++;
-            }
-            _rowGroup.sortOn("x", Array.NUMERIC);
-            _sorted = _sorted.concat(_rowGroup);
-            _ki = _kj;
+            _debugLayer = new Sprite();
+            _debugLayer.name = "_debugScan";
+            _debugLayer.mouseEnabled = false;
+            _debugLayer.mouseChildren = false;
+            addChild(_debugLayer);
          }
 
-         if(DEBUG_SCAN) debugDrawMarkers(_sorted, 0x00FFFF); // 青色 = 聚类结果
+         var _g:Graphics = _debugLayer.graphics;
+         _g.lineStyle(3, 0xFFFF00, 0.7);
 
-         return _sorted;
+         var _count:int = 0;
+         for each(var _p:Object in param1)
+         {
+            if(_count > 20) break;
+            // 画圆环(半径22, 模拟检测半径)
+            _g.drawCircle(_p.x, _p.y, 22);
+            _count++;
+         }
       }
 
       /**
@@ -603,49 +634,35 @@ package game.ui
        */
       private function clusterSlotPositions(param1:Array) : Array
       {
-         if(param1.length < 6)
-         {
-            return null;
-         }
+         if(param1.length < 6) return null;
 
-         // 按y坐标分成两组(上下两行)
-         param1.sortOn("y", Array.NUMERIC);
-         var _gapMax:Number = 0;
-         var _gapIdx:int = int(param1.length / 2);
-         var _gk:int = 0;
-         while(_gk < param1.length - 1)
-         {
-            var _gy:Number = param1[_gk + 1].y - param1[_gk].y;
-            if(_gy > _gapMax) { _gapMax = _gy; _gapIdx = _gk + 1; }
-            _gk++;
-         }
-
-         var _topRow:Array = param1.slice(0, _gapIdx);
-         var _botRow:Array = param1.slice(_gapIdx);
-
-         _topRow.sortOn("x", Array.NUMERIC);
-         _botRow.sortOn("x", Array.NUMERIC);
-
+         // 取前6个候选, 中心→左上角(槽宽48), 保持检测到的实际位置
          var _result:Array = [];
-         var _row:int = 0;
-         while(_row < 2)
+         var _ki:int = 0;
+         while(_ki < 6 && _ki < param1.length)
          {
-            var _rowData:Array = (_row == 0) ? _topRow : _botRow;
-            var _col:int = 0;
-            while(_col < 3)
-            {
-               var _ci:int = int(_rowData.length * _col / 3);
-               if(_ci >= _rowData.length) _ci = _rowData.length - 1;
-               _result.push({
-                  x: _rowData[_ci].x - 24,
-                  y: _rowData[_ci].y - 24
-               });
-               _col++;
-            }
-            _row++;
+            _result.push({
+               x: param1[_ki].x - 24,
+               y: param1[_ki].y - 24
+            });
+            _ki++;
          }
 
-         return _result.length >= 6 ? _result.slice(0, 6) : null;
+         // 按 y 再 x 稳定排序
+         _result.sortOn("y", Array.NUMERIC);
+         var _sorted:Array = [];
+         var _si:int = 0;
+         while(_si < _result.length)
+         {
+            var _rg:Array = [_result[_si]];
+            var _sj:int = _si + 1;
+            while(_sj < _result.length && Math.abs(_result[_sj].y - _result[_si].y) < 40)
+            { _rg.push(_result[_sj]); _sj++; }
+            _rg.sortOn("x", Array.NUMERIC);
+            _sorted = _sorted.concat(_rg);
+            _si = _sj;
+         }
+         return _sorted.length >= 6 ? _sorted.slice(0, 6) : null;
       }
 
       /**

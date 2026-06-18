@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.16';
+  _cachedClientVersion = '2.10.17';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,6 +555,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '2.10.17', title: '\u{1F3AF} 圆形环检测器 — 图像识别槽位',
+        body: '【图像识别】\n• 全新圆形环检测算法：16方向采样, 环半径22px vs 内半径8px亮度对比\n• 非极大值抑制(NMS)去重, 半径30px\n• 槽位直接使用检测坐标(不再强制2×3网格)\n• 黄色大圆=环形候选, 青色十字=最终位点' },
       { version: '2.10.16', title: '\u{1F4CD} 增强调试标记+手动校准偏移',
         body: '【调试】\n• 调试标记加大(12px十字+8px空心圆+编号)\n• 每个槽位左上角显示当前坐标\n• CALIB_OFFSET_X/Y 手动校准常量\n• 大号标记确保截图可见' },
       { version: '2.10.15', title: '\u{1F4CD} 装备槽可视化调试+增强圆形检测',
