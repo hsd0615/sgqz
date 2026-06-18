@@ -1591,14 +1591,11 @@ import game.ui.UpdateChecker;
             _updateChecker.y = 28;
             addChild(_updateChecker);
          }
-         // 更新公告 - 进入游戏时显示最近版本更新内容
-         if(!Config.IS_WEB)
-         {
-            var _changelogPanel:ChangelogPanel = new ChangelogPanel();
-            _changelogPanel.x = (stage.stageWidth - 420) / 2;
-            _changelogPanel.y = (stage.stageHeight - 320) / 2;
-            addChild(_changelogPanel);
-         }
+         // 更新公告 - 进入游戏时显示最近版本更新内容(桌面端+Web端)
+         var _changelogPanel:ChangelogPanel = new ChangelogPanel();
+         _changelogPanel.x = (stage.stageWidth - 420) / 2;
+         _changelogPanel.y = (stage.stageHeight - 320) / 2;
+         addChild(_changelogPanel);
          MySound.getInstance().startByName(SoundCode.MAP);
          // 网页版跳过自动进入联机大厅，保留在地图界面
          if(this._netDirect && !Config.IS_WEB)
