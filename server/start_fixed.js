@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.18';
+  _cachedClientVersion = '2.10.19';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,7 +555,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '2.10.18', title: '\u{1F3AF} 金色圆环检测 — 颜色+亮度联合',
+      { version: '2.10.19', title: '\u{1F3AF} 金色圆环检测 — 颜色+亮度联合',
         body: '【图像识别】\n• 环形检测加入金色加成: goldScore()计算像素与金色(0xC8A84E)相似度\n• 综合得分=环形亮度差+金色得分×1.5\n• 阈值放宽至50%, 靠金色特征区分装备槽与普通装饰\n• 只认R>120,G>80,B<160且R>G>B的像素' },
       { version: '2.10.17', title: '\u{1F3AF} 圆形环检测器 — 图像识别槽位',
         body: '【图像识别】\n• 全新圆形环检测算法：16方向采样, 环半径22px vs 内半径8px亮度对比\n• 非极大值抑制(NMS)去重, 半径30px\n• 槽位直接使用检测坐标(不再强制2×3网格)\n• 黄色大圆=环形候选, 青色十字=最终位点' },
