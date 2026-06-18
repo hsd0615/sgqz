@@ -541,7 +541,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.12.6';
+  _cachedClientVersion = '3.0.0';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -879,8 +879,8 @@ function handleRequest(socket, req) {
         if (genQ == 0) { minEQ=7; maxEQ=10; }       // 超级
         else if (genQ == 1) { minEQ=4; maxEQ=7; }    // 一流
         else if (genQ == 2) { minEQ=2; maxEQ=5; }    // 二流
-        // 掉率: 低品质分母小=高掉落 三流=等级/80, 二流=等级/150, 一流=等级/300, 超级=等级/500
-        var rateDiv = [500,300,150,80][genQ] || 200;
+        // 掉率: 低品质分母小=高掉落 三流=等级/200, 二流=等级/350, 一流=等级/600, 超级=等级/1000
+        var rateDiv = [1000,600,350,200][genQ] || 400;
         var dropProb = Math.min(0.75, Math.max(0.01, eg.level / rateDiv));
         if (Math.random() < dropProb) {
           var rollQ = minEQ + Math.floor(Math.random()*(maxEQ-minEQ+1));
