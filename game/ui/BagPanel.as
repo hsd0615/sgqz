@@ -66,91 +66,64 @@ package game.ui
 
       private function createPaginationUI() : void
       {
-         var _fmt:TextFormat = new TextFormat("SimSun",12,0xFFD700);
+         // 翻页栏样式: 首页 ◀ 第X/Y页 ▶ 末页
+         var _btnW:int = 26, _btnH:int = 22, _gap:int = 4;
 
-         // 上一页按钮
-         this._prevBtn = new Sprite();
-         var _ps:Shape = new Shape();
-         _ps.graphics.beginFill(0x3a2010,0.9);
-         _ps.graphics.lineStyle(1,0xC8A84E,0.7);
-         _ps.graphics.drawRoundRect(0,0,55,22,4,4);
-         _ps.graphics.endFill();
-         this._prevBtn.addChild(_ps);
-         var _prevTF:TextField = new TextField();
-         _prevTF.defaultTextFormat = _fmt;
-         _prevTF.text = "上一页";
-         _prevTF.selectable = false;
-         _prevTF.width = 55;
-         _prevTF.height = 18;
-         _prevTF.x = 0;
-         _prevTF.y = 3;
-         this._prevBtn.addChild(_prevTF);
-         this._prevBtn.buttonMode = true;
-         this._prevBtn.mouseChildren = false;
-         addChild(this._prevBtn);
+         function makeBtn(label:String, w:int):Sprite {
+            var s:Sprite = new Sprite();
+            var bg:Shape = new Shape();
+            bg.graphics.beginFill(0x2a1a0a,0.95);
+            bg.graphics.lineStyle(1,0x8B6914,0.6);
+            bg.graphics.drawRoundRect(0,0,w,_btnH,3,3);
+            bg.graphics.endFill();
+            s.addChild(bg);
+            var t:TextField = new TextField();
+            t.defaultTextFormat = new TextFormat("SimSun",11,0xC8A84E);
+            t.text = label; t.selectable = false;
+            t.width = w; t.height = 16; t.x = 0; t.y = 3;
+            s.addChild(t);
+            s.buttonMode = true; s.mouseChildren = false;
+            return s;
+         }
 
-         // 页码文本
+         this._prevBtn = makeBtn("◀◀", 32);
+         var _prev1Btn:Sprite = makeBtn("◀", 22);
          this._pageTF = new TextField();
-         this._pageTF.defaultTextFormat = new TextFormat("SimHei",13,0xD4C8A0,true);
+         this._pageTF.defaultTextFormat = new TextFormat("SimHei",12,0xFFD700,true);
          this._pageTF.text = "1/1";
          this._pageTF.selectable = false;
          this._pageTF.autoSize = TextFieldAutoSize.CENTER;
-         this._pageTF.width = 60;
-         this._pageTF.height = 20;
-         addChild(this._pageTF);
+         this._pageTF.width = 55; this._pageTF.height = 18;
+         var _next1Btn:Sprite = makeBtn("▶", 22);
+         this._nextBtn = makeBtn("▶▶", 32);
 
-         // 下一页按钮
-         this._nextBtn = new Sprite();
-         var _ns:Shape = new Shape();
-         _ns.graphics.beginFill(0x3a2010,0.9);
-         _ns.graphics.lineStyle(1,0xC8A84E,0.7);
-         _ns.graphics.drawRoundRect(0,0,55,22,4,4);
-         _ns.graphics.endFill();
-         this._nextBtn.addChild(_ns);
-         var _nextTF:TextField = new TextField();
-         _nextTF.defaultTextFormat = _fmt;
-         _nextTF.text = "下一页";
-         _nextTF.selectable = false;
-         _nextTF.width = 55;
-         _nextTF.height = 18;
-         _nextTF.x = 0;
-         _nextTF.y = 3;
-         this._nextBtn.addChild(_nextTF);
-         this._nextBtn.buttonMode = true;
-         this._nextBtn.mouseChildren = false;
+         addChild(this._prevBtn);
+         addChild(_prev1Btn);
+         addChild(this._pageTF);
+         addChild(_next1Btn);
          addChild(this._nextBtn);
 
-         // 计算分页按钮位置(放在最后一排格子下方)
-         var _bottomY:Number = 0;
-         var _k:int = ITEMS_PER_PAGE - 4;
-         while(_k <= ITEMS_PER_PAGE)
-         {
-            var _g:MovieClip = this._gridContainer.getChildByName("_grid" + _k) as MovieClip;
-            if(_g != null)
-            {
-               var _gy:Number = _g.y + _g.height;
-               if(_gy > _bottomY)
-               {
-                  _bottomY = _gy;
-               }
-            }
-            _k++;
-         }
-         var _btnY:Number = _bottomY + 12;
+         // 定位在格子下方
+         var _btm:Number = 0;
+         var _g5:MovieClip = _skin.getChildByName("_grid21") as MovieClip;
+         if(_g5) _btm = _g5.y + _g5.height + 10;
 
-         // 居中排列: [上一页] [页码] [下一页]
-         var _totalW:Number = 55 + 10 + 60 + 10 + 55;
-         var _startX:Number = (340 - _totalW) / 2;
-         if(_startX < 10)
-         {
-            _startX = 10;
-         }
-         this._prevBtn.x = _startX;
-         this._prevBtn.y = _btnY;
-         this._pageTF.x = _startX + 55 + 10;
-         this._pageTF.y = _btnY + 2;
-         this._nextBtn.x = _startX + 55 + 10 + 60 + 10;
-         this._nextBtn.y = _btnY;
+         var _parts:Array = [this._prevBtn, _prev1Btn, this._pageTF, _next1Btn, this._nextBtn];
+         var _tw:int = 32+_gap+22+_gap+55+_gap+22+_gap+32;
+         var _sx:int = (340 - _tw) / 2;
+         var _cx:int = _sx;
+         for each(var _p:Sprite in _parts.slice(0,2)) { _p.x = _cx; _p.y = _btm; _cx += _p.width + _gap; }
+         _cx += 55 + _gap - 32 - _gap - 22 - _gap; // center pageTF
+         this._pageTF.x = _sx + 32+_gap+22+_gap; this._pageTF.y = _btm + 2;
+         _cx = _sx + 32+_gap+22+_gap+55+_gap;
+         for each(var _q:Sprite in _parts.slice(3)) { _q.x = _cx; _q.y = _btm; _cx += _q.width + _gap; }
+
+         // 事件绑定
+         var _self:BagPanel = this;
+         this._prevBtn.addEventListener(MouseEvent.CLICK, function(p:*):void { if(_self._currentPage>1){_self._currentPage=1;_self.showPage();} });
+         _prev1Btn.addEventListener(MouseEvent.CLICK, this.onPrevPageHandler);
+         _next1Btn.addEventListener(MouseEvent.CLICK, this.onNextPageHandler);
+         this._nextBtn.addEventListener(MouseEvent.CLICK, function(p:*):void { if(_self._currentPage<_self._totalPages){_self._currentPage=_self._totalPages;_self.showPage();} });
       }
 
       override protected function initEvent() : void

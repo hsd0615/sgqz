@@ -288,6 +288,27 @@ function migrateEquipment() {
   if (fixed > 0) { console.log('[Migrate] Added equipment slots to ' + fixed + ' generals'); }
 }
 
+function ensureAllEquip(pid) {
+  // 全部76件装备代码
+  var allCodes = [];
+  // 旧装备 proto_4_1~5(武器),6~10(头盔),11~15(铠甲),16~20(战靴),21~25(饰品Ⅰ),26~30(饰品Ⅱ)
+  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].forEach(function(n){
+    allCodes.push('proto_4_'+n);
+  });
+  // 新武侠装备 proto_4_31~76
+  for (var i=31; i<=76; i++) allCodes.push('proto_4_'+i);
+
+  var existing = db.bagItems.filter(function(b){return b.player_id===pid;}).map(function(b){return b.code;});
+  var added = 0;
+  allCodes.forEach(function(code){
+    if (existing.indexOf(code) < 0) {
+      db.bagItems.push({ id: db.nextId.bagItems++, player_id: pid, code: code, count: 1 });
+      added++;
+    }
+  });
+  if (added > 0) console.log('[Equip] Gave ' + added + ' new equip to gm_admin');
+}
+
 function ensureGenerals(pid, list, level, evo, feat, tf) {
   for (const [code, name, kezhi] of list) {
     if (findGenerals(pid).some(g => g.code === code)) continue;
@@ -322,6 +343,8 @@ function createTestAccounts() {
   }
   p1.level = 220; p1.money = 99999999; p1.dianka = 999999; p1.exploit = 99999999; p1.reverence = 99999999; p1.rongyu = 99999;
   ensureGenerals(p1.id, ALL_SUPERS, 220, 10, 1, 'tf_20');
+  // 给GM测试号发放全部76件装备
+  ensureAllEquip(p1.id);
 
   let p2 = findPlayer('test_pro');
   if (!p2) {
@@ -433,7 +456,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.11.3';
+  _cachedClientVersion = '2.11.4';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
