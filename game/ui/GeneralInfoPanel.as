@@ -953,7 +953,7 @@ package game.ui
             addChild(this.__specTF);
          }
          this.__specTF.x = this.__xiaohaoTF.x + this.__xiaohaoTF.width + 15;
-         this.__specTF.y = this.__xiaohaoTF.y;
+         this.__specTF.y = this.__xiaohaoTF.y - 40;
          var _s:String = "";
          if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0) {
             _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font>\n";

@@ -626,7 +626,23 @@ function handleRequest(socket, req) {
 
   // Register
   if (url === '/api/auth/register') {
-    if (findPlayer(data.userID)) return jsonRawResponse(socket, { success: false, message: '该账号已创建过角色' });
+    // 已存在账号→走登录流程, 返回已保存的武将(含装备)
+    var existing = findPlayer(data.userID);
+    if (existing) {
+      existing.token = uuidv4().replace(/-/g,'');
+      existing.lastSeen = Date.now();
+      save();
+      var existArmy = makeArmyModel(existing.id);
+      var existBag = makeBagModel(existing.id);
+      return jsonRawResponse(socket, {
+        success: true, stamp: data.stamp, head: '10000',
+        data: { token: existing.token, dianka: existing.dianka, armyModel: existArmy, bagModel: existBag,
+          process: { history: existing.history||'', finished: existing.finished_stages||'' },
+          roleModel: makeRoleModel(existing),
+        }
+      });
+    }
+    // 新账号→创建
     const p = createPlayer(data.userID, data.roleName, data.imageID||1, data.agent||'4399', data.password||'');
     const starters = [
       ['general_1_0','王平','5:1|7:1|9:1'],['general_3_0','吕翔','2:1|1:1|6:1'],
@@ -637,7 +653,7 @@ function handleRequest(socket, req) {
     for (const [code, name, kezhi] of starters) {
       const kp = kezhi.split('|');
       const g = createGeneral(p.id, code, name, 1, 0, 0, null, parseInt(kp[0].split(':')[0]),1,parseInt(kp[1].split(':')[0]),1,parseInt(kp[2].split(':')[0]),1);
-      army.push({ id: g.general_id, code: g.code, genius: null, level: 1, feature: 0, evolution: 0, kezhi, equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') });
+      army.push({ id: g.general_id, code: g.code, genius: null, level: 1, feature: 0, evolution: 0, kezhi, equipment: '0,0,0,0,0,0' });
     }
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: '10000',
