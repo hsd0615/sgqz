@@ -44,8 +44,11 @@ package game.ui
                var _json:Object = JSON.parse(_loader.data as String);
                if(_json.success && _json.entries && _json.entries.length > 0) {
                   _self.buildUI(_json.entries);
+                  return;
                }
             } catch(_err:Error) {}
+            // 加载失败或空数据时显示默认公告
+            _self.buildUI([{version:"0.0",title:"欢迎游玩三国Q战",body:"点击右上角商城可购买装备\n武将详情页可管理装备\n祝您游戏愉快!"}]);
          });
          _loader.load(_req);
       }

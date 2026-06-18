@@ -1,6 +1,7 @@
 package game
 {
    import game.model.ArmyInfo;
+   import game.model.EquipData;
    import game.model.Type;
    
    public class Data
@@ -593,14 +594,16 @@ package game
             arr.push(obj);
          }
          // 合并服务器JSON数据(装备等新增物品)
-         if(this._shopJSON != null)
+         var _jsonItems:Array = this._shopJSON;
+         // 如果没有JSON数据(离线/加载失败), 使用内置硬编码数据
+         if(_jsonItems == null) _jsonItems = EquipData.getShopEquipItems();
+         if(_jsonItems != null)
          {
-            for(var _j:int = 0; _j < this._shopJSON.length; _j++)
+            for(var _j:int = 0; _j < _jsonItems.length; _j++)
             {
-               var _sitem:Object = this._shopJSON[_j];
+               var _sitem:Object = _jsonItems[_j];
                if(int(_sitem.category) == mycategory)
                {
-                  // 避免重复
                   var _dup:Boolean = false;
                   for(var _k:int = 0; _k < arr.length; _k++)
                   {

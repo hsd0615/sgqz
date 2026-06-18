@@ -13,6 +13,7 @@ package game.model
    import flash.utils.Timer;
    import game.Config;
    import game.Data;
+   import game.model.EquipData;
    import utils.JsonFormatter;
    
    public class RoleModel extends EventDispatcher
@@ -376,8 +377,8 @@ package game.model
                   }
                   else
                   {
-                     var _slot:* = Data.getInstance().getAttributes("equip",_code,"slot");
-                     if(int(_slot) == param1)
+                     var _slot:* = EquipData.get(_code,"slot");
+                  if(int(_slot) == param1)
                      {
                         _result.push({code:_code, count:_count, id:this._bag[_loc2_].id});
                      }

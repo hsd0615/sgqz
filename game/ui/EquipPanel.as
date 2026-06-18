@@ -11,6 +11,7 @@ package game.ui
    import game.Config;
    import game.Data;
    import game.model.ArmyInfo;
+   import game.model.EquipData;
    import game.model.Head;
    import game.model.RoleModel;
    import game.events.UIEvent;
@@ -146,14 +147,14 @@ package game.ui
       private function formatEquipInfo(param1:String):String
       {
          if(param1 == "" || param1 == null || param1 == "0") return "空";
-         var _n:* = Data.getInstance().getAttributes("equip",param1,"name");
-         var _atk:* = Data.getInstance().getAttributes("equip",param1,"attack");
-         var _atkp:* = Data.getInstance().getAttributes("equip",param1,"attackPct");
-         var _def:* = Data.getInstance().getAttributes("equip",param1,"defense");
-         var _defp:* = Data.getInstance().getAttributes("equip",param1,"defensePct");
-         var _hp:* = Data.getInstance().getAttributes("equip",param1,"hp");
-         var _hpp:* = Data.getInstance().getAttributes("equip",param1,"hpPct");
-         var _q:int = int(Data.getInstance().getAttributes("equip",param1,"quality"));
+         var _n:* = EquipData.get(param1,"name");
+         var _atk:* = EquipData.get(param1,"attack");
+         var _atkp:* = EquipData.get(param1,"attackPct");
+         var _def:* = EquipData.get(param1,"defense");
+         var _defp:* = EquipData.get(param1,"defensePct");
+         var _hp:* = EquipData.get(param1,"hp");
+         var _hpp:* = EquipData.get(param1,"hpPct");
+         var _q:int = int(EquipData.get(param1,"quality"));
          var _s:String = "[" + this.getQualityName(_q) + "] " + String(_n||"?");
          if(int(_atk) > 0) _s += " 攻+" + int(_atk);
          if(int(_atkp) > 0) _s += " 攻+" + int(_atkp) + "%";
@@ -174,7 +175,7 @@ package game.ui
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
                _tf.text = this.formatEquipInfo(_eqCode);
-               var _q:int = int(Data.getInstance().getAttributes("equip",_eqCode,"quality"));
+               var _q:int = int(EquipData.get(_eqCode,"quality"));
                _tf.textColor = this.getQualityColor(_q);
                _btnData.tf.text = "卸下";
             }
@@ -262,11 +263,11 @@ package game.ui
          for(var _i:int = 0; _i < _items.length; _i++)
          {
             var _item:Object = _items[_i];
-            var _en:* = Data.getInstance().getAttributes("equip",_item.code,"name");
-            var _ea:* = Data.getInstance().getAttributes("equip",_item.code,"attack");
-            var _ed:* = Data.getInstance().getAttributes("equip",_item.code,"defense");
-            var _eh:* = Data.getInstance().getAttributes("equip",_item.code,"hp");
-            var _elr:* = Data.getInstance().getAttributes("equip",_item.code,"levelReq");
+            var _en:* = EquipData.get(_item.code,"name");
+            var _ea:* = EquipData.get(_item.code,"attack");
+            var _ed:* = EquipData.get(_item.code,"defense");
+            var _eh:* = EquipData.get(_item.code,"hp");
+            var _elr:* = EquipData.get(_item.code,"levelReq");
 
             var _row:Sprite = new Sprite();
             _row.y = 4 + _i * 28;
@@ -285,7 +286,7 @@ package game.ui
             }
             else
             {
-               var _q2:int = int(Data.getInstance().getAttributes("equip",_item.code,"quality"));
+               var _q2:int = int(EquipData.get(_item.code,"quality"));
                _rowTF.textColor = this.getQualityColor(_q2);
             }
             _rowTF.text = _txt;
@@ -337,7 +338,7 @@ package game.ui
                }
                if(param3.data.money != undefined) RoleModel.getInstance().money = int(param3.data.money);
                _self.refresh();
-               var _en2:* = Data.getInstance().getAttributes("equip",param2,"name");
+               var _en2:* = EquipData.get(param2,"name");
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"已装备 " + String(_en2||"")}));
             }
             else
