@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.11';
+  _cachedClientVersion = '2.10.12';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,7 +555,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '2.10.11', title: '\u{1F4CB} 装备系统完善',
+      { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
       { version: '2.10.0', title: '\u{1F4CB} 装备系统上线',
         body: '【新功能】\n• 武将装备系统正式上线！15件装备，5个品质等级\n• 装备分为武器、防具、饰品三类\n• 装备提供攻击/防御/生命加成，高品质装备还有百分比属性\n• 商城新增装备分类，点卡购买\n• 武将详情页新增装备按钮，可随时装备和卸下' },
