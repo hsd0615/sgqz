@@ -214,6 +214,12 @@ package game
          var _loc9_:int = param2.defense;
          var _loc10_:int;
          var _loc11_:int = (_loc10_ = param2.feature) - _loc8_;
+
+         // 装备增伤加成
+         var _atkDmgBonus:int = param1.armyInfo ? param1.armyInfo.equipDmgBonus : 0;
+         // 装备减伤加成
+         var _atkDmgReduce:int = param2.armyInfo ? param2.armyInfo.equipDmgReduce : 0;
+
          if(param3 == null)
          {
             if(_loc8_ > 0 && _loc10_ <= 0)
@@ -227,6 +233,17 @@ package game
             else
             {
                _loc4_ = int(_loc7_ - _loc9_ / 5);
+            }
+            if(_loc4_ <= 0) _loc4_ = 1;
+            // 应用装备增伤/减伤
+            if(_atkDmgBonus > 0) _loc4_ = int(_loc4_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc4_ = int(_loc4_ * (1 - _atkDmgReduce / 100));
+            // 暴击判定
+            var _critRate:int = param1.armyInfo ? param1.armyInfo.equipCritRate : 0;
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc4_ = int(_loc4_ * _critDmg / 100);
             }
             return _loc4_ <= 0 ? 1 : _loc4_;
          }
@@ -243,6 +260,9 @@ package game
          if(param1.type == Type.TOUSHICHE && param2.type == Type.TOUSHICHE)
          {
             _loc4_ = int(_loc7_ + _loc6_ - _loc9_ / 5);
+            if(_loc4_ <= 0) _loc4_ = 1;
+            if(_atkDmgBonus > 0) _loc4_ = int(_loc4_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc4_ = int(_loc4_ * (1 - _atkDmgReduce / 100));
             return _loc4_ <= 0 ? 1 : _loc4_;
          }
          if((_loc11_ = _loc10_ - _loc5_) == -1 || _loc11_ == 3 || _loc11_ == 0)
@@ -253,6 +273,9 @@ package game
          {
             _loc4_ = int(_loc7_ + _loc6_ * 1.2 - _loc9_ / 5);
          }
+         if(_loc4_ <= 0) _loc4_ = 1;
+         if(_atkDmgBonus > 0) _loc4_ = int(_loc4_ * (1 + _atkDmgBonus / 100));
+         if(_atkDmgReduce > 0) _loc4_ = int(_loc4_ * (1 - _atkDmgReduce / 100));
          return _loc4_ <= 0 ? 1 : _loc4_;
       }
       

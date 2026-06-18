@@ -352,6 +352,19 @@ package game.display
          }
          this._bloodBar.setCurrent(this._armyInfo.hp);
          dispatchEvent(new SoldierEvent(SoldierEvent.BEHURT,true,param1));
+
+         // 吸血: 攻击者回复伤害值的百分比
+         if(param2 != null && param2._armyInfo != null && param2._armyInfo.equipLifesteal > 0 && !param2._isDead)
+         {
+            var _heal:int = int(param1 * param2._armyInfo.equipLifesteal / 100);
+            if(_heal > 0)
+            {
+               param2._armyInfo.hp += _heal;
+               if(param2._armyInfo.hp > param2._maxHP) param2._armyInfo.hp = param2._maxHP;
+               param2._bloodBar.setCurrent(param2._armyInfo.hp);
+            }
+         }
+
          if(this._armyInfo.hp == 0)
          {
             addEventListener(Event.ENTER_FRAME,this.onEnterFrameHandler);
