@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.15';
+  _cachedClientVersion = '2.10.16';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,6 +555,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '2.10.16', title: '\u{1F4CD} 增强调试标记+手动校准偏移',
+        body: '【调试】\n• 调试标记加大(12px十字+8px空心圆+编号)\n• 每个槽位左上角显示当前坐标\n• CALIB_OFFSET_X/Y 手动校准常量\n• 大号标记确保截图可见' },
       { version: '2.10.15', title: '\u{1F4CD} 装备槽可视化调试+增强圆形检测',
         body: '【调试】\n• DEBUG_SCAN模式：洋红色十字=像素边缘候选, 青色十字=聚类结果\n• 像素扫描改为高对比度边缘检测, 不限定颜色\n• 密度聚类替代简单网格分割\n• 扫描范围扩展至皮肤全区域' },
       { version: '2.10.14', title: '\u{1F50D} 装备槽扫描子对象对齐',

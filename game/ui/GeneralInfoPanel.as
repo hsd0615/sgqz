@@ -221,7 +221,7 @@ package game.ui
             ];
          }
 
-         // ── 创建6个槽位Sprite ──
+         // ── 创建6个槽位Sprite (应用手动校准偏移) ──
          var _j:int = 0;
          while(_j < 6)
          {
@@ -229,8 +229,8 @@ package game.ui
             _s.name = "equipSlot" + _j;
             _s.buttonMode = true;
             _s.mouseChildren = false;
-            _s.x = _slotPositions[_j].x;
-            _s.y = _slotPositions[_j].y;
+            _s.x = _slotPositions[_j].x + CALIB_OFFSET_X;
+            _s.y = _slotPositions[_j].y + CALIB_OFFSET_Y;
 
             // 暗色底 + 金色边框
             var _bb:Shape = new Shape();
@@ -253,6 +253,12 @@ package game.ui
 
             this._equipSlots[_j] = _s;
             _j++;
+         }
+
+         // Debug: 标注每个槽位的坐标
+         if(DEBUG_SCAN)
+         {
+            debugDrawSlotLabels(_slotPositions);
          }
       }
 
@@ -340,6 +346,9 @@ package game.ui
 
       // ── Debug: 设为true可在皮肤上画出检测候选标记(彩色十字) ──
       private static const DEBUG_SCAN:Boolean = true;
+      // ── 手动校准偏移: 调整这些值移动整个槽位网格 ──
+      private static const CALIB_OFFSET_X:int = 0;  // 正=右移
+      private static const CALIB_OFFSET_Y:int = 0;  // 正=下移
       private var _debugLayer:Sprite = null;
 
       /**
@@ -516,8 +525,7 @@ package game.ui
       }
 
       /**
-       * 调试可视化: 在皮肤上用彩色十字标记候选位置
-       * 直接画在 GeneralInfoPanel 上(与_skin同坐标系)
+       * 调试可视化: 大号彩色十字 + 编号
        */
       private function debugDrawMarkers(param1:Array, param2:uint) : void
       {
@@ -531,23 +539,62 @@ package game.ui
          }
 
          var _g:Graphics = _debugLayer.graphics;
-         _g.lineStyle(1, param2, 0.9);
+         _g.lineStyle(2, param2, 0.95);
 
          var _count:int = 0;
          for each(var _p:Object in param1)
          {
-            if(_count > 30) break; // 最多画30个, 防止过密
+            if(_count > 30) break;
 
             var _cx:Number = _p.x;
             var _cy:Number = _p.y;
-            // 十字线
-            _g.moveTo(_cx - 6, _cy);
-            _g.lineTo(_cx + 6, _cy);
-            _g.moveTo(_cx, _cy - 6);
-            _g.lineTo(_cx, _cy + 6);
-            // 小圆
-            _g.drawCircle(_cx, _cy, 3);
+            // 大号十字线(12px)
+            _g.moveTo(_cx - 12, _cy);
+            _g.lineTo(_cx + 12, _cy);
+            _g.moveTo(_cx, _cy - 12);
+            _g.lineTo(_cx, _cy + 12);
+            // 空心圆(半径8)
+            _g.drawCircle(_cx, _cy, 8);
+
+            // 编号标签
+            var _tf:TextField = new TextField();
+            _tf.defaultTextFormat = new TextFormat("_sans", 12, param2, true);
+            _tf.text = String(_count);
+            _tf.selectable = false;
+            _tf.width = 24; _tf.height = 18;
+            _tf.x = _cx + 10; _tf.y = _cy - 9;
+            _debugLayer.addChild(_tf);
+
             _count++;
+         }
+      }
+
+      /**
+       * Debug: 在槽位左上角显示坐标
+       */
+      private function debugDrawSlotLabels(param1:Array) : void
+      {
+         if(_debugLayer == null)
+         {
+            _debugLayer = new Sprite();
+            _debugLayer.name = "_debugScan";
+            _debugLayer.mouseEnabled = false;
+            _debugLayer.mouseChildren = false;
+            addChild(_debugLayer);
+         }
+
+         var _j:int = 0;
+         while(_j < 6)
+         {
+            var _tf:TextField = new TextField();
+            _tf.defaultTextFormat = new TextFormat("_sans", 9, 0xFF4444, true);
+            _tf.text = int(param1[_j].x) + "," + int(param1[_j].y);
+            _tf.selectable = false;
+            _tf.width = 60; _tf.height = 14;
+            _tf.x = param1[_j].x + CALIB_OFFSET_X;
+            _tf.y = param1[_j].y + CALIB_OFFSET_Y - 16;
+            _debugLayer.addChild(_tf);
+            _j++;
          }
       }
 
