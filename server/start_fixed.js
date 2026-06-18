@@ -259,6 +259,29 @@ function buildGameDataCache() {
   }
 }
 
+// 关卡敌将数据: stageKey → {maxLevel, avgQuality}
+var STAGE_ENEMY = {};
+function loadStageEnemyData() {
+  if (!fs.existsSync('/opt/stage.xml')) return;
+  var xml = fs.readFileSync('/opt/stage.xml','utf8');
+  var gates = xml.split('<gate');
+  for (var i=1; i<gates.length; i++) {
+    var pm = gates[i].match(/part="(\d+)"/);
+    var lm = gates[i].match(/level="(\d+)"/);
+    if (!pm||!lm) continue;
+    var key = pm[1]+'_'+lm[1];
+    var gens = gates[i].match(/<general[^>]*\/>/g)||[];
+    var maxLv=1, totalQ=0, qCount=0;
+    for (var j=0; j<gens.length; j++) {
+      var lvm = gens[j].match(/level="(\d+)"/);
+      var evm = gens[j].match(/evolution="(\d+)"/);
+      if (lvm) maxLv = Math.max(maxLv, parseInt(lvm[1]));
+      if (evm) { totalQ += parseInt(evm[1])||1; qCount++; }
+    }
+    STAGE_ENEMY[key] = {maxLevel:maxLv, avgQuality:qCount>0?Math.round(totalQ/qCount):1};
+  }
+  console.log('[StageEnemy] Loaded ' + Object.keys(STAGE_ENEMY).length + ' stages');
+}
 function getStageId(part, level) {
   return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
 }
@@ -401,6 +424,7 @@ function createTestAccounts() {
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 loadKezhiMap();     // 1. 加载XML克制类型映射
 loadStageMap();     // 1b. 加载关卡ID映射
+loadStageEnemyData(); // 1b2. 加载敌将品质等级
 loadAwardMap();     // 1c. 加载关卡奖励数据
 loadShopData();     // 1d. 加载商城数据
 loadProtoData();    // 1e. 加载道具数据
@@ -813,30 +837,28 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备掉落系统 — 通关概率获得
+    // 装备掉落 — 基于敌将品质和等级
     var equipDrop = null;
-    if (isWin && Math.random() < Math.min(0.8, 0.15 + flevel * 0.005)) {
-      // 根据关卡等级决定品质范围
-      var minQ=1, maxQ=3;
-      if(flevel>150){minQ=7;maxQ=10}
-      else if(flevel>100){minQ=5;maxQ=8}
-      else if(flevel>60){minQ=3;maxQ=6}
-      else if(flevel>30){minQ=2;maxQ=4}
-      var rollQ = minQ + Math.floor(Math.random()*(maxQ-minQ+1));
-      // 从EQUIP_DATA中找对应品质的装备
-      var candidates = [];
-      for(var ek in EQUIP_DATA){if(EQUIP_DATA[ek].quality===rollQ)candidates.push(ek);}
-      if(candidates.length>0){
-        var dropCode = candidates[Math.floor(Math.random()*candidates.length)];
-        var dropDef = EQUIP_DATA[dropCode];
-        // 添加到背包
-        if(!db.bagItems)db.bagItems=[];
-        db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
-        equipDrop = {code:dropCode,name:dropDef.name,quality:rollQ};
-        // Q5+全服通告
-        if(rollQ>=5){
-          var broadcastMsg = '[系统] 恭喜 '+p.role_name+' 在关卡'+fpart+'-'+flevel+' 获得 ['+dropDef.name+'](品质'+rollQ+')！';
-          broadcastToAll(broadcastMsg);
+    if (isWin) {
+      var enemyData = STAGE_ENEMY[fpart+'_'+flevel] || {maxLevel:flevel, avgQuality:1};
+      var eAvgQ = enemyData.avgQuality || 1;
+      var eMaxLv = enemyData.maxLevel || flevel;
+      // 掉率: 敌品质×3% + 敌等级×0.2%
+      var dropRate = Math.min(0.85, eAvgQ * 0.03 + eMaxLv * 0.002);
+      if (Math.random() < dropRate) {
+        // 掉落品质: 以敌平均品质为中心±2随机
+        var rollQ = Math.max(1, Math.min(10, eAvgQ + Math.floor(Math.random()*5) - 2));
+        var candidates = [];
+        for(var ek in EQUIP_DATA){if(EQUIP_DATA[ek].quality===rollQ)candidates.push(ek);}
+        if(candidates.length>0){
+          var dropCode = candidates[Math.floor(Math.random()*candidates.length)];
+          var dropDef = EQUIP_DATA[dropCode];
+          if(!db.bagItems)db.bagItems=[];
+          db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
+          equipDrop = {code:dropCode,name:dropDef.name,quality:rollQ};
+          if(rollQ>=5){
+            broadcastToAll('[系统] 恭喜 '+p.role_name+' 在关卡'+fpart+'-'+flevel+' 获得 ['+dropDef.name+'](品质'+rollQ+')！');
+          }
         }
       }
     }
