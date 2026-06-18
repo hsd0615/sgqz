@@ -359,6 +359,15 @@ package game.model
          });
       }
 
+      private function isEquippedByAny(param1:String):Boolean {
+         if(!this._armys) return false;
+         for(var _i:int=0;_i<this._armys.length;_i++){
+            var _a:ArmyInfo = this._armys[_i] as ArmyInfo;
+            if(_a.equip1==param1||_a.equip2==param1||_a.equip3==param1||_a.equip4==param1||_a.equip5==param1||_a.equip6==param1) return true;
+         }
+         return false;
+      }
+
       public function getBagEquipItems(param1:int = 0) : Array
       {
          var _result:Array = [];
@@ -374,6 +383,8 @@ package game.model
                var _isEquip:Boolean = (int(_type) == 4) || (_eqSlot != null && int(_eqSlot) > 0);
                if(_isEquip)
                {
+                  // 跳过已被其他武将装备的物品
+                  if(isEquippedByAny(_code)) { _loc2_++; continue; }
                   if(param1 == 0)
                   {
                      _result.push({code:_code, count:_count, id:this._bag[_loc2_].id, type:4});
