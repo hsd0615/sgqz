@@ -479,6 +479,43 @@ package game.model
       public function get equipDefenseBonus():int { return this.equipDefenseFlat + this.equipDefensePctBonus; }
       public function get equipHPBonus():int { return this.equipHPFlat + this.equipHPPctBonus; }
 
+      // ── 新装备属性 ──
+      // 增伤% (对敌方造成伤害增加)
+      public function get equipDmgBonus():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"dmgBonus") + getEquipBonus(this._equip2,"dmgBonus") + getEquipBonus(this._equip3,"dmgBonus");
+         _t += getEquipBonus(this._equip4,"dmgBonus") + getEquipBonus(this._equip5,"dmgBonus") + getEquipBonus(this._equip6,"dmgBonus");
+         return _t;
+      }
+      // 减伤% (受到伤害减免)
+      public function get equipDmgReduce():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"dmgReduce") + getEquipBonus(this._equip2,"dmgReduce") + getEquipBonus(this._equip3,"dmgReduce");
+         _t += getEquipBonus(this._equip4,"dmgReduce") + getEquipBonus(this._equip5,"dmgReduce") + getEquipBonus(this._equip6,"dmgReduce");
+         return _t;
+      }
+      // 吸血% (造成伤害时回复百分比)
+      public function get equipLifesteal():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"lifesteal") + getEquipBonus(this._equip2,"lifesteal") + getEquipBonus(this._equip3,"lifesteal");
+         _t += getEquipBonus(this._equip4,"lifesteal") + getEquipBonus(this._equip5,"lifesteal") + getEquipBonus(this._equip6,"lifesteal");
+         return _t;
+      }
+      // 暴击率%
+      public function get equipCritRate():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"critRate") + getEquipBonus(this._equip2,"critRate") + getEquipBonus(this._equip3,"critRate");
+         _t += getEquipBonus(this._equip4,"critRate") + getEquipBonus(this._equip5,"critRate") + getEquipBonus(this._equip6,"critRate");
+         return _t;
+      }
+      // 暴击伤害% (额外暴击倍率)
+      public function get equipCritDmg():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"critDmg") + getEquipBonus(this._equip2,"critDmg") + getEquipBonus(this._equip3,"critDmg");
+         _t += getEquipBonus(this._equip4,"critDmg") + getEquipBonus(this._equip5,"critDmg") + getEquipBonus(this._equip6,"critDmg");
+         return _t;
+      }
+
       public function get attack() : int
       {
          return this.baseAttack + this.attackAddtion + this.tianfuAttack + this.equipAttackBonus;

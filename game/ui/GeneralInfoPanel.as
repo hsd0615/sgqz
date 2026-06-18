@@ -799,6 +799,17 @@ package game.ui
             _loc1_ += "    <font color=\'#e720f9\'>雷</font>";
             _loc1_ += " <font color=\'#f45415\'>克制冰，被风克制</font>\n";
          }
+         // 装备特殊属性
+         if(this._armyInfo.equipLifesteal > 0 || this._armyInfo.equipDmgBonus > 0 || this._armyInfo.equipDmgReduce > 0 || this._armyInfo.equipCritRate > 0)
+         {
+            _loc1_ += "<font color='#FF6600'>";
+            if(this._armyInfo.equipLifesteal > 0) _loc1_ += " 吸血+" + this._armyInfo.equipLifesteal + "%";
+            if(this._armyInfo.equipDmgBonus > 0) _loc1_ += " 增伤+" + this._armyInfo.equipDmgBonus + "%";
+            if(this._armyInfo.equipDmgReduce > 0) _loc1_ += " 减伤+" + this._armyInfo.equipDmgReduce + "%";
+            if(this._armyInfo.equipCritRate > 0) _loc1_ += " 暴击+" + this._armyInfo.equipCritRate + "%";
+            if(this._armyInfo.equipCritDmg > 0) _loc1_ += " 暴伤+" + this._armyInfo.equipCritDmg + "%";
+            _loc1_ += "</font>\n";
+         }
          this.__valueTF.htmlText = _loc1_;
       }
 
