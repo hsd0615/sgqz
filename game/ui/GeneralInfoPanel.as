@@ -169,56 +169,49 @@ package game.ui
        * 创建6个透明交互覆盖层, 叠加在皮肤已有的装备槽背景图上
        *
        * 对齐策略(按优先级降级):
-       *   ① 皮肤bounds百分比定位 — 适用于任意尺寸皮肤
-       *   ② 锚点相对网格 — 以武将中心_point为原点, 偏移出2×3网格
-       *   ③ 硬编码兜底 — 历史坐标值
+       *   ① 扫描_skin无实例名子对象 — 按尺寸+位置聚类发现真实槽位图形
+       *   ② BitmapData像素扫描 — 检测金色矩形边框定位槽位
+       *   ③ 锚点相对网格 — 以武将中心_point为原点偏移出2×3网格
+       *   ④ 硬编码兜底 — 历史坐标值
        *
        * SWF皮肤中槽位为静态美术图形, 无实例名, 需代码创建交互层
-       * 面板坐标参考: 武将中心=(-235,-65), 克制图标y=69
        */
       private function findEquipSlots() : void
       {
          var _sW:int = 48;
          var _sH:int = 48;
          var _slotPositions:Array = null;
+         var _candidates:Array;
 
-         // ── 策略①: 皮肤bounds百分比定位 ──
+         // ── 策略①: 扫描_skin中无名子对象, 自动发现槽位图形 ──
          if(_slotPositions == null && _skin != null)
          {
-            var _skinBounds:Rectangle = _skin.getBounds(_skin);
-            if(_skinBounds.width > 20 && _skinBounds.height > 20)
+            _candidates = scanSkinChildren();
+            if(_candidates.length >= 6)
             {
-               // 装备槽在皮肤左上区域 — 武将上方
-               // 6槽 = 2行×3列 grid, 列间距≈skin宽7%, 行间距≈skin高6%
-               var _pctBaseX:Number = _skinBounds.x + _skinBounds.width * 0.06;
-               var _pctBaseY:Number = _skinBounds.y + _skinBounds.height * 0.18;
-               var _pctStepX:Number = _skinBounds.width * 0.068;
-               var _pctStepY:Number = _skinBounds.height * 0.056;
-               _slotPositions = buildSlotGrid(_pctBaseX, _pctBaseY, _pctStepX, _pctStepY);
-
-               // 校验: 网格不应超出皮肤区域
-               var _gridRight:Number = _pctBaseX + 2 * _pctStepX + _sW;
-               var _gridBottom:Number = _pctBaseY + 1 * _pctStepY + _sH;
-               if(_gridRight > _skinBounds.x + _skinBounds.width + 20
-                  || _gridBottom > _skinBounds.y + _skinBounds.height + 20)
-               {
-                  _slotPositions = null; // 百分比推算异常, 降级
-               }
+               _slotPositions = clusterSlotPositions(_candidates);
             }
          }
 
-         // ── 策略②: 锚点相对网格 (以武将中心_point为原点) ──
-         if(_slotPositions == null)
+         // ── 策略②: BitmapData像素扫描 — 检测金色矩形边框 ──
+         if(_slotPositions == null && _skin != null)
          {
-            // 武将中心 _point=(-235,-65), 6槽在其左上方
-            var _anchorX:Number = this._point.x - 105;
-            var _anchorY:Number = this._point.y - 85;
-            var _cellW:Number = 56;
-            var _cellH:Number = 54;
-            _slotPositions = buildSlotGrid(_anchorX, _anchorY, _cellW, _cellH);
+            _candidates = scanPixelsForSlots();
+            if(_candidates.length >= 6)
+            {
+               _slotPositions = clusterSlotPositions(_candidates);
+            }
          }
 
-         // ── 策略③: 硬编码兜底 (历史坐标) ──
+         // ── 策略③: 锚点相对网格 (以武将中心_point为原点) ──
+         if(_slotPositions == null)
+         {
+            var _anchorX:Number = this._point.x - 105;
+            var _anchorY:Number = this._point.y - 85;
+            _slotPositions = buildSlotGrid(_anchorX, _anchorY, 56, 54);
+         }
+
+         // ── 策略④: 硬编码兜底 ──
          if(_slotPositions == null)
          {
             _slotPositions = [
@@ -262,13 +255,265 @@ package game.ui
          }
       }
 
+      // 已知有实例名的子对象 — 扫描时排除
+      private static const KNOWN_NAMES:Array = [
+         "_nameTF","_titleTF","_valueTF","_xiaohaoTF",
+         "_shengjiBtn","_jinhuaBtn","_sxcxBtn",
+         "_kezhi1TF","_kezhi2TF","_kezhi3TF",
+         "_kezhi1Btn","_kezhi2Btn","_kezhi3Btn",
+         "_tianfuNameTF","_tianfuDescTF",
+         "_chongxiBtn","_jihuoBtn",
+         "_moneyTF","_exploitTF","_closeBtn","_shopBtn"
+      ];
+
+      /**
+       * 扫描_skin中无实例名的DisplayObject, 找出可能是装备槽图形的对象
+       * 筛选条件: 尺寸30~70px(方形), 位于武将上方区域
+       * @return [{x,y,width,height}, ...] 按y再x排序
+       */
+      private function scanSkinChildren() : Array
+      {
+         var _result:Array = [];
+         if(_skin == null) return _result;
+
+         var _total:int = _skin.numChildren;
+         var _ic:int = 0;
+         while(_ic < _total)
+         {
+            var _child:DisplayObject = _skin.getChildAt(_ic);
+            // 跳过有名实例
+            if(_child.name != null && _child.name != "" && KNOWN_NAMES.indexOf(_child.name) >= 0)
+            {
+               _ic++; continue;
+            }
+            // 跳过 TextField / SimpleButton
+            if(_child is TextField || _child is SimpleButton)
+            {
+               _ic++; continue;
+            }
+
+            // 获取子对象在_skin坐标系中的bounds
+            var _rb:Rectangle = _child.getBounds(_skin);
+            var _rw:Number = _rb.width;
+            var _rh:Number = _rb.height;
+
+            // 筛选: 近似方形, 尺寸在槽位范围(25~80px)
+            if(_rw >= 25 && _rw <= 80 && _rh >= 25 && _rh <= 80)
+            {
+               var _ratio:Number = _rw / _rh;
+               if(_ratio >= 0.55 && _ratio <= 1.8)
+               {
+                  // 记录中心坐标
+                  _result.push({
+                     x: _rb.x + _rw / 2,
+                     y: _rb.y + _rh / 2,
+                     width: _rw,
+                     height: _rh
+                  });
+               }
+            }
+            _ic++;
+         }
+
+         // 按 y 再 x 排序(从上到下, 从左到右)
+         _result.sortOn("y", Array.NUMERIC);
+         // 稳定排序: 同一行内按x排
+         var _sorted:Array = [];
+         var _ki:int = 0;
+         while(_ki < _result.length)
+         {
+            var _rowGroup:Array = [_result[_ki]];
+            var _kj:int = _ki + 1;
+            while(_kj < _result.length && Math.abs(_result[_kj].y - _result[_ki].y) < 25)
+            {
+               _rowGroup.push(_result[_kj]);
+               _kj++;
+            }
+            _rowGroup.sortOn("x", Array.NUMERIC);
+            _sorted = _sorted.concat(_rowGroup);
+            _ki = _kj;
+         }
+
+         return _sorted;
+      }
+
+      /**
+       * BitmapData像素扫描: 在皮肤左上区域检测金色边框矩形
+       * 扫描颜色 0xC8A84E (金色) 密集区域, 聚类出矩形中心
+       * @return [{x,y}, ...]
+       */
+      private function scanPixelsForSlots() : Array
+      {
+         var _result:Array = [];
+         if(_skin == null) return _result;
+
+         var _sb:Rectangle = _skin.getBounds(_skin);
+         if(_sb.width < 20 || _sb.height < 20) return _result;
+
+         // 扫描区域: 皮肤左上1/3 (武将上方)
+         var _scanX:int = int(_sb.x);
+         var _scanY:int = int(_sb.y);
+         var _scanW:int = int(_sb.width * 0.40);
+         var _scanH:int = int(_sb.height * 0.35);
+         if(_scanW < 80 || _scanH < 80) return _result;
+
+         var _bmd:BitmapData = null;
+         try
+         {
+            _bmd = new BitmapData(_scanW, _scanH, true, 0);
+            var _mtx:Matrix = new Matrix();
+            _mtx.translate(-_scanX, -_scanY);
+            _bmd.draw(_skin, _mtx, null, null, null, true);
+         }
+         catch(_err:Error)
+         {
+            if(_bmd != null) _bmd.dispose();
+            return _result;
+         }
+
+         // 扫描金色像素 (0xC8A84E ± tolerance)
+         var _targetRGB:Object = hexToRgb(0xC8A84E);
+         var _hits:Array = [];
+         var _tolerance:int = 50;
+         var _py:int = 0;
+         while(_py < _scanH)
+         {
+            var _px:int = 0;
+            while(_px < _scanW)
+            {
+               var _clr:uint = _bmd.getPixel32(_px, _py);
+               var _a:int = (_clr >> 24) & 0xFF;
+               if(_a > 60)
+               {
+                  var _r:int = (_clr >> 16) & 0xFF;
+                  var _g:int = (_clr >> 8) & 0xFF;
+                  var _b:int = _clr & 0xFF;
+                  var _dr:int = _r - _targetRGB.r;
+                  var _dg:int = _g - _targetRGB.g;
+                  var _db:int = _b - _targetRGB.b;
+                  if(_dr*_dr + _dg*_dg + _db*_db < _tolerance*_tolerance)
+                  {
+                     _hits.push({x: _scanX + _px, y: _scanY + _py});
+                  }
+               }
+               _px += 3; // 步进3像素, 性能优化
+            }
+            _py += 3;
+         }
+         _bmd.dispose();
+
+         if(_hits.length < 30) return _result;
+
+         // 简单网格聚类: 将命中点聚类为6个中心
+         return clusterPixelHits(_hits);
+      }
+
+      /**
+       * 将散点聚类为6个中心(简单grid-fit)
+       */
+      private function clusterPixelHits(param1:Array) : Array
+      {
+         if(param1.length < 6) return [];
+
+         // 按y分两组, 每组按x分三列 → 6个聚类中心
+         param1.sortOn("y", Array.NUMERIC);
+         var _midY:Number = param1[int(param1.length/2)].y;
+         var _topRow:Array = [];
+         var _botRow:Array = [];
+         for each(var _p:Object in param1)
+         {
+            if(_p.y < _midY) _topRow.push(_p);
+            else _botRow.push(_p);
+         }
+
+         var _clusters:Array = [];
+         if(_topRow.length >= 3 && _botRow.length >= 3)
+         {
+            _topRow.sortOn("x", Array.NUMERIC);
+            _botRow.sortOn("x", Array.NUMERIC);
+            var _col:int = 0;
+            while(_col < 3)
+            {
+               var _ti:int = int(_topRow.length * _col / 3);
+               var _bi:int = int(_botRow.length * _col / 3);
+               if(_ti < _topRow.length) _clusters.push(_topRow[_ti]);
+               if(_bi < _botRow.length) _clusters.push(_botRow[_bi]);
+               _col++;
+            }
+         }
+
+         // 确保最少6个
+         while(_clusters.length < 6 && _clusters.length < param1.length)
+         {
+            _clusters.push(param1[_clusters.length * int(param1.length/7)]);
+         }
+
+         return _clusters.slice(0, 6);
+      }
+
+      private function hexToRgb(param1:uint) : Object
+      {
+         return {
+            r: (param1 >> 16) & 0xFF,
+            g: (param1 >> 8) & 0xFF,
+            b: param1 & 0xFF
+         };
+      }
+
+      /**
+       * 从候选点中聚类出2×3网格的6个槽位中心
+       * 候选点可能多于6个, 需要按行列分组取平均
+       */
+      private function clusterSlotPositions(param1:Array) : Array
+      {
+         if(param1.length < 6)
+         {
+            // 不够6个, 降级
+            return null;
+         }
+
+         // 按y坐标分成两组(上下两行)
+         param1.sortOn("y", Array.NUMERIC);
+         var _gapMax:int = 0, _gapIdx:int = int(param1.length / 2);
+         var _gk:int = 0;
+         while(_gk < param1.length - 1)
+         {
+            var _gy:Number = param1[_gk + 1].y - param1[_gk].y;
+            if(_gy > _gapMax) { _gapMax = _gy; _gapIdx = _gk + 1; }
+            _gk++;
+         }
+
+         var _topRow:Array = param1.slice(0, _gapIdx);
+         var _botRow:Array = param1.slice(_gapIdx);
+
+         // 每行按x分成3列
+         _topRow.sortOn("x", Array.NUMERIC);
+         _botRow.sortOn("x", Array.NUMERIC);
+
+         var _result:Array = [];
+         var _row:int = 0;
+         while(_row < 2)
+         {
+            var _rowData:Array = (_row == 0) ? _topRow : _botRow;
+            var _col:int = 0;
+            while(_col < 3)
+            {
+               var _ci:int = int(_rowData.length * _col / 3);
+               if(_ci >= _rowData.length) _ci = _rowData.length - 1;
+               _result.push({
+                  x: _rowData[_ci].x - 24,  // 中心 → 左上角(槽宽48)
+                  y: _rowData[_ci].y - 24
+               });
+               _col++;
+            }
+            _row++;
+         }
+
+         return _result.length >= 6 ? _result.slice(0, 6) : null;
+      }
+
       /**
        * 构建2行×3列槽位坐标网格
-       * @param baseX 网格左上角X
-       * @param baseY 网格左上角Y
-       * @param stepX 列间距
-       * @param stepY 行间距
-       * @return [{x,y}, ...] 共6项, 按行遍历
        */
       private function buildSlotGrid(param1:Number, param2:Number, param3:Number, param4:Number) : Array
       {

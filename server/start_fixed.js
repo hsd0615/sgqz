@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.13';
+  _cachedClientVersion = '2.10.14';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,6 +555,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '2.10.14', title: '\u{1F50D} 装备槽扫描子对象对齐',
+        body: '【优化】\n• 装备槽定位重写为四级策略：扫描无名子对象→像素扫描→锚点网格→硬编码\n• 扫描_skin中无名Shape/MovieClip自动发现槽位图形\n• BitmapData像素扫描检测金色边框聚类槽位' },
       { version: '2.10.13', title: '\u{1F4CB} 装备槽自适应对齐',
         body: '【优化】\n• 装备槽定位改为三级降级策略：皮肤bounds百分比→锚点相对网格→硬编码兜底\n• 新增buildSlotGrid()辅助方法统一管理2×3槽位网格\n• 支持不同尺寸皮肤自动适配' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
