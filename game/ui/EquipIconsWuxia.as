@@ -2,63 +2,69 @@ package game.ui
 {
    import flash.display.Bitmap;
 
-   // 46个武侠装备图标 - 从爱给网下载的免费素材
+   // 46个武侠装备图标 — 按类型分类
    public class EquipIconsWuxia
    {
-      [Embed(source="../../assets/icons/wuxia/equip_01.png")] private static var _e01:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_02.png")] private static var _e02:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_03.png")] private static var _e03:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_04.png")] private static var _e04:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_05.png")] private static var _e05:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_06.png")] private static var _e06:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_07.png")] private static var _e07:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_08.png")] private static var _e08:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_09.png")] private static var _e09:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_10.png")] private static var _e10:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_11.png")] private static var _e11:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_12.png")] private static var _e12:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_13.png")] private static var _e13:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_14.png")] private static var _e14:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_15.png")] private static var _e15:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_16.png")] private static var _e16:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_17.png")] private static var _e17:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_18.png")] private static var _e18:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_19.png")] private static var _e19:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_20.png")] private static var _e20:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_21.png")] private static var _e21:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_22.png")] private static var _e22:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_23.png")] private static var _e23:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_24.png")] private static var _e24:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_25.png")] private static var _e25:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_26.png")] private static var _e26:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_27.png")] private static var _e27:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_28.png")] private static var _e28:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_29.png")] private static var _e29:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_30.png")] private static var _e30:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_31.png")] private static var _e31:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_32.png")] private static var _e32:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_33.png")] private static var _e33:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_34.png")] private static var _e34:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_35.png")] private static var _e35:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_36.png")] private static var _e36:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_37.png")] private static var _e37:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_38.png")] private static var _e38:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_39.png")] private static var _e39:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_40.png")] private static var _e40:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_41.png")] private static var _e41:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_42.png")] private static var _e42:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_43.png")] private static var _e43:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_44.png")] private static var _e44:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_45.png")] private static var _e45:Class;
-      [Embed(source="../../assets/icons/wuxia/equip_46.png")] private static var _e46:Class;
+      // 武器 01-08
+      [Embed(source="../../assets/icons/wuxia/weapon_01.png")] private static var _w01:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_02.png")] private static var _w02:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_03.png")] private static var _w03:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_04.png")] private static var _w04:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_05.png")] private static var _w05:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_06.png")] private static var _w06:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_07.png")] private static var _w07:Class;
+      [Embed(source="../../assets/icons/wuxia/weapon_08.png")] private static var _w08:Class;
+      // 护甲 01-08
+      [Embed(source="../../assets/icons/wuxia/armor_01.png")] private static var _a01:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_02.png")] private static var _a02:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_03.png")] private static var _a03:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_04.png")] private static var _a04:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_05.png")] private static var _a05:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_06.png")] private static var _a06:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_07.png")] private static var _a07:Class;
+      [Embed(source="../../assets/icons/wuxia/armor_08.png")] private static var _a08:Class;
+      // 头盔 01-08
+      [Embed(source="../../assets/icons/wuxia/helmet_01.png")] private static var _h01:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_02.png")] private static var _h02:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_03.png")] private static var _h03:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_04.png")] private static var _h04:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_05.png")] private static var _h05:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_06.png")] private static var _h06:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_07.png")] private static var _h07:Class;
+      [Embed(source="../../assets/icons/wuxia/helmet_08.png")] private static var _h08:Class;
+      // 战靴 01-08
+      [Embed(source="../../assets/icons/wuxia/boots_01.png")] private static var _b01:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_02.png")] private static var _b02:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_03.png")] private static var _b03:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_04.png")] private static var _b04:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_05.png")] private static var _b05:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_06.png")] private static var _b06:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_07.png")] private static var _b07:Class;
+      [Embed(source="../../assets/icons/wuxia/boots_08.png")] private static var _b08:Class;
+      // 饰品 01-14
+      [Embed(source="../../assets/icons/wuxia/acc_01.png")] private static var _s01:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_02.png")] private static var _s02:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_03.png")] private static var _s03:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_04.png")] private static var _s04:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_05.png")] private static var _s05:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_06.png")] private static var _s06:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_07.png")] private static var _s07:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_08.png")] private static var _s08:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_09.png")] private static var _s09:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_10.png")] private static var _s10:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_11.png")] private static var _s11:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_12.png")] private static var _s12:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_13.png")] private static var _s13:Class;
+      [Embed(source="../../assets/icons/wuxia/acc_14.png")] private static var _s14:Class;
 
+      // iconIdx → Class 映射: 1-8武器, 9-16护甲, 17-24头盔, 25-32战靴, 33-46饰品
       private static var _classes:Array = [
-         _e01,_e02,_e03,_e04,_e05,_e06,_e07,_e08,
-         _e09,_e10,_e11,_e12,_e13,_e14,_e15,_e16,
-         _e17,_e18,_e19,_e20,_e21,_e22,_e23,_e24,
-         _e25,_e26,_e27,_e28,_e29,_e30,_e31,_e32,
-         _e33,_e34,_e35,_e36,_e37,_e38,_e39,_e40,
-         _e41,_e42,_e43,_e44,_e45,_e46
+         _w01,_w02,_w03,_w04,_w05,_w06,_w07,_w08,       // 1-8
+         _a01,_a02,_a03,_a04,_a05,_a06,_a07,_a08,       // 9-16
+         _h01,_h02,_h03,_h04,_h05,_h06,_h07,_h08,       // 17-24
+         _b01,_b02,_b03,_b04,_b05,_b06,_b07,_b08,       // 25-32
+         _s01,_s02,_s03,_s04,_s05,_s06,_s07,_s08,       // 33-40
+         _s09,_s10,_s11,_s12,_s13,_s14                   // 41-46
       ];
 
       public static function getIcon(param1:int) : Bitmap
@@ -67,6 +73,21 @@ package game.ui
          var _b:Bitmap = new _classes[param1 - 1]() as Bitmap;
          _b.smoothing = true;
          return _b;
+      }
+
+      /** 根据slot返回合适的图标列表, 供随机或默认选择 */
+      public static function getIconBySlot(slot:int, quality:int) : Bitmap
+      {
+         var _base:int;
+         if(slot == 1) _base = 0;       // 武器 1-8
+         else if(slot == 2) _base = 8;  // 护甲 9-16
+         else if(slot == 3 || slot == 6) _base = 32; // 饰品 33-46
+         else if(slot == 4) _base = 16; // 头盔 17-24
+         else if(slot == 5) _base = 24; // 战靴 25-32
+         else _base = 0;
+
+         var _idx:int = _base + Math.min(quality, slot==6?6:8);
+         return getIcon(_idx);
       }
    }
 }

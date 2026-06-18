@@ -101,7 +101,7 @@ package game.ui
       // 6个装备槽
       private var _equipSlots:Array = [];
       // 槽位标签: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
-      private static const SLOT_LABELS:Array = ["武器","铠甲","饰品Ⅰ","头盔","战靴","饰品Ⅱ"];
+      private static const SLOT_LABELS:Array = ["武器","铠甲","饰品","头盔","战靴","饰品"];
       private var _bagList:Sprite;
       private var _selectingSlot:int = -1;
 
