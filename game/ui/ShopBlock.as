@@ -124,14 +124,14 @@ package game.ui
          {
             this._img.removeChildAt(0);
          }
-         try {
-            var _iconClass:Class = ApplicationDomain.currentDomain.getDefinition(param1.icon) as Class;
-            var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
-            this._img.addChild(_bmp);
-         } catch(_e:Error) {
-            // 图标类不存在, 绘制程序化占位图标(装备等新增物品)
-            this._img.addChild(createPlaceholderIcon(param1.icon));
+         if(this._img.numChildren > 0)
+         {
+            this._img.removeChildAt(0);
          }
+         var _iconName:String = (param1.icon && param1.icon != "") ? param1.icon : "proto_3_4";
+         var _iconClass:Class = ApplicationDomain.currentDomain.getDefinition(_iconName) as Class;
+         var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
+         this._img.addChild(_bmp);
       }
 
       private function createPlaceholderIcon(iconName:String) : DisplayObject
