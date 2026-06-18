@@ -587,27 +587,27 @@ package game
                });
             }
          }
-         // 合并服务端JSON + 硬编码装备数据
-         var _jsonItems:Array = this._shopJSON;
-         if(_jsonItems == null) _jsonItems = EquipData.getShopEquipItems();
-         if(_jsonItems != null)
+         // 合并服务端JSON
+         if(this._shopJSON != null)
          {
-            for(var _j:int = 0; _j < _jsonItems.length; _j++)
+            for(var _j:int = 0; _j < this._shopJSON.length; _j++)
             {
-               var _sitem:Object = _jsonItems[_j];
-               if(int(_sitem.category) == mycategory)
-               {
-                  var _dup:Boolean = false;
-                  for(var _k:int = 0; _k < arr.length; _k++)
-                  {
-                     if(arr[_k].id == _sitem.id) { _dup = true; break; }
-                  }
-                  if(!_dup)
-                  {
-                     arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:"", desc:_sitem.name});
-                  }
-               }
+               var _sitem:Object = this._shopJSON[_j];
+               if(int(_sitem.category) != mycategory) continue;
+               var _dup:Boolean = false;
+               for(var _k:int = 0; _k < arr.length; _k++) { if(arr[_k].id == _sitem.id) { _dup = true; break; } }
+               if(!_dup) arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:"", desc:_sitem.name});
             }
+         }
+         // 始终合并硬编码装备数据
+         var _eqItems:Array = EquipData.getShopEquipItems();
+         for(var _ej:int = 0; _ej < _eqItems.length; _ej++)
+         {
+            var _eitem:Object = _eqItems[_ej];
+            if(int(_eitem.category) != mycategory) continue;
+            var _edup:Boolean = false;
+            for(var _ek:int = 0; _ek < arr.length; _ek++) { if(arr[_ek].id == _eitem.id) { _edup = true; break; } }
+            if(!_edup) arr.push({id:_eitem.id, code:_eitem.code, count:int(_eitem.count), payType:int(_eitem.payType), oldPrice:int(_eitem.oldPrice), newPrice:int(_eitem.newPrice), name:_eitem.name, icon:"", desc:_eitem.name});
          }
          if(arr.length == 0) return null;
          arr.sortOn("id");

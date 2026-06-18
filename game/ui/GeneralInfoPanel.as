@@ -191,7 +191,8 @@ package game.ui
          _tf.x = (70 - _tf.width) / 2; _tf.y = 3;
          this._equipBtn.addChild(_tf);
          this._equipBtn.buttonMode = true;
-         this._equipBtn.x = 615; this._equipBtn.y = 100;
+         this._equipBtn.x = this.__jinhuaBtn.x + this.__jinhuaBtn.width + 8;
+         this._equipBtn.y = this.__jinhuaBtn.y;
          var _self:GeneralInfoPanel = this;
          this._equipBtn.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
             p.stopImmediatePropagation();
