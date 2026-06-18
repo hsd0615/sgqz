@@ -329,7 +329,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.9.9';
+  _cachedClientVersion = '2.9.10';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -448,19 +448,19 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
-  // 更新公告 - 返回最近版本更新内容
+  // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '2.9.9', title: '\u{1F4CB} 更新公告 + \u{1F3AF} 瞄准镜卡住修复',
-        body: '【新功能】\n• 进入游戏时显示更新公告面板，展示最近5个版本更新内容\n• 服务端 /api/changelog 返回结构化版本条目\n\n【修复】\n• 瞄准镜卡住：武将攻击动画中点击同一武将时，fireing状态导致瞄准镜被清但未重建，现将检查前置\n• pollWebKeys 边缘检测优化' },
-      { version: '2.9.8', title: '\u{1F3AF} 快速按键打断攻击修复',
-        body: '【根因】\n快速连续按数字键1-5切换武将时，onSelectSoldierHandler会隐藏瞄准镜，导致紧接的鼠标点击攻击检测到_miaozhunjing.visible==false直接跳过攻击。\n\n【修复】\n• onSelectSoldierHandler增加输入锁：瞄准中(canFire=true)或力度条调整中禁止键盘切换武将\n• pollWebKeys改用边缘检测，仅在按键状态变化时触发一次setSelect' },
-      { version: '2.9.7', title: '\u{1F6E1}️ 自动更新死循环修复',
-        body: '【根因】\n服务端/api/version返回硬编码版本号，与服务器上实际main.swf的编译版本可能不一致。部署时只更新了服务端代码但SWF未重新编译，客户端下载到旧版SWF，重启后版本号依旧不匹配。\n\n【修复】（3层防护）\n• /api/version动态读取/opt/client/version文件（60s缓存）\n• cloud-deploy.js部署时自动同步version文件\n• 客户端更新前验证/client/version' },
-      { version: '2.9.6', title: '⌨️ 键盘逻辑完全重构',
-        body: '【重构】\n• 移除防抖机制、guard、useCapture\n• Web端改用轮询方式获取按键状态' },
-      { version: '2.9.5', title: '\u{1F41B} 紧急修复: 键盘完全失效 (int溢出)',
-        body: '【根因】\n防抖变量 _lastKeyTime:int 声明为32位int，而Date.getTime()返回1.78万亿（远超int上限21亿），溢出后导致所有按键被拦截。\n\n【修复】\n• _lastKeyTime: int → Number，_now: int → Number' }
+      { version: '2.9.9', title: '\u{1F4CB} 更新公告上线 + \u{1F3AF} 战斗操作优化',
+        body: '【新功能】\n• 进入游戏时显示更新公告，方便了解最新内容\n\n【优化】\n• 修复武将攻击后快速点击导致瞄准镜短暂消失的问题\n• 键盘切换武将更加流畅，不再意外打断瞄准' },
+      { version: '2.9.8', title: '\u{1F3AF} 战斗操作优化',
+        body: '【修复】\n• 修复快速按数字键切换武将时，同时点击攻击会失效的问题\n• 现在瞄准敌人时按数字键不会干扰攻击操作' },
+      { version: '2.9.7', title: '\u{1F6E1}️ 自动更新优化',
+        body: '【修复】\n• 修复游戏自动更新后仍反复提示"需要更新"的问题\n• 更新流程更加稳定可靠' },
+      { version: '2.9.6', title: '⌨️ 键盘操作优化',
+        body: '【优化】\n• 重构键盘输入系统，按键响应更加灵敏\n• 网页版按键体验大幅提升' },
+      { version: '2.9.5', title: '\u{1F41B} 紧急修复',
+        body: '【修复】\n• 修复键盘按键偶尔完全失灵的问题\n• 影响范围：所有键盘快捷键操作' }
     ]});
   }
 

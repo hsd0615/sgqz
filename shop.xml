@@ -86,8 +86,8 @@
     <code>proto_1_0</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>机关神术</name>
@@ -96,8 +96,8 @@
     <code>proto_1_0</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>神射之卷</name>
@@ -106,8 +106,8 @@
     <code>proto_1_1</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>神射之卷</name>
@@ -116,8 +116,8 @@
     <code>proto_1_1</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>凤舞之卷</name>
@@ -126,8 +126,8 @@
     <code>proto_1_2</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>凤舞之卷</name>
@@ -136,8 +136,8 @@
     <code>proto_1_2</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>陌刀之卷</name>
@@ -146,8 +146,8 @@
     <code>proto_1_3</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>陌刀之卷</name>
@@ -156,8 +156,8 @@
     <code>proto_1_3</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>狂斧之卷</name>
@@ -166,8 +166,8 @@
     <code>proto_1_4</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>狂斧之卷</name>
@@ -176,8 +176,8 @@
     <code>proto_1_4</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>巨锤之卷</name>
@@ -186,8 +186,8 @@
     <code>proto_1_5</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>巨锤之卷</name>
@@ -196,8 +196,8 @@
     <code>proto_1_5</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>爆武之卷</name>
@@ -206,8 +206,8 @@
     <code>proto_1_6</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>爆武之卷</name>
@@ -216,8 +216,8 @@
     <code>proto_1_6</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>银枪之卷</name>
@@ -226,8 +226,8 @@
     <code>proto_1_7</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>银枪之卷</name>
@@ -236,8 +236,8 @@
     <code>proto_1_7</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>玄甲之卷</name>
@@ -246,8 +246,8 @@
     <code>proto_1_8</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>玄甲之卷</name>
@@ -256,8 +256,8 @@
     <code>proto_1_8</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>虎豹骑术</name>
@@ -266,8 +266,8 @@
     <code>proto_1_9</code>
     <count>1</count>
     <payType>3</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>50</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
   <RECORD>
     <name>虎豹骑术</name>
@@ -276,8 +276,8 @@
     <code>proto_1_9</code>
     <count>5</count>
     <payType>3</payType>
-    <oldPrice>500</oldPrice>
-    <newPrice>225</newPrice>
+    <oldPrice>16000</oldPrice>
+    <newPrice>8000</newPrice>
   </RECORD>
   <RECORD>
     <name>小喇叭</name>
@@ -436,8 +436,8 @@
     <code>proto_1_20</code>
     <count>1</count>
     <payType>2</payType>
-    <oldPrice>100</oldPrice>
-    <newPrice>60</newPrice>
+    <oldPrice>800</oldPrice>
+    <newPrice>500</newPrice>
   </RECORD>
    <RECORD>
     <name>君主之卷</name>
@@ -446,7 +446,7 @@
     <code>proto_1_20</code>
     <count>5</count>
     <payType>2</payType>
-    <oldPrice>600</oldPrice>
-    <newPrice>300</newPrice>
+    <oldPrice>4000</oldPrice>
+    <newPrice>2000</newPrice>
   </RECORD>
 </RECORDS>
