@@ -2,6 +2,28 @@
 
 ---
 
+## v2.9.7 (2026-06-18) — 🛡️ 自动更新死循环修复
+
+### 根因
+服务端 `/api/version` 返回硬编码版本号，与服务器上实际 `main.swf` 的编译版本可能不一致。
+当部署时只更新了服务端代码但 SWF 未重新编译，客户端下载到旧版 SWF，重启后版本号依旧不匹配，导致反复提示"需要更新"。
+
+### 修复
+- **server/start_fixed.js**: `/api/version` 改为动态读取 `/opt/client/version` 文件（60s缓存），与已部署 SWF 始终保持同步
+- **tools/cloud-deploy.js**: `--full` 编译后自动从 `Config.as` 提取 CLIENT_VER 写入 `/opt/client/version`
+- **game/ui/UpdateChecker.as**: 更新前先下载验证 `/client/version` 文件，确认服务端 SWF 版本与 API 版本一致后才执行更新
+- **update.bat**: 增加 `main_new.swf` 存在性检查和失败回退路径
+
+---
+
+## v2.9.6 (2026-06-18) — ⌨️ 键盘逻辑完全重构
+
+### 重构
+- 移除防抖机制、guard、useCapture
+- Web 端改用轮询方式获取按键状态
+
+---
+
 ## v2.9.5 (2026-06-18) — 🐛 紧急修复: 键盘完全失效 (int溢出)
 
 ### 根因

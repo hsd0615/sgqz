@@ -95,7 +95,7 @@ package com.iflashigame.net
                      var _ae:int = _as >= 0 ? _raw.indexOf(']', _as) : -1;
                      if (_as >= 0 && _ae >= 0) {
                         try {
-                           var _obj:* = JSON.parse ? JSON.parse(_raw.substring(_as, _ae + 1)) : null;
+                           var _obj:* = (JSON.parse) ? JSON.parse(_raw.substring(_as, _ae + 1)) : null;
                            if (_obj is Array) _msgs = _obj as Array;
                         } catch(_e:Error) {}
                      }

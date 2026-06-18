@@ -305,6 +305,35 @@ function getPlayerInfo(pid) {
   return { level: pl ? pl.level : 1, image: pl ? pl.image_id : 1 };
 }
 
+// ============ 版本号统一管理 ============
+// 从部署文件读取版本，确保与已部署 SWF 始终同步，防止更新死循环
+var _cachedClientVersion = null;
+var _cachedClientVersionTime = 0;
+function getClientVersion() {
+  var now = Date.now();
+  // 缓存 60 秒，避免每次请求都读磁盘
+  if (_cachedClientVersion && (now - _cachedClientVersionTime) < 60000) {
+    return _cachedClientVersion;
+  }
+  try {
+    var vf = '/opt/client/version';
+    if (fs.existsSync(vf)) {
+      var v = fs.readFileSync(vf, 'utf-8').trim();
+      if (v && /^\d+\.\d+\.\d+/.test(v)) {
+        _cachedClientVersion = v;
+        _cachedClientVersionTime = now;
+        return v;
+      }
+    }
+  } catch(e) {
+    console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
+  }
+  // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
+  _cachedClientVersion = '2.9.7';
+  _cachedClientVersionTime = now;
+  return _cachedClientVersion;
+}
+
 // ============ 原始 TCP HTTP 服务器 ============
 function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
   let response = 'HTTP/1.0 ' + statusCode + ' ' + statusText + '\r\n';
@@ -414,9 +443,9 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { success: true, players: players, timestamp: now });
   }
 
-  // 客户端版本号
+  // 客户端版本号 - 动态读取 /opt/client/version，确保与已部署 SWF 同步
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: '2.9.6', downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
   }
 
   // Login — 返回所有武将
@@ -1166,7 +1195,7 @@ function handleRequest(socket, req) {
   if (url === '/api/admin/status') {
     var uptime = process.uptime();
     var mem = process.memoryUsage();
-    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: '2.9.6' });
+    return jsonRawResponse(socket, { success: true, uptime: Math.floor(uptime), memoryMB: Math.floor(mem.heapUsed/1024/1024), version: getClientVersion() });
   }
 
   // Flash安全策略文件

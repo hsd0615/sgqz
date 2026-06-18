@@ -183,6 +183,25 @@ async function compileAndUploadSWF(host, port) {
     'base64 -d /tmp/swf.b64 > /opt/client/main.swf && cp /opt/client/main.swf /opt/client/sanguo_web.swf && ls -la /opt/client/main.swf /opt/client/sanguo_web.swf && rm /tmp/swf.b64 && echo SWF_OK', 'Decode');
   if (r && r.stdout && r.stdout.includes('SWF_OK')) {
     console.log('  ✓ SWF已部署');
+
+    // 同步版本文件：从 Config.as 提取 CLIENT_VER 写入 /opt/client/version
+    // 确保服务端 /api/version 与已部署 SWF 的版本号始终一致，防止更新死循环
+    try {
+      const configPath = path.join(BASE, 'game', 'Config.as');
+      const configContent = fs.readFileSync(configPath, 'utf-8');
+      const verMatch = configContent.match(/CLIENT_VER\s*:\s*String\s*=\s*"([^"]+)"/);
+      if (verMatch && verMatch[1]) {
+        const clientVer = verMatch[1];
+        const verB64 = Buffer.from(clientVer + '\n', 'utf-8').toString('base64');
+        await execRemote(host, port,
+          `echo '${verB64}' | base64 -d > /opt/client/version && cat /opt/client/version && echo VER_OK`,
+          'Write version file');
+        console.log('  ✓ 版本文件 v' + clientVer + ' 已同步');
+      }
+    } catch(e) {
+      console.log('  ⚠ 版本文件写入失败: ' + e.message);
+    }
+
     return true;
   }
   console.log('  ✗ SWF部署失败');
@@ -241,6 +260,32 @@ async function main() {
     const syncResult = await execRemote(host, port, syncCmd, 'Sync XML to /opt/client/');
     if (syncResult && syncResult.stdout && syncResult.stdout.includes('SYNC_OK')) {
       console.log('  ✓ XML已同步到 /opt/client/');
+    }
+
+    // 确保版本文件存在(非--full部署时可能缺失)
+    const verCheckResult = await execRemote(host, port,
+      'if [ -f /opt/client/version ]; then cat /opt/client/version; else echo MISSING; fi',
+      'Check version file');
+    if (verCheckResult && verCheckResult.stdout && verCheckResult.stdout.includes('MISSING')) {
+      console.log('  ⚠ /opt/client/version 不存在，正在从本地 Config.as 创建...');
+      try {
+        const cfgPath = path.join(BASE, 'game', 'Config.as');
+        if (fs.existsSync(cfgPath)) {
+          const cfgContent = fs.readFileSync(cfgPath, 'utf-8');
+          const vm = cfgContent.match(/CLIENT_VER\s*:\s*String\s*=\s*"([^"]+)"/);
+          if (vm && vm[1]) {
+            const vb64 = Buffer.from(vm[1] + '\n', 'utf-8').toString('base64');
+            await execRemote(host, port,
+              `echo '${vb64}' | base64 -d > /opt/client/version && cat /opt/client/version && echo VER_OK`,
+              'Create version file');
+            console.log('  ✓ 版本文件 v' + vm[1] + ' 已创建');
+          }
+        }
+      } catch(e) {
+        console.log('  ⚠ 自动创建版本文件失败，请用 --full 部署一次');
+      }
+    } else if (verCheckResult && verCheckResult.stdout) {
+      console.log('  ✓ 服务端版本: v' + verCheckResult.stdout.trim());
     }
 
     if (!args.includes('--no-restart')) {

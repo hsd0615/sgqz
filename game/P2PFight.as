@@ -1841,7 +1841,19 @@ package game
                this._fightUI.setSelect(5);
          }
       }
-      
+
+      // Web键盘轮询: 每帧通过ExternalInterface向JS查询当前按键
+      private function pollWebKeys(param1:Event) : void
+      {
+         if(!Config.IS_WEB || !ExternalInterface.available) return;
+         try {
+            var _key:* = ExternalInterface.call("_sgqzPollKey");
+            if(_key is Number && int(_key) >= 1 && int(_key) <= 5) {
+               this._fightUI.setSelect(int(_key));
+            }
+         } catch(_e:Error) {}
+      }
+
       private function hideAmmoTipsHandler(param1:MouseEvent) : *
       {
          stage.removeEventListener(MouseEvent.MOUSE_DOWN,this.hideAmmoTipsHandler,true);

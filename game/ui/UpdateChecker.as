@@ -23,6 +23,7 @@ package game.ui
       private var _infoTF:TextField;
       private var _downloading:Boolean = false;
       private var _appDir:String = "";
+      private var _expectedVersion:String = "";
 
       public function UpdateChecker()
       {
@@ -42,6 +43,7 @@ package game.ui
             try {
                var _json:Object = JSON.parse(_loader.data as String);
                if(_json.success && _json.version && _json.version != Config.CLIENT_VER) {
+                  _self._expectedVersion = _json.version;
                   _self.showUpdatePrompt(_json.version);
                }
             } catch(_e:Error) {}
@@ -73,8 +75,42 @@ package game.ui
       {
          if(this._downloading) return;
          this._downloading = true;
-         this._infoTF.text = "正在下载...";
+         this._infoTF.text = "正在验证版本...";
 
+         // 先下载版本文件，确认服务端 SWF 版本与 /api/version 一致
+         var _self:UpdateChecker = this;
+         var _verLoader:URLLoader = new URLLoader();
+         var _verReq:URLRequest = new URLRequest(AESController.getInstance().serverURL + "/client/version");
+         _verReq.method = URLRequestMethod.GET;
+         _verLoader.addEventListener(Event.COMPLETE, function(p:*):void {
+            var _serverSWFVersion:String = "";
+            try {
+               _serverSWFVersion = (_verLoader.data as String).replace(/^\s+|\s+$/g, "");
+            } catch(_e:Error) {}
+
+            if(_serverSWFVersion && _serverSWFVersion == _self._expectedVersion) {
+               // 版本确认一致，开始下载 SWF
+               _self._infoTF.text = "正在下载...";
+               _self.downloadSWF();
+            } else if(_serverSWFVersion) {
+               _self._infoTF.text = "版本异常! 服务:" + _self._expectedVersion + " 文件:" + _serverSWFVersion;
+               _self._downloading = false;
+            } else {
+               // 版本文件不存在(老服务器)，直接下载 SWF
+               _self._infoTF.text = "正在下载...";
+               _self.downloadSWF();
+            }
+         });
+         _verLoader.addEventListener(IOErrorEvent.IO_ERROR, function(p:*):void {
+            // 版本文件不存在(老服务器)，直接下载 SWF 兼容
+            _self._infoTF.text = "正在下载...";
+            _self.downloadSWF();
+         });
+         _verLoader.load(_verReq);
+      }
+
+      private function downloadSWF() : void
+      {
          var _loader:URLLoader = new URLLoader();
          _loader.dataFormat = URLLoaderDataFormat.BINARY;
          var _req:URLRequest = new URLRequest(AESController.getInstance().serverURL + "/client/main.swf");
@@ -99,7 +135,9 @@ package game.ui
                _url = _url.replace(/\/[^\/]*\.swf.*$/, "");
                this._appDir = _url;
             }
-         } catch(_e:Error) {}
+         } catch(_e:Error) {
+            trace("[UpdateChecker] 获取app目录失败: " + _e.message);
+         }
          if(this._appDir == "" || this._appDir == null) {
             this._infoTF.text = "错误:无法获取目录";
             this._downloading = false; return;
@@ -108,12 +146,38 @@ package game.ui
          try {
             var _appDir:String = this._appDir;  // 闭包捕获
             // 1. 写入新版 main_new.swf
+            var _newSwf:File = new File(_appDir + "/main_new.swf");
             var _fs:FileStream = new FileStream();
-            _fs.open(new File(_appDir + "/main_new.swf"), FileMode.WRITE);
+            _fs.open(_newSwf, FileMode.WRITE);
             Object(_fs).writeBytes(param1, 0, param1.length);
             _fs.close();
 
-            // 2. 写入自动重启批处理 (杀进程→轮询等锁→替换→验证→重启)
+            // 验证写入成功 (使用 try/catch 兼容编译期 stub)
+            try {
+               var _checkFs:FileStream = new FileStream();
+               _checkFs.open(_newSwf, FileMode.READ);
+               if(_checkFs["bytesAvailable"] < 100) {
+                  _checkFs.close();
+                  this._infoTF.text = "写入失败,文件异常";
+                  this._downloading = false; return;
+               }
+               _checkFs.close();
+            } catch(_e2:Error) {
+               this._infoTF.text = "写入失败,请检查权限";
+               this._downloading = false; return;
+            }
+
+            // 2. 写入版本标记文件(供下次启动核对)
+            if(this._expectedVersion != "") {
+               try {
+                  var _verFs:FileStream = new FileStream();
+                  _verFs.open(new File(_appDir + "/version"), FileMode.WRITE);
+                  _verFs.writeUTFBytes(this._expectedVersion);
+                  _verFs.close();
+               } catch(_e:Error) {}
+            }
+
+            // 3. 写入自动重启批处理 (杀进程→轮询等锁→替换→验证→重启)
             var _bat:FileStream = new FileStream();
             _bat.open(new File(_appDir + "/update.bat"), FileMode.WRITE);
             _bat.writeUTFBytes("@echo off\r\n");
@@ -122,19 +186,25 @@ package game.ui
             _bat.writeUTFBytes("taskkill /f /im main.exe >nul 2>&1\r\n");
             _bat.writeUTFBytes(":wait_unlock\r\n");
             _bat.writeUTFBytes("timeout /t 1 /nobreak >nul\r\n");
+            _bat.writeUTFBytes("if not exist main_new.swf goto update_fail\r\n");
             _bat.writeUTFBytes("move /y main.swf main_old.swf >nul 2>&1\r\n");
             _bat.writeUTFBytes("if exist main.swf goto wait_unlock\r\n");
             _bat.writeUTFBytes("move /y main_new.swf main.swf >nul 2>&1\r\n");
             _bat.writeUTFBytes("if not exist main.swf goto wait_unlock\r\n");
             _bat.writeUTFBytes("start \"\" main.exe\r\n");
             _bat.writeUTFBytes("del \"%~f0\" >nul 2>&1\r\n");
+            _bat.writeUTFBytes("exit /b 0\r\n");
+            _bat.writeUTFBytes(":update_fail\r\n");
+            _bat.writeUTFBytes("start \"\" main.exe\r\n");
+            _bat.writeUTFBytes("del \"%~f0\" >nul 2>&1\r\n");
+            _bat.writeUTFBytes("exit /b 1\r\n");
             _bat.close();
 
-            // 3. 启动批处理
+            // 4. 启动批处理
             var _batFile:File = new File(_appDir + "/update.bat");
             Object(_batFile)["openWithDefaultApplication"]();
 
-            // 4. 显示完成 — 批处理会在3秒后杀进程自动完成
+            // 5. 显示完成 — 批处理会在3秒后杀进程自动完成
             this._infoTF.text = "更新完成! 即将自动重启...";
             this.graphics.clear();
             this.graphics.beginFill(0x0a1a0a, 0.92);
