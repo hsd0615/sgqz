@@ -247,8 +247,11 @@ package game.ui
             _loc6_ = this.createItemIcon(_item);
             if(_loc6_ != null)
             {
-               _loc6_.x = 2;
-               _loc6_.y = 2;
+               // 动态居中: 根据格子大小和图标大小计算位置
+               _loc6_.x = int((_loc5_.width - _loc6_.width) / 2);
+               _loc6_.y = int((_loc5_.height - _loc6_.height) / 2);
+               if(_loc6_.x < 0) _loc6_.x = 2;
+               if(_loc6_.y < 0) _loc6_.y = 2;
                _loc5_.addChildAt(_loc6_,0);
             }
 
@@ -362,9 +365,11 @@ package game.ui
             return null;
          }
 
-         // 128x128 PNG缩放到~36px, 与其他道具图标大小一致
-         _bmp.scaleX = 0.28;
-         _bmp.scaleY = 0.28;
+         // 128x128 PNG缩放到40px, 与其他道具图标大小一致
+         var _targetSize:Number = 40;
+         var _scale:Number = _targetSize / _bmp.width;
+         _bmp.scaleX = _scale;
+         _bmp.scaleY = _scale;
          _bmp.smoothing = true;
          return _bmp;
       }

@@ -178,21 +178,22 @@ package game.ui
          if(this._equipBtn != null) { removeChild(this._equipBtn); this._equipBtn = null; }
          this._equipBtn = new Sprite();
          var _bg:Shape = new Shape();
-         _bg.graphics.beginFill(0x2a1810, 0.92);
-         _bg.graphics.lineStyle(1.5, 0xC8A84E, 0.8);
-         _bg.graphics.drawRoundRect(0, 0, 70, 24, 5, 5);
+         _bg.graphics.beginFill(0x4a2010, 0.94);
+         _bg.graphics.lineStyle(2, 0xFFD700, 0.9);
+         _bg.graphics.drawRoundRect(0, 0, 80, 28, 6, 6);
          _bg.graphics.endFill();
          this._equipBtn.addChild(_bg);
          var _tf:TextField = new TextField();
-         _tf.defaultTextFormat = new TextFormat("SimHei", 12, 0xFFD700, true);
-         _tf.text = "装备";
+         _tf.defaultTextFormat = new TextFormat("SimHei", 13, 0xFFD700, true);
+         _tf.text = "装 备";
          _tf.selectable = false;
          _tf.autoSize = TextFieldAutoSize.CENTER;
-         _tf.x = (70 - _tf.width) / 2; _tf.y = 3;
+         _tf.x = (80 - _tf.width) / 2; _tf.y = 4;
          this._equipBtn.addChild(_tf);
          this._equipBtn.buttonMode = true;
-         this._equipBtn.x = this.__jinhuaBtn.x + this.__jinhuaBtn.width + 8;
-         this._equipBtn.y = this.__jinhuaBtn.y;
+         // 放在升级按钮下方, 位置醒目
+         this._equipBtn.x = this.__shengjiBtn.x;
+         this._equipBtn.y = this.__shengjiBtn.y + this.__shengjiBtn.height + 6;
          var _self:GeneralInfoPanel = this;
          this._equipBtn.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
             p.stopImmediatePropagation();
