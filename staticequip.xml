@@ -1,74 +1,127 @@
 <RECORDS>
+  <!-- ====== 武器 (slot=1) ====== -->
   <RECORD>
-    <code>proto_4_1</code>
-    <slot>1</slot>
-    <name>青釭剑</name>
-    <attack>150</attack>
-    <defense>0</defense>
-    <hp>0</hp>
-    <levelReq>20</levelReq>
-    <quality>1</quality>
-    <icon>proto_4_1</icon>
-    <desc>攻击+150，需武将等级20</desc>
+    <code>proto_4_1</code><slot>1</slot><name>铁剑</name>
+    <attack>50</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>1</levelReq><quality>1</quality>
+    <icon>proto_4_1</icon><desc>攻击+50 [普通]</desc>
   </RECORD>
   <RECORD>
-    <code>proto_4_2</code>
-    <slot>1</slot>
-    <name>倚天剑</name>
-    <attack>300</attack>
-    <defense>0</defense>
-    <hp>0</hp>
-    <levelReq>40</levelReq>
-    <quality>2</quality>
-    <icon>proto_4_2</icon>
-    <desc>攻击+300，需武将等级40</desc>
+    <code>proto_4_2</code><slot>1</slot><name>精钢剑</name>
+    <attack>120</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>15</levelReq><quality>2</quality>
+    <icon>proto_4_2</icon><desc>攻击+120 [精良]</desc>
   </RECORD>
   <RECORD>
-    <code>proto_4_3</code>
-    <slot>2</slot>
-    <name>明光铠</name>
-    <attack>0</attack>
-    <defense>120</defense>
-    <hp>0</hp>
-    <levelReq>20</levelReq>
-    <quality>1</quality>
-    <icon>proto_4_3</icon>
-    <desc>防御+120，需武将等级20</desc>
+    <code>proto_4_3</code><slot>1</slot><name>青釭剑</name>
+    <attack>200</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>30</levelReq><quality>3</quality>
+    <icon>proto_4_3</icon><desc>攻击+200 [稀有]</desc>
   </RECORD>
   <RECORD>
-    <code>proto_4_4</code>
-    <slot>2</slot>
-    <name>锁子甲</name>
-    <attack>0</attack>
-    <defense>250</defense>
-    <hp>0</hp>
-    <levelReq>40</levelReq>
-    <quality>2</quality>
-    <icon>proto_4_4</icon>
-    <desc>防御+250，需武将等级40</desc>
+    <code>proto_4_4</code><slot>1</slot><name>倚天剑</name>
+    <attack>300</attack><attackPct>5</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>50</levelReq><quality>4</quality>
+    <icon>proto_4_4</icon><desc>攻击+300，攻击+5% [史诗]</desc>
   </RECORD>
   <RECORD>
-    <code>proto_4_5</code>
-    <slot>3</slot>
-    <name>护心镜</name>
-    <attack>0</attack>
-    <defense>0</defense>
-    <hp>500</hp>
-    <levelReq>20</levelReq>
-    <quality>1</quality>
-    <icon>proto_4_5</icon>
-    <desc>生命+500，需武将等级20</desc>
+    <code>proto_4_5</code><slot>1</slot><name>方天画戟</name>
+    <attack>500</attack><attackPct>10</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>80</levelReq><quality>5</quality>
+    <icon>proto_4_5</icon><desc>攻击+500，攻击+10% [传说]</desc>
+  </RECORD>
+
+  <!-- ====== 防具 (slot=2) ====== -->
+  <RECORD>
+    <code>proto_4_11</code><slot>2</slot><name>皮甲</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>30</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>1</levelReq><quality>1</quality>
+    <icon>proto_4_11</icon><desc>防御+30 [普通]</desc>
   </RECORD>
   <RECORD>
-    <code>proto_4_6</code>
-    <slot>3</slot>
-    <name>和氏璧</name>
-    <attack>100</attack>
-    <defense>100</defense>
-    <hp>1000</hp>
-    <levelReq>50</levelReq>
-    <quality>3</quality>
-    <icon>proto_4_6</icon>
-    <desc>全属性提升，需武将等级50</desc>
+    <code>proto_4_12</code><slot>2</slot><name>锁子甲</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>100</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>15</levelReq><quality>2</quality>
+    <icon>proto_4_12</icon><desc>防御+100 [精良]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_13</code><slot>2</slot><name>明光铠</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>180</defense><defensePct>0</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>30</levelReq><quality>3</quality>
+    <icon>proto_4_13</icon><desc>防御+180 [稀有]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_14</code><slot>2</slot><name>龙鳞甲</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>250</defense><defensePct>5</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>50</levelReq><quality>4</quality>
+    <icon>proto_4_14</icon><desc>防御+250，防御+5% [史诗]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_15</code><slot>2</slot><name>玄武战甲</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>400</defense><defensePct>8</defensePct>
+    <hp>0</hp><hpPct>0</hpPct>
+    <levelReq>80</levelReq><quality>5</quality>
+    <icon>proto_4_15</icon><desc>防御+400，防御+8% [传说]</desc>
+  </RECORD>
+
+  <!-- ====== 饰品 (slot=3) ====== -->
+  <RECORD>
+    <code>proto_4_21</code><slot>3</slot><name>护身符</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>300</hp><hpPct>0</hpPct>
+    <levelReq>5</levelReq><quality>1</quality>
+    <icon>proto_4_21</icon><desc>生命+300 [普通]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_22</code><slot>3</slot><name>翡翠环</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>600</hp><hpPct>0</hpPct>
+    <levelReq>20</levelReq><quality>2</quality>
+    <icon>proto_4_22</icon><desc>生命+600 [精良]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_23</code><slot>3</slot><name>护心镜</name>
+    <attack>0</attack><attackPct>0</attackPct>
+    <defense>0</defense><defensePct>0</defensePct>
+    <hp>1000</hp><hpPct>0</hpPct>
+    <levelReq>35</levelReq><quality>3</quality>
+    <icon>proto_4_23</icon><desc>生命+1000 [稀有]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_24</code><slot>3</slot><name>和氏璧</name>
+    <attack>50</attack><attackPct>5</attackPct>
+    <defense>50</defense><defensePct>5</defensePct>
+    <hp>1500</hp><hpPct>5</hpPct>
+    <levelReq>55</levelReq><quality>4</quality>
+    <icon>proto_4_24</icon><desc>全属性+5%，生命+1500 [史诗]</desc>
+  </RECORD>
+  <RECORD>
+    <code>proto_4_25</code><slot>3</slot><name>传国玉玺</name>
+    <attack>100</attack><attackPct>8</attackPct>
+    <defense>100</defense><defensePct>8</defensePct>
+    <hp>3000</hp><hpPct>8</hpPct>
+    <levelReq>100</levelReq><quality>5</quality>
+    <icon>proto_4_25</icon><desc>全属性+8%，生命+3000 [传说]</desc>
   </RECORD>
 </RECORDS>

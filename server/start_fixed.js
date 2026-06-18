@@ -162,12 +162,18 @@ function loadEquipData() {
       var lvrm = blocks[i].match(/<levelReq>(\d+)<\/levelReq>/);
       var qm = blocks[i].match(/<quality>(\d+)<\/quality>/);
       var nm2 = blocks[i].match(/<name>([^<]+)<\/name>/);
+      var atkpctm = blocks[i].match(/<attackPct>(\d+)<\/attackPct>/);
+      var defpctm = blocks[i].match(/<defensePct>(\d+)<\/defensePct>/);
+      var hppctm = blocks[i].match(/<hpPct>(\d+)<\/hpPct>/);
       EQUIP_DATA[cm[1]] = {
         name: (nm2?nm2[1]:''),
         slot: parseInt(slotm?slotm[1]:'1'),
         attack: parseInt(atkm?atkm[1]:'0'),
+        attackPct: parseInt(atkpctm?atkpctm[1]:'0'),
         defense: parseInt(defm?defm[1]:'0'),
+        defensePct: parseInt(defpctm?defpctm[1]:'0'),
         hp: parseInt(hpm?hpm[1]:'0'),
+        hpPct: parseInt(hppctm?hppctm[1]:'0'),
         levelReq: parseInt(lvrm?lvrm[1]:'1'),
         quality: parseInt(qm?qm[1]:'1')
       };

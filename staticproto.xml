@@ -206,58 +206,19 @@
     <icon>proto_3_4</icon>
     <skin/>
   </RECORD>
-  <RECORD>
-    <code>proto_4_1</code>
-    <type>4</type>
-    <name>青釭剑</name>
-    <desc>攻击+150，需武将等级20</desc>
-    <value/>
-    <icon>proto_4_1</icon>
-    <skin/>
-  </RECORD>
-  <RECORD>
-    <code>proto_4_2</code>
-    <type>4</type>
-    <name>倚天剑</name>
-    <desc>攻击+300，需武将等级40</desc>
-    <value/>
-    <icon>proto_4_2</icon>
-    <skin/>
-  </RECORD>
-  <RECORD>
-    <code>proto_4_3</code>
-    <type>4</type>
-    <name>明光铠</name>
-    <desc>防御+120，需武将等级20</desc>
-    <value/>
-    <icon>proto_4_3</icon>
-    <skin/>
-  </RECORD>
-  <RECORD>
-    <code>proto_4_4</code>
-    <type>4</type>
-    <name>锁子甲</name>
-    <desc>防御+250，需武将等级40</desc>
-    <value/>
-    <icon>proto_4_4</icon>
-    <skin/>
-  </RECORD>
-  <RECORD>
-    <code>proto_4_5</code>
-    <type>4</type>
-    <name>护心镜</name>
-    <desc>生命+500，需武将等级20</desc>
-    <value/>
-    <icon>proto_4_5</icon>
-    <skin/>
-  </RECORD>
-  <RECORD>
-    <code>proto_4_6</code>
-    <type>4</type>
-    <name>和氏璧</name>
-    <desc>攻击+100防御+100生命+1000，需武将等级50</desc>
-    <value/>
-    <icon>proto_4_6</icon>
-    <skin/>
-  </RECORD>
+  <RECORD><code>proto_4_1</code><type>4</type><name>铁剑</name><desc>攻击+50 [普通]</desc><value/><icon>proto_4_1</icon><skin/></RECORD>
+  <RECORD><code>proto_4_2</code><type>4</type><name>精钢剑</name><desc>攻击+120 [精良]</desc><value/><icon>proto_4_2</icon><skin/></RECORD>
+  <RECORD><code>proto_4_3</code><type>4</type><name>青釭剑</name><desc>攻击+200 [稀有]</desc><value/><icon>proto_4_3</icon><skin/></RECORD>
+  <RECORD><code>proto_4_4</code><type>4</type><name>倚天剑</name><desc>攻击+300 攻+5% [史诗]</desc><value/><icon>proto_4_4</icon><skin/></RECORD>
+  <RECORD><code>proto_4_5</code><type>4</type><name>方天画戟</name><desc>攻击+500 攻+10% [传说]</desc><value/><icon>proto_4_5</icon><skin/></RECORD>
+  <RECORD><code>proto_4_11</code><type>4</type><name>皮甲</name><desc>防御+30 [普通]</desc><value/><icon>proto_4_11</icon><skin/></RECORD>
+  <RECORD><code>proto_4_12</code><type>4</type><name>锁子甲</name><desc>防御+100 [精良]</desc><value/><icon>proto_4_12</icon><skin/></RECORD>
+  <RECORD><code>proto_4_13</code><type>4</type><name>明光铠</name><desc>防御+180 [稀有]</desc><value/><icon>proto_4_13</icon><skin/></RECORD>
+  <RECORD><code>proto_4_14</code><type>4</type><name>龙鳞甲</name><desc>防御+250 防+5% [史诗]</desc><value/><icon>proto_4_14</icon><skin/></RECORD>
+  <RECORD><code>proto_4_15</code><type>4</type><name>玄武战甲</name><desc>防御+400 防+8% [传说]</desc><value/><icon>proto_4_15</icon><skin/></RECORD>
+  <RECORD><code>proto_4_21</code><type>4</type><name>护身符</name><desc>生命+300 [普通]</desc><value/><icon>proto_4_21</icon><skin/></RECORD>
+  <RECORD><code>proto_4_22</code><type>4</type><name>翡翠环</name><desc>生命+600 [精良]</desc><value/><icon>proto_4_22</icon><skin/></RECORD>
+  <RECORD><code>proto_4_23</code><type>4</type><name>护心镜</name><desc>生命+1000 [稀有]</desc><value/><icon>proto_4_23</icon><skin/></RECORD>
+  <RECORD><code>proto_4_24</code><type>4</type><name>和氏璧</name><desc>全属性+5% 生命+1500 [史诗]</desc><value/><icon>proto_4_24</icon><skin/></RECORD>
+  <RECORD><code>proto_4_25</code><type>4</type><name>传国玉玺</name><desc>全属性+8% 生命+3000 [传说]</desc><value/><icon>proto_4_25</icon><skin/></RECORD>
 </RECORDS>

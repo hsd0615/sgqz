@@ -137,6 +137,33 @@ package game.ui
          this.refresh();
       }
 
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700];
+      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说"];
+
+      private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
+      private function getQualityName(param1:int):String { return _qualityNames[param1] || "?"; }
+
+      private function formatEquipInfo(param1:String):String
+      {
+         if(param1 == "" || param1 == null || param1 == "0") return "空";
+         var _n:* = Data.getInstance().getAttributes("equip",param1,"name");
+         var _atk:* = Data.getInstance().getAttributes("equip",param1,"attack");
+         var _atkp:* = Data.getInstance().getAttributes("equip",param1,"attackPct");
+         var _def:* = Data.getInstance().getAttributes("equip",param1,"defense");
+         var _defp:* = Data.getInstance().getAttributes("equip",param1,"defensePct");
+         var _hp:* = Data.getInstance().getAttributes("equip",param1,"hp");
+         var _hpp:* = Data.getInstance().getAttributes("equip",param1,"hpPct");
+         var _q:int = int(Data.getInstance().getAttributes("equip",param1,"quality"));
+         var _s:String = "[" + this.getQualityName(_q) + "] " + String(_n||"?");
+         if(int(_atk) > 0) _s += " 攻+" + int(_atk);
+         if(int(_atkp) > 0) _s += " 攻+" + int(_atkp) + "%";
+         if(int(_def) > 0) _s += " 防+" + int(_def);
+         if(int(_defp) > 0) _s += " 防+" + int(_defp) + "%";
+         if(int(_hp) > 0) _s += " HP+" + int(_hp);
+         if(int(_hpp) > 0) _s += " HP+" + int(_hpp) + "%";
+         return _s;
+      }
+
       private function refresh() : void
       {
          for(var _i:int = 0; _i < 3; _i++)
@@ -146,16 +173,9 @@ package game.ui
             var _btnData:Object = this._slotBtns[_i];
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
-               var _name:* = Data.getInstance().getAttributes("equip",_eqCode,"name");
-               var _atk:* = Data.getInstance().getAttributes("equip",_eqCode,"attack");
-               var _def:* = Data.getInstance().getAttributes("equip",_eqCode,"defense");
-               var _hp:* = Data.getInstance().getAttributes("equip",_eqCode,"hp");
-               var _info:String = String(_name||"?");
-               if(int(_atk) > 0) _info += " 攻+" + int(_atk);
-               if(int(_def) > 0) _info += " 防+" + int(_def);
-               if(int(_hp) > 0) _info += " HP+" + int(_hp);
-               _tf.text = _info;
-               _tf.textColor = 0xe5ce10;
+               _tf.text = this.formatEquipInfo(_eqCode);
+               var _q:int = int(Data.getInstance().getAttributes("equip",_eqCode,"quality"));
+               _tf.textColor = this.getQualityColor(_q);
                _btnData.tf.text = "卸下";
             }
             else
@@ -256,10 +276,7 @@ package game.ui
             _rowTF.selectable = false;
             _rowTF.width = 195; _rowTF.height = 20;
             _rowTF.x = 4; _rowTF.y = 0;
-            var _txt:String = String(_en||"?");
-            if(int(_ea) > 0) _txt += " 攻+" + int(_ea);
-            if(int(_ed) > 0) _txt += " 防+" + int(_ed);
-            if(int(_eh) > 0) _txt += " HP+" + int(_eh);
+            var _txt:String = this.formatEquipInfo(_item.code);
             _txt += "  Lv." + (int(_elr)||1);
             if(this._armyInfo.level < (int(_elr)||1))
             {
@@ -268,7 +285,8 @@ package game.ui
             }
             else
             {
-               _rowTF.textColor = 0xe5ce10;
+               var _q2:int = int(Data.getInstance().getAttributes("equip",_item.code,"quality"));
+               _rowTF.textColor = this.getQualityColor(_q2);
             }
             _rowTF.text = _txt;
             _row.addChild(_rowTF);

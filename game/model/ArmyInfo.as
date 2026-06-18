@@ -392,20 +392,64 @@ package game.model
          return _val ? int(_val) : 0;
       }
 
-      public function get equipAttackBonus():int
+      // 装备白值加成(攻/防/HP基础值)
+      public function get equipAttackFlat():int
       {
          return getEquipBonus(this._equip1,"attack") + getEquipBonus(this._equip2,"attack") + getEquipBonus(this._equip3,"attack");
       }
-
-      public function get equipDefenseBonus():int
+      public function get equipDefenseFlat():int
       {
          return getEquipBonus(this._equip1,"defense") + getEquipBonus(this._equip2,"defense") + getEquipBonus(this._equip3,"defense");
       }
-
-      public function get equipHPBonus():int
+      public function get equipHPFlat():int
       {
          return getEquipBonus(this._equip1,"hp") + getEquipBonus(this._equip2,"hp") + getEquipBonus(this._equip3,"hp");
       }
+
+      // 装备百分比加成(基于基础属性)
+      public function get equipAttackPct():int
+      {
+         var _total:int = 0;
+         _total += getEquipBonus(this._equip1,"attackPct");
+         _total += getEquipBonus(this._equip2,"attackPct");
+         _total += getEquipBonus(this._equip3,"attackPct");
+         return _total;
+      }
+      public function get equipDefensePct():int
+      {
+         var _total:int = 0;
+         _total += getEquipBonus(this._equip1,"defensePct");
+         _total += getEquipBonus(this._equip2,"defensePct");
+         _total += getEquipBonus(this._equip3,"defensePct");
+         return _total;
+      }
+      public function get equipHPPct():int
+      {
+         var _total:int = 0;
+         _total += getEquipBonus(this._equip1,"hpPct");
+         _total += getEquipBonus(this._equip2,"hpPct");
+         _total += getEquipBonus(this._equip3,"hpPct");
+         return _total;
+      }
+
+      // 百分比部分计算的加成值
+      public function get equipAttackPctBonus():int
+      {
+         return int(this.baseAttack * this.equipAttackPct / 100);
+      }
+      public function get equipDefensePctBonus():int
+      {
+         return int(this.baseDefense * this.equipDefensePct / 100);
+      }
+      public function get equipHPPctBonus():int
+      {
+         return int((this.baseHp + this.hpAddtion + this.tianfuHP) * this.equipHPPct / 100);
+      }
+
+      // 装备总加成(白值+百分比)
+      public function get equipAttackBonus():int { return this.equipAttackFlat + this.equipAttackPctBonus; }
+      public function get equipDefenseBonus():int { return this.equipDefenseFlat + this.equipDefensePctBonus; }
+      public function get equipHPBonus():int { return this.equipHPFlat + this.equipHPPctBonus; }
 
       public function get attack() : int
       {

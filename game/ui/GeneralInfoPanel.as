@@ -444,10 +444,15 @@ package game.ui
          }
          if(this._armyInfo.equipAttackBonus > 0 || this._armyInfo.equipDefenseBonus > 0 || this._armyInfo.equipHPBonus > 0)
          {
-            _loc1_ += "<font color='#e5ce10'>--装备加成--</font>\n";
-            if(this._armyInfo.equipAttackBonus > 0) _loc1_ += "攻击 <font color='#4bea13'>+" + this._armyInfo.equipAttackBonus + "</font> ";
-            if(this._armyInfo.equipDefenseBonus > 0) _loc1_ += "防御 <font color='#16d2fa'>+" + this._armyInfo.equipDefenseBonus + "</font> ";
-            if(this._armyInfo.equipHPBonus > 0) _loc1_ += "生命 <font color='#ff3333'>+" + this._armyInfo.equipHPBonus + "</font>";
+            _loc1_ += "<font color='#FFD700'>--装备加成--</font>\n";
+            if(this._armyInfo.equipAttackFlat > 0) _loc1_ += "攻击 <font color='#4bea13'>+" + this._armyInfo.equipAttackFlat + "</font>";
+            if(this._armyInfo.equipAttackPct > 0) _loc1_ += " <font color='#4bea13'>+" + this._armyInfo.equipAttackPct + "%</font>";
+            if(this._armyInfo.equipAttackFlat > 0 || this._armyInfo.equipAttackPct > 0) _loc1_ += " ";
+            if(this._armyInfo.equipDefenseFlat > 0) _loc1_ += "防御 <font color='#16d2fa'>+" + this._armyInfo.equipDefenseFlat + "</font>";
+            if(this._armyInfo.equipDefensePct > 0) _loc1_ += " <font color='#16d2fa'>+" + this._armyInfo.equipDefensePct + "%</font>";
+            if(this._armyInfo.equipDefenseFlat > 0 || this._armyInfo.equipDefensePct > 0) _loc1_ += " ";
+            if(this._armyInfo.equipHPFlat > 0) _loc1_ += "生命 <font color='#ff3333'>+" + this._armyInfo.equipHPFlat + "</font>";
+            if(this._armyInfo.equipHPPct > 0) _loc1_ += " <font color='#ff3333'>+" + this._armyInfo.equipHPPct + "%</font>";
             _loc1_ += "\n";
          }
          this.__valueTF.htmlText = _loc1_;
