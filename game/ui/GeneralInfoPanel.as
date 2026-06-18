@@ -16,7 +16,9 @@ package game.ui
    import flash.events.MouseEvent;
    import flash.filters.BlurFilter;
    import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -165,22 +167,67 @@ package game.ui
 
       /**
        * 创建6个透明交互覆盖层, 叠加在皮肤已有的装备槽背景图上
+       *
+       * 对齐策略(按优先级降级):
+       *   ① 皮肤bounds百分比定位 — 适用于任意尺寸皮肤
+       *   ② 锚点相对网格 — 以武将中心_point为原点, 偏移出2×3网格
+       *   ③ 硬编码兜底 — 历史坐标值
+       *
        * SWF皮肤中槽位为静态美术图形, 无实例名, 需代码创建交互层
        * 面板坐标参考: 武将中心=(-235,-65), 克制图标y=69
        */
       private function findEquipSlots() : void
       {
-         // 装备槽覆盖层-使用皮肤已知参考点定位
-         // 武将中心(-235,-65), 克制图标(-300~-163,69)
-         // 装备槽推测在武将上方+克制图标左侧区域
-         var _sW:int = 48, _sH:int = 48;
-         var _slotPositions:Array = [
-            {x:-340, y:-150}, {x:-284, y:-150}, {x:-228, y:-150},
-            {x:-340, y:-96},  {x:-284, y:-96},  {x:-228, y:-96}
-         ];
          var _sW:int = 48;
          var _sH:int = 48;
+         var _slotPositions:Array = null;
 
+         // ── 策略①: 皮肤bounds百分比定位 ──
+         if(_slotPositions == null && _skin != null)
+         {
+            var _skinBounds:Rectangle = _skin.getBounds(_skin);
+            if(_skinBounds.width > 20 && _skinBounds.height > 20)
+            {
+               // 装备槽在皮肤左上区域 — 武将上方
+               // 6槽 = 2行×3列 grid, 列间距≈skin宽7%, 行间距≈skin高6%
+               var _pctBaseX:Number = _skinBounds.x + _skinBounds.width * 0.06;
+               var _pctBaseY:Number = _skinBounds.y + _skinBounds.height * 0.18;
+               var _pctStepX:Number = _skinBounds.width * 0.068;
+               var _pctStepY:Number = _skinBounds.height * 0.056;
+               _slotPositions = buildSlotGrid(_pctBaseX, _pctBaseY, _pctStepX, _pctStepY);
+
+               // 校验: 网格不应超出皮肤区域
+               var _gridRight:Number = _pctBaseX + 2 * _pctStepX + _sW;
+               var _gridBottom:Number = _pctBaseY + 1 * _pctStepY + _sH;
+               if(_gridRight > _skinBounds.x + _skinBounds.width + 20
+                  || _gridBottom > _skinBounds.y + _skinBounds.height + 20)
+               {
+                  _slotPositions = null; // 百分比推算异常, 降级
+               }
+            }
+         }
+
+         // ── 策略②: 锚点相对网格 (以武将中心_point为原点) ──
+         if(_slotPositions == null)
+         {
+            // 武将中心 _point=(-235,-65), 6槽在其左上方
+            var _anchorX:Number = this._point.x - 105;
+            var _anchorY:Number = this._point.y - 85;
+            var _cellW:Number = 56;
+            var _cellH:Number = 54;
+            _slotPositions = buildSlotGrid(_anchorX, _anchorY, _cellW, _cellH);
+         }
+
+         // ── 策略③: 硬编码兜底 (历史坐标) ──
+         if(_slotPositions == null)
+         {
+            _slotPositions = [
+               {x:-340, y:-150}, {x:-284, y:-150}, {x:-228, y:-150},
+               {x:-340, y:-96},  {x:-284, y:-96},  {x:-228, y:-96}
+            ];
+         }
+
+         // ── 创建6个槽位Sprite ──
          var _j:int = 0;
          while(_j < 6)
          {
@@ -191,7 +238,7 @@ package game.ui
             _s.x = _slotPositions[_j].x;
             _s.y = _slotPositions[_j].y;
 
-            // 金色边框
+            // 暗色底 + 金色边框
             var _bb:Shape = new Shape();
             _bb.graphics.beginFill(0x1a1008, 0.85);
             _bb.graphics.lineStyle(1, 0xC8A84E, 0.8);
@@ -204,13 +251,43 @@ package game.ui
             _ltf.defaultTextFormat = new TextFormat("SimSun", 9, 0x8B6914);
             _ltf.text = SLOT_LABELS[_j];
             _ltf.selectable = false;
-            _ltf.width = _sW; _ltf.height = 14;
-            _ltf.x = 0; _ltf.y = _sH + 2;
+            _ltf.width = _sW;
+            _ltf.height = 14;
+            _ltf.x = 0;
+            _ltf.y = _sH + 2;
             _s.addChild(_ltf);
 
             this._equipSlots[_j] = _s;
             _j++;
          }
+      }
+
+      /**
+       * 构建2行×3列槽位坐标网格
+       * @param baseX 网格左上角X
+       * @param baseY 网格左上角Y
+       * @param stepX 列间距
+       * @param stepY 行间距
+       * @return [{x,y}, ...] 共6项, 按行遍历
+       */
+      private function buildSlotGrid(param1:Number, param2:Number, param3:Number, param4:Number) : Array
+      {
+         var _result:Array = [];
+         var _row:int = 0;
+         while(_row < 2)
+         {
+            var _col:int = 0;
+            while(_col < 3)
+            {
+               _result.push({
+                  x: param1 + _col * param3,
+                  y: param2 + _row * param4
+               });
+               _col++;
+            }
+            _row++;
+         }
+         return _result;
       }
 
       override protected function initEvent() : void

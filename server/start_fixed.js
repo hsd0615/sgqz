@@ -433,7 +433,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.12';
+  _cachedClientVersion = '2.10.13';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -555,6 +555,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '2.10.13', title: '\u{1F4CB} 装备槽自适应对齐',
+        body: '【优化】\n• 装备槽定位改为三级降级策略：皮肤bounds百分比→锚点相对网格→硬编码兜底\n• 新增buildSlotGrid()辅助方法统一管理2×3槽位网格\n• 支持不同尺寸皮肤自动适配' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
       { version: '2.10.0', title: '\u{1F4CB} 装备系统上线',
