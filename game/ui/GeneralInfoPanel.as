@@ -177,8 +177,8 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         var _sW:int = 48;
-         var _sH:int = 48;
+         var _sW:int = 30;
+         var _sH:int = 30;
 
          // ═══════════════════════════════════════
          // 修改下面6个坐标即可移动槽位
