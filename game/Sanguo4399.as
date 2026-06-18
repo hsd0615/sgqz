@@ -1076,6 +1076,28 @@ import game.ui.UpdateChecker;
          else if(param1.target.name == "game01.data.shop")
          {
             Data.getInstance().initShopXML(LoaderMax.getContent("game01.data.shop"));
+            // 从服务器获取最新商城数据(含装备等新增物品)
+            if(!Config.IS_WEB)
+            {
+               var _sl:URLLoader = new URLLoader();
+               _sl.addEventListener(Event.COMPLETE, function(e:Event):void {
+                  Data.getInstance().initShopXML(_sl.data as String);
+               });
+               _sl.load(new URLRequest(AESController.getInstance().serverURL + "/client/shop.xml"));
+            }
+         }
+         else if(param1.target.name == "game01.data.proto")
+         {
+            Data.getInstance().initProtoXML(LoaderMax.getContent("game01.data.proto"));
+            // 从服务器获取最新道具数据(含装备type=4)
+            if(!Config.IS_WEB)
+            {
+               var _pl:URLLoader = new URLLoader();
+               _pl.addEventListener(Event.COMPLETE, function(e:Event):void {
+                  Data.getInstance().initProtoXML(_pl.data as String);
+               });
+               _pl.load(new URLRequest(AESController.getInstance().serverURL + "/client/staticproto.xml"));
+            }
          }
          else if(param1.target.name == "game01.data.stage")
          {
