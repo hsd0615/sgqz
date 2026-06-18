@@ -18,6 +18,7 @@ package game.ui
    import game.Config;
    import game.events.UIEvent;
    import game.model.Head;
+   import game.ui.EquipIcons;
    import game.model.RoleModel;
 
    public class ShopBlock extends BaseUI
@@ -135,49 +136,11 @@ package game.ui
 
       private function createPlaceholderIcon(iconName:String) : DisplayObject
       {
-         var _s:Sprite = new Sprite();
-         var _g:Shape = new Shape();
-         var _isWeapon:Boolean = (iconName.indexOf("proto_4_1") >= 0);
-         var _isArmor:Boolean = (iconName.indexOf("proto_4_11") >= 0 || iconName.indexOf("proto_4_12") >= 0 || iconName.indexOf("proto_4_13") >= 0 || iconName.indexOf("proto_4_14") >= 0 || iconName.indexOf("proto_4_15") >= 0);
-         // 绘制40x40图标
-         if(_isWeapon)
-         {
-            // 剑形: 红色剑刃+金色剑柄
-            _g.graphics.beginFill(0xCC3333);
-            _g.graphics.moveTo(20,2); _g.graphics.lineTo(26,6); _g.graphics.lineTo(26,28);
-            _g.graphics.lineTo(30,34); _g.graphics.lineTo(20,32); _g.graphics.lineTo(10,34);
-            _g.graphics.lineTo(14,28); _g.graphics.lineTo(14,6); _g.graphics.lineTo(20,2);
-            _g.graphics.endFill();
-            _g.graphics.beginFill(0xC8A84E);
-            _g.graphics.drawRoundRect(15,34,10,6,2,2);
-            _g.graphics.endFill();
-         }
-         else if(_isArmor)
-         {
-            // 盾形: 蓝色盾牌
-            _g.graphics.beginFill(0x3366AA);
-            _g.graphics.moveTo(20,2); _g.graphics.lineTo(36,8); _g.graphics.lineTo(36,24);
-            _g.graphics.lineTo(20,38); _g.graphics.lineTo(4,24); _g.graphics.lineTo(4,8);
-            _g.graphics.lineTo(20,2);
-            _g.graphics.endFill();
-            _g.graphics.beginFill(0xFFD700);
-            _g.graphics.drawCircle(20,18,5);
-            _g.graphics.endFill();
-         }
-         else
-         {
-            // 宝石形: 绿色菱形
-            _g.graphics.beginFill(0x33AA55);
-            _g.graphics.moveTo(20,2); _g.graphics.lineTo(36,20);
-            _g.graphics.lineTo(20,38); _g.graphics.lineTo(4,20);
-            _g.graphics.lineTo(20,2);
-            _g.graphics.endFill();
-            _g.graphics.beginFill(0xFFFFFF,0.5);
-            _g.graphics.drawCircle(16,14,4);
-            _g.graphics.endFill();
-         }
-         _s.addChild(_g);
-         return _s;
+         var _isWeapon:Boolean = (iconName.indexOf("4_1") >= 0 || iconName.indexOf("4_2") >= 0 || iconName.indexOf("4_3") >= 0 || iconName.indexOf("4_4") >= 0 || iconName.indexOf("4_5") >= 0);
+         var _isArmor:Boolean = (iconName.indexOf("4_11") >= 0 || iconName.indexOf("4_12") >= 0 || iconName.indexOf("4_13") >= 0 || iconName.indexOf("4_14") >= 0 || iconName.indexOf("4_15") >= 0);
+         if(_isWeapon) return EquipIcons.weapon();
+         if(_isArmor) return EquipIcons.armor();
+         return EquipIcons.accessory();
       }
 
       private function buyBtnClickHandler(param1:MouseEvent) : *
