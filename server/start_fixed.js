@@ -182,6 +182,53 @@ function loadEquipData() {
   console.log('[EquipData] Loaded ' + Object.keys(EQUIP_DATA).length + ' items');
 }
 
+// 游戏数据缓存(供/api/game-data, 避免每次请求读取磁盘)
+var GAME_DATA_CACHE = null;
+function buildGameDataCache() {
+  var shop = [], proto = [], equip = [];
+  try {
+    // 商城数据
+    if (fs.existsSync('/opt/shop.xml')) {
+      var sx = fs.readFileSync('/opt/shop.xml','utf8');
+      var sblocks = sx.split('<RECORD>');
+      for (var si = 1; si < sblocks.length; si++) {
+        var sid = (sblocks[si].match(/<id>([^<]+)<\/id>/)||[])[1];
+        if(!sid) continue;
+        shop.push({
+          id:sid, name:((sblocks[si].match(/<name>([^<]+)<\/name>/)||[])[1]||''),
+          category:parseInt(((sblocks[si].match(/<category>(\d+)<\/category>/)||[])[1]||'1')),
+          code:((sblocks[si].match(/<code>([^<]+)<\/code>/)||[])[1]||''),
+          count:parseInt(((sblocks[si].match(/<count>(\d+)<\/count>/)||[])[1]||'1')),
+          payType:parseInt(((sblocks[si].match(/<payType>(\d+)<\/payType>/)||[])[1]||'1')),
+          oldPrice:parseInt(((sblocks[si].match(/<oldPrice>(\d+)<\/oldPrice>/)||[])[1]||'0')),
+          newPrice:parseInt(((sblocks[si].match(/<newPrice>(\d+)<\/newPrice>/)||[])[1]||'0'))
+        });
+      }
+    }
+    // 道具数据
+    if (fs.existsSync('/opt/staticproto.xml')) {
+      var px = fs.readFileSync('/opt/staticproto.xml','utf8');
+      var pblocks = px.split('<RECORD>');
+      for (var pi = 1; pi < pblocks.length; pi++) {
+        var pcd = (pblocks[pi].match(/<code>([^<]+)<\/code>/)||[])[1];
+        if(!pcd) continue;
+        proto.push({
+          code:pcd, type:parseInt(((pblocks[pi].match(/<type>(\d+)<\/type>/)||[])[1]||'1')),
+          name:((pblocks[pi].match(/<name>([^<]+)<\/name>/)||[])[1]||''),
+          desc:((pblocks[pi].match(/<desc>([^<]*)<\/desc>/)||[])[1]||'')
+        });
+      }
+    }
+    // 装备数据
+    for (var ek in EQUIP_DATA) { equip.push(Object.assign({code:ek}, EQUIP_DATA[ek])); }
+    GAME_DATA_CACHE = { shopItems:shop, protoItems:proto, equipItems:equip };
+    console.log('[GameDataCache] shop:'+shop.length+' proto:'+proto.length+' equip:'+equip.length);
+  } catch(e) {
+    console.log('[GameDataCache] Error: ' + e.message);
+    GAME_DATA_CACHE = { shopItems:[], protoItems:[], equipItems:[] };
+  }
+}
+
 function getStageId(part, level) {
   return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
 }
@@ -299,6 +346,7 @@ loadAwardMap();     // 1c. 加载关卡奖励数据
 loadShopData();     // 1d. 加载商城数据
 loadProtoData();    // 1e. 加载道具数据
 loadEquipData();    // 1f. 加载装备数据
+buildGameDataCache(); // 1g. 构建游戏数据缓存(供/api/game-data)
 initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
@@ -382,7 +430,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.10.3';
+  _cachedClientVersion = '2.10.4';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -515,6 +563,11 @@ function handleRequest(socket, req) {
       { version: '2.9.7', title: '\u{1F6E1}️ 自动更新优化',
         body: '【修复】\n• 修复游戏自动更新后仍反复提示"需要更新"的问题\n• 更新流程更加稳定可靠' }
     ]});
+  }
+
+  // 游戏数据同步 - 返回商城/装备/道具(从缓存,启动时预加载)
+  if (url === '/api/game-data') {
+    return jsonRawResponse(socket, Object.assign({ success: true }, GAME_DATA_CACHE || { shopItems:[], protoItems:[], equipItems:[] }));
   }
 
   // Login — 返回所有武将

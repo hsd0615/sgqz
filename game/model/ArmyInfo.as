@@ -388,7 +388,7 @@ package game.model
       private function getEquipBonus(param1:String, param2:String):int
       {
          if(param1 == "" || param1 == null || param1 == "0") return 0;
-         var _val:* = Data.getInstance().getAttributes("equip",param1,param2);
+         var _val:* = Data.getInstance().getEquipAttr(param1,param2);
          return _val ? int(_val) : 0;
       }
 

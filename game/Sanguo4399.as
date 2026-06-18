@@ -1115,14 +1115,26 @@ import game.ui.UpdateChecker;
          {
             Data.getInstance().initEquipXML(LoaderMax.getContent("game01.data.equip"));
          }
-         // 如果 game.xml 未包含 equip DataLoader，手动从服务器加载装备数据
+         // 从服务器API同步最新游戏数据(装备/商城/道具)
          if(param1.target.name == "game01.data.tianfu")
          {
-            var _eqLoader:URLLoader = new URLLoader();
-            _eqLoader.addEventListener(Event.COMPLETE, function(e:Event):void {
-               Data.getInstance().initEquipXML(_eqLoader.data as String);
+            var _gdLoader:URLLoader = new URLLoader();
+            var _gdReq:URLRequest = new URLRequest(AESController.getInstance().serverURL + "/api/game-data");
+            _gdReq.method = URLRequestMethod.POST;
+            _gdReq.contentType = "application/json";
+            _gdReq.data = "{}";
+            _gdLoader.addEventListener(Event.COMPLETE, function(e:Event):void {
+               try {
+                  var _json:Object = com.adobe.serialization.json.JSON.decode(_gdLoader.data as String);
+                  if(_json.success)
+                  {
+                     if(_json.equipItems) Data.getInstance().initEquipJSON(_json.equipItems as Array);
+                     if(_json.shopItems) Data.getInstance().mergeShopJSON(_json.shopItems as Array);
+                     if(_json.protoItems) Data.getInstance().mergeProtoJSON(_json.protoItems as Array);
+                  }
+               } catch(_err:Error) {}
             });
-            _eqLoader.load(new URLRequest(AESController.getInstance().serverURL + "/client/staticequip.xml"));
+            _gdLoader.load(_gdReq);
          }
       }
       

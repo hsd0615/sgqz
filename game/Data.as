@@ -26,7 +26,26 @@ package game
       private var _tianfuXML:XML;
 
       private var _equipXML:XML;
-      
+      private var _equipData:Object = {};
+      private var _shopJSON:Array = null;
+      private var _protoJSON:Array = null;
+
+      public function initEquipJSON(param1:Array) : void
+      {
+         for(var _ei:int = 0; _ei < param1.length; _ei++)
+            this._equipData[param1[_ei].code] = param1[_ei];
+      }
+      public function getEquipAttr(param1:String, param2:String) : *
+      {
+         if(this._equipData && this._equipData[param1] && this._equipData[param1][param2] != undefined)
+            return this._equipData[param1][param2];
+         return this.getAttributes("equip", param1, param2);
+      }
+      public function mergeShopJSON(param1:Array) : void { this._shopJSON = param1; }
+      public function getShopJSON() : Array { return this._shopJSON; }
+      public function mergeProtoJSON(param1:Array) : void { this._protoJSON = param1; }
+      public function getProtoJSON() : Array { return this._protoJSON; }
+
       public function Data(param1:SingletonEnforcer)
       {
          super();
@@ -230,6 +249,11 @@ package game
          var table:String = param1;
          var ID:String = param2;
          var key:String = param3;
+         // JSON数据优先(从/api/game-data加载, 比本地XML更新)
+         if(table == "equip" && this._equipData && this._equipData[ID])
+         {
+            return this._equipData[ID][key];
+         }
          var xml:XML = this.getXMLByName(table);
          if(xml == null)
          {
@@ -567,6 +591,31 @@ package game
             obj.name = xmlList[i].name.toString();
             obj.desc = tmpXML.desc;
             arr.push(obj);
+         }
+         // 合并服务器JSON数据(装备等新增物品)
+         if(this._shopJSON != null)
+         {
+            for(var _j:int = 0; _j < this._shopJSON.length; _j++)
+            {
+               var _sitem:Object = this._shopJSON[_j];
+               if(int(_sitem.category) == mycategory)
+               {
+                  // 避免重复
+                  var _dup:Boolean = false;
+                  for(var _k:int = 0; _k < arr.length; _k++)
+                  {
+                     if(arr[_k].id == _sitem.id) { _dup = true; break; }
+                  }
+                  if(!_dup)
+                  {
+                     arr.push({
+                        id: _sitem.id, code: _sitem.code, count: _sitem.count,
+                        payType: _sitem.payType, oldPrice: _sitem.oldPrice, newPrice: _sitem.newPrice,
+                        name: _sitem.name, icon: "", desc: _sitem.name
+                     });
+                  }
+               }
+            }
          }
          if(arr.length == 0)
          {
