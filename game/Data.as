@@ -596,7 +596,7 @@ package game
                if(int(_sitem.category) != mycategory) continue;
                var _dup:Boolean = false;
                for(var _k:int = 0; _k < arr.length; _k++) { if(arr[_k].id == _sitem.id) { _dup = true; break; } }
-               if(!_dup) arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:"", desc:_sitem.name});
+               if(!_dup) arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:_sitem.icon||"proto_1_0", desc:_sitem.desc||_sitem.name});
             }
          }
          // 始终合并硬编码装备数据
@@ -607,7 +607,7 @@ package game
             if(int(_eitem.category) != mycategory) continue;
             var _edup:Boolean = false;
             for(var _ek:int = 0; _ek < arr.length; _ek++) { if(arr[_ek].id == _eitem.id) { _edup = true; break; } }
-            if(!_edup) arr.push({id:_eitem.id, code:_eitem.code, count:int(_eitem.count), payType:int(_eitem.payType), oldPrice:int(_eitem.oldPrice), newPrice:int(_eitem.newPrice), name:_eitem.name, icon:"", desc:_eitem.name});
+            if(!_edup) arr.push({id:_eitem.id, code:_eitem.code, count:int(_eitem.count), payType:int(_eitem.payType), oldPrice:int(_eitem.oldPrice), newPrice:int(_eitem.newPrice), name:_eitem.name, icon:_eitem.icon||"proto_1_0", desc:_eitem.desc||_eitem.name});
          }
          if(arr.length == 0) return null;
          arr.sortOn("id");
