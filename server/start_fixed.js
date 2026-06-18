@@ -259,8 +259,8 @@ function buildGameDataCache() {
   }
 }
 
-// 关卡敌将数据: stageKey → {maxLevel, avgQuality}
-var STAGE_ENEMY = {};
+// 关卡敌将数据: stageKey → [{level,evolution,name}]
+var STAGE_ENEMY_GENS = {};
 function loadStageEnemyData() {
   if (!fs.existsSync('/opt/stage.xml')) return;
   var xml = fs.readFileSync('/opt/stage.xml','utf8');
@@ -271,16 +271,19 @@ function loadStageEnemyData() {
     if (!pm||!lm) continue;
     var key = pm[1]+'_'+lm[1];
     var gens = gates[i].match(/<general[^>]*\/>/g)||[];
-    var maxLv=1, totalQ=0, qCount=0;
+    STAGE_ENEMY_GENS[key] = [];
     for (var j=0; j<gens.length; j++) {
       var lvm = gens[j].match(/level="(\d+)"/);
       var evm = gens[j].match(/evolution="(\d+)"/);
-      if (lvm) maxLv = Math.max(maxLv, parseInt(lvm[1]));
-      if (evm) { totalQ += parseInt(evm[1])||1; qCount++; }
+      var nm = gens[j].match(/name="([^"]+)"/);
+      STAGE_ENEMY_GENS[key].push({
+        level: parseInt(lvm?lvm[1]:'1'),
+        evolution: parseInt(evm?evm[1]:'1'),
+        name: nm?nm[1]:'敌将'
+      });
     }
-    STAGE_ENEMY[key] = {maxLevel:maxLv, avgQuality:qCount>0?Math.round(totalQ/qCount):1};
   }
-  console.log('[StageEnemy] Loaded ' + Object.keys(STAGE_ENEMY).length + ' stages');
+  console.log('[StageEnemy] Loaded ' + Object.keys(STAGE_ENEMY_GENS).length + ' stages');
 }
 function getStageId(part, level) {
   return STAGE_MAP[part+'_'+level] || parseInt(part+''+level) || 1;
@@ -837,27 +840,38 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备掉落 — 基于敌将品质和等级
+    // 装备掉落 — 超级武将品质×等级概率, 每关最多1件, 取最高品质
     var equipDrop = null;
     if (isWin) {
-      var enemyData = STAGE_ENEMY[fpart+'_'+flevel] || {maxLevel:flevel, avgQuality:1};
-      var eAvgQ = enemyData.avgQuality || 1;
-      var eMaxLv = enemyData.maxLevel || flevel;
-      // 掉率: 敌品质×3% + 敌等级×0.2%
-      var dropRate = Math.min(0.85, eAvgQ * 0.03 + eMaxLv * 0.002);
-      if (Math.random() < dropRate) {
-        // 掉落品质: 以敌平均品质为中心±2随机
-        var rollQ = Math.max(1, Math.min(10, eAvgQ + Math.floor(Math.random()*5) - 2));
+      var enemyGens = STAGE_ENEMY_GENS[fpart+'_'+flevel] || [];
+      var bestDrop = null;
+      for (var ei=0; ei<enemyGens.length; ei++) {
+        var eg = enemyGens[ei];
+        var isSuper = (eg.evolution||1) >= 5; // 超级武将判定
+        // 掉率: 超级武将品质×等级/200, 普通武将品质/300
+        var dropProb = isSuper ? (eg.evolution * eg.level / 200) : (eg.evolution / 300);
+        dropProb = Math.min(0.6, Math.max(0.01, dropProb));
+        if (Math.random() < dropProb) {
+          // 掉落品质: 超级武将=进化等级±2, 普通武将=1~3
+          var maxQ = isSuper ? Math.min(10, (eg.evolution||1)+2) : 3;
+          var minQ = isSuper ? Math.max(1, (eg.evolution||1)-2) : 1;
+          var rollQ = minQ + Math.floor(Math.random()*(maxQ-minQ+1));
+          if (!bestDrop || rollQ > bestDrop.quality) {
+            bestDrop = {quality:rollQ, genName:eg.name, genEvo:eg.evolution};
+          }
+        }
+      }
+      if (bestDrop) {
         var candidates = [];
-        for(var ek in EQUIP_DATA){if(EQUIP_DATA[ek].quality===rollQ)candidates.push(ek);}
+        for(var ek in EQUIP_DATA){if(EQUIP_DATA[ek].quality===bestDrop.quality)candidates.push(ek);}
         if(candidates.length>0){
           var dropCode = candidates[Math.floor(Math.random()*candidates.length)];
           var dropDef = EQUIP_DATA[dropCode];
           if(!db.bagItems)db.bagItems=[];
           db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
-          equipDrop = {code:dropCode,name:dropDef.name,quality:rollQ};
-          if(rollQ>=5){
-            broadcastToAll('[系统] 恭喜 '+p.role_name+' 在关卡'+fpart+'-'+flevel+' 获得 ['+dropDef.name+'](品质'+rollQ+')！');
+          equipDrop = {code:dropCode,name:dropDef.name,quality:bestDrop.quality};
+          if(bestDrop.quality>=5){
+            broadcastToAll('[系统] 恭喜 '+p.role_name+' 击败'+bestDrop.genName+' 获得 ['+dropDef.name+'](品质'+bestDrop.quality+')！');
           }
         }
       }
