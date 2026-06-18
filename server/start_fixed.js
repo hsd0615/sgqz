@@ -261,10 +261,36 @@ function buildGameDataCache() {
 
 // 关卡敌将数据: stageKey → [{code,level,evolution,name}]
 var STAGE_ENEMY_GENS = {};
+// 武将品质映射: code → quality (0=超级 1=一流 2=二流 ... 9=九流)
+var GENERAL_QUALITY = {};
+function buildGeneralQualityMap() {
+  // 从测试账号的武将列表构建品质映射
+  ALL_SUPERS.forEach(function(g){ GENERAL_QUALITY[g[0]] = 0; });
+  // 一流武将: 在PRO中但不在SUPER中的
+  PRO_GENERALS.forEach(function(g){ if(!(g[0] in GENERAL_QUALITY)) GENERAL_QUALITY[g[0]] = 1; });
+  // 二流武将: 在NEWBIE中但不在上述中的
+  NEWBIE_GENERALS.forEach(function(g){ if(!(g[0] in GENERAL_QUALITY)) GENERAL_QUALITY[g[0]] = 2; });
+  // 从stage.xml补充所有敌将的品质(根据敌对强度推断)
+  if (fs.existsSync('/opt/stage.xml')) {
+    var sxml = fs.readFileSync('/opt/stage.xml','utf8');
+    var codes = sxml.match(/code="([^"]+)"/g)||[];
+    codes.forEach(function(m){
+      var c = m.match(/code="([^"]+)"/)[1];
+      if (!(c in GENERAL_QUALITY)) {
+        // 根据代码中的数字推断: general_X_Y — X越小通常越强
+        var xm = c.match(/general_(\d+)_/);
+        var x = xm ? parseInt(xm[1]) : 5;
+        // type 0(投石车)和9(骑兵)通常品质较高
+        if (x === 0 || x === 9) GENERAL_QUALITY[c] = 1; // 默认一流
+        else if (x <= 3) GENERAL_QUALITY[c] = 3;
+        else GENERAL_QUALITY[c] = 5;
+      }
+    });
+  }
+  console.log('[QualityMap] Built for ' + Object.keys(GENERAL_QUALITY).length + ' codes');
+}
 function parseGeneralQuality(code) {
-  // general_X_Y → X=品质(0=超级,1=一流,2=二流...9=九流)
-  var m = (code||'').match(/general_(\d+)_/);
-  return m ? parseInt(m[1]) : 9; // 默认最低品质
+  return GENERAL_QUALITY[code] != null ? GENERAL_QUALITY[code] : 5;
 }
 function loadStageEnemyData() {
   if (!fs.existsSync('/opt/stage.xml')) return;
@@ -433,8 +459,9 @@ function createTestAccounts() {
 
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 loadKezhiMap();     // 1. 加载XML克制类型映射
+buildGeneralQualityMap(); // 1a. 构建武将品质映射(超级/一流/二流...)
 loadStageMap();     // 1b. 加载关卡ID映射
-loadStageEnemyData(); // 1b2. 加载敌将品质等级
+loadStageEnemyData(); // 1b2. 加载敌将数据
 loadAwardMap();     // 1c. 加载关卡奖励数据
 loadShopData();     // 1d. 加载商城数据
 loadProtoData();    // 1e. 加载道具数据
