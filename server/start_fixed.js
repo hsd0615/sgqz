@@ -261,37 +261,19 @@ function buildGameDataCache() {
 
 // 关卡敌将数据: stageKey → [{code,level,evolution,name}]
 var STAGE_ENEMY_GENS = {};
-// 武将品质映射: code → quality (0=超级 1=一流 2=二流 3=三流 4=四流)
+// 武将品质映射: code → quality (0=超级 1=一流 2=二流 3=三流) 来自staticgeneral.xml的title字段
 var GENERAL_QUALITY = {};
 function buildGeneralQualityMap() {
-  // 从staticgeneral.xml构建品质映射(type_X_Y与xishu对照)
   if (fs.existsSync('/opt/staticgeneral.xml')) {
     var gxml = fs.readFileSync('/opt/staticgeneral.xml','utf8');
     var grecs = gxml.split('<RECORD>');
-    var typeGroups = {}; // type → [codes sorted by attack desc]
     for (var ri=1; ri<grecs.length; ri++) {
       var cm = grecs[ri].match(/<code>([^<]+)<\/code>/);
-      var tm = grecs[ri].match(/<type>(\d+)<\/type>/);
-      var am = grecs[ri].match(/<attack>(\d+)<\/attack>/);
-      if (!cm||!tm) continue;
-      var code=cm[1], type=parseInt(tm[1]), atk=parseInt(am?am[1]:'0');
-      if (!typeGroups[type]) typeGroups[type]=[];
-      typeGroups[type].push({code:code,atk:atk});
-    }
-    // 对每个type按攻击降序排列, 前25%=超级 25-50%=一流 50-75%=二流 75-100%=三流
-    for (var t in typeGroups) {
-      typeGroups[t].sort(function(a,b){return b.atk-a.atk;});
-      var count=typeGroups[t].length;
-      for (var gi=0; gi<count; gi++) {
-        var pct = gi/count;
-        var q = pct<0.25 ? 0 : pct<0.5 ? 1 : pct<0.75 ? 2 : 3;
-        GENERAL_QUALITY[typeGroups[t][gi].code] = q;
-      }
+      var tm = grecs[ri].match(/<title>(\d+)<\/title>/);
+      if (cm && tm) GENERAL_QUALITY[cm[1]] = parseInt(tm[1]);
     }
   }
-  // ALL_SUPERS强制设为品质0
-  ALL_SUPERS.forEach(function(g){ GENERAL_QUALITY[g[0]] = 0; });
-  console.log('[QualityMap] Built for ' + Object.keys(GENERAL_QUALITY).length + ' codes (0=超级 1=一流 2=二流 3=三流)');
+  console.log('[QualityMap] Built from title field: ' + Object.keys(GENERAL_QUALITY).length + ' codes (0=超级 1=一流 2=二流 3=三流)');
 }
 function parseGeneralQuality(code) {
   return GENERAL_QUALITY[code] != null ? GENERAL_QUALITY[code] : 3;
@@ -897,9 +879,9 @@ function handleRequest(socket, req) {
         if (genQ == 0) { minEQ=7; maxEQ=10; }       // 超级
         else if (genQ == 1) { minEQ=4; maxEQ=7; }    // 一流
         else if (genQ == 2) { minEQ=2; maxEQ=5; }    // 二流
-        // 掉率: 超级=等级/250, 一流=等级/350, 二流=等级/500, 三流=等级/800
-        var rateDiv = [250,350,500,800][genQ] || 1000;
-        var dropProb = Math.min(0.7, Math.max(0.01, eg.level / rateDiv));
+        // 掉率: 低品质分母小=高掉落 三流=等级/80, 二流=等级/150, 一流=等级/300, 超级=等级/500
+        var rateDiv = [500,300,150,80][genQ] || 200;
+        var dropProb = Math.min(0.75, Math.max(0.01, eg.level / rateDiv));
         if (Math.random() < dropProb) {
           var rollQ = minEQ + Math.floor(Math.random()*(maxEQ-minEQ+1));
           if (!bestDrop || rollQ > bestDrop.quality) {
