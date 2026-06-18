@@ -128,10 +128,18 @@ package game.ui
          {
             this._img.removeChildAt(0);
          }
-         var _iconName:String = (param1.icon && param1.icon != "") ? param1.icon : "proto_3_4";
-         var _iconClass:Class = ApplicationDomain.currentDomain.getDefinition(_iconName) as Class;
-         var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
-         this._img.addChild(_bmp);
+         try {
+            var _iconClass:Class = ApplicationDomain.currentDomain.getDefinition(param1.icon) as Class;
+            var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
+            this._img.addChild(_bmp);
+         } catch(_e:Error) {
+            // 装备等新增物品 -> 使用嵌入的Flaticon真实PNG图标
+            var _isW:Boolean = (param1.code as String).indexOf("proto_4_1") >= 0 || (param1.code as String).indexOf("proto_4_2") >= 0 || (param1.code as String).indexOf("proto_4_3") >= 0 || (param1.code as String).indexOf("proto_4_4") >= 0 || (param1.code as String).indexOf("proto_4_5") >= 0;
+            var _isA:Boolean = (param1.code as String).indexOf("proto_4_11") >= 0 || (param1.code as String).indexOf("proto_4_12") >= 0 || (param1.code as String).indexOf("proto_4_13") >= 0 || (param1.code as String).indexOf("proto_4_14") >= 0 || (param1.code as String).indexOf("proto_4_15") >= 0;
+            if(_isW) this._img.addChild(EquipIconAssets.weapon());
+            else if(_isA) this._img.addChild(EquipIconAssets.armor());
+            else this._img.addChild(EquipIconAssets.accessory());
+         }
       }
 
       private function createPlaceholderIcon(iconName:String) : DisplayObject
