@@ -370,19 +370,17 @@ package game.model
             if(_count > 0)
             {
                var _type:* = Data.getInstance().getAttributes("proto",_code,"type");
-               if(int(_type) == 4)
+               var _eqSlot:* = EquipData.get(_code,"slot");
+               var _isEquip:Boolean = (int(_type) == 4) || (_eqSlot != null && int(_eqSlot) > 0);
+               if(_isEquip)
                {
                   if(param1 == 0)
                   {
-                     _result.push({code:_code, count:_count, id:this._bag[_loc2_].id});
+                     _result.push({code:_code, count:_count, id:this._bag[_loc2_].id, type:4});
                   }
-                  else
+                  else if(int(_eqSlot || _type) == param1)
                   {
-                     var _slot:* = EquipData.get(_code,"slot");
-                  if(int(_slot) == param1)
-                     {
-                        _result.push({code:_code, count:_count, id:this._bag[_loc2_].id});
-                     }
+                     _result.push({code:_code, count:_count, id:this._bag[_loc2_].id, type:4});
                   }
                }
             }

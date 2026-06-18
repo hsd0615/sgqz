@@ -413,21 +413,35 @@ package game.ui
             return;
          }
 
-         // 图标网格: 4列, 每格 52×52(图标+标签)
-         var _cols:int = 4;
-         var _cellW:int = 52, _cellH:int = 60;
-         var _pad:int = 4;
+         // 装备选择面板 - 暗黑RPG风格
+         var _cols:int = 3;
+         var _cellW:int = 74, _cellH:int = 82;
+         var _pad:int = 6;
          var _rows:int = int(Math.ceil(_items.length / _cols));
          var _listW:int = _cols * _cellW + _pad * 2;
-         var _listH:int = Math.min(_rows, 3) * _cellH + _pad * 2;
-         this._bagList.x = 80;
-         this._bagList.y = 200;
+         var _listH:int = Math.min(_rows, 3) * _cellH + _pad * 2 + 28;
+         this._bagList.x = int((400 - _listW) / 2) - 20;
+         this._bagList.y = 130;
 
          this._bagList.graphics.clear();
-         this._bagList.graphics.beginFill(0x1a1008, 0.97);
-         this._bagList.graphics.lineStyle(1, 0x8B6914, 0.9);
-         this._bagList.graphics.drawRoundRect(0, 0, _listW, _listH, 5, 5);
+         // 外框阴影
+         this._bagList.graphics.beginFill(0x000000, 0.5);
+         this._bagList.graphics.drawRoundRect(2, 2, _listW, _listH, 8, 8);
          this._bagList.graphics.endFill();
+         // 主背景
+         this._bagList.graphics.beginFill(0x0d0804, 0.98);
+         this._bagList.graphics.lineStyle(2, 0x8B6914, 0.85);
+         this._bagList.graphics.drawRoundRect(0, 0, _listW, _listH, 8, 8);
+         this._bagList.graphics.endFill();
+
+         // 标题栏
+         var _titleTF:TextField = new TextField();
+         _titleTF.defaultTextFormat = new TextFormat("SimHei", 13, 0xFFD700, true);
+         _titleTF.text = "选择" + SLOT_LABELS[param1];
+         _titleTF.selectable = false;
+         _titleTF.width = _listW; _titleTF.height = 20;
+         _titleTF.x = 0; _titleTF.y = 5;
+         this._bagList.addChild(_titleTF);
 
          var _self:GeneralInfoPanel = this;
          var _ii:int = 0;
@@ -435,49 +449,54 @@ package game.ui
          {
             var _item:Object = _items[_ii];
             var _elr:int = int(EquipData.get(_item.code,"levelReq")) || 1;
-            var _q2:int = int(EquipData.get(_item.code,"quality"));
+            var _q:int = int(EquipData.get(_item.code,"quality"));
             var _col:int = _ii % _cols;
             var _row:int = int(_ii / _cols);
 
             var _cell:Sprite = new Sprite();
             _cell.x = _pad + _col * _cellW;
-            _cell.y = _pad + _row * _cellH;
+            _cell.y = _pad + 24 + _row * _cellH;
             _cell.buttonMode = (this._armyInfo.level >= _elr);
             _cell.name = _item.code;
 
-            // 装备图标(等比缩放到36px)
-            var _bmp:Bitmap = this.getEquipBmp(_item.code);
-            if(_bmp != null)
+            // 品质边框
+            var _cbg:Shape = new Shape();
+            _cbg.graphics.beginFill(getQualityBgColor(_q), 0.6);
+            _cbg.graphics.lineStyle(1.5, getQualityColor(_q), 0.7);
+            _cbg.graphics.drawRoundRect(0, 0, _cellW - 4, _cellH - 20, 4, 4);
+            _cbg.graphics.endFill();
+            _cell.addChild(_cbg);
+
+            // 装备图标
+            var _bmp2:Bitmap = this.getEquipBmp(_item.code);
+            if(_bmp2 != null)
             {
-               var _sc:Number = 40 / Math.max(_bmp.width, _bmp.height);
-               _bmp.scaleX = _sc; _bmp.scaleY = _sc;
-               _bmp.smoothing = true;
-               _bmp.x = int((_cellW - _bmp.width) / 2);
-               _bmp.y = 2;
-               _cell.addChild(_bmp);
+               var _sc:Number = 42 / Math.max(_bmp2.width, _bmp2.height);
+               _bmp2.scaleX = _sc; _bmp2.scaleY = _sc;
+               _bmp2.smoothing = true;
+               _bmp2.x = int((_cellW - 4 - _bmp2.width) / 2);
+               _bmp2.y = 4;
+               _cell.addChild(_bmp2);
             }
 
-            // 装备名(品质色)
+            // 装备名
             var _ntf:TextField = new TextField();
-            _ntf.defaultTextFormat = new TextFormat("SimSun", 9, getQualityColor(_q2));
+            _ntf.defaultTextFormat = new TextFormat("SimHei", 10, getQualityColor(_q));
             var _en:* = EquipData.get(_item.code,"name");
             _ntf.text = String(_en||"?");
-            _ntf.selectable = false;
-            _ntf.width = _cellW; _ntf.height = 14;
-            _ntf.x = 0; _ntf.y = _cellH - 15;
+            _ntf.selectable = false; _ntf.width = _cellW; _ntf.height = 16;
+            _ntf.x = 0; _ntf.y = _cellH - 18;
             _cell.addChild(_ntf);
 
-            // 等级不足灰化
             if(this._armyInfo.level < _elr)
             {
-               _cell.alpha = 0.4;
+               _cell.alpha = 0.35;
                _ntf.text += " Lv" + _elr;
             }
 
             _cell.addEventListener(MouseEvent.CLICK, function(p:*):void {
                if(_self._armyInfo.level < _elr) return;
-               var _code:String = p.currentTarget.name;
-               _self.equipItem(_self._selectingSlot, _code);
+               _self.equipItem(_self._selectingSlot, p.currentTarget.name);
             });
             this._bagList.addChild(_cell);
             _ii++;
