@@ -1825,11 +1825,6 @@ import game.ui.UpdateChecker;
          {
             this._ui.showFightResult(_loc3_);
             MySound.getInstance().startEventSoundByName(SoundCode.LOST);
-            if(Cache.getInstance().fightCount >= Cache.MAX_FIGHT_COUNT)
-            {
-               this._ui.openYanzhengmaPanel();
-               Cache.getInstance().fightCount = 0;
-            }
          }
          else
          {
@@ -1935,11 +1930,6 @@ import game.ui.UpdateChecker;
             this._ui.showFightResult(_loc4_);
             MySound.getInstance().startEventSoundByName(SoundCode.WIN);
             this.newPart(RoleModel.getInstance().checkHistory());
-            if(Cache.getInstance().fightCount >= Cache.MAX_FIGHT_COUNT)
-            {
-               this._ui.openYanzhengmaPanel();
-               Cache.getInstance().fightCount = 0;
-            }
             RoleModel.getInstance().throttleSave();
          }
          else

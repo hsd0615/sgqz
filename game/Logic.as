@@ -336,47 +336,17 @@ package game
       
       public static function getKezhiJilv(param1:int) : Number
       {
-         if(param1 == 0)
-         {
-            return 1;
-         }
-         if(param1 == 1)
-         {
-            return 0.8;
-         }
-         if(param1 == 2)
-         {
-            return 0.6;
-         }
-         if(param1 == 3)
-         {
-            return 0.3;
-         }
-         if(param1 == 4)
-         {
-            return 0.15;
-         }
-         if(param1 == 5)
-         {
-            return 0.1;
-         }
-         if(param1 == 6)
-         {
-            return 0.08;
-         }
-         if(param1 == 7)
-         {
-            return 0.05;
-         }
-         if(param1 == 8)
-         {
-            return 0.03;
-         }
-         if(param1 == 9)
-         {
-            return 0.02;
-         }
-         return 0.01;
+         if(param1 == 0) return 1;
+         if(param1 == 1) return 0.85;
+         if(param1 == 2) return 0.70;
+         if(param1 == 3) return 0.55;
+         if(param1 == 4) return 0.40;
+         if(param1 == 5) return 0.28;
+         if(param1 == 6) return 0.20;
+         if(param1 == 7) return 0.14;
+         if(param1 == 8) return 0.10;
+         if(param1 == 9) return 0.07;
+         return 0.05;
       }
       
       public static function getMoneyByFight(param1:Number, param2:Number) : int
