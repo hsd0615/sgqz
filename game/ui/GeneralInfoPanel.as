@@ -119,6 +119,9 @@ package game.ui
          this.__nameTF = _skin.getChildByName("_nameTF") as TextField;
          this.__titleTF = _skin.getChildByName("_titleTF") as TextField;
          this.__valueTF = _skin.getChildByName("_valueTF") as TextField;
+         this.__valueTF.multiline = true;
+         this.__valueTF.wordWrap = true;
+         this.__valueTF.height = 260;
          this.__xiaohaoTF = _skin.getChildByName("_xiaohaoTF") as TextField;
          this.__shengjiBtn = _skin.getChildByName("_shengjiBtn") as SimpleButton;
          this.__jinhuaBtn = _skin.getChildByName("_jinhuaBtn") as SimpleButton;
@@ -932,15 +935,20 @@ package game.ui
             _loc1_ += "    <font color=\'#e720f9\'>雷</font>";
             _loc1_ += " <font color=\'#f45415\'>克制冰，被风克制</font>\n";
          }
-         // 装备特殊属性
-         if(this._armyInfo.equipLifesteal > 0 || this._armyInfo.equipDmgBonus > 0 || this._armyInfo.equipDmgReduce > 0 || this._armyInfo.equipCritRate > 0)
+         // 装备特殊属性 (始终显示以诊断)
+         var _ls:int = this._armyInfo.equipLifesteal;
+         var _db:int = this._armyInfo.equipDmgBonus;
+         var _dr:int = this._armyInfo.equipDmgReduce;
+         var _cr:int = this._armyInfo.equipCritRate;
+         var _cd:int = this._armyInfo.equipCritDmg;
+         if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0)
          {
             _loc1_ += "<font color='#FF6600'>";
-            if(this._armyInfo.equipLifesteal > 0) _loc1_ += " 吸血+" + this._armyInfo.equipLifesteal + "%";
-            if(this._armyInfo.equipDmgBonus > 0) _loc1_ += " 增伤+" + this._armyInfo.equipDmgBonus + "%";
-            if(this._armyInfo.equipDmgReduce > 0) _loc1_ += " 减伤+" + this._armyInfo.equipDmgReduce + "%";
-            if(this._armyInfo.equipCritRate > 0) _loc1_ += " 暴击+" + this._armyInfo.equipCritRate + "%";
-            if(this._armyInfo.equipCritDmg > 0) _loc1_ += " 暴伤+" + this._armyInfo.equipCritDmg + "%";
+            if(_ls > 0) _loc1_ += " 吸血+" + _ls + "%";
+            if(_db > 0) _loc1_ += " 增伤+" + _db + "%";
+            if(_dr > 0) _loc1_ += " 减伤+" + _dr + "%";
+            if(_cr > 0) _loc1_ += " 暴击+" + _cr + "%";
+            if(_cd > 0) _loc1_ += " 暴伤+" + _cd + "%";
             _loc1_ += "</font>\n";
          }
          this.__valueTF.htmlText = _loc1_;

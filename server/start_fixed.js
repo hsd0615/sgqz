@@ -395,7 +395,7 @@ function makeArmyModel(playerId) {
     id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
     feature: g.feature, evolution: g.evolution,
     kezhi: getKezhiStr(g),  // XML类型权威 + DB等级
-    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
+    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
   }));
 }
 function makeBagModel(playerId) {
@@ -456,7 +456,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.12.5';
+  _cachedClientVersion = '2.12.6';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
