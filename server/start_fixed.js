@@ -259,8 +259,13 @@ function buildGameDataCache() {
   }
 }
 
-// 关卡敌将数据: stageKey → [{level,evolution,name}]
+// 关卡敌将数据: stageKey → [{code,level,evolution,name}]
 var STAGE_ENEMY_GENS = {};
+function parseGeneralQuality(code) {
+  // general_X_Y → X=品质(0=超级,1=一流,2=二流...9=九流)
+  var m = (code||'').match(/general_(\d+)_/);
+  return m ? parseInt(m[1]) : 9; // 默认最低品质
+}
 function loadStageEnemyData() {
   if (!fs.existsSync('/opt/stage.xml')) return;
   var xml = fs.readFileSync('/opt/stage.xml','utf8');
@@ -276,9 +281,11 @@ function loadStageEnemyData() {
       var lvm = gens[j].match(/level="(\d+)"/);
       var evm = gens[j].match(/evolution="(\d+)"/);
       var nm = gens[j].match(/name="([^"]+)"/);
+      var cm = gens[j].match(/code="([^"]+)"/);
       STAGE_ENEMY_GENS[key].push({
+        code: cm?cm[1]:'',
         level: parseInt(lvm?lvm[1]:'1'),
-        evolution: parseInt(evm?evm[1]:'1'),
+        evolution: parseInt(evm?evm[1]:'0'),
         name: nm?nm[1]:'敌将'
       });
     }
@@ -840,24 +847,26 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备掉落 — 超级武将品质×等级概率, 每关最多1件, 取最高品质
+    // 装备掉落 — 武将品质(0=超级最优)决定掉落品质范围, 品质×等级=掉率
     var equipDrop = null;
     if (isWin) {
       var enemyGens = STAGE_ENEMY_GENS[fpart+'_'+flevel] || [];
       var bestDrop = null;
       for (var ei=0; ei<enemyGens.length; ei++) {
         var eg = enemyGens[ei];
-        var isSuper = (eg.evolution||1) >= 5; // 超级武将判定
-        // 掉率: 超级武将品质×等级/200, 普通武将品质/300
-        var dropProb = isSuper ? (eg.evolution * eg.level / 200) : (eg.evolution / 300);
-        dropProb = Math.min(0.6, Math.max(0.01, dropProb));
+        var genQ = parseGeneralQuality(eg.code); // 0=超级,1=一流...9=九流
+        // 超级(0~1)掉Q7~10, 一流(2~3)掉Q4~7, 普通(4~6)掉Q2~5, 低品(7~9)掉Q1~3
+        var minEQ=1, maxEQ=3;
+        if (genQ <= 1) { minEQ=7; maxEQ=10; }      // 超级+准超级
+        else if (genQ <= 3) { minEQ=4; maxEQ=7; }   // 一流+二流
+        else if (genQ <= 6) { minEQ=2; maxEQ=5; }   // 普通
+        // 掉率: (10-品质)/10 × 等级/250, 上限70%
+        var dropProb = ((10-genQ)/10) * (eg.level/250);
+        dropProb = Math.min(0.7, Math.max(0.01, dropProb));
         if (Math.random() < dropProb) {
-          // 掉落品质: 超级武将=进化等级±2, 普通武将=1~3
-          var maxQ = isSuper ? Math.min(10, (eg.evolution||1)+2) : 3;
-          var minQ = isSuper ? Math.max(1, (eg.evolution||1)-2) : 1;
-          var rollQ = minQ + Math.floor(Math.random()*(maxQ-minQ+1));
+          var rollQ = minEQ + Math.floor(Math.random()*(maxEQ-minEQ+1));
           if (!bestDrop || rollQ > bestDrop.quality) {
-            bestDrop = {quality:rollQ, genName:eg.name, genEvo:eg.evolution};
+            bestDrop = {quality:rollQ, genName:eg.name, genQuality:genQ};
           }
         }
       }
