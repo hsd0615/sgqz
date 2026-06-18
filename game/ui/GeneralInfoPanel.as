@@ -433,6 +433,7 @@ package game.ui
             {
                var _ringSum:Number = 0;
                var _innerSum:Number = 0;
+               var _goldSum:Number = 0;
                var _validSamples:int = 0;
 
                var _si:int = 0;
@@ -446,8 +447,12 @@ package game.ui
                   if(_rx >= 0 && _rx < _scanW && _ry >= 0 && _ry < _scanH
                      && _ix >= 0 && _ix < _scanW && _iy >= 0 && _iy < _scanH)
                   {
-                     _ringSum += rgbLum(_bmd.getPixel(_rx, _ry));
-                     _innerSum += rgbLum(_bmd.getPixel(_ix, _iy));
+                     var _rp:uint = _bmd.getPixel(_rx, _ry);
+                     var _ip:uint = _bmd.getPixel(_ix, _iy);
+                     _ringSum += rgbLum(_rp);
+                     _innerSum += rgbLum(_ip);
+                     // 金色加成: 环像素越接近金色(0xC8A84E)得分越高
+                     _goldSum += goldScore(_rp);
                      _validSamples++;
                   }
                   _si++;
@@ -455,9 +460,11 @@ package game.ui
 
                if(_validSamples >= 12)
                {
-                  // 环形得分 = 环亮度 - 内部亮度 (越大说明越像圆环)
-                  var _score:Number = (_ringSum - _innerSum) / _validSamples;
-                  if(_score > _minScore)
+                  // 综合得分 = 环形亮度差 + 金色加成
+                  var _ringScore:Number = (_ringSum - _innerSum) / _validSamples;
+                  var _goldScore:Number = _goldSum / _validSamples;
+                  var _score:Number = _ringScore + _goldScore * 1.5;
+                  if(_score > _minScore * 0.5)  // 放宽阈值, 让金色加分发挥作用
                   {
                      _candidates.push({
                         x: _scanX + _cx,
@@ -498,6 +505,25 @@ package game.ui
          return 0.299 * ((param1 >> 16) & 0xFF)
               + 0.587 * ((param1 >> 8) & 0xFF)
               + 0.114 * (param1 & 0xFF);
+      }
+
+      /** 金色相似度得分 (0~60): 像素越接近金色0xC8A84E得分越高 */
+      private function goldScore(param1:uint) : Number
+      {
+         var _r:int = (param1 >> 16) & 0xFF;
+         var _g:int = (param1 >> 8) & 0xFF;
+         var _b:int = param1 & 0xFF;
+
+         // 金色特征: R偏高, G中等, B偏低, R>G>B
+         if(_r < 120 || _g < 80 || _b > 160) return 0;
+         if(_r <= _g || _g <= _b) return 0;
+
+         // 距离目标金色的欧氏距离, 距离越近分越高
+         var _dr:int = _r - 200;
+         var _dg:int = _g - 168;
+         var _db:int = _b - 78;
+         var _dist:Number = Math.sqrt(_dr*_dr + _dg*_dg + _db*_db);
+         return Math.max(0, 60 - _dist * 0.4);
       }
 
       /**
