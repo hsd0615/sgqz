@@ -18,7 +18,7 @@ package game.ui
    import game.Config;
    import game.events.UIEvent;
    import game.model.Head;
-   import game.ui.EquipIcons;
+   import game.ui.EquipIconAssets;
    import game.model.RoleModel;
 
    public class ShopBlock extends BaseUI
@@ -138,9 +138,9 @@ package game.ui
       {
          var _isWeapon:Boolean = (iconName.indexOf("4_1") >= 0 || iconName.indexOf("4_2") >= 0 || iconName.indexOf("4_3") >= 0 || iconName.indexOf("4_4") >= 0 || iconName.indexOf("4_5") >= 0);
          var _isArmor:Boolean = (iconName.indexOf("4_11") >= 0 || iconName.indexOf("4_12") >= 0 || iconName.indexOf("4_13") >= 0 || iconName.indexOf("4_14") >= 0 || iconName.indexOf("4_15") >= 0);
-         if(_isWeapon) return EquipIcons.weapon();
-         if(_isArmor) return EquipIcons.armor();
-         return EquipIcons.accessory();
+         if(_isWeapon) return EquipIconAssets.weapon();
+         if(_isArmor) return EquipIconAssets.armor();
+         return EquipIconAssets.accessory();
       }
 
       private function buyBtnClickHandler(param1:MouseEvent) : *
