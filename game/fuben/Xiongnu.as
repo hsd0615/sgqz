@@ -150,12 +150,15 @@ package game.fuben
       
       private var _ammoTips:MovieClip;
       
-      public function Xiongnu(param1:Vector.<ArmyInfo>, param2:int = 1, param3:int = 1)
+      private var _fubenID:int = 1;
+
+      public function Xiongnu(param1:Vector.<ArmyInfo>, param2:int = 1, param3:int = 1, param4:int = 1)
       {
          super();
          this._leftArmy = param1.sort(this.compare);
          this._currentStageID = param2;
          this._direct = param3;
+         this._fubenID = param4;
          this._config = new XiongnuConfig();
          if(stage != null)
          {
@@ -1476,7 +1479,7 @@ package game.fuben
                _loc2_ = 1;
                dispatchEvent(new FightEvent(FightEvent.XIONGNU_FIGHT_COMPLETE,true,{
                   "result":_loc2_,
-                  "stageID":1,
+                  "stageID":this._fubenID,
                   "index":this._currentStageID,
                   "level":this.getGeneralLevel()
                }));
@@ -1495,7 +1498,7 @@ package game.fuben
                }
                dispatchEvent(new FightEvent(FightEvent.XIONGNU_FIGHT_COMPLETE,true,{
                   "result":_loc2_,
-                  "stageID":1,
+                  "stageID":this._fubenID,
                   "index":this._currentStageID,
                   "level":this.getGeneralLevel()
                }));
@@ -1514,7 +1517,7 @@ package game.fuben
                }
                dispatchEvent(new FightEvent(FightEvent.XIONGNU_FIGHT_COMPLETE,true,{
                   "result":_loc2_,
-                  "stageID":1,
+                  "stageID":this._fubenID,
                   "index":this._currentStageID,
                   "level":this.getGeneralLevel()
                }));
