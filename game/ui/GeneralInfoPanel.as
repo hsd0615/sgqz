@@ -8,7 +8,6 @@ package game.ui
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
-   import flash.display.Graphics;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.display.SimpleButton;
@@ -17,9 +16,7 @@ package game.ui
    import flash.events.MouseEvent;
    import flash.filters.BlurFilter;
    import flash.filters.GlowFilter;
-   import flash.geom.Matrix;
    import flash.geom.Point;
-   import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -100,12 +97,11 @@ package game.ui
 
       private var _icon3:Sprite;
 
-      // 6个装备槽 (皮肤中的MovieClip或程序化创建的Sprite)
+      // 6个装备槽
       private var _equipSlots:Array = [];
-      // 6个槽位的标签: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
+      // 槽位标签: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
       private static const SLOT_LABELS:Array = ["武器","铠甲","饰品Ⅰ","头盔","战靴","饰品Ⅱ"];
       private var _equipBtn:Sprite;
-      // 装备选择列表
       private var _bagList:Sprite;
       private var _selectingSlot:int = -1;
 
@@ -151,7 +147,6 @@ package game.ui
          this.__chongxiBtn.visible = false;
          this.__sxcxBtn.visible = true;
 
-         // 创建6个装备槽(程序化, 放在武将模型左上)
          this.findEquipSlots();
          var _ai:int = 0;
          while(_ai < 6)
@@ -160,68 +155,43 @@ package game.ui
             _ai++;
          }
 
-         // 创建装备选择列表(初始隐藏)
          this._bagList = new Sprite();
          this._bagList.visible = false;
          addChild(this._bagList);
       }
 
       /**
-       * 创建6个透明交互覆盖层, 叠加在皮肤已有的装备槽背景图上
+       * 创建6个装备槽交互覆盖层。
+       * 每个槽位坐标在 _slotPositions 数组中定义。
        *
-       * 对齐策略(按优先级降级):
-       *   ① 扫描_skin无实例名子对象 — 按尺寸+位置聚类发现真实槽位图形
-       *   ② BitmapData像素扫描 — 检测金色矩形边框定位槽位
-       *   ③ 锚点相对网格 — 以武将中心_point为原点偏移出2×3网格
-       *   ④ 硬编码兜底 — 历史坐标值
+       * 如何提供坐标给我:
+       *   打开武将详情面板截图, 对每个槽位标注你想要的 x,y 像素位置。
+       *   例如: "武器槽应该在 (-300, -120), 铠甲槽应该在 (-240, -120)..."
+       *   我修改下方数组即可, 无需重新部署整个游戏逻辑。
        *
-       * SWF皮肤中槽位为静态美术图形, 无实例名, 需代码创建交互层
+       * 坐标系说明:
+       *   - 原点 (0,0) 是 _skin 的注册点
+       *   - 武将中心约在 (-235, -65)
+       *   - x 负值向左, y 负值向上
+       *   - 每格 48×48 像素
        */
       private function findEquipSlots() : void
       {
          var _sW:int = 48;
          var _sH:int = 48;
-         var _slotPositions:Array = null;
-         var _candidates:Array;
 
-         // ── 策略①: 扫描_skin中无名子对象, 自动发现槽位图形 ──
-         if(_slotPositions == null && _skin != null)
-         {
-            _candidates = scanSkinChildren();
-            if(_candidates.length >= 6)
-            {
-               _slotPositions = clusterSlotPositions(_candidates);
-            }
-         }
+         // ═══════════════════════════════════════
+         // 修改下面6个坐标即可移动槽位
+         // ═══════════════════════════════════════
+         var _slotPositions:Array = [
+            {x:-340, y:-150},  // 0:武器
+            {x:-284, y:-150},  // 1:铠甲
+            {x:-228, y:-150},  // 2:饰品Ⅰ
+            {x:-340, y:-96},   // 3:头盔
+            {x:-284, y:-96},   // 4:战靴
+            {x:-228, y:-96}    // 5:饰品Ⅱ
+         ];
 
-         // ── 策略②: BitmapData像素扫描 — 检测金色矩形边框 ──
-         if(_slotPositions == null && _skin != null)
-         {
-            _candidates = scanPixelsForSlots();
-            if(_candidates.length >= 6)
-            {
-               _slotPositions = clusterSlotPositions(_candidates);
-            }
-         }
-
-         // ── 策略③: 锚点相对网格 (以武将中心_point为原点) ──
-         if(_slotPositions == null)
-         {
-            var _anchorX:Number = this._point.x - 105;
-            var _anchorY:Number = this._point.y - 85;
-            _slotPositions = buildSlotGrid(_anchorX, _anchorY, 56, 54);
-         }
-
-         // ── 策略④: 硬编码兜底 ──
-         if(_slotPositions == null)
-         {
-            _slotPositions = [
-               {x:-340, y:-150}, {x:-284, y:-150}, {x:-228, y:-150},
-               {x:-340, y:-96},  {x:-284, y:-96},  {x:-228, y:-96}
-            ];
-         }
-
-         // ── 创建6个槽位Sprite (应用手动校准偏移) ──
          var _j:int = 0;
          while(_j < 6)
          {
@@ -229,10 +199,9 @@ package game.ui
             _s.name = "equipSlot" + _j;
             _s.buttonMode = true;
             _s.mouseChildren = false;
-            _s.x = _slotPositions[_j].x + CALIB_OFFSET_X;
-            _s.y = _slotPositions[_j].y + CALIB_OFFSET_Y;
+            _s.x = _slotPositions[_j].x;
+            _s.y = _slotPositions[_j].y;
 
-            // 暗色底 + 金色边框
             var _bb:Shape = new Shape();
             _bb.graphics.beginFill(0x1a1008, 0.85);
             _bb.graphics.lineStyle(1, 0xC8A84E, 0.8);
@@ -240,7 +209,6 @@ package game.ui
             _bb.graphics.endFill();
             _s.addChild(_bb);
 
-            // 槽位标签
             var _ltf:TextField = new TextField();
             _ltf.defaultTextFormat = new TextFormat("SimSun", 9, 0x8B6914);
             _ltf.text = SLOT_LABELS[_j];
@@ -254,464 +222,6 @@ package game.ui
             this._equipSlots[_j] = _s;
             _j++;
          }
-
-         // Debug: 标注每个槽位的坐标
-         if(DEBUG_SCAN)
-         {
-            debugDrawSlotLabels(_slotPositions);
-         }
-      }
-
-      // 已知有实例名的子对象 — 扫描时排除
-      private static const KNOWN_NAMES:Array = [
-         "_nameTF","_titleTF","_valueTF","_xiaohaoTF",
-         "_shengjiBtn","_jinhuaBtn","_sxcxBtn",
-         "_kezhi1TF","_kezhi2TF","_kezhi3TF",
-         "_kezhi1Btn","_kezhi2Btn","_kezhi3Btn",
-         "_tianfuNameTF","_tianfuDescTF",
-         "_chongxiBtn","_jihuoBtn",
-         "_moneyTF","_exploitTF","_closeBtn","_shopBtn"
-      ];
-
-      /**
-       * 扫描_skin中无实例名的DisplayObject, 找出可能是装备槽图形的对象
-       * 筛选条件: 尺寸30~70px(方形), 位于武将上方区域
-       * @return [{x,y,width,height}, ...] 按y再x排序
-       */
-      private function scanSkinChildren() : Array
-      {
-         var _result:Array = [];
-         if(_skin == null) return _result;
-
-         var _total:int = _skin.numChildren;
-         var _ic:int = 0;
-         while(_ic < _total)
-         {
-            var _child:DisplayObject = _skin.getChildAt(_ic);
-            // 跳过有名实例
-            if(_child.name != null && _child.name != "" && KNOWN_NAMES.indexOf(_child.name) >= 0)
-            {
-               _ic++; continue;
-            }
-            // 跳过 TextField / SimpleButton
-            if(_child is TextField || _child is SimpleButton)
-            {
-               _ic++; continue;
-            }
-
-            // 获取子对象在_skin坐标系中的bounds
-            var _rb:Rectangle = _child.getBounds(_skin);
-            var _rw:Number = _rb.width;
-            var _rh:Number = _rb.height;
-
-            // 筛选: 近似方形, 尺寸在槽位范围(25~80px)
-            if(_rw >= 25 && _rw <= 80 && _rh >= 25 && _rh <= 80)
-            {
-               var _ratio:Number = _rw / _rh;
-               if(_ratio >= 0.55 && _ratio <= 1.8)
-               {
-                  // 记录中心坐标
-                  _result.push({
-                     x: _rb.x + _rw / 2,
-                     y: _rb.y + _rh / 2,
-                     width: _rw,
-                     height: _rh
-                  });
-               }
-            }
-            _ic++;
-         }
-
-         // 按 y 再 x 排序(从上到下, 从左到右)
-         _result.sortOn("y", Array.NUMERIC);
-         // 稳定排序: 同一行内按x排
-         var _sorted:Array = [];
-         var _ki:int = 0;
-         while(_ki < _result.length)
-         {
-            var _rowGroup:Array = [_result[_ki]];
-            var _kj:int = _ki + 1;
-            while(_kj < _result.length && Math.abs(_result[_kj].y - _result[_ki].y) < 25)
-            {
-               _rowGroup.push(_result[_kj]);
-               _kj++;
-            }
-            _rowGroup.sortOn("x", Array.NUMERIC);
-            _sorted = _sorted.concat(_rowGroup);
-            _ki = _kj;
-         }
-
-         return _sorted;
-      }
-
-      // ── Debug: 设为true可在皮肤上画出检测候选标记(彩色十字) ──
-      private static const DEBUG_SCAN:Boolean = true;
-      // ── 手动校准偏移: 调整这些值移动整个槽位网格 ──
-      private static const CALIB_OFFSET_X:int = 0;  // 正=右移
-      private static const CALIB_OFFSET_Y:int = 0;  // 正=下移
-      private var _debugLayer:Sprite = null;
-
-      /**
-       * 圆形环检测器 — 在皮肤bitmap中搜索"亮色圆环+暗色中心"图案
-       *
-       * 算法: 对每个候选中心, 比较环形采样点(半径~22px)与内部采样点
-       * (半径~8px)的亮度差。高分 = 亮环围暗心 = 装备槽
-       *
-       * @return [{x,y,score}, ...] 按score降序
-       */
-      private function scanPixelsForSlots() : Array
-      {
-         var _result:Array = [];
-         if(_skin == null) return _result;
-
-         var _sb:Rectangle = _skin.getBounds(_skin);
-         if(_sb.width < 20 || _sb.height < 20) return _result;
-
-         var _scanX:int = int(_sb.x);
-         var _scanY:int = int(_sb.y);
-         var _scanW:int = int(_sb.width);
-         var _scanH:int = int(_sb.height);
-         if(_scanW > 500) _scanW = 500;
-         if(_scanH > 400) _scanH = 400;
-         if(_scanW < 80 || _scanH < 80) return _result;
-
-         var _bmd:BitmapData = null;
-         try
-         {
-            _bmd = new BitmapData(_scanW, _scanH, false, 0);
-            var _mtx:Matrix = new Matrix();
-            _mtx.translate(-_scanX, -_scanY);
-            _bmd.draw(_skin, _mtx, null, null, null, true);
-         }
-         catch(_err:Error)
-         {
-            if(_bmd != null) _bmd.dispose();
-            return _result;
-         }
-
-         // ── 环形采样参数 ──
-         var _ringRadius:int = 22;     // 圆环半径(槽位典型半径)
-         var _innerRadius:int = 8;     // 内部采样半径
-         var _sampleCount:int = 16;    // 采样方向数
-         var _stride:int = 5;          // 扫描步长(性能vs精度)
-         var _minScore:Number = 30;    // 最低环形得分
-
-         var _candidates:Array = [];
-         var _angles:Array = [];
-         var _ai:int = 0;
-         while(_ai < _sampleCount)
-         {
-            _angles.push(2 * Math.PI * _ai / _sampleCount);
-            _ai++;
-         }
-
-         // 预计算采样偏移
-         var _ringOffsets:Array = [];
-         var _innerOffsets:Array = [];
-         var _di:int = 0;
-         while(_di < _sampleCount)
-         {
-            var _ang:Number = _angles[_di];
-            _ringOffsets.push({
-               x: int(_ringRadius * Math.cos(_ang)),
-               y: int(_ringRadius * Math.sin(_ang))
-            });
-            _innerOffsets.push({
-               x: int(_innerRadius * Math.cos(_ang)),
-               y: int(_innerRadius * Math.sin(_ang))
-            });
-            _di++;
-         }
-
-         // ── 扫描每个候选中心 ──
-         var _margin:int = _ringRadius + 2;
-         var _cy:int = _margin;
-         while(_cy < _scanH - _margin)
-         {
-            var _cx:int = _margin;
-            while(_cx < _scanW - _margin)
-            {
-               var _ringSum:Number = 0;
-               var _innerSum:Number = 0;
-               var _goldSum:Number = 0;
-               var _validSamples:int = 0;
-
-               var _si:int = 0;
-               while(_si < _sampleCount)
-               {
-                  var _rx:int = _cx + _ringOffsets[_si].x;
-                  var _ry:int = _cy + _ringOffsets[_si].y;
-                  var _ix:int = _cx + _innerOffsets[_si].x;
-                  var _iy:int = _cy + _innerOffsets[_si].y;
-
-                  if(_rx >= 0 && _rx < _scanW && _ry >= 0 && _ry < _scanH
-                     && _ix >= 0 && _ix < _scanW && _iy >= 0 && _iy < _scanH)
-                  {
-                     var _rp:uint = _bmd.getPixel(_rx, _ry);
-                     var _ip:uint = _bmd.getPixel(_ix, _iy);
-                     _ringSum += rgbLum(_rp);
-                     _innerSum += rgbLum(_ip);
-                     // 金色加成: 环像素越接近金色(0xC8A84E)得分越高
-                     _goldSum += goldScore(_rp);
-                     _validSamples++;
-                  }
-                  _si++;
-               }
-
-               if(_validSamples >= 12)
-               {
-                  // 综合得分 = 环形亮度差 + 金色加成
-                  var _ringScore:Number = (_ringSum - _innerSum) / _validSamples;
-                  var _goldScore:Number = _goldSum / _validSamples;
-                  var _score:Number = _ringScore + _goldScore * 1.5;
-                  if(_score > _minScore * 0.5)  // 放宽阈值, 让金色加分发挥作用
-                  {
-                     _candidates.push({
-                        x: _scanX + _cx,
-                        y: _scanY + _cy,
-                        score: _score
-                     });
-                  }
-               }
-               _cx += _stride;
-            }
-            _cy += _stride;
-         }
-         _bmd.dispose();
-
-         if(DEBUG_SCAN && _candidates.length > 0)
-         {
-            // 画环形检测候选(黄色=高得分)
-            debugDrawRingCandidates(_candidates);
-         }
-
-         if(_candidates.length < 6) return _result;
-
-         // 按得分降序, 然后非极大值抑制(去掉重叠候选)
-         _candidates.sortOn("score", Array.NUMERIC | Array.DESCENDING);
-         _candidates = nonMaxSuppress(_candidates, 30);
-
-         if(DEBUG_SCAN && _candidates.length > 0)
-         {
-            debugDrawMarkers(_candidates, 0x00FFFF); // 青色 = 最终候选
-         }
-
-         return _candidates;
-      }
-
-      /** RGB转感知亮度 (0~255) */
-      private function rgbLum(param1:uint) : Number
-      {
-         return 0.299 * ((param1 >> 16) & 0xFF)
-              + 0.587 * ((param1 >> 8) & 0xFF)
-              + 0.114 * (param1 & 0xFF);
-      }
-
-      /** 金色相似度得分 (0~60): 像素越接近金色0xC8A84E得分越高 */
-      private function goldScore(param1:uint) : Number
-      {
-         var _r:int = (param1 >> 16) & 0xFF;
-         var _g:int = (param1 >> 8) & 0xFF;
-         var _b:int = param1 & 0xFF;
-
-         // 金色特征: R偏高, G中等, B偏低, R>G>B
-         if(_r < 120 || _g < 80 || _b > 160) return 0;
-         if(_r <= _g || _g <= _b) return 0;
-
-         // 距离目标金色的欧氏距离, 距离越近分越高
-         var _dr:int = _r - 200;
-         var _dg:int = _g - 168;
-         var _db:int = _b - 78;
-         var _dist:Number = Math.sqrt(_dr*_dr + _dg*_dg + _db*_db);
-         return Math.max(0, 60 - _dist * 0.4);
-      }
-
-      /**
-       * 非极大值抑制: 在半径内只保留得分最高的候选
-       */
-      private function nonMaxSuppress(param1:Array, param2:int) : Array
-      {
-         var _kept:Array = [];
-         var _suppressed:Object = {};
-
-         for each(var _p:Object in param1)
-         {
-            if(_suppressed[_p.x + "_" + _p.y]) continue;
-
-            _kept.push(_p);
-            // 抑制半径内的其他候选
-            for each(var _q:Object in param1)
-            {
-               if(_q == _p) continue;
-               var _dx:Number = _q.x - _p.x;
-               var _dy:Number = _q.y - _p.y;
-               if(_dx * _dx + _dy * _dy < param2 * param2)
-               {
-                  _suppressed[_q.x + "_" + _q.y] = true;
-               }
-            }
-         }
-         return _kept;
-      }
-
-      /**
-       * Debug: 用黄色大圆标记环形检测候选(高得分)
-       */
-      private function debugDrawRingCandidates(param1:Array) : void
-      {
-         if(_debugLayer == null)
-         {
-            _debugLayer = new Sprite();
-            _debugLayer.name = "_debugScan";
-            _debugLayer.mouseEnabled = false;
-            _debugLayer.mouseChildren = false;
-            addChild(_debugLayer);
-         }
-
-         var _g:Graphics = _debugLayer.graphics;
-         _g.lineStyle(3, 0xFFFF00, 0.7);
-
-         var _count:int = 0;
-         for each(var _p:Object in param1)
-         {
-            if(_count > 20) break;
-            // 画圆环(半径22, 模拟检测半径)
-            _g.drawCircle(_p.x, _p.y, 22);
-            _count++;
-         }
-      }
-
-      /**
-       * 调试可视化: 大号彩色十字 + 编号
-       */
-      private function debugDrawMarkers(param1:Array, param2:uint) : void
-      {
-         if(_debugLayer == null)
-         {
-            _debugLayer = new Sprite();
-            _debugLayer.name = "_debugScan";
-            _debugLayer.mouseEnabled = false;
-            _debugLayer.mouseChildren = false;
-            addChild(_debugLayer);
-         }
-
-         var _g:Graphics = _debugLayer.graphics;
-         _g.lineStyle(2, param2, 0.95);
-
-         var _count:int = 0;
-         for each(var _p:Object in param1)
-         {
-            if(_count > 30) break;
-
-            var _cx:Number = _p.x;
-            var _cy:Number = _p.y;
-            // 大号十字线(12px)
-            _g.moveTo(_cx - 12, _cy);
-            _g.lineTo(_cx + 12, _cy);
-            _g.moveTo(_cx, _cy - 12);
-            _g.lineTo(_cx, _cy + 12);
-            // 空心圆(半径8)
-            _g.drawCircle(_cx, _cy, 8);
-
-            // 编号标签
-            var _tf:TextField = new TextField();
-            _tf.defaultTextFormat = new TextFormat("_sans", 12, param2, true);
-            _tf.text = String(_count);
-            _tf.selectable = false;
-            _tf.width = 24; _tf.height = 18;
-            _tf.x = _cx + 10; _tf.y = _cy - 9;
-            _debugLayer.addChild(_tf);
-
-            _count++;
-         }
-      }
-
-      /**
-       * Debug: 在槽位左上角显示坐标
-       */
-      private function debugDrawSlotLabels(param1:Array) : void
-      {
-         if(_debugLayer == null)
-         {
-            _debugLayer = new Sprite();
-            _debugLayer.name = "_debugScan";
-            _debugLayer.mouseEnabled = false;
-            _debugLayer.mouseChildren = false;
-            addChild(_debugLayer);
-         }
-
-         var _j:int = 0;
-         while(_j < 6)
-         {
-            var _tf:TextField = new TextField();
-            _tf.defaultTextFormat = new TextFormat("_sans", 9, 0xFF4444, true);
-            _tf.text = int(param1[_j].x) + "," + int(param1[_j].y);
-            _tf.selectable = false;
-            _tf.width = 60; _tf.height = 14;
-            _tf.x = param1[_j].x + CALIB_OFFSET_X;
-            _tf.y = param1[_j].y + CALIB_OFFSET_Y - 16;
-            _debugLayer.addChild(_tf);
-            _j++;
-         }
-      }
-
-      /**
-       * 从候选点中聚类出2×3网格的6个槽位中心
-       */
-      private function clusterSlotPositions(param1:Array) : Array
-      {
-         if(param1.length < 6) return null;
-
-         // 取前6个候选, 中心→左上角(槽宽48), 保持检测到的实际位置
-         var _result:Array = [];
-         var _ki:int = 0;
-         while(_ki < 6 && _ki < param1.length)
-         {
-            _result.push({
-               x: param1[_ki].x - 24,
-               y: param1[_ki].y - 24
-            });
-            _ki++;
-         }
-
-         // 按 y 再 x 稳定排序
-         _result.sortOn("y", Array.NUMERIC);
-         var _sorted:Array = [];
-         var _si:int = 0;
-         while(_si < _result.length)
-         {
-            var _rg:Array = [_result[_si]];
-            var _sj:int = _si + 1;
-            while(_sj < _result.length && Math.abs(_result[_sj].y - _result[_si].y) < 40)
-            { _rg.push(_result[_sj]); _sj++; }
-            _rg.sortOn("x", Array.NUMERIC);
-            _sorted = _sorted.concat(_rg);
-            _si = _sj;
-         }
-         return _sorted.length >= 6 ? _sorted.slice(0, 6) : null;
-      }
-
-      /**
-       * 构建2行×3列槽位坐标网格
-       */
-      private function buildSlotGrid(param1:Number, param2:Number, param3:Number, param4:Number) : Array
-      {
-         var _result:Array = [];
-         var _row:int = 0;
-         while(_row < 2)
-         {
-            var _col:int = 0;
-            while(_col < 3)
-            {
-               _result.push({
-                  x: param1 + _col * param3,
-                  y: param2 + _row * param4
-               });
-               _col++;
-            }
-            _row++;
-         }
-         return _result;
       }
 
       override protected function initEvent() : void
@@ -728,7 +238,6 @@ package game.ui
          this.__shopBtn.addEventListener(MouseEvent.CLICK,this.onShopBtnClickHandler);
          this.__sxcxBtn.addEventListener(MouseEvent.CLICK,this.onSxcxBtnClickHandler);
 
-         // 6个装备槽点击事件
          var _si:int = 0;
          while(_si < 6)
          {
@@ -793,9 +302,6 @@ package game.ui
          addChild(this._equipBtn);
       }
 
-      /**
-       * 在6个装备槽中显示已装备的图标
-       */
       private function showEquipSlots() : void
       {
          var _si:int = 0;
@@ -805,7 +311,6 @@ package game.ui
             if(_slot == null) { _si++; continue; }
             var _eqCode:String = this._armyInfo.getEquipSlot(_si);
 
-            // 清除旧图标 - 只移除Bitmap, 保留背景Shape(确保点击区域)
             if(_slot is Sprite)
             {
                var _spr:Sprite = _slot as Sprite;
@@ -828,12 +333,10 @@ package game.ui
                }
             }
 
-            // 记录槽位索引
             _slot.name = "equipSlot" + _si;
 
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
-               // 显示装备图标
                var _bmp:Bitmap = this.getEquipBmp(_eqCode);
                if(_bmp != null)
                {
@@ -853,13 +356,11 @@ package game.ui
                      (_slot as MovieClip).addChild(_bmp);
                   }
                }
-               // 品质光晕
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                _slot.filters = [new GlowFilter(getQualityColor(_q), 0.5, 4, 4, 1)];
             }
             else
             {
-               // 空槽 - 去除光晕
                _slot.filters = [];
             }
             _si++;
@@ -884,14 +385,10 @@ package game.ui
       private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
 
-      /**
-       * 装备槽点击处理: 空→弹列表选装备, 已有→卸下
-       */
       private function onEquipSlotClick(param1:MouseEvent) : void
       {
          param1.stopImmediatePropagation();
          var _slotName:String = (param1.currentTarget as DisplayObject).name;
-         // 从 "equipSlot0" 提取索引
          var _slotIdx:int = int(_slotName.replace("equipSlot",""));
          if(_slotIdx < 0 || _slotIdx > 5) return;
 
@@ -953,7 +450,6 @@ package game.ui
             return;
          }
 
-         // 列表放在面板中央
          this._bagList.x = 100;
          this._bagList.y = 180;
          var _listW:int = 240;
