@@ -170,12 +170,26 @@ package game.ui
        */
       private function findEquipSlots() : void
       {
-         // 6槽覆盖层位置 (根据皮肤上静态图形的视觉位置调整)
-         // 使用负X坐标系统, 位于武将模型左侧
-         var _positions:Array = [
-            {x:-340, y:-125}, {x:-285, y:-125}, {x:-230, y:-125},  // 上排
-            {x:-340, y:-70},  {x:-285, y:-70},  {x:-230, y:-70}    // 下排
-         ];
+         // 运行时根据已知皮肤元素的位置推算装备槽位置
+         // 皮肤中 _nameTF 通常在顶部, _closeBtn 在右上角
+         var _refX:Number = 0;
+         var _refY:Number = 0;
+
+         // 参考点1: 武将模型位置 (程序化设置, 可靠)
+         _refX = this._point.x;  // -235
+         _refY = this._point.y;  // -65
+
+         // 参考点2: 皮肤中的 _nameTF (如果在顶部)
+         if(this.__nameTF != null) {
+            // 名字通常在面板顶部
+         }
+
+         // 推算: 装备槽在武将左侧 + 上方区域
+         // 武将中心在 (_refX, _refY), 装备槽应在左上偏移
+         var _startX:Number = _refX - 130;  // 武将左边130px
+         var _startY:Number = _refY - 100;  // 武将上方100px
+         var _gapX:Number = 56;
+         var _gapY:Number = 56;
          var _slotW:int = 48;
          var _slotH:int = 48;
 
@@ -184,17 +198,16 @@ package game.ui
          {
             var _slot:Sprite = new Sprite();
             _slot.name = "equipSlot" + _i;
-
-            // 极淡的可见边框 (叠加在皮肤美术图上)
-            var _border:Shape = new Shape();
-            _border.graphics.lineStyle(1, 0xC8A84E, 0.5);
-            _border.graphics.drawRoundRect(0, 0, _slotW, _slotH, 4, 4);
-            _slot.addChild(_border);
-
             _slot.buttonMode = true;
             _slot.mouseChildren = false;
-            _slot.x = _positions[_i].x;
-            _slot.y = _positions[_i].y;
+            _slot.x = _startX + (_i % 3) * _gapX;
+            _slot.y = _startY + int(_i / 3) * _gapY;
+
+            // 红色测试边框
+            var _b:Shape = new Shape();
+            _b.graphics.lineStyle(2, 0xFF0000, 1.0);
+            _b.graphics.drawRect(0, 0, _slotW, _slotH);
+            _slot.addChild(_b);
 
             this._equipSlots[_i] = _slot;
             _i++;
