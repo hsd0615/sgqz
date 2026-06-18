@@ -148,8 +148,14 @@ package game.ui
          this.__chongxiBtn.visible = false;
          this.__sxcxBtn.visible = true;
 
-         // 发现皮肤中的6个装备槽元素
+         // 创建6个装备槽(程序化, 放在武将模型左上)
          this.findEquipSlots();
+         var _ai:int = 0;
+         while(_ai < 6)
+         {
+            if(this._equipSlots[_ai] != null) addChild(this._equipSlots[_ai] as DisplayObject);
+            _ai++;
+         }
 
          // 创建装备选择列表(初始隐藏)
          this._bagList = new Sprite();
@@ -158,87 +164,39 @@ package game.ui
       }
 
       /**
-       * 扫描皮肤中左上角区域的可视元素, 自动识别6个装备槽
-       * 优先按名称匹配, 失败则扫描位置发现
+       * 创建6个透明交互覆盖层, 叠加在皮肤已有的装备槽背景图上
+       * SWF皮肤中槽位为静态美术图形, 无实例名, 需代码创建交互层
+       * 面板坐标参考: 武将中心=(-235,-65), 克制图标y=69
        */
       private function findEquipSlots() : void
       {
-         // 已知的非装备槽元素名(排除用)
-         var _knownNames:Object = {
-            "_nameTF":1,"_titleTF":1,"_valueTF":1,"_xiaohaoTF":1,
-            "_shengjiBtn":1,"_jinhuaBtn":1,"_sxcxBtn":1,
-            "_kezhi1TF":1,"_kezhi2TF":1,"_kezhi3TF":1,
-            "_kezhi1Btn":1,"_kezhi2Btn":1,"_kezhi3Btn":1,
-            "_tianfuNameTF":1,"_tianfuDescTF":1,
-            "_chongxiBtn":1,"_jihuoBtn":1,
-            "_moneyTF":1,"_exploitTF":1,
-            "_closeBtn":1,"_shopBtn":1
-         };
+         // 6槽覆盖层位置 (根据皮肤上静态图形的视觉位置调整)
+         // 使用负X坐标系统, 位于武将模型左侧
+         var _positions:Array = [
+            {x:-340, y:-125}, {x:-285, y:-125}, {x:-230, y:-125},  // 上排
+            {x:-340, y:-70},  {x:-285, y:-70},  {x:-230, y:-70}    // 下排
+         ];
+         var _slotW:int = 48;
+         var _slotH:int = 48;
 
-         // 1. 先尝试按名称匹配 (1-based)
-         var _patterns:Array = ["_equipSlot","_esMc","_slotMc","_equipMc","_equip","_slot","equip","es","slot","e"];
          var _i:int = 0;
          while(_i < 6)
          {
-            var _found:Boolean = false;
-            var _pi:int = 0;
-            while(_pi < _patterns.length && !_found)
-            {
-               var _tryName:String = _patterns[_pi] + (_i + 1);
-               var _disp:DisplayObject = _skin.getChildByName(_tryName);
-               if(_disp != null) { this._equipSlots[_i] = _disp; _found = true; }
-               _pi++;
-            }
-            _i++;
-         }
+            var _slot:Sprite = new Sprite();
+            _slot.name = "equipSlot" + _i;
 
-         // 2. 如果名称匹配全部失败, 扫描皮肤中左上角区域的MovieClip
-         if(this._equipSlots[0] == null)
-         {
-            var _candidates:Array = [];
-            var _ci2:int = 0;
-            while(_ci2 < _skin.numChildren)
-            {
-               var _child:DisplayObject = _skin.getChildAt(_ci2);
-               // 排除已知元素、TextField、SimpleButton
-               if(_knownNames[_child.name] != null) { _ci2++; continue; }
-               if(_child is TextField || _child is SimpleButton) { _ci2++; continue; }
-               if(!(_child is MovieClip) && !(_child is Sprite)) { _ci2++; continue; }
-               // 只取左上角区域的 (x<250, y<200, 宽高>10)
-               if(_child.x < 250 && _child.y < 200 && _child.width > 10 && _child.height > 10)
-               {
-                  _candidates.push(_child);
-               }
-               _ci2++;
-            }
-            // 按位置排序 (先y后x), 取前6个
-            _candidates.sort(function(a:DisplayObject,b:DisplayObject):int {
-               if(a.y < b.y) return -1; if(a.y > b.y) return 1;
-               if(a.x < b.x) return -1; if(a.x > b.x) return 1;
-               return 0;
-            });
-            _i = 0;
-            while(_i < 6 && _i < _candidates.length)
-            {
-               this._equipSlots[_i] = _candidates[_i];
-               _i++;
-            }
-         }
+            // 极淡的可见边框 (叠加在皮肤美术图上)
+            var _border:Shape = new Shape();
+            _border.graphics.lineStyle(1, 0xC8A84E, 0.5);
+            _border.graphics.drawRoundRect(0, 0, _slotW, _slotH, 4, 4);
+            _slot.addChild(_border);
 
-         // 3. 对找到的元素启用交互
-         _i = 0;
-         while(_i < 6)
-         {
-            var _slot:DisplayObject = this._equipSlots[_i] as DisplayObject;
-            if(_slot != null)
-            {
-               if(_slot is Sprite) (_slot as Sprite).mouseEnabled = true;
-               if(_slot is MovieClip) (_slot as MovieClip).mouseEnabled = true;
-               if(_slot is MovieClip) (_slot as MovieClip).mouseChildren = false;
-               if(_slot is Sprite) (_slot as Sprite).mouseChildren = false;
-               if(_slot is Sprite) (_slot as Sprite).buttonMode = true;
-               if(_slot is MovieClip) (_slot as MovieClip).buttonMode = true;
-            }
+            _slot.buttonMode = true;
+            _slot.mouseChildren = false;
+            _slot.x = _positions[_i].x;
+            _slot.y = _positions[_i].y;
+
+            this._equipSlots[_i] = _slot;
             _i++;
          }
       }
