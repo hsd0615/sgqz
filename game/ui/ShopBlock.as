@@ -133,22 +133,55 @@ package game.ui
             var _bmp:Bitmap = new Bitmap(new _iconClass() as BitmapData);
             this._img.addChild(_bmp);
          } catch(_e:Error) {
-            // 装备等新增物品 -> 使用嵌入的Flaticon真实PNG图标
-            var _isW:Boolean = (param1.code as String).indexOf("proto_4_1") >= 0 || (param1.code as String).indexOf("proto_4_2") >= 0 || (param1.code as String).indexOf("proto_4_3") >= 0 || (param1.code as String).indexOf("proto_4_4") >= 0 || (param1.code as String).indexOf("proto_4_5") >= 0;
-            var _isA:Boolean = (param1.code as String).indexOf("proto_4_11") >= 0 || (param1.code as String).indexOf("proto_4_12") >= 0 || (param1.code as String).indexOf("proto_4_13") >= 0 || (param1.code as String).indexOf("proto_4_14") >= 0 || (param1.code as String).indexOf("proto_4_15") >= 0;
-            if(_isW) this._img.addChild(EquipIconAssets.weapon());
-            else if(_isA) this._img.addChild(EquipIconAssets.armor());
-            else this._img.addChild(EquipIconAssets.accessory());
+            // 装备等新增物品 -> 使用嵌入的真实PNG图标,缩放到合适大小
+            var _eqBmp:Bitmap = createEquipIconByCode(param1.code as String);
+            if(_eqBmp != null)
+            {
+               _eqBmp.scaleX = 0.35;
+               _eqBmp.scaleY = 0.35;
+               _eqBmp.smoothing = true;
+               this._img.addChild(_eqBmp);
+            }
          }
       }
 
       private function createPlaceholderIcon(iconName:String) : DisplayObject
       {
-         var _isWeapon:Boolean = (iconName.indexOf("4_1") >= 0 || iconName.indexOf("4_2") >= 0 || iconName.indexOf("4_3") >= 0 || iconName.indexOf("4_4") >= 0 || iconName.indexOf("4_5") >= 0);
-         var _isArmor:Boolean = (iconName.indexOf("4_11") >= 0 || iconName.indexOf("4_12") >= 0 || iconName.indexOf("4_13") >= 0 || iconName.indexOf("4_14") >= 0 || iconName.indexOf("4_15") >= 0);
-         if(_isWeapon) return EquipIconAssets.weapon();
-         if(_isArmor) return EquipIconAssets.armor();
-         return EquipIconAssets.accessory();
+         var _bmp:Bitmap = createEquipIconByCode(iconName);
+         if(_bmp != null)
+         {
+            _bmp.scaleX = 0.35;
+            _bmp.scaleY = 0.35;
+            _bmp.smoothing = true;
+         }
+         return _bmp;
+      }
+
+      /**
+       * 根据装备code创建对应图标(武器/防具/饰品)
+       * proto_4_1~5: 武器, proto_4_11~15: 防具, proto_4_21~25: 饰品
+       */
+      private static function createEquipIconByCode(param1:String) : Bitmap
+      {
+         if(param1 == null || param1 == "")
+         {
+            return null;
+         }
+         var _parts:Array = param1.split("_");
+         var _num:int = 0;
+         if(_parts.length >= 3)
+         {
+            _num = int(_parts[_parts.length - 1]);
+         }
+         if(_num >= 21)
+         {
+            return EquipIconAssets.accessory();
+         }
+         if(_num >= 11)
+         {
+            return EquipIconAssets.armor();
+         }
+         return EquipIconAssets.weapon();
       }
 
       private function buyBtnClickHandler(param1:MouseEvent) : *
