@@ -511,6 +511,12 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
   });
 }
 
+var BROADCASTS = [];
+function broadcastToAll(msg) {
+  BROADCASTS.push({time:Date.now(),msg:msg});
+  if(BROADCASTS.length>20) BROADCASTS.shift();
+  console.log('[Broadcast] '+msg);
+}
 function jsonRawResponse(socket, data) {
   const body = JSON.stringify(data);
   const bodyLen = Buffer.byteLength(body, 'utf-8');
@@ -806,6 +812,34 @@ function handleRequest(socket, req) {
       }
     }
     p.finished_stages = fin.join('|');
+
+    // 装备掉落系统 — 通关概率获得
+    var equipDrop = null;
+    if (isWin && Math.random() < Math.min(0.8, 0.15 + flevel * 0.005)) {
+      // 根据关卡等级决定品质范围
+      var minQ=1, maxQ=3;
+      if(flevel>150){minQ=7;maxQ=10}
+      else if(flevel>100){minQ=5;maxQ=8}
+      else if(flevel>60){minQ=3;maxQ=6}
+      else if(flevel>30){minQ=2;maxQ=4}
+      var rollQ = minQ + Math.floor(Math.random()*(maxQ-minQ+1));
+      // 从EQUIP_DATA中找对应品质的装备
+      var candidates = [];
+      for(var ek in EQUIP_DATA){if(EQUIP_DATA[ek].quality===rollQ)candidates.push(ek);}
+      if(candidates.length>0){
+        var dropCode = candidates[Math.floor(Math.random()*candidates.length)];
+        var dropDef = EQUIP_DATA[dropCode];
+        // 添加到背包
+        if(!db.bagItems)db.bagItems=[];
+        db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
+        equipDrop = {code:dropCode,name:dropDef.name,quality:rollQ};
+        // Q5+全服通告
+        if(rollQ>=5){
+          var broadcastMsg = '[系统] 恭喜 '+p.role_name+' 在关卡'+fpart+'-'+flevel+' 获得 ['+dropDef.name+'](品质'+rollQ+')！';
+          broadcastToAll(broadcastMsg);
+        }
+      }
+    }
     save();
 
     var resp = {
@@ -814,7 +848,8 @@ function handleRequest(socket, req) {
         m: p.money, e: p.exploit, r: p.reverence,
         part: fpart, level: flevel,
         finished: p.finished_stages,
-        money: battleMoney, exploit: battleExploit, reverence: battleReverence
+        money: battleMoney, exploit: battleExploit, reverence: battleReverence,
+        equipDrop: equipDrop
       }
     };
     if (awardData) resp.data.award = awardData;

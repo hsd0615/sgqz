@@ -93,7 +93,8 @@ package game.model {
       public static function get(c:String,k:String):* { init(); var _r=_data[c]; if(!_r&&_compat[c]) _r=_data[_compat[c]]; return (_r&&_r[k]!=undefined)?_r[k]:null; }
       public static function getBySlot(s:int):Array { init(); var a:Array=[]; for(var k:String in _data) if(_data[k].slot==s) a.push(k); return a; }
       public static function getAllCodes():Array { init(); var a:Array=[]; for(var k:String in _data) a.push(k); return a; }
-      public static function getShopEquipItems():Array { return [
+      public static function getShopEquipItems():Array { return []; /* 装备改为通关掉落
+      OLD:
          {id:"shop046",name:"铁剑",category:5,code:"proto_4_31",count:1,payType:2,oldPrice:100,newPrice:50,icon:"proto_3_4",desc:"武器 Lv1"},
          {id:"shop047",name:"精钢剑",category:5,code:"proto_4_32",count:1,payType:2,oldPrice:300,newPrice:150,icon:"proto_3_4",desc:"武器 Lv15"},
          {id:"shop048",name:"青釭剑",category:5,code:"proto_4_33",count:1,payType:2,oldPrice:600,newPrice:300,icon:"proto_3_4",desc:"武器 Lv30"},
@@ -124,6 +125,6 @@ package game.model {
          {id:"shop073",name:"金戒指",category:5,code:"proto_4_73",count:1,payType:2,oldPrice:550,newPrice:280,icon:"proto_3_4",desc:"饰品Ⅱ Lv45"},
          {id:"shop074",name:"龙戒",category:5,code:"proto_4_74",count:1,payType:2,oldPrice:1100,newPrice:550,icon:"proto_3_4",desc:"饰品Ⅱ Lv65"},
          {id:"shop075",name:"神戒",category:5,code:"proto_4_75",count:1,payType:2,oldPrice:2500,newPrice:1200,icon:"proto_3_4",desc:"饰品Ⅱ Lv95"}
-      ];}
+      ];*/ }
    }
 }

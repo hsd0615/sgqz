@@ -1927,8 +1927,15 @@ import game.ui.UpdateChecker;
                }
                _loc4_.addition.recruit = param1.data.award.recruit;
             }
+            // 装备掉落提示
+            if(param1.data.equipDrop != null) {
+               _loc4_.equipDrop = param1.data.equipDrop;
+            }
             this._ui.showFightResult(_loc4_);
             MySound.getInstance().startEventSoundByName(SoundCode.WIN);
+            if(param1.data.equipDrop != null) {
+               this._ui.showMsg({type:0, text:"获得装备: " + param1.data.equipDrop.name + " (品质" + param1.data.equipDrop.quality + ")"});
+            }
             this.newPart(RoleModel.getInstance().checkHistory());
             RoleModel.getInstance().throttleSave();
          }
