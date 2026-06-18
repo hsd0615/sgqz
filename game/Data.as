@@ -24,6 +24,8 @@ package game
       private var _paomaXML:XML;
       
       private var _tianfuXML:XML;
+
+      private var _equipXML:XML;
       
       public function Data(param1:SingletonEnforcer)
       {
@@ -123,7 +125,19 @@ package game
             this._tianfuXML = XML(param1);
          }
       }
-      
+
+      public function initEquipXML(param1:*) : *
+      {
+         if(param1 is XML)
+         {
+            this._equipXML = param1;
+         }
+         else if(param1 is String)
+         {
+            this._equipXML = XML(param1);
+         }
+      }
+
       public function get xml() : XML
       {
          return this._xml;
@@ -151,6 +165,9 @@ package game
                break;
             case "tianfu":
                _loc2_ = this._tianfuXML;
+               break;
+            case "equip":
+               _loc2_ = this._equipXML;
          }
          return _loc2_;
       }

@@ -56,6 +56,7 @@ package game
 import game.ui.OnlineCountUI;
 import game.ui.UpdateChecker;
    import game.ui.ChangelogPanel;
+   import game.ui.EquipPanel;
    import unit4399.events.SaveEvent;
    
    public class Sanguo4399 extends Sprite
@@ -1006,6 +1007,7 @@ import game.ui.UpdateChecker;
          addEventListener(FightEvent.LEITAI_FIGHT_COMPLETE,this.leitaiFightCompleteHandler);
          addEventListener(FightEvent.CLOSE_LEITAI_FIGHT,this.closeLeitaiFightHandler);
          addEventListener(FightEvent.USE_AMMO,this.useAmmoHandler);
+         addEventListener(UIEvent.OPEN_EQUIP,this.openEquipHandler);
          addEventListener(SoundCode.GUNNER_ATTACK_SOUND,this.eventSoundHandler);
          addEventListener(SoundCode.WEAPON_SOUND,this.eventSoundHandler);
          addEventListener(SoundCode.SABER_WALK_SOUND,this.eventSoundHandler);
@@ -1086,6 +1088,19 @@ import game.ui.UpdateChecker;
          else if(param1.target.name == "game01.data.tianfu")
          {
             Data.getInstance().initTianfuXML(LoaderMax.getContent("game01.data.tianfu"));
+         }
+         else if(param1.target.name == "game01.data.equip")
+         {
+            Data.getInstance().initEquipXML(LoaderMax.getContent("game01.data.equip"));
+         }
+         // 如果 game.xml 未包含 equip DataLoader，手动从服务器加载装备数据
+         if(param1.target.name == "game01.data.tianfu")
+         {
+            var _eqLoader:URLLoader = new URLLoader();
+            _eqLoader.addEventListener(Event.COMPLETE, function(e:Event):void {
+               Data.getInstance().initEquipXML(_eqLoader.data as String);
+            });
+            _eqLoader.load(new URLRequest(AESController.getInstance().serverURL + "/client/staticequip.xml"));
          }
       }
       
@@ -1559,6 +1574,14 @@ import game.ui.UpdateChecker;
          }
       }
       
+      private function openEquipHandler(param1:UIEvent) : void
+      {
+         var _panel:EquipPanel = new EquipPanel(param1.data as ArmyInfo);
+         _panel.x = (stage.stageWidth - 340) / 2;
+         _panel.y = (stage.stageHeight - 260) / 2;
+         addChild(_panel);
+      }
+
       private function onShowTipsHandler(param1:UIEvent) : void
       {
          if(this._tips == null)

@@ -104,6 +104,7 @@ package game.model
          _loc1_.ai = this.ai;
          _loc1_.tianfu = this.tianfu;
          _loc1_.setKezhiStr(this.getKezhiStr());
+         _loc1_.setEquipmentStr(this.getEquipmentStr());
          _loc1_.hp = this.hp;
          return _loc1_;
       }
@@ -358,19 +359,67 @@ package game.model
          return this._shanbi;
       }
       
+      private var _equip1:String = "";
+      private var _equip2:String = "";
+      private var _equip3:String = "";
+
+      public function get equip1():String { return this._equip1 || ""; }
+      public function set equip1(param1:String):void { this._equip1 = param1; }
+      public function get equip2():String { return this._equip2 || ""; }
+      public function set equip2(param1:String):void { this._equip2 = param1; }
+      public function get equip3():String { return this._equip3 || ""; }
+      public function set equip3(param1:String):void { this._equip3 = param1; }
+
+      public function getEquipSlot(param1:int):String
+      {
+         if(param1 == 0) return this._equip1;
+         if(param1 == 1) return this._equip2;
+         if(param1 == 2) return this._equip3;
+         return "";
+      }
+
+      public function setEquipSlot(param1:int, param2:String):void
+      {
+         if(param1 == 0) this._equip1 = param2;
+         else if(param1 == 1) this._equip2 = param2;
+         else if(param1 == 2) this._equip3 = param2;
+      }
+
+      private function getEquipBonus(param1:String, param2:String):int
+      {
+         if(param1 == "" || param1 == null || param1 == "0") return 0;
+         var _val:* = Data.getInstance().getAttributes("equip",param1,param2);
+         return _val ? int(_val) : 0;
+      }
+
+      public function get equipAttackBonus():int
+      {
+         return getEquipBonus(this._equip1,"attack") + getEquipBonus(this._equip2,"attack") + getEquipBonus(this._equip3,"attack");
+      }
+
+      public function get equipDefenseBonus():int
+      {
+         return getEquipBonus(this._equip1,"defense") + getEquipBonus(this._equip2,"defense") + getEquipBonus(this._equip3,"defense");
+      }
+
+      public function get equipHPBonus():int
+      {
+         return getEquipBonus(this._equip1,"hp") + getEquipBonus(this._equip2,"hp") + getEquipBonus(this._equip3,"hp");
+      }
+
       public function get attack() : int
       {
-         return this.baseAttack + this.attackAddtion + this.tianfuAttack;
+         return this.baseAttack + this.attackAddtion + this.tianfuAttack + this.equipAttackBonus;
       }
-      
+
       public function get defense() : int
       {
-         return this.baseDefense + this.defenceAddion + this.tianfuDefence;
+         return this.baseDefense + this.defenceAddion + this.tianfuDefence + this.equipDefenseBonus;
       }
-      
+
       public function get hp() : int
       {
-         return int(this._hp) - Config.timer;
+         return int(this._hp) - Config.timer + this.equipHPBonus;
       }
       
       public function set hp(param1:int) : *
@@ -537,6 +586,20 @@ package game.model
          this.kezhiLevel2 = int(_loc2_[1].split(":")[1]);
          this._kezhi3 = int(_loc2_[2].split(":")[0]);
          this.kezhiLevel3 = int(_loc2_[2].split(":")[1]);
+      }
+
+      public function getEquipmentStr() : String
+      {
+         return (this._equip1||"0") + "," + (this._equip2||"0") + "," + (this._equip3||"0");
+      }
+
+      public function setEquipmentStr(param1:String) : *
+      {
+         if(param1 == null || param1 == "" || param1 == "0,0,0") return;
+         var _parts:Array = param1.split(",");
+         if(_parts.length > 0 && _parts[0] != "0") this._equip1 = _parts[0];
+         if(_parts.length > 1 && _parts[1] != "0") this._equip2 = _parts[1];
+         if(_parts.length > 2 && _parts[2] != "0") this._equip3 = _parts[2];
       }
    }
 }

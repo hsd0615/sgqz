@@ -144,8 +144,10 @@ package game.events
       public static const LING_DIANKA:String = "lingDianka";
       
       public static const LING_GUOQING:String = "lingGuoqing";
-       
-      
+
+      public static const OPEN_EQUIP:String = "openEquip";
+
+
       public var data:Object;
       
       public function UIEvent(param1:String, param2:Boolean = false, param3:Object = null, param4:Boolean = false)

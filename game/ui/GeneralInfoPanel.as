@@ -17,6 +17,8 @@ package game.ui
    import flash.geom.Point;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
+   import flash.text.TextFormat;
+   import flash.text.TextFieldAutoSize;
    import game.Config;
    import game.Data;
    import game.Logic;
@@ -155,6 +157,8 @@ package game.ui
          this.flush();
       }
       
+      private var _equipBtn:Sprite;
+
       public function flush() : *
       {
          this.__nameTF.text = this._armyInfo.name + "\nLv:" + this._armyInfo.level;
@@ -166,6 +170,34 @@ package game.ui
          this.createTianfu();
          this.__moneyTF.text = RoleModel.getInstance().money.toString();
          this.__exploitTF.text = RoleModel.getInstance().exploit.toString();
+         this.showEquipBtn();
+      }
+
+      private function showEquipBtn() : void
+      {
+         if(this._equipBtn != null) { removeChild(this._equipBtn); this._equipBtn = null; }
+         this._equipBtn = new Sprite();
+         var _bg:Shape = new Shape();
+         _bg.graphics.beginFill(0x2a1810, 0.92);
+         _bg.graphics.lineStyle(1.5, 0xC8A84E, 0.8);
+         _bg.graphics.drawRoundRect(0, 0, 70, 24, 5, 5);
+         _bg.graphics.endFill();
+         this._equipBtn.addChild(_bg);
+         var _tf:TextField = new TextField();
+         _tf.defaultTextFormat = new TextFormat("SimHei", 12, 0xFFD700, true);
+         _tf.text = "装备";
+         _tf.selectable = false;
+         _tf.autoSize = TextFieldAutoSize.CENTER;
+         _tf.x = (70 - _tf.width) / 2; _tf.y = 3;
+         this._equipBtn.addChild(_tf);
+         this._equipBtn.buttonMode = true;
+         this._equipBtn.x = 615; this._equipBtn.y = 100;
+         var _self:GeneralInfoPanel = this;
+         this._equipBtn.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
+            p.stopImmediatePropagation();
+            _self.dispatchEvent(new UIEvent(UIEvent.OPEN_EQUIP, true, _self._armyInfo));
+         });
+         addChild(this._equipBtn);
       }
       
       private function createGeneral(param1:String) : *
@@ -409,6 +441,14 @@ package game.ui
          {
             _loc1_ += "    <font color=\'#e720f9\'>雷</font>";
             _loc1_ += " <font color=\'#f45415\'>克制冰，被风克制</font>\n";
+         }
+         if(this._armyInfo.equipAttackBonus > 0 || this._armyInfo.equipDefenseBonus > 0 || this._armyInfo.equipHPBonus > 0)
+         {
+            _loc1_ += "<font color='#e5ce10'>--装备加成--</font>\n";
+            if(this._armyInfo.equipAttackBonus > 0) _loc1_ += "攻击 <font color='#4bea13'>+" + this._armyInfo.equipAttackBonus + "</font> ";
+            if(this._armyInfo.equipDefenseBonus > 0) _loc1_ += "防御 <font color='#16d2fa'>+" + this._armyInfo.equipDefenseBonus + "</font> ";
+            if(this._armyInfo.equipHPBonus > 0) _loc1_ += "生命 <font color='#ff3333'>+" + this._armyInfo.equipHPBonus + "</font>";
+            _loc1_ += "\n";
          }
          this.__valueTF.htmlText = _loc1_;
       }

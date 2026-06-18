@@ -321,6 +321,17 @@ package game.model
          {
             return;
          }
+         // 装备物品(type=4)不堆叠，每个单独存放
+         var _protoType:* = Data.getInstance().getAttributes("proto",param2,"type");
+         if(int(_protoType) == 4)
+         {
+            this._bag.push({
+               "id":param1,
+               "code":param2,
+               "count":(Config.timer + 1).toString()
+            });
+            return;
+         }
          var _loc5_:int = 0;
          while(_loc5_ < this._bag.length)
          {
@@ -344,6 +355,38 @@ package game.model
             "code":param2,
             "count":(Config.timer + param3).toString()
          });
+      }
+
+      public function getBagEquipItems(param1:int = 0) : Array
+      {
+         var _result:Array = [];
+         var _loc2_:int = 0;
+         while(_loc2_ < this._bag.length)
+         {
+            var _code:String = this._bag[_loc2_].code;
+            var _count:int = int(this._bag[_loc2_].count) - Config.timer;
+            if(_count > 0)
+            {
+               var _type:* = Data.getInstance().getAttributes("proto",_code,"type");
+               if(int(_type) == 4)
+               {
+                  if(param1 == 0)
+                  {
+                     _result.push({code:_code, count:_count, id:this._bag[_loc2_].id});
+                  }
+                  else
+                  {
+                     var _slot:* = Data.getInstance().getAttributes("equip",_code,"slot");
+                     if(int(_slot) == param1)
+                     {
+                        _result.push({code:_code, count:_count, id:this._bag[_loc2_].id});
+                     }
+                  }
+               }
+            }
+            _loc2_++;
+         }
+         return _result;
       }
       
       public function modiBagItem(param1:Number, param2:String, param3:int) : *
@@ -609,7 +652,8 @@ package game.model
             _loc1_ += this._armys[_loc3_].evolution + "/";
             _loc1_ += this._armys[_loc3_].feature + "/";
             _loc1_ += this._armys[_loc3_].getKezhiStr() + "/";
-            _loc1_ += this._armys[_loc3_].tianfu;
+            _loc1_ += this._armys[_loc3_].tianfu + "/";
+            _loc1_ += this._armys[_loc3_].getEquipmentStr();
             if(_loc3_ < _loc2_ - 1)
             {
                _loc1_ += "|";
@@ -731,7 +775,12 @@ package game.model
             _loc6_ = int(_loc2_[3]);
             _loc7_ = String(_loc2_[4]);
             _loc8_ = String(_loc2_[5]);
-            this.addSoldier(Data.getInstance().getArmyInfo(_loc3_,_loc4_,_loc5_,_loc6_,null,3000,100,_loc7_,_loc8_));
+            var _newArmy:ArmyInfo = Data.getInstance().getArmyInfo(_loc3_,_loc4_,_loc5_,_loc6_,null,3000,100,_loc7_,_loc8_);
+            if(_loc2_.length > 6 && _loc2_[6] != null && _loc2_[6] != "")
+            {
+               _newArmy.setEquipmentStr(String(_loc2_[6]));
+            }
+            this.addSoldier(_newArmy);
             _loc10_++;
          }
       }
@@ -1190,6 +1239,10 @@ package game.model
             _loc6_ = String(param1[_loc9_].kezhi);
             _loc7_ = String(param1[_loc9_].genius);
             (_loc8_ = Data.getInstance().getArmyInfo(_loc2_,_loc3_,_loc4_,_loc5_,null,3000,100,_loc6_,_loc7_)).id = Number(param1[_loc9_].id);
+            if(param1[_loc9_].equipment != null && param1[_loc9_].equipment != "")
+            {
+               _loc8_.setEquipmentStr(String(param1[_loc9_].equipment));
+            }
             this.addSoldier(_loc8_);
             _loc9_++;
          }
@@ -1276,7 +1329,8 @@ package game.model
                "evolution":this._armys[_loc2_].evolution,
                "feature":this._armys[_loc2_].feature,
                "genius":this._armys[_loc2_].tianfu,
-               "kezhi":this._armys[_loc2_].getKezhiStr()
+               "kezhi":this._armys[_loc2_].getKezhiStr(),
+               "equipment":this._armys[_loc2_].getEquipmentStr()
             };
             _loc1_.armyModel.push(_loc3_);
             _loc2_++;
