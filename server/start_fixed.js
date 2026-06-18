@@ -456,7 +456,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '2.12.1';
+  _cachedClientVersion = '2.12.2';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1099,7 +1099,17 @@ function handleRequest(socket, req) {
       var edef = EQUIP_DATA[itemCode];
       if (!edef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
       if (edef.slot !== slotIdx + 1) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
-      if ((g.level||1) < edef.levelReq) return jsonRawResponse(socket, { success: false, message: '武将等级不足,需要Lv.' + edef.levelReq });
+
+      // 检查该装备是否已被其他武将装备
+      var allGens = findGenerals(p.id);
+      for (var _gi = 0; _gi < allGens.length; _gi++) {
+        var _og = allGens[_gi];
+        if (_og.general_id === g.general_id) continue;
+        if ((_og.equip1||'0') === itemCode || (_og.equip2||'0') === itemCode || (_og.equip3||'0') === itemCode ||
+            (_og.equip4||'0') === itemCode || (_og.equip5||'0') === itemCode || (_og.equip6||'0') === itemCode) {
+          return jsonRawResponse(socket, { success: false, message: '该装备已被' + (_og.name||'其他武将') + '装备，请先卸下' });
+        }
+      }
 
       // 查找背包中的装备
       if (!db.bagItems) db.bagItems = [];

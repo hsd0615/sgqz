@@ -182,12 +182,12 @@ package game.ui
 
          // 布局: 左列=头盔/铠甲/战靴, 右列=武器/饰品Ⅰ/饰品Ⅱ
          var _slotPositions:Array = [
-            {x:-165, y:-208},  // 0:武器   (右,上)
+            {x:-155, y:-208},  // 0:武器   (右,上)
             {x:-329, y:-146},  // 1:铠甲   (左,中)
-            {x:-165, y:-146},  // 2:饰品Ⅰ (右,中)
+            {x:-155, y:-146},  // 2:饰品Ⅰ (右,中)
             {x:-329, y:-208},  // 3:头盔   (左,上)
             {x:-329, y:-85},   // 4:战靴   (左,下)
-            {x:-165, y:-85}    // 5:饰品Ⅱ (右,下)
+            {x:-155, y:-85}    // 5:饰品Ⅱ (右,下)
          ];
 
          var _j:int = 0;
@@ -483,7 +483,7 @@ package game.ui
 
             var _cell:Sprite = new Sprite();
             _cell.x = _pad + _col * _cellW; _cell.y = _contentY + _row * _cellH;
-            _cell.buttonMode = (this._armyInfo.level >= _elr);
+            _cell.buttonMode = true;
             _cell.name = _item.code;
 
             // 品质背景
@@ -505,8 +505,6 @@ package game.ui
                _bmp.y = int((_cellH - _bmp.height)/2);
                _cell.addChild(_bmp);
             }
-
-            if(this._armyInfo.level < _elr) _cell.alpha = 0.35;
 
             // 悬停提示
             _cell.addEventListener(MouseEvent.MOUSE_OVER, function(p:*):void {
@@ -541,7 +539,6 @@ package game.ui
             });
 
             _cell.addEventListener(MouseEvent.CLICK, function(p:*):void {
-               if(_self._armyInfo.level < _elr) return;
                _self.equipItem(_self._selectingSlot, p.currentTarget.name);
             });
             this._bagList.addChild(_cell);
