@@ -798,6 +798,12 @@ package game
       
       private function onSoldierSelectedHandler(param1:SoldierEvent) : *
       {
+         var _newSoldier:AbstractSoldier = param1.target as AbstractSoldier;
+         // 禁止在武将攻击动画中或已死亡时切换，防止UI卡住（瞄准镜被清但未重建）
+         if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
+         {
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -811,7 +817,7 @@ package game
             this._currentSoldier.setNameVisible(true);
          }
          this.resetController();
-         this.setCurrentSoldier(param1.target as AbstractSoldier);
+         this.setCurrentSoldier(_newSoldier);
       }
       
       private function onSelectSoldierHandler(param1:ConEvent) : *
@@ -825,6 +831,12 @@ package game
          {
             return;
          }
+         var _newSoldier:AbstractSoldier = this.selectSoldier(param1.data.id,param1.data.code);
+         // 禁止在武将攻击动画中或已死亡时切换，防止UI卡住（瞄准镜被清但未重建）
+         if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
+         {
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -838,7 +850,7 @@ package game
             this._currentSoldier.setNameVisible(true);
          }
          this.resetController();
-         this.setCurrentSoldier(this.selectSoldier(param1.data.id,param1.data.code));
+         this.setCurrentSoldier(_newSoldier);
       }
       
       private function onEnemySelectedHandler(param1:SoldierEvent) : *

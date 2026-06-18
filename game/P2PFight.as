@@ -938,6 +938,11 @@ package game
       
       private function onSoldierSelectedHandler(param1:SoldierEvent) : *
       {
+         var _newSoldier:AbstractSoldier = param1.target as AbstractSoldier;
+         if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
+         {
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -951,9 +956,9 @@ package game
             this._currentSoldier.setNameVisible(true);
          }
          this.resetController();
-         this.setCurrentSoldier(param1.target as AbstractSoldier);
+         this.setCurrentSoldier(_newSoldier);
       }
-      
+
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
          // 输入锁定: 瞄准中或力度条调整中禁止键盘切换武将，防止打断攻击
@@ -965,6 +970,11 @@ package game
          {
             return;
          }
+         var _newSoldier:AbstractSoldier = this.selectSoldier(param1.data.id,param1.data.code);
+         if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
+         {
+            return;
+         }
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -978,7 +988,7 @@ package game
             this._currentSoldier.setNameVisible(true);
          }
          this.resetController();
-         this.setCurrentSoldier(this.selectSoldier(param1.data.id,param1.data.code));
+         this.setCurrentSoldier(_newSoldier);
       }
       
       private function onEnemySelectedHandler(param1:SoldierEvent) : *

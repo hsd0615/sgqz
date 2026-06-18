@@ -2,6 +2,19 @@
 
 ---
 
+## v2.9.9 (2026-06-18) — 📋 更新公告 + 🎯 瞄准镜卡住修复
+
+### 新功能
+- 进入游戏时显示更新公告面板，展示最近5个版本的更新内容
+- 服务端 `/api/changelog` 解析 CHANGELOG.md 返回结构化版本条目
+
+### 修复
+- **瞄准镜卡住**: 武将攻击动画中再次点击同一武将，`onSoldierSelectedHandler` 先 reset 再 setCurrentSoldier，若 fireing=true 则被拒，导致瞄准镜被清但未重建
+  - 将 fireing/isDead 检查前置，确认可切换后再执行 reset
+- `pollWebKeys` 边缘检测进一步优化
+
+---
+
 ## v2.9.8 (2026-06-18) — 🎯 快速按键打断攻击修复
 
 ### 根因

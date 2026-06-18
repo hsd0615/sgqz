@@ -55,6 +55,7 @@ package game
    import game.ui.TalkFrame;
 import game.ui.OnlineCountUI;
 import game.ui.UpdateChecker;
+   import game.ui.ChangelogPanel;
    import unit4399.events.SaveEvent;
    
    public class Sanguo4399 extends Sprite
@@ -1540,6 +1541,14 @@ import game.ui.UpdateChecker;
             _updateChecker.x = (stage.stageWidth - 200) / 2;
             _updateChecker.y = 28;
             addChild(_updateChecker);
+         }
+         // 更新公告 - 进入游戏时显示最近版本更新内容
+         if(!Config.IS_WEB)
+         {
+            var _changelogPanel:ChangelogPanel = new ChangelogPanel();
+            _changelogPanel.x = (stage.stageWidth - 420) / 2;
+            _changelogPanel.y = (stage.stageHeight - 320) / 2;
+            addChild(_changelogPanel);
          }
          MySound.getInstance().startByName(SoundCode.MAP);
          // 网页版跳过自动进入联机大厅，保留在地图界面
