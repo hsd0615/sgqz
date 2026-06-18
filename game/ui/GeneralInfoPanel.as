@@ -402,105 +402,192 @@ package game.ui
          });
       }
 
+      private var _equipListPage:int = 0;
+      private var _equipListItems:Array = null;
+
       private function showEquipBagList(param1:int) : void
       {
          this.hideEquipBagList();
          this._selectingSlot = param1;
-         var _items:Array = RoleModel.getInstance().getBagEquipItems(param1 + 1);
-         if(_items.length == 0)
+         var _allItems:Array = RoleModel.getInstance().getBagEquipItems(param1 + 1);
+         if(_allItems.length == 0)
          {
             this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可用的" + SLOT_LABELS[param1] + "类装备。"}));
             return;
          }
+         this._equipListItems = _allItems;
+         this._equipListPage = 0;
+         this.renderEquipList();
+      }
 
-         // 装备选择面板 - 暗黑RPG风格
-         var _cols:int = 3;
-         var _cellW:int = 74, _cellH:int = 82;
-         var _pad:int = 6;
-         var _rows:int = int(Math.ceil(_items.length / _cols));
+      private function renderEquipList() : void
+      {
+         var _items:Array = this._equipListItems; if(!_items) return;
+         while(this._bagList.numChildren > 0) this._bagList.removeChildAt(0);
+         this._bagList.graphics.clear();
+         var _pageSize:int = 15; var _cols:int = 5;
+         var _totalPages:int = int(Math.ceil(_items.length / _pageSize));
+         if(_totalPages<1) _totalPages=1;
+         if(this._equipListPage>=_totalPages) this._equipListPage=_totalPages-1;
+         if(this._equipListPage<0) this._equipListPage=0;
+
+         var _start:int = this._equipListPage * _pageSize;
+         var _end:int = Math.min(_start + _pageSize, _items.length);
+         var _pageItems:Array = _items.slice(_start, _end);
+         var _rows:int = int(Math.ceil(_pageItems.length / _cols));
+
+         var _cellW:int = 56, _cellH:int = 56, _pad:int = 5;
          var _listW:int = _cols * _cellW + _pad * 2;
-         var _listH:int = Math.min(_rows, 3) * _cellH + _pad * 2 + 28;
+         var _headerH:int = 26, _footerH:int = 28;
+         var _listH:int = _rows * _cellH + _pad * 2 + _headerH + _footerH;
+
+         // 居中
          this._bagList.x = int((400 - _listW) / 2) - 20;
-         this._bagList.y = 130;
+         this._bagList.y = int((300 - _listH) / 2) - 30;
 
          this._bagList.graphics.clear();
-         // 外框阴影
          this._bagList.graphics.beginFill(0x000000, 0.5);
-         this._bagList.graphics.drawRoundRect(2, 2, _listW, _listH, 8, 8);
+         this._bagList.graphics.drawRoundRect(2,2,_listW,_listH,8,8);
          this._bagList.graphics.endFill();
-         // 主背景
-         this._bagList.graphics.beginFill(0x0d0804, 0.98);
-         this._bagList.graphics.lineStyle(2, 0x8B6914, 0.85);
-         this._bagList.graphics.drawRoundRect(0, 0, _listW, _listH, 8, 8);
+         this._bagList.graphics.beginFill(0x0d0804,0.98);
+         this._bagList.graphics.lineStyle(2,0x8B6914,0.85);
+         this._bagList.graphics.drawRoundRect(0,0,_listW,_listH,8,8);
          this._bagList.graphics.endFill();
 
-         // 标题栏
-         var _titleTF:TextField = new TextField();
-         _titleTF.defaultTextFormat = new TextFormat("SimHei", 13, 0xFFD700, true);
-         _titleTF.text = "选择" + SLOT_LABELS[param1];
-         _titleTF.selectable = false;
-         _titleTF.width = _listW; _titleTF.height = 20;
-         _titleTF.x = 0; _titleTF.y = 5;
-         this._bagList.addChild(_titleTF);
+         // 标题
+         var _ttf:TextField = new TextField();
+         _ttf.defaultTextFormat = new TextFormat("SimHei",12,0xFFD700,true);
+         _ttf.text = "选择" + SLOT_LABELS[this._selectingSlot] + " (" + _items.length + "件)";
+         _ttf.selectable = false; _ttf.width = _listW - 40; _ttf.height = 18;
+         _ttf.x = 8; _ttf.y = 5;
+         this._bagList.addChild(_ttf);
 
+         // 关闭按钮
+         var _close:TextField = new TextField();
+         _close.defaultTextFormat = new TextFormat("SimHei",14,0xCC4444,true);
+         _close.text = "✕"; _close.selectable = false;
+         _close.width = 22; _close.height = 20; _close.x = _listW - 26; _close.y = 3;
          var _self:GeneralInfoPanel = this;
-         var _ii:int = 0;
-         while(_ii < _items.length)
+         _close.addEventListener(MouseEvent.CLICK, function(p:*):void { _self.hideEquipBagList(); });
+         this._bagList.addChild(_close);
+
+         var _contentY:int = _headerH;
+
+         var _ci:int = 0;
+         while(_ci < _pageItems.length)
          {
-            var _item:Object = _items[_ii];
-            var _elr:int = int(EquipData.get(_item.code,"levelReq")) || 1;
+            var _item:Object = _pageItems[_ci];
+            var _elr:int = int(EquipData.get(_item.code,"levelReq"))||1;
             var _q:int = int(EquipData.get(_item.code,"quality"));
-            var _col:int = _ii % _cols;
-            var _row:int = int(_ii / _cols);
+            var _col:int = _ci % _cols; var _row:int = int(_ci / _cols);
 
             var _cell:Sprite = new Sprite();
-            _cell.x = _pad + _col * _cellW;
-            _cell.y = _pad + 24 + _row * _cellH;
+            _cell.x = _pad + _col * _cellW; _cell.y = _contentY + _row * _cellH;
             _cell.buttonMode = (this._armyInfo.level >= _elr);
             _cell.name = _item.code;
 
-            // 品质边框
+            // 品质背景
             var _cbg:Shape = new Shape();
-            _cbg.graphics.beginFill(getQualityBgColor(_q), 0.6);
-            _cbg.graphics.lineStyle(1.5, getQualityColor(_q), 0.7);
-            _cbg.graphics.drawRoundRect(0, 0, _cellW - 4, _cellH - 20, 4, 4);
+            _cbg.graphics.beginFill(getQualityBgColor(_q),0.65);
+            _cbg.graphics.lineStyle(1,getQualityColor(_q),0.5);
+            _cbg.graphics.drawRoundRect(1,1,_cellW-2,_cellH-2,3,3);
             _cbg.graphics.endFill();
             _cell.addChild(_cbg);
 
-            // 装备图标
-            var _bmp2:Bitmap = this.getEquipBmp(_item.code);
-            if(_bmp2 != null)
+            // 图标(缩小)
+            var _bmp:Bitmap = this.getEquipBmp(_item.code);
+            if(_bmp != null)
             {
-               var _sc:Number = 42 / Math.max(_bmp2.width, _bmp2.height);
-               _bmp2.scaleX = _sc; _bmp2.scaleY = _sc;
-               _bmp2.smoothing = true;
-               _bmp2.x = int((_cellW - 4 - _bmp2.width) / 2);
-               _bmp2.y = 4;
-               _cell.addChild(_bmp2);
+               var _sc:Number = 32 / Math.max(_bmp.width,_bmp.height);
+               _bmp.scaleX = _sc; _bmp.scaleY = _sc;
+               _bmp.smoothing = true;
+               _bmp.x = int((_cellW - _bmp.width)/2);
+               _bmp.y = int((_cellH - _bmp.height)/2);
+               _cell.addChild(_bmp);
             }
 
-            // 装备名
-            var _ntf:TextField = new TextField();
-            _ntf.defaultTextFormat = new TextFormat("SimHei", 10, getQualityColor(_q));
-            var _en:* = EquipData.get(_item.code,"name");
-            _ntf.text = String(_en||"?");
-            _ntf.selectable = false; _ntf.width = _cellW; _ntf.height = 16;
-            _ntf.x = 0; _ntf.y = _cellH - 18;
-            _cell.addChild(_ntf);
+            if(this._armyInfo.level < _elr) _cell.alpha = 0.35;
 
-            if(this._armyInfo.level < _elr)
-            {
-               _cell.alpha = 0.35;
-               _ntf.text += " Lv" + _elr;
-            }
+            // 悬停提示
+            _cell.addEventListener(MouseEvent.MOUSE_OVER, function(p:*):void {
+               var _c:String = p.currentTarget.name;
+               var _n:* = EquipData.get(_c,"name");
+               var _a:* = EquipData.get(_c,"attack")||0;
+               var _ap:* = EquipData.get(_c,"attackPct")||0;
+               var _d:* = EquipData.get(_c,"defense")||0;
+               var _dp:* = EquipData.get(_c,"defensePct")||0;
+               var _h:* = EquipData.get(_c,"hp")||0;
+               var _hp:* = EquipData.get(_c,"hpPct")||0;
+               var _ls:* = EquipData.get(_c,"lifesteal")||0;
+               var _db:* = EquipData.get(_c,"dmgBonus")||0;
+               var _dr:* = EquipData.get(_c,"dmgReduce")||0;
+               var _cr:* = EquipData.get(_c,"critRate")||0;
+               var _cd:* = EquipData.get(_c,"critDmg")||0;
+               var _ql:int = int(EquipData.get(_c,"quality"))||1;
+               var _lv:int = int(EquipData.get(_c,"levelReq"))||1;
+               var _t:String = "<b>"+_n+"</b> <font color='#888'>Lv"+_lv+"</font>\n";
+               if(int(_a)!=0||int(_ap)!=0) _t+="攻击:"+_a+(int(_ap)>0?"+"+_ap+"%":"")+"\n";
+               if(int(_d)!=0||int(_dp)!=0) _t+="防御:"+_d+(int(_dp)>0?"+"+_dp+"%":"")+"\n";
+               if(int(_h)!=0||int(_hp)!=0) _t+="气血:"+_h+(int(_hp)>0?"+"+_hp+"%":"")+"\n";
+               if(int(_ls)>0) _t+="吸血:"+_ls+"%\n";
+               if(int(_db)>0) _t+="增伤:"+_db+"%\n";
+               if(int(_dr)>0) _t+="减伤:"+_dr+"%\n";
+               if(int(_cr)>0) _t+="暴击:"+_cr+"%\n";
+               if(int(_cd)>0) _t+="暴伤:"+_cd+"%\n";
+               _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:140,height:Math.min(160,60+(_t.split('\n').length-1)*16)}));
+            });
+            _cell.addEventListener(MouseEvent.MOUSE_OUT, function(p:*):void {
+               _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true));
+            });
 
             _cell.addEventListener(MouseEvent.CLICK, function(p:*):void {
                if(_self._armyInfo.level < _elr) return;
                _self.equipItem(_self._selectingSlot, p.currentTarget.name);
             });
             this._bagList.addChild(_cell);
-            _ii++;
+            _ci++;
          }
+
+         // 翻页栏
+         if(_totalPages > 1) {
+            var _fy:int = _listH - _footerH + 4;
+            var _btnW:int = 22;
+            function mkPgBtn(label:String, enabled:Boolean, handler:Function):Sprite {
+               var s:Sprite = new Sprite();
+               var bg:Shape = new Shape();
+               bg.graphics.beginFill(enabled?0x3a2010:0x1a1008,0.9);
+               bg.graphics.lineStyle(1,enabled?0xC8A84E:0x444444,0.6);
+               bg.graphics.drawRoundRect(0,0,_btnW,18,3,3); bg.graphics.endFill();
+               s.addChild(bg);
+               var t:TextField = new TextField();
+               t.defaultTextFormat = new TextFormat("SimSun",10,enabled?0xC8A84E:0x555555);
+               t.text=label; t.selectable=false; t.width=_btnW; t.height=14; t.x=0; t.y=2;
+               s.addChild(t); s.buttonMode=enabled; s.mouseChildren=false;
+               if(enabled) s.addEventListener(MouseEvent.CLICK,function(p:*):void{handler();});
+               return s;
+            }
+            var _btns:Array = [
+               mkPgBtn("◀◀",this._equipListPage>0,function(){_self._equipListPage=0;_self.renderEquipList();}),
+               mkPgBtn("◀",this._equipListPage>0,function(){_self._equipListPage--;_self.renderEquipList();}),
+               null, // 页码
+               mkPgBtn("▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage++;_self.renderEquipList();}),
+               mkPgBtn("▶▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage=_totalPages-1;_self.renderEquipList();})
+            ];
+            var _pgTF:TextField = new TextField();
+            _pgTF.defaultTextFormat = new TextFormat("SimHei",10,0xD4C8A0,true);
+            _pgTF.text = (this._equipListPage+1)+"/"+_totalPages;
+            _pgTF.selectable = false; _pgTF.autoSize = TextFieldAutoSize.CENTER;
+            _pgTF.width = 40; _pgTF.height = 16;
+            _btns[2] = _pgTF;
+            var _tw:int = 22*4+40+12; var _sx:int = int((_listW-_tw)/2);
+            var _bx:int = _sx;
+            for(var _bi:int=0;_bi<_btns.length;_bi++){
+               if(_btns[_bi] is TextField){ (_btns[_bi] as TextField).x=_bx; (_btns[_bi] as TextField).y=_fy; _bx+=40+4; }
+               else { (_btns[_bi] as Sprite).x=_bx; (_btns[_bi] as Sprite).y=_fy; _bx+=_btnW+4; }
+               this._bagList.addChild(_btns[_bi] as DisplayObject);
+            }
+         }
+
          this._bagList.visible = true;
       }
 
