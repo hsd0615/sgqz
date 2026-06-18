@@ -147,10 +147,17 @@ package game.ui
 
       override public function initData(param1:Object) : void
       {
-         this._allData = param1 as Array;
-         if(this._allData == null)
-         {
-            this._allData = [];
+         var _raw:Array = param1 as Array;
+         this._allData = [];
+         if(_raw != null) {
+            // 过滤装备类物品(装备只在武将界面管理)
+            for(var _fi:int=0; _fi<_raw.length; _fi++) {
+               var _it:Object = _raw[_fi];
+               if(_it.type == 4) continue; // 装备跳过
+               var _eqS:* = EquipData.get(_it.code, "slot");
+               if(_eqS != null && int(_eqS) > 0) continue;
+               this._allData.push(_it);
+            }
          }
          // 计算总页数: 向上取整
          this._totalPages = int(this._allData.length / ITEMS_PER_PAGE);
