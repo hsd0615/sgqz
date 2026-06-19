@@ -427,7 +427,7 @@ package game.ui
             if(param2.success == true)
             {
                _self._armyInfo.setEquipSlot(param1, "");
-               _self._armyInfo.hp = _self._armyInfo.hp;
+               _self._armyInfo.hp = _self._armyInfo.maxHp;
                if(param2.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param2.data.bagModel);
@@ -688,7 +688,7 @@ package game.ui
                   _self._armyInfo.setEquipSlot(param1, param2);
                }
                // 强制属性重算
-               _self._armyInfo.hp = _self._armyInfo.hp;
+               _self._armyInfo.hp = _self._armyInfo.maxHp;
                if(param3.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param3.data.bagModel);

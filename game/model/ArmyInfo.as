@@ -586,7 +586,7 @@ package game.model
             this._tianfuAttack = 0;
             this._tianfuDefence = 0;
             this._shanbi = 0;
-            this.hp = this.baseHp + this.hpAddtion + this.tianfuHP;
+            this.hp = this.maxHp;
             return;
          }
          var _loc2_:int = int(Data.getInstance().getAttributes("tianfu",this._tianfu,"type"));
@@ -623,7 +623,7 @@ package game.model
                this._tianfuDefence = 0;
                this._shanbi = 0;
          }
-         this.hp = this.baseHp + this.hpAddtion + this.tianfuHP;
+         this.hp = this.maxHp;
       }
       
       public function get kezhi1() : int

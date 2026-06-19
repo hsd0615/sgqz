@@ -208,7 +208,7 @@ package game.ui
             if(param1.data.general != null)
             {
                this._armyInfo.evolution = param1.data.general.evolution;
-               this._armyInfo.hp = this._armyInfo.baseHp + this._armyInfo.hpAddtion + this._armyInfo.tianfuHP;
+               this._armyInfo.hp = this._armyInfo.maxHp;
                this._armyInfo.feature = param1.data.general.feature;
                this._armyInfo.skin = Data.getInstance().getAttributes("general",this._armyInfo.code,"skin") + "_" + (this._armyInfo.evolution > 1 ? 1 : 0).toString();
                dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
