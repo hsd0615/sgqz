@@ -404,7 +404,12 @@ package game.ui
             }
             else if(_loc4_ == 4)
             {
-               _loc6_ += "<font color=\'#e5ce10\'>类别：</font>" + "装备" + "\n";
+               var _eqQ:int = int(EquipData.get(_loc2_,"quality"))||1;
+               var _eqQColors:Array = ["#999","#CCC","#4bea13","#16d2fa","#e720f9","#FFD700","#FF8C00","#FF4444","#FF0000","#CC0000","#FF66FF"];
+               var _eqQNames:Array = ["","普通","优秀","精良","史诗","传说","神话","远古","至尊","超凡","入圣"];
+               var _qcHex:String = _eqQColors[_eqQ] || "#CCC";
+               var _qnStr:String = _eqQNames[_eqQ] || "普通";
+               _loc6_ += "<font color=\'" + _qcHex + "\'>类别：装备 [" + _qnStr + "]</font>\n";
             }
             else
             {

@@ -334,13 +334,14 @@ package game.ui
             }
             _slot.filters = [];
 
-            // 先移除旧的悬停监听(必须在if之前, 空槽也要清)
+            // 先移除旧的悬停监听+隐藏可能粘住的tooltip(必须在if之前,空槽也要清)
             if(_self._slotHoverFns[_slot] != null) {
                var _oldFns:Array = _self._slotHoverFns[_slot] as Array;
                _slot.removeEventListener(MouseEvent.MOUSE_OVER, _oldFns[0] as Function);
                _slot.removeEventListener(MouseEvent.MOUSE_OUT, _oldFns[1] as Function);
                delete _self._slotHoverFns[_slot];
             }
+            _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true));
 
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
