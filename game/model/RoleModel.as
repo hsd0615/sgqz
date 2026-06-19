@@ -514,22 +514,18 @@ package game.model
       
       public function getBagItemCount(param1:String) : int
       {
-         var _loc2_:int = 0;
+         var _total:int = 0;
          var _loc3_:int = 0;
          while(_loc3_ < this._bag.length)
          {
             if(this._bag[_loc3_].code == param1)
             {
-               _loc2_ = int(this._bag[_loc3_].count) - Config.timer;
-               if(_loc2_ > 0)
-               {
-                  return _loc2_;
-               }
-               return 0;
+               var _c:int = int(this._bag[_loc3_].count) - Config.timer;
+               if(_c > 0) _total += _c;
             }
             _loc3_++;
          }
-         return 0;
+         return _total;
       }
       
       public function getFinished() : Vector.<int>

@@ -541,7 +541,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '3.0.33';
+  _cachedClientVersion = '3.0.34';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -669,7 +669,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '3.0.33', title: '⚔️ 装备系统全面重做',
+      { version: '3.0.34', title: '⚔️ 装备系统全面重做',
         body: '【装备掉落】\n• 战斗通关概率掉落装备，基于敌将品质和等级\n• 超级武将掉Q7~10，一流掉Q4~7，二流掉Q2~5，三流掉Q1~3\n• Q5+装备全服广播，结果面板显示掉落\n\n【新属性】\n• 新增吸血、增伤、减伤、暴击率、暴击伤害\n• 66件装备，品质1~10+特殊变体\n\n【装备管理】\n• 装备仅武将界面管理，背包不显示\n• 已装备自动隐藏，卸下恢复\n• 装备持久化保存，重新登录不丢失\n\n【商城调整】\n• 装备改为纯掉落获取，商城不再售卖' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
@@ -1574,6 +1574,25 @@ function handleRequest(socket, req) {
       jsonRawResponse(socket, { ok: !err, stdout: stdout || '', stderr: stderr || '' });
     });
     return;
+  }
+
+  if (url === '/api/admin/debug-fuben' && data.key === ADMIN_KEY) {
+    var dp = db.players.find(pp => pp.user_id == data.userID || pp.id == data.userID);
+    if (!dp) return jsonRawResponse(socket, { ok: false, error: 'player not found' });
+    var codes = (dp.choose || '').split('|').filter(Boolean);
+    var result = { player: dp.role_name, deployed: codes, generals: [] };
+    codes.forEach(function(c) {
+      var g = (db.generals || []).find(gg => gg.player_id === dp.id && gg.code === c);
+      if (!g) { result.generals.push({ code: c, error: 'NOT_FOUND_IN_ARMY' }); return; }
+      var skin = 'generalSkin_' + c.split('_')[1] + '_' + (g.evolution > 1 ? 1 : 0);
+      result.generals.push({
+        code: c, level: g.level, evo: g.evolution || 0,
+        skin: skin,
+        eq1: g.equip1 || '0', eq2: g.equip2 || '0', eq3: g.equip3 || '0',
+        eq4: g.equip4 || '0', eq5: g.equip5 || '0', eq6: g.equip6 || '0'
+      });
+    });
+    return jsonRawResponse(socket, { ok: true, data: result });
   }
 
   if (url === '/api/admin/grant-equip' && data.key === ADMIN_KEY) {
