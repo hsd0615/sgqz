@@ -17,7 +17,6 @@ package game.ui
    import flash.filters.BlurFilter;
    import flash.filters.GlowFilter;
    import flash.geom.Point;
-   import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -222,18 +221,20 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮点击区域：SWF中hitTestState可能过小，创建覆盖层确保全区域可点击
+         // 修复升级按钮点击区域：SWF的hitTestState仅左下角有效，用upState尺寸建覆盖层
          var _self3:GeneralInfoPanel = this;
          var _hitFix:Sprite = new Sprite();
-         var _br:Rectangle = this.__shengjiBtn.getBounds(this);
+         var _up:flash.display.DisplayObject = this.__shengjiBtn.upState;
          _hitFix.graphics.beginFill(0x000000, 0.01);
-         _hitFix.graphics.drawRect(_br.x, _br.y, Math.max(_br.width, 80), Math.max(_br.height, 30));
+         _hitFix.graphics.drawRect(0, 0, _up.width + 10, _up.height + 8);
          _hitFix.graphics.endFill();
+         _hitFix.x = this.__shengjiBtn.x;
+         _hitFix.y = this.__shengjiBtn.y;
          _hitFix.buttonMode = true;
          _hitFix.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
             _self3.shengjiBtnClickHandler(p);
          });
-         addChild(_hitFix);
+         this.__shengjiBtn.parent.addChild(_hitFix);
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
          this.__kezhi1Btn.addEventListener(MouseEvent.CLICK,this.kezhi1BtnClickHandler);
          this.__kezhi2Btn.addEventListener(MouseEvent.CLICK,this.kezhi2BtnClickHandler);
