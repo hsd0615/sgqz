@@ -17,6 +17,7 @@ package game.ui
    import flash.filters.BlurFilter;
    import flash.filters.GlowFilter;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -221,17 +222,16 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮：SWF的hitTestState仅左下角可交互，hitTestState赋值在某些
-         // Flash版本中不生效。改用可靠方案：在_skin上创建全尺寸透明覆盖Sprite，
-         // 位置与按钮完全重叠，拦截点击后转发给shengjiBtnClickHandler。
-         // 注意：覆盖层必须在所有子节点之后添加(用addChild确保在最上层)。
+         // 修复升级按钮SWF的hitTestState仅左下角: 用getBounds(_skin)获取在_skin坐标系
+         // 中的准确位置(而非__shengjiBtn.x/y——那是相对其直接父节点,不是相对_skin)
          var _self4:GeneralInfoPanel = this;
          var _overlay:Sprite = new Sprite();
          _overlay.name = "_shengjiOverlay";
-         _overlay.x = this.__shengjiBtn.x;
-         _overlay.y = this.__shengjiBtn.y;
+         var _br2:Rectangle = this.__shengjiBtn.getBounds(this._skin);
+         _overlay.x = _br2.x;
+         _overlay.y = _br2.y;
          _overlay.graphics.beginFill(0xFF0000, 0.01);
-         _overlay.graphics.drawRect(-10, -8, 110, 42);
+         _overlay.graphics.drawRect(0, 0, _br2.width + 6, _br2.height + 6);
          _overlay.graphics.endFill();
          _overlay.buttonMode = true;
          _overlay.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
