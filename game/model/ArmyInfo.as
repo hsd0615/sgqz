@@ -723,6 +723,7 @@ package game.model
          if(_parts.length > 3 && _parts[3] != "0") this._equip4 = _parts[3];
          if(_parts.length > 4 && _parts[4] != "0") this._equip5 = _parts[4];
          if(_parts.length > 5 && _parts[5] != "0") this._equip6 = _parts[5];
+         this.hp = this.maxHp; // 装备加载后刷新血量
       }
    }
 }
