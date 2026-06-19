@@ -89,7 +89,7 @@ package game.fuben
       {
          var _loc1_:Object = Data.getInstance().getFubenAIDelay(1,"general_11_1");
          var _loc2_:ArmyInfo = Data.getInstance().getArmyInfo("general_11_1",1,0,0,"匈奴前哨",int(_loc1_.delay),int(_loc1_.ai));
-         _loc2_.hp = 100;
+         _loc2_.baseHp = 100;
          return _loc2_;
       }
       

@@ -225,11 +225,16 @@ package game.fuben
       
       private function showCover() : *
       {
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.XIONGNU_COVER + this._currentStageID) as Class;
-         this._cover = new _loc1_() as MovieClip;
-         this._cover.addEventListener(MouseEvent.CLICK,this.onCoverClickHandler);
-         addChild(this._cover);
-         TweenLite.from(this._cover,1,{"alpha":0});
+         try {
+            var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.XIONGNU_COVER + this._currentStageID) as Class;
+            this._cover = new _loc1_() as MovieClip;
+            this._cover.addEventListener(MouseEvent.CLICK,this.onCoverClickHandler);
+            addChild(this._cover);
+            TweenLite.from(this._cover,1,{"alpha":0});
+         } catch(_e:Error) {
+            // 封面类不存在时直接跳过
+            this.showJuqing();
+         }
       }
       
       private function onCoverClickHandler(param1:MouseEvent) : *
