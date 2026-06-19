@@ -721,71 +721,47 @@ package game.fuben
       
       private function createEnemy2() : *
       {
-         var _loc3_:int = 0;
-         var _loc4_:AbstractSoldier = null;
-         var _loc5_:int = 0;
+         var _loc1_:int = 0;
+         var _loc2_:AbstractSoldier = null;
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
-         // 3座箭塔——比第一关多
+         var _loc3_:int = 0;
          _loc3_ = 0;
-         while(_loc3_ < 3) {
-            this._rightArmy.push(this._config.getJiantaData());
+         while(_loc3_ < this._leftArmy.length)
+         {
+            this._rightArmy[_loc3_] = this._leftArmy[_loc3_].clone();
+            this._rightArmy[_loc3_].name = "匈奴铁卫";
+            this._rightArmy[_loc3_].ai = 85;
+            this._rightArmy[_loc3_].delay = 2300;
             _loc3_++;
          }
-         // 玩家属性基准
-         var _loc1_:int = 0, _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < this._leftArmy.length) {
-            _loc1_ += this._leftArmy[_loc3_].hp;
-            _loc2_ += this._leftArmy[_loc3_].defense;
-            _loc3_++;
-         }
-         // 6个弯刀兵(近战肉盾)——少于第一关的20个，但基础属性更高
-         _loc3_ = 0;
-         while(_loc3_ < 6) {
-            var _wd:ArmyInfo = this._config.getWandaoData(_loc1_, _loc2_, this._leftArmy.length);
-            _wd.hp = int(_wd.hp * 2.0); // 血量翻倍
-            this._rightArmy.push(_wd);
-            _loc3_++;
-         }
-         // 6个强弓兵(远程)——第一关没有，第二关新增远程威胁
-         _loc3_ = 0;
-         while(_loc3_ < 6) {
-            var _qg:ArmyInfo = this._config.getQianggongData(this._leftArmy);
-            _qg.hp = int(_qg.hp * 2.5);
-            this._rightArmy.push(_qg);
-            _loc3_++;
-         }
-         // 布置战场: 箭塔在前排，弯刀中排，强弓后排
          this._rightSoldiers = [];
-         // 箭塔(3座) x=670~710, y=300~500
-         var _towerPos:Array = [{x:670,y:310},{x:700,y:420},{x:690,y:490}];
+         var _loc4_:int = int(this._rightArmy.length);
+         var _loc5_:int = int(this._leftArmy.length);
          _loc3_ = 0;
-         while(_loc3_ < 3) {
-            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
-            _loc4_.x = _towerPos[_loc3_].x; _loc4_.y = _towerPos[_loc3_].y;
-            addChildAt(_loc4_, getChildIndex(this._leftSoldiers[0]));
-            this._rightSoldiers.push(_loc4_);
-            _loc3_++;
-         }
-         // 弯刀兵(6个) x=580~620
-         var _wx:int = 580;
-         _loc3_ = 3;
-         while(_loc3_ < 9) {
-            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
-            _loc4_.x = _wx; _loc4_.y = 300 + (_loc3_ - 3) * 35;
-            addChild(_loc4_);
-            this._rightSoldiers.push(_loc4_);
-            _loc3_++;
-         }
-         // 强弓兵(6个) x=530~560
-         var _qx:int = 530;
-         _loc3_ = 9;
-         while(_loc3_ < 15) {
-            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
-            _loc4_.x = _qx; _loc4_.y = 300 + (_loc3_ - 9) * 35;
-            addChild(_loc4_);
-            this._rightSoldiers.push(_loc4_);
+         while(_loc3_ < _loc4_)
+         {
+            _loc2_ = this.armyFactory(this._rightArmy[_loc3_],-1,this._direct == -1 ? true : false);
+            if(_loc2_.type == Type.TOUSHICHE)
+            {
+               _loc2_.x = 770 - Xiongnu.TS_POS.x;
+               _loc2_.y = Xiongnu.TS_POS.y;
+            }
+            else
+            {
+               _loc2_.x = 770 - Xiongnu["POS" + _loc1_].x;
+               _loc2_.y = Xiongnu["POS" + _loc1_].y;
+               _loc1_++;
+            }
+            if(_loc3_ < _loc5_)
+            {
+               addChildAt(_loc2_,getChildIndex(this._leftSoldiers[_loc3_] as AbstractSoldier));
+            }
+            else
+            {
+               addChild(_loc2_);
+            }
+            this._rightSoldiers.push(_loc2_);
             _loc3_++;
          }
       }
