@@ -409,10 +409,10 @@ package game.ui
          return null;
       }
 
-      // 传统RPG品质: 白<绿<蓝<紫<橙<金<暗金<红<深红<彩
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF8C00,0xFF4444,0xFF0000,0xCC0000,0xFF66FF];
-      private var _qualityBgColors:Array = [0x1a1a1a,0x2a2a2a,0x0d1d05,0x051525,0x150515,0x1d1800,0x1d0d00,0x1d0505,0x1d0000,0x150d00,0x0d0d0d];
-      private var _qualityNames:Array = ["","普通","优秀","精良","史诗","传说","神话","远古","至尊","超凡","入圣"];
+      // 品质6档: 白(Q1-2) 绿(Q3-4) 紫(Q5-6) 橙(Q7-8) 红(Q9) 彩(Q10)
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0xCCCCCC,0x4bea13,0x4bea13,0xe720f9,0xe720f9,0xFF8C00,0xFF8C00,0xFF0000,0xFF66FF];
+      private var _qualityBgColors:Array = [0x1a1a1a,0x2a2a2a,0x2a2a2a,0x0d1d05,0x0d1d05,0x150515,0x150515,0x1d0d00,0x1d0d00,0x1d0000,0x0d0d0d];
+      private var _qualityNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
@@ -589,7 +589,9 @@ package game.ui
                var _cd:* = EquipData.get(_c,"critDmg")||0;
                var _ql:int = int(EquipData.get(_c,"quality"))||1;
                var _lv:int = int(EquipData.get(_c,"levelReq"))||1;
-               var _t:String = "<b>"+_n+"</b> <font color='#888'>Lv"+_lv+"</font> [" + _self.getQualityName(_ql) + "]\n";
+               var _qlColor:uint = _self.getQualityColor(_ql);
+               var _qlHex:String = "#" + _qlColor.toString(16);
+               var _t:String = "<font color='" + _qlHex + "'><b>" + _n + "</b> [" + _self.getQualityName(_ql) + "]</font> <font color='#888'>Lv" + _lv + "</font>\n";
                if(int(_a)!=0||int(_ap)!=0) _t+="攻击:"+_a+(int(_ap)>0?"+"+_ap+"%":"")+"\n";
                if(int(_d)!=0||int(_dp)!=0) _t+="防御:"+_d+(int(_dp)>0?"+"+_dp+"%":"")+"\n";
                if(int(_h)!=0||int(_hp)!=0) _t+="气血:"+_h+(int(_hp)>0?"+"+_hp+"%":"")+"\n";

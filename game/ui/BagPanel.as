@@ -340,7 +340,7 @@ package game.ui
        * 创建装备图标 - 根据code判断武器/防具/饰品类型
        * 128x128 PNG缩放到约36x36以适配背包格子
        */
-      private static const _qualityBgColors:Array = [0x333333,0x555555,0x1a3a0a,0x0a2a3a,0x2a0a2a,0x3a3000,0x3a1a00,0x3a0a0a,0x3a0000];
+      private static const _qualityBgColors:Array = [0x333333,0x555555,0x555555,0x1a3a0a,0x1a3a0a,0x2a0a2a,0x2a0a2a,0x3a1a00,0x3a1a00,0x3a0000,0x3a0a0a];
       private function getEquipBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
 
       private function createEquipIcon(param1:String) : Bitmap
@@ -405,8 +405,8 @@ package game.ui
             else if(_loc4_ == 4)
             {
                var _eqQ:int = int(EquipData.get(_loc2_,"quality"))||1;
-               var _eqQColors:Array = ["#999","#CCC","#4bea13","#16d2fa","#e720f9","#FFD700","#FF8C00","#FF4444","#FF0000","#CC0000","#FF66FF"];
-               var _eqQNames:Array = ["","普通","优秀","精良","史诗","传说","神话","远古","至尊","超凡","入圣"];
+               var _eqQColors:Array = ["#999","#CCC","#CCC","#4bea13","#4bea13","#e720f9","#e720f9","#FF8C00","#FF8C00","#FF0000","#FF66FF"];
+               var _eqQNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色"];
                var _qcHex:String = _eqQColors[_eqQ] || "#CCC";
                var _qnStr:String = _eqQNames[_eqQ] || "普通";
                _loc6_ += "<font color=\'" + _qcHex + "\'>类别：装备 [" + _qnStr + "]</font>\n";
