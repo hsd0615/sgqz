@@ -695,7 +695,7 @@ package game.ui
       private static function getEquipSellPrice(code:String):Object {
          var q:int = int(EquipData.get(code,"quality"))||1;
          var lv:int = int(EquipData.get(code,"levelReq"))||1;
-         return {silver: q * lv * 3, dianka: q >= 5 ? (q - 4) * 8 : 0};
+         return {silver: q * lv * 5, dianka: q >= 6 ? (q - 5) * 15 : 0};
       }
 
       private function onSellEquipClick(code:String):void {
@@ -1362,8 +1362,8 @@ package game.ui
          var _loc2_:String = null;
          if(param1.success == true)
          {
-            RoleModel.getInstance().money = param1.data.money + 100;
-            RoleModel.getInstance().exploit = param1.data.exploit + 100;
+            RoleModel.getInstance().money = param1.data.money;
+            RoleModel.getInstance().exploit = param1.data.exploit;
             RoleModel.getInstance().delBagItemByID(param1.data.itemID);
             if(param1.data.general != null)
             {

@@ -161,7 +161,7 @@ package game.ui
       }
 
       private var _qualityColors:Array = [0x999999, 0xCCCCCC, 0x4bea13, 0x16d2fa, 0xe720f9, 0xFFD700];
-      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说"];
+      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊","超凡","入圣"];
 
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
 
@@ -231,14 +231,20 @@ package game.ui
       private function getEquipIcon(param1:String) : Bitmap
       {
          if(param1 == null || param1 == "") return null;
-         var _parts:Array = param1.split("_");
-         var _num:int = 0;
-         if(_parts.length >= 3) _num = int(_parts[_parts.length - 1]);
-         if(_num >= 26) return EquipIconAssets.accessory();
-         if(_num >= 21) return EquipIconAssets.accessory();
-         if(_num >= 16) return EquipIconAssets.boots();
-         if(_num >= 11) return EquipIconAssets.armor();
-         if(_num >= 6) return EquipIconAssets.helmet();
+         var _idx:* = EquipData.get(param1,"iconIdx");
+         if(_idx != null && int(_idx) > 0)
+         {
+            var _b:Bitmap = game.ui.EquipIconsWuxia.getIcon(int(_idx));
+            if(_b != null) return _b;
+         }
+         var _slot:* = EquipData.get(param1,"slot");
+         if(_slot == null) return EquipIconAssets.weapon();
+         var _s:int = int(_slot);
+         if(_s == 1) return EquipIconAssets.weapon();
+         if(_s == 2) return EquipIconAssets.armor();
+         if(_s == 3 || _s == 6) return EquipIconAssets.accessory();
+         if(_s == 4) return EquipIconAssets.helmet();
+         if(_s == 5) return EquipIconAssets.boots();
          return EquipIconAssets.weapon();
       }
 
@@ -411,6 +417,7 @@ package game.ui
                      _self._armyInfo.setEquipSlot(param1, param2);
                   }
                }
+               _self._armyInfo.hp = _self._armyInfo.hp; // 钳制到新maxHp
                if(param3.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param3.data.bagModel);
@@ -430,7 +437,7 @@ package game.ui
       private static function getEquipSellPrice(code:String):Object {
          var q:int = int(EquipData.get(code,"quality"))||1;
          var lv:int = int(EquipData.get(code,"levelReq"))||1;
-         return {silver: q * lv * 3, dianka: q >= 5 ? (q - 4) * 8 : 0};
+         return {silver: q * lv * 5, dianka: q >= 6 ? (q - 5) * 15 : 0};
       }
 
       private function onSellEquipClick(code:String):void {

@@ -528,7 +528,11 @@ package game.model
 
       public function get hp() : int
       {
-         return int(this._hp) - Config.timer;
+         var _raw:int = int(this._hp) - Config.timer;
+         var _max:int = this.maxHp;
+         if(_raw > _max) _raw = _max;
+         if(_raw < 0) _raw = 0;
+         return _raw;
       }
 
       public function get maxHp() : int

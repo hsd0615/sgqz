@@ -21,6 +21,9 @@ package game
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
+         var _atkDmgBonus:int = param1.armyInfo ? param1.armyInfo.equipDmgBonus : 0;
+         var _atkDmgReduce:int = param2.armyInfo ? param2.armyInfo.equipDmgReduce : 0;
+         var _critRate:int = param1.armyInfo ? param1.armyInfo.equipCritRate : 0;
          if(param1.type == Type.TOUSHICHE)
          {
             return getHurtByToushiche(param1,param2,param3);
@@ -45,6 +48,14 @@ package game
             {
                _loc6_ = param1.attack * kezhiXishu[param1.armyInfo.kezhiLevel3] - param2.defense / 5;
             }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == -1 && _loc5_ == 0)
@@ -61,16 +72,40 @@ package game
             {
                _loc6_ = param1.attack - param2.defense * kezhiXishu[param2.armyInfo.kezhiLevel3] / 5;
             }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 0 && _loc5_ == 1)
          {
             _loc6_ = param1.attack * 1.2 - param2.defense / 5;
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 0 && _loc5_ == -1)
          {
             _loc6_ = param1.attack - param2.defense * 1.2 / 5;
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 1 && _loc5_ == 1)
@@ -86,6 +121,14 @@ package game
             else
             {
                _loc6_ = param1.attack * kezhiXishu[param1.armyInfo.kezhiLevel3] * 1.2 - param2.defense / 5;
+            }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -103,6 +146,14 @@ package game
             {
                _loc6_ = param1.attack * 1.2 - param2.defense * kezhiXishu[param2.armyInfo.kezhiLevel3] / 5;
             }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == 1 && _loc5_ == -1)
@@ -119,6 +170,14 @@ package game
             {
                _loc6_ = param1.attack * kezhiXishu[param1.armyInfo.kezhiLevel3] - param2.defense * 1.2 / 5;
             }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
+            }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
          if(_loc4_ == -1 && _loc5_ == -1)
@@ -134,6 +193,14 @@ package game
             else
             {
                _loc6_ = param1.attack - param2.defense * kezhiXishu[param2.armyInfo.kezhiLevel3] * 1.2 / 5;
+            }
+            if(_loc6_ <= 0) _loc6_ = 1;
+            if(_atkDmgBonus > 0) _loc6_ = int(_loc6_ * (1 + _atkDmgBonus / 100));
+            if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
+            if(_critRate > 0 && Math.random() * 100 < _critRate)
+            {
+               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _loc6_ = int(_loc6_ * _critDmg / 100);
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }

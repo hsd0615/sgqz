@@ -822,14 +822,14 @@ package game
       
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
-         // 输入锁定: 瞄准中或力度条调整中禁止键盘切换武将，防止打断攻击
-         if(Mouse.prototype.canFire == true)
+         // 键盘切换时先清除当前输入状态(瞄准镜/力度条)，避免卡死
+         if(Mouse.prototype.canFire == true || (this._yuanchengCon.visible == true && this._yuanchengCon.getEnabled() == true))
          {
-            return;
-         }
-         if(this._yuanchengCon.visible == true && this._yuanchengCon.getEnabled() == true)
-         {
-            return;
+            this.resetController();
+            Mouse.show();
+            Mouse.prototype.isHide = false;
+            Mouse.prototype.canFire = false;
+            if(this._miaozhunjing.visible) this._miaozhunjing.visible = false;
          }
          var _newSoldier:AbstractSoldier = this.selectSoldier(param1.data.id,param1.data.code);
          // 禁止在武将攻击动画中或已死亡时切换，防止UI卡住（瞄准镜被清但未重建）

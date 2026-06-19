@@ -541,7 +541,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '3.0.1';
+  _cachedClientVersion = '3.0.2';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -669,7 +669,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '3.0.1', title: '⚔️ 装备系统全面重做',
+      { version: '3.0.2', title: '⚔️ 装备系统全面重做',
         body: '【装备掉落】\n• 战斗通关概率掉落装备，基于敌将品质和等级\n• 超级武将掉Q7~10，一流掉Q4~7，二流掉Q2~5，三流掉Q1~3\n• Q5+装备全服广播，结果面板显示掉落\n\n【新属性】\n• 新增吸血、增伤、减伤、暴击率、暴击伤害\n• 66件装备，品质1~10+特殊变体\n\n【装备管理】\n• 装备仅武将界面管理，背包不显示\n• 已装备自动隐藏，卸下恢复\n• 装备持久化保存，重新登录不丢失\n\n【商城调整】\n• 装备改为纯掉落获取，商城不再售卖' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
@@ -881,9 +881,9 @@ function handleRequest(socket, req) {
         if (genQ == 0) { minEQ=7; maxEQ=10; }       // 超级
         else if (genQ == 1) { minEQ=4; maxEQ=7; }    // 一流
         else if (genQ == 2) { minEQ=2; maxEQ=5; }    // 二流
-        // 掉率: 超级=等级/2000, 一流=等级/1200, 二流=等级/700, 三流=等级/400 (上限50%)
-        var rateDiv = [2000,1200,700,400][genQ] || 800;
-        var dropProb = Math.min(0.50, Math.max(0.005, eg.level / rateDiv));
+        // 掉率: 超级=等级/3000, 一流=等级/1800, 二流=等级/900, 三流=等级/450 (上限40%)
+        var rateDiv = [3000,1800,900,450][genQ] || 1000;
+        var dropProb = Math.min(0.40, Math.max(0.003, eg.level / rateDiv));
         if (Math.random() < dropProb) {
           var rollQ = minEQ + Math.floor(Math.random()*(maxEQ-minEQ+1));
           if (!bestDrop || rollQ > bestDrop.quality) {
@@ -898,7 +898,18 @@ function handleRequest(socket, req) {
           var dropCode = candidates[Math.floor(Math.random()*candidates.length)];
           var dropDef = EQUIP_DATA[dropCode];
           if(!db.bagItems)db.bagItems=[];
-          db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
+          // 检查是否已有同款装备，有则+1，无则新增
+          var existIdx = -1;
+          for(var ex=0;ex<db.bagItems.length;ex++){
+            if(db.bagItems[ex].player_id==p.id && db.bagItems[ex].code===dropCode){
+              existIdx=ex; break;
+            }
+          }
+          if(existIdx>=0){
+            db.bagItems[existIdx].count = (db.bagItems[existIdx].count||1)+1;
+          } else {
+            db.bagItems.push({id:db.nextId.bagItems++,player_id:p.id,code:dropCode,count:1});
+          }
           equipDrop = {code:dropCode,name:dropDef.name,quality:bestDrop.quality};
           if(bestDrop.quality>=5){
             broadcastToAll('[系统] 恭喜 '+p.role_name+' 击败'+bestDrop.genName+' 获得 ['+dropDef.name+'](品质'+bestDrop.quality+')！');
@@ -1074,11 +1085,12 @@ function handleRequest(socket, req) {
     let generalData = null;
     const roll = Math.random();
     if (roll < successRate) {
-      // 招募成功 — 创建武将
-      const g = createGeneral(p.id, data.code, '', 1, 0, 0, null,
+      // 招募成功 — 创建武将，等级跟随玩家最高通关等级
+      var recruitLv = Math.max(1, Math.min(200, (p.level || 1)));
+      const g = createGeneral(p.id, data.code, '', recruitLv, 0, 0, null,
         parseInt(String(data.kezhi1||0)), 1, parseInt(String(data.kezhi2||0)), 1, parseInt(String(data.kezhi3||0)), 1);
-      generalData = { id: g.general_id, code: g.code, level: 1, evolution: 0, feature: 0, kezhi: getKezhiStr(g), genius: null };
-      console.log('[Recruit] ' + p.role_name + ' 招募成功: ' + data.code + ' id=' + g.general_id);
+      generalData = { id: g.general_id, code: g.code, level: recruitLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), genius: null };
+      console.log('[Recruit] ' + p.role_name + ' 招募成功: ' + data.code + ' Lv' + recruitLv + ' id=' + g.general_id);
     } else {
       console.log('[Recruit] ' + p.role_name + ' 招募失败: ' + data.code);
     }
@@ -1218,8 +1230,30 @@ function handleRequest(socket, req) {
     } else if (headCode === 10006) {
       // === 克制升级 ===
       var g = findGeneralByGid(data.id);
-      if (g) {
+      if (g && g.player_id === p.id) {
+        // 检查最高等级限制
         var ki = parseInt(data.index) || 0;
+        var curLevel = g['kezhi'+(ki+1)+'_level'] || 1;
+        if (curLevel >= 10) return jsonRawResponse(socket, { success: false, message: '克制等级已达上限' });
+        // 扣除资源: 银子1000 + 功勋1000 + 克制进阶符1个
+        if ((p.money||0) < 1000) return jsonRawResponse(socket, { success: false, message: '银两不足' });
+        if ((p.exploit||0) < 1000) return jsonRawResponse(socket, { success: false, message: '功勋不足' });
+        // 查找并扣除克制进阶符
+        var tokenIdx = -1;
+        if (db.bagItems) {
+          for (var ti = 0; ti < db.bagItems.length; ti++) {
+            if (db.bagItems[ti].player_id == p.id && db.bagItems[ti].code === 'proto_3_4' && (db.bagItems[ti].count||1) > 0) {
+              tokenIdx = ti; break;
+            }
+          }
+        }
+        if (tokenIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有克制进阶符' });
+        db.bagItems[tokenIdx].count = (db.bagItems[tokenIdx].count||1) - 1;
+        if (db.bagItems[tokenIdx].count <= 0) db.bagItems.splice(tokenIdx, 1);
+        p.money -= 1000; p.exploit -= 1000;
+        respData.money = p.money; respData.exploit = p.exploit;
+        respData.itemID = db.bagItems[tokenIdx] ? db.bagItems[tokenIdx].id : 0;
+        // 升级克制
         if (ki === 0) { g.kezhi1_level = (g.kezhi1_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
         else if (ki === 1) { g.kezhi2_level = (g.kezhi2_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
         else if (ki === 2) { g.kezhi3_level = (g.kezhi3_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
@@ -1350,11 +1384,11 @@ function handleRequest(socket, req) {
       db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
       if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
 
-      // 计算售卖价格: 银子=quality×levelReq×3, 点卡=quality>=5?(quality-4)×8:0
+      // 计算售卖价格: 银子=quality×levelReq×5, 点卡=quality>=6?(quality-5)×15:0
       var eqQ = parseInt(sdef.quality)||1;
       var eqLv = parseInt(sdef.levelReq)||1;
-      var silverReward = eqQ * eqLv * 3;
-      var diankaReward = eqQ >= 5 ? (eqQ - 4) * 8 : 0;
+      var silverReward = eqQ * eqLv * 5;
+      var diankaReward = eqQ >= 6 ? (eqQ - 5) * 15 : 0;
 
       p.money = (p.money||0) + silverReward;
       p.dianka = (p.dianka||0) + diankaReward;
@@ -1362,6 +1396,21 @@ function handleRequest(socket, req) {
       respData.dianka = p.dianka;
       respData.bagModel = makeBagModel(p.id);
       console.log('[SellEquip] ' + p.role_name + ' 售卖 ' + sdef.name + '(Q'+eqQ+') 银子+' + silverReward + ' 点卡+' + diankaReward);
+    } else if (headCode === 10013) {
+      // === 消耗弹药 ===
+      var ammoCode = String(data.itemCode);
+      if (!db.bagItems) db.bagItems = [];
+      var ammoIdx = -1;
+      for (var ai = 0; ai < db.bagItems.length; ai++) {
+        if (db.bagItems[ai].player_id == p.id && db.bagItems[ai].code === ammoCode && (db.bagItems[ai].count||1) > 0) {
+          ammoIdx = ai; break;
+        }
+      }
+      if (ammoIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有弹药' });
+      db.bagItems[ammoIdx].count = (db.bagItems[ammoIdx].count||1) - 1;
+      if (db.bagItems[ammoIdx].count <= 0) db.bagItems.splice(ammoIdx, 1);
+      respData.bagModel = makeBagModel(p.id);
+      console.log('[Ammo] ' + p.role_name + ' 消耗 ' + ammoCode + ' 剩余 ' + (db.bagItems[ammoIdx]?(db.bagItems[ammoIdx].count||0):0));
     }
 
     save();
