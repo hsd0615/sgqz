@@ -221,12 +221,24 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮：SWF的hitTestState仅左下角，替换全尺寸(hitTestState需alpha>0才生效)
-         var _hit:Sprite = new Sprite();
-         _hit.graphics.beginFill(0xFF0000, 0.01);
-         _hit.graphics.drawRect(0, 0, 100, 30);
-         _hit.graphics.endFill();
-         this.__shengjiBtn.hitTestState = _hit;
+         // 修复升级按钮：SWF的hitTestState仅左下角可交互，hitTestState赋值在某些
+         // Flash版本中不生效。改用可靠方案：在_skin上创建全尺寸透明覆盖Sprite，
+         // 位置与按钮完全重叠，拦截点击后转发给shengjiBtnClickHandler。
+         // 注意：覆盖层必须在所有子节点之后添加(用addChild确保在最上层)。
+         var _self4:GeneralInfoPanel = this;
+         var _overlay:Sprite = new Sprite();
+         _overlay.name = "_shengjiOverlay";
+         _overlay.x = this.__shengjiBtn.x;
+         _overlay.y = this.__shengjiBtn.y;
+         _overlay.graphics.beginFill(0xFF0000, 0.01);
+         _overlay.graphics.drawRect(-10, -8, 110, 42);
+         _overlay.graphics.endFill();
+         _overlay.buttonMode = true;
+         _overlay.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
+            p.stopImmediatePropagation();
+            _self4.shengjiBtnClickHandler(p);
+         });
+         this._skin.addChild(_overlay);
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
          this.__kezhi1Btn.addEventListener(MouseEvent.CLICK,this.kezhi1BtnClickHandler);
          this.__kezhi2Btn.addEventListener(MouseEvent.CLICK,this.kezhi2BtnClickHandler);
