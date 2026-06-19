@@ -192,16 +192,19 @@ package game.fuben
       private function initView(param1:int) : *
       {
          this.createBK();
-         try { this.createMyArmy(); } catch(_e1:Error) { trace("[Xiongnu] createMyArmy failed: "+_e1.message); }
+         this.createMyArmy();
          this.creatGrid();
-         try {
-            switch(param1)
-            {
-               case 1: this.createEnemy1(); break;
-               case 2: this.createEnemy2(); break;
-               case 3: this.createEnemy3(); break;
-            }
-         } catch(_e2:Error) { trace("[Xiongnu] createEnemy failed: "+_e2.message); }
+         switch(param1)
+         {
+            case 1:
+               this.createEnemy1();
+               break;
+            case 2:
+               this.createEnemy2();
+               break;
+            case 3:
+               this.createEnemy3();
+         }
          this.createGIcon();
          this.createController();
          this.createTipsLayer();
@@ -615,31 +618,29 @@ package game.fuben
       
       private function armyFactory(param1:ArmyInfo, param2:int, param3:Boolean) : AbstractSoldier
       {
-         var _clone:ArmyInfo;
-         try { _clone = param1.clone(); } catch(_e:Error) { _clone = param1; }
-         switch(_clone.type)
+         switch(param1.type)
          {
             case Type.TOUSHICHE:
-               return new Gunner(_clone,param2,param3,this);
+               return new Gunner(param1.clone(),param2,param3,this);
             case Type.QIBING:
-               return new Saber(_clone,param2,param3,this);
+               return new Saber(param1.clone(),param2,param3,this);
             case Type.JIANTABING:
-               return new JiantaSoldier(_clone,param2,param3);
+               return new JiantaSoldier(param1.clone(),param2,param3);
             case Type.QIANGGONGBING:
-               return new QianggongSoldier(_clone,param2,param3);
+               return new QianggongSoldier(param1.clone(),param2,param3);
             case Type.WANDAOBING:
-               return new WandaoSoldier(_clone,param2,param3);
+               return new WandaoSoldier(param1.clone(),param2,param3);
             case Type.BOSS:
-               return new Boss(_clone,param2,param3);
+               return new Boss(param1.clone(),param2,param3);
             case Type.JUNZHU:
-               return new Junzhu(_clone,param2,param3,this);
+               return new Junzhu(param1.clone(),param2,param3,this);
             case 14:
             case 15:
             case 16:
             case 17:
-               return new Saber(_clone,param2,param3,this);
+               return new Saber(param1.clone(),param2,param3,this);
             default:
-               return new Shooter(_clone,param2,param3,this);
+               return new Shooter(param1.clone(),param2,param3,this);
          }
       }
       

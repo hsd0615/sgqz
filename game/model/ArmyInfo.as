@@ -716,14 +716,15 @@ package game.model
       {
          if(param1 == null || param1 == "") return;
          var _parts:Array = param1.split(",");
+         var _changed:Boolean = false;
          // 兼容3段旧格式(自动扩展到6段, 新槽位默认空)
-         if(_parts.length > 0 && _parts[0] != "0") this._equip1 = _parts[0];
-         if(_parts.length > 1 && _parts[1] != "0") this._equip2 = _parts[1];
-         if(_parts.length > 2 && _parts[2] != "0") this._equip3 = _parts[2];
-         if(_parts.length > 3 && _parts[3] != "0") this._equip4 = _parts[3];
-         if(_parts.length > 4 && _parts[4] != "0") this._equip5 = _parts[4];
-         if(_parts.length > 5 && _parts[5] != "0") this._equip6 = _parts[5];
-         this.hp = this.maxHp; // 装备加载后刷新血量
+         if(_parts.length > 0 && _parts[0] != "0") { this._equip1 = _parts[0]; _changed = true; }
+         if(_parts.length > 1 && _parts[1] != "0") { this._equip2 = _parts[1]; _changed = true; }
+         if(_parts.length > 2 && _parts[2] != "0") { this._equip3 = _parts[2]; _changed = true; }
+         if(_parts.length > 3 && _parts[3] != "0") { this._equip4 = _parts[3]; _changed = true; }
+         if(_parts.length > 4 && _parts[4] != "0") { this._equip5 = _parts[4]; _changed = true; }
+         if(_parts.length > 5 && _parts[5] != "0") { this._equip6 = _parts[5]; _changed = true; }
+         if(_changed) this.hp = this.maxHp;
       }
    }
 }

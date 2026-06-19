@@ -358,27 +358,36 @@ package game.ui
                   else (_slot as MovieClip).addChild(_bmp);
                }
 
-               // 悬停显示装备属性 (用函数参数绑定避免闭包捕获相同变量)
-               (function(_ec:String):void {
-               _slot.addEventListener(MouseEvent.MOUSE_OVER, function(p:*):void {
-                  var _n:* = EquipData.get(_ec,"name"); var _a:int=int(EquipData.get(_ec,"attack"))||0;
-                  var _ap:int=int(EquipData.get(_ec,"attackPct"))||0; var _d:int=int(EquipData.get(_ec,"defense"))||0;
-                  var _dp:int=int(EquipData.get(_ec,"defensePct"))||0; var _h:int=int(EquipData.get(_ec,"hp"))||0;
-                  var _hp:int=int(EquipData.get(_ec,"hpPct"))||0; var _ls:int=int(EquipData.get(_ec,"lifesteal"))||0;
-                  var _db:int=int(EquipData.get(_ec,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_ec,"dmgReduce"))||0;
-                  var _cr:int=int(EquipData.get(_ec,"critRate"))||0; var _cd:int=int(EquipData.get(_ec,"critDmg"))||0;
-                  var _t:String = "<b>"+_n+"</b>\n";
-                  if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
-                  if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
-                  if(_h||_hp) _t+="气血:"+(_h>0?"+"+_h:_h)+(_hp>0?"+"+_hp+"%":"")+"\n";
-                  if(_ls>0) _t+="吸血:"+_ls+"%\n"; if(_db>0) _t+="增伤:"+_db+"%\n";
-                  if(_dr>0) _t+="减伤:"+_dr+"%\n"; if(_cr>0) _t+="暴击:"+_cr+"%\n";
-                  if(_cd>0) _t+="暴伤:"+_cd+"%\n";
-                  _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:130,height:120}));
-               });})(_eqCode);
-               _slot.addEventListener(MouseEvent.MOUSE_OUT, function(p:*):void {
-                  _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true));
-               });
+               // 先移除旧的悬停监听(防止卸装备后残留)
+               if(_slot.hasOwnProperty("_hoverFn")) {
+                  _slot.removeEventListener(MouseEvent.MOUSE_OVER, _slot["_hoverFn"] as Function);
+                  _slot.removeEventListener(MouseEvent.MOUSE_OUT, _slot["_outFn"] as Function);
+               }
+               // 悬停显示装备属性+品质
+               var _qName:String = getQualityName(_q);
+               (function(_ec:String, _qn:String):void {
+                  var _hoverFn:Function = function(p:*):void {
+                     var _n:* = EquipData.get(_ec,"name"); var _a:int=int(EquipData.get(_ec,"attack"))||0;
+                     var _ap:int=int(EquipData.get(_ec,"attackPct"))||0; var _d:int=int(EquipData.get(_ec,"defense"))||0;
+                     var _dp:int=int(EquipData.get(_ec,"defensePct"))||0; var _h:int=int(EquipData.get(_ec,"hp"))||0;
+                     var _hp:int=int(EquipData.get(_ec,"hpPct"))||0; var _ls:int=int(EquipData.get(_ec,"lifesteal"))||0;
+                     var _db:int=int(EquipData.get(_ec,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_ec,"dmgReduce"))||0;
+                     var _cr:int=int(EquipData.get(_ec,"critRate"))||0; var _cd:int=int(EquipData.get(_ec,"critDmg"))||0;
+                     var _t:String = "<b>"+_n+"</b> <font color='"+getQualityColor(_q).toString(16)+"'>["+_qn+"]</font>\n";
+                     if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
+                     if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
+                     if(_h||_hp) _t+="气血:"+(_h>0?"+"+_h:_h)+(_hp>0?"+"+_hp+"%":"")+"\n";
+                     if(_ls>0) _t+="吸血:"+_ls+"%\n"; if(_db>0) _t+="增伤:"+_db+"%\n";
+                     if(_dr>0) _t+="减伤:"+_dr+"%\n"; if(_cr>0) _t+="暴击:"+_cr+"%\n";
+                     if(_cd>0) _t+="暴伤:"+_cd+"%\n";
+                     _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:140,height:130}));
+                  };
+                  var _outFn:Function = function(p:*):void { _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true)); };
+                  _slot["_hoverFn"] = _hoverFn;
+                  _slot["_outFn"] = _outFn;
+                  _slot.addEventListener(MouseEvent.MOUSE_OVER, _hoverFn);
+                  _slot.addEventListener(MouseEvent.MOUSE_OUT, _outFn);
+               })(_eqCode, _qName);
             }
             _si++;
          }
@@ -400,6 +409,7 @@ package game.ui
       private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊","超凡","入圣"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
+      private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
 
       private function onEquipSlotClick(param1:MouseEvent) : void
       {
@@ -573,7 +583,7 @@ package game.ui
                var _cd:* = EquipData.get(_c,"critDmg")||0;
                var _ql:int = int(EquipData.get(_c,"quality"))||1;
                var _lv:int = int(EquipData.get(_c,"levelReq"))||1;
-               var _t:String = "<b>"+_n+"</b> <font color='#888'>Lv"+_lv+"</font>\n";
+               var _t:String = "<b>"+_n+"</b> <font color='#888'>Lv"+_lv+"</font> [" + _self.getQualityName(_ql) + "]\n";
                if(int(_a)!=0||int(_ap)!=0) _t+="攻击:"+_a+(int(_ap)>0?"+"+_ap+"%":"")+"\n";
                if(int(_d)!=0||int(_dp)!=0) _t+="防御:"+_d+(int(_dp)>0?"+"+_dp+"%":"")+"\n";
                if(int(_h)!=0||int(_hp)!=0) _t+="气血:"+_h+(int(_hp)>0?"+"+_hp+"%":"")+"\n";
