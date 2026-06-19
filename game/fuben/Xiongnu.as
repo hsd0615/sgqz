@@ -594,11 +594,15 @@ package game.fuben
          this._leftSoldiers = [];
          var _loc3_:int = int(this._leftArmy.length);
          var _loc4_:int = 0;
-         // 倭寇副本：部队直接在战场位置，不需要滑入偏移
          var _offset:int = (this._currentStageID == 2) ? 0 : 300;
          while(_loc4_ < _loc3_)
          {
-            _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
+            try {
+               _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
+            } catch(_e:Error) {
+               // 若特定兵种创建失败(如皮肤缺失),回退为Shooter
+               _loc2_ = new Shooter(this._leftArmy[_loc4_].clone(),1,this._direct == 1 ? true : false,this);
+            }
             if(_loc2_.type == Type.TOUSHICHE)
             {
                _loc2_.x = Xiongnu.TS_POS.x - _offset;
