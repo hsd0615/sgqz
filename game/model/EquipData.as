@@ -12,11 +12,11 @@ package game.model {
          _data["proto_4_34"]={slot:1,name:"倚天剑",attack:380,attackPct:4,defense:70,hp:180,levelReq:50,quality:4,iconIdx:12};
          _data["proto_4_35"]={slot:1,name:"方天画戟",attack:580,attackPct:7,defense:120,hp:290,levelReq:80,quality:5,iconIdx:14};
          _data["proto_4_36"]={slot:1,name:"青龙偃月",attack:800,attackPct:9,critRate:16,critDmg:15,defense:160,hp:460,levelReq:100,quality:6,iconIdx:20};
-         _data["proto_4_37"]={slot:1,name:"丈八蛇矛",attack:1100,attackPct:12,dmgBonus:8,defense:-60,hp:600,levelReq:130,quality:7,iconIdx:11};
-         _data["proto_4_38"]={slot:1,name:"神罚",attack:1500,attackPct:15,lifesteal:6,dmgBonus:5,defense:400,hp:1000,levelReq:160,quality:8,iconIdx:16};
-         _data["proto_4_81"]={slot:1,name:"寒月刀",attack:1900,attackPct:18,lifesteal:8,defense:500,hp:1300,levelReq:185,quality:9,iconIdx:13};
-         _data["proto_4_82"]={slot:1,name:"灭世",attack:2400,attackPct:22,dmgBonus:10,critRate:20,defense:650,hp:1700,levelReq:200,quality:10,iconIdx:15};
-         _data["proto_4_83"]={slot:1,name:"血祭之刃",attack:1800,attackPct:20,lifesteal:15,dmgBonus:8,defense:200,hp:800,levelReq:170,quality:10,iconIdx:15};
+         _data["proto_4_37"]={slot:1,name:"丈八蛇矛",attack:2200,attackPct:15,dmgBonus:10,defense:-60,hp:1400,levelReq:130,quality:7,iconIdx:11};
+         _data["proto_4_38"]={slot:1,name:"神罚",attack:3500,attackPct:20,lifesteal:10,dmgBonus:8,defense:900,hp:2600,levelReq:160,quality:8,iconIdx:16};
+         _data["proto_4_81"]={slot:1,name:"寒月刀",attack:5000,attackPct:25,lifesteal:12,defense:1400,hp:3600,levelReq:185,quality:9,iconIdx:13};
+         _data["proto_4_82"]={slot:1,name:"灭世",attack:7000,attackPct:30,dmgBonus:15,critRate:30,defense:2000,hp:5200,levelReq:200,quality:10,iconIdx:15};
+         _data["proto_4_83"]={slot:1,name:"血祭之刃",attack:5500,attackPct:28,lifesteal:20,dmgBonus:12,defense:600,hp:3000,levelReq:170,quality:10,iconIdx:15};
 
          // 铠甲 (slot=2) Q1-10+特殊  icon:9皮甲/8玄武/10麒麟
          _data["proto_4_39"]={slot:2,name:"皮甲",defense:48,attack:12,hp:22,levelReq:8,quality:1,iconIdx:9};
@@ -25,11 +25,11 @@ package game.model {
          _data["proto_4_42"]={slot:2,name:"龙鳞甲",defense:360,defensePct:3,attack:100,hp:230,levelReq:55,quality:4,iconIdx:8};
          _data["proto_4_43"]={slot:2,name:"玄武战甲",defense:520,defensePct:6,dmgReduce:5,attack:130,hp:370,levelReq:75,quality:5,iconIdx:8};
          _data["proto_4_44"]={slot:2,name:"麒麟铠",defense:750,defensePct:9,dmgReduce:8,attack:200,hp:580,levelReq:100,quality:6,iconIdx:10};
-         _data["proto_4_45"]={slot:2,name:"朱雀战袍",defense:1050,defensePct:12,dmgReduce:10,attack:-40,hp:880,levelReq:130,quality:7,iconIdx:10};
-         _data["proto_4_46"]={slot:2,name:"不灭金身",defense:1400,defensePct:16,dmgReduce:12,lifesteal:3,attack:400,hp:1350,levelReq:160,quality:8,iconIdx:10};
-         _data["proto_4_84"]={slot:2,name:"龙纹战甲",defense:1800,defensePct:20,dmgReduce:15,attack:500,hp:1700,levelReq:185,quality:9,iconIdx:10};
-         _data["proto_4_85"]={slot:2,name:"万古不朽",defense:2300,defensePct:25,dmgReduce:18,lifesteal:5,attack:650,hp:2200,levelReq:200,quality:10,iconIdx:10};
-         _data["proto_4_86"]={slot:2,name:"荆棘反甲",defense:1600,defensePct:18,dmgReduce:10,dmgBonus:8,attack:300,hp:1500,levelReq:170,quality:10,iconIdx:10};
+         _data["proto_4_45"]={slot:2,name:"朱雀战袍",defense:2200,defensePct:16,dmgReduce:12,attack:-60,hp:2000,levelReq:130,quality:7,iconIdx:10};
+         _data["proto_4_46"]={slot:2,name:"不灭金身",defense:3500,defensePct:22,dmgReduce:16,lifesteal:6,attack:1000,hp:3400,levelReq:160,quality:8,iconIdx:10};
+         _data["proto_4_84"]={slot:2,name:"龙纹战甲",defense:5000,defensePct:28,dmgReduce:20,attack:1500,hp:4800,levelReq:185,quality:9,iconIdx:10};
+         _data["proto_4_85"]={slot:2,name:"万古不朽",defense:7000,defensePct:35,dmgReduce:25,lifesteal:10,attack:2200,hp:6800,levelReq:200,quality:10,iconIdx:10};
+         _data["proto_4_86"]={slot:2,name:"荆棘反甲",defense:5000,defensePct:25,dmgReduce:15,dmgBonus:15,attack:1200,hp:4500,levelReq:170,quality:10,iconIdx:10};
 
          // 饰品 (slot=3) Q1-10+特殊  icon:30铜戒指/27翡翠/22和氏璧/24天地/23嗜血/21七杀/26紫微/25混沌/28贪狼/29轮回
          _data["proto_4_47"]={slot:3,name:"木符",hp:320,attack:18,defense:25,levelReq:10,quality:1,iconIdx:30};
@@ -38,11 +38,11 @@ package game.model {
          _data["proto_4_50"]={slot:3,name:"和氏璧",hp:2000,hpPct:4,attack:130,attackPct:2,defense:180,levelReq:60,quality:4,iconIdx:22};
          _data["proto_4_51"]={slot:3,name:"天地令",hp:3100,hpPct:7,lifesteal:4,attack:200,defense:280,levelReq:80,quality:5,iconIdx:24};
          _data["proto_4_52"]={slot:3,name:"嗜血魔符",hp:4800,hpPct:10,lifesteal:8,dmgBonus:4,attack:320,defense:430,levelReq:105,quality:6,iconIdx:23};
-         _data["proto_4_53"]={slot:3,name:"七杀戒",hp:6500,hpPct:13,critRate:30,critDmg:14,attack:480,defense:600,levelReq:135,quality:7,iconIdx:21};
-         _data["proto_4_54"]={slot:3,name:"紫微星",hp:8500,hpPct:16,dmgBonus:6,lifesteal:5,attack:650,defense:800,levelReq:165,quality:8,iconIdx:26};
-         _data["proto_4_87"]={slot:3,name:"混沌珠",hp:11000,hpPct:20,dmgReduce:8,dmgBonus:8,attack:850,defense:1000,levelReq:185,quality:9,iconIdx:25};
-         _data["proto_4_88"]={slot:3,name:"贪狼令",hp:14000,hpPct:25,critRate:25,critDmg:20,attack:1100,defense:1300,levelReq:200,quality:10,iconIdx:28};
-         _data["proto_4_89"]={slot:3,name:"轮回印",hp:12000,hpPct:22,dmgReduce:12,lifesteal:10,attack:900,defense:1100,levelReq:180,quality:10,iconIdx:29};
+         _data["proto_4_53"]={slot:3,name:"七杀戒",hp:16000,hpPct:18,critRate:30,critDmg:20,attack:1200,defense:1500,levelReq:135,quality:7,iconIdx:21};
+         _data["proto_4_54"]={slot:3,name:"紫微星",hp:24000,hpPct:24,dmgBonus:10,lifesteal:8,attack:1800,defense:2200,levelReq:165,quality:8,iconIdx:26};
+         _data["proto_4_87"]={slot:3,name:"混沌珠",hp:36000,hpPct:30,dmgReduce:12,dmgBonus:12,attack:2800,defense:3200,levelReq:185,quality:9,iconIdx:25};
+         _data["proto_4_88"]={slot:3,name:"贪狼令",hp:55000,hpPct:40,critRate:30,critDmg:30,attack:4000,defense:4800,levelReq:200,quality:10,iconIdx:28};
+         _data["proto_4_89"]={slot:3,name:"轮回印",hp:45000,hpPct:35,dmgReduce:18,lifesteal:15,attack:3200,defense:3800,levelReq:180,quality:10,iconIdx:29};
 
          // 头盔 (slot=4) Q1-10+特殊  icon:4灵蛇/3混沌/2天尊/1九龙
          _data["proto_4_55"]={slot:4,name:"布帽",hp:140,defense:18,levelReq:5,quality:1,iconIdx:4};
@@ -51,10 +51,10 @@ package game.model {
          _data["proto_4_58"]={slot:4,name:"金冠",hp:1300,hpPct:4,defense:165,levelReq:55,quality:4,iconIdx:3};
          _data["proto_4_59"]={slot:4,name:"龙盔",hp:2100,hpPct:7,dmgReduce:4,defense:270,levelReq:75,quality:5,iconIdx:3};
          _data["proto_4_60"]={slot:4,name:"灵蛇盔",hp:3300,hpPct:10,dmgReduce:6,defense:420,levelReq:100,quality:6,iconIdx:3};
-         _data["proto_4_61"]={slot:4,name:"天尊冠",hp:5000,hpPct:14,defense:620,defensePct:3,levelReq:130,quality:7,iconIdx:2};
-         _data["proto_4_62"]={slot:4,name:"九龙冠",hp:7500,hpPct:18,defense:920,defensePct:5,levelReq:160,quality:8,iconIdx:1};
-         _data["proto_4_90"]={slot:4,name:"混沌盔",hp:10000,hpPct:22,dmgReduce:10,defense:1200,levelReq:185,quality:9,iconIdx:2};
-         _data["proto_4_91"]={slot:4,name:"洞察之眼",hp:13000,hpPct:28,critRate:30,critDmg:25,defense:1500,levelReq:200,quality:10,iconIdx:1};
+         _data["proto_4_61"]={slot:4,name:"天尊冠",hp:14000,hpPct:20,defense:1800,defensePct:8,levelReq:130,quality:7,iconIdx:2};
+         _data["proto_4_62"]={slot:4,name:"九龙冠",hp:24000,hpPct:26,defense:2800,defensePct:12,levelReq:160,quality:8,iconIdx:1};
+         _data["proto_4_90"]={slot:4,name:"混沌盔",hp:38000,hpPct:34,dmgReduce:16,defense:4000,levelReq:185,quality:9,iconIdx:2};
+         _data["proto_4_91"]={slot:4,name:"洞察之眼",hp:55000,hpPct:42,critRate:30,critDmg:35,defense:5500,levelReq:200,quality:10,iconIdx:1};
 
          // 战靴 (slot=5) Q1-10+特殊  icon:5凌波/6虚空/7风云
          _data["proto_4_63"]={slot:5,name:"草鞋",defense:32,attack:8,hp:35,levelReq:8,quality:1,iconIdx:5};
@@ -63,11 +63,11 @@ package game.model {
          _data["proto_4_66"]={slot:5,name:"银靴",defense:320,defensePct:3,attack:85,hp:330,levelReq:55,quality:4,iconIdx:6};
          _data["proto_4_67"]={slot:5,name:"神行靴",defense:490,defensePct:6,critRate:20,critDmg:10,attack:140,hp:520,levelReq:75,quality:5,iconIdx:6};
          _data["proto_4_68"]={slot:5,name:"凌波靴",defense:720,defensePct:9,lifesteal:4,dmgBonus:3,attack:220,hp:800,levelReq:100,quality:6,iconIdx:6};
-         _data["proto_4_69"]={slot:5,name:"追月靴",defense:1030,defensePct:12,critRate:16,attack:340,hp:1180,levelReq:130,quality:7,iconIdx:7};
-         _data["proto_4_70"]={slot:5,name:"风云靴",defense:1500,defensePct:16,dmgReduce:8,lifesteal:3,attack:520,hp:1700,levelReq:160,quality:8,iconIdx:7};
-         _data["proto_4_92"]={slot:5,name:"虚空靴",defense:1900,defensePct:20,dmgReduce:10,critRate:20,attack:680,hp:2100,levelReq:185,quality:9,iconIdx:7};
-         _data["proto_4_93"]={slot:5,name:"破灭靴",defense:2400,defensePct:25,dmgReduce:14,critDmg:20,attack:850,hp:2600,levelReq:200,quality:10,iconIdx:7};
-         _data["proto_4_94"]={slot:5,name:"疾风之足",defense:1800,defensePct:18,critRate:30,critDmg:30,attack:600,hp:1900,levelReq:170,quality:10,iconIdx:7};
+         _data["proto_4_69"]={slot:5,name:"追月靴",defense:2800,defensePct:18,critRate:20,attack:1000,hp:3400,levelReq:130,quality:7,iconIdx:7};
+         _data["proto_4_70"]={slot:5,name:"风云靴",defense:4200,defensePct:24,dmgReduce:12,lifesteal:6,attack:1600,hp:5200,levelReq:160,quality:8,iconIdx:7};
+         _data["proto_4_92"]={slot:5,name:"虚空靴",defense:6000,defensePct:32,dmgReduce:18,critRate:25,attack:2400,hp:7200,levelReq:185,quality:9,iconIdx:7};
+         _data["proto_4_93"]={slot:5,name:"破灭靴",defense:8500,defensePct:40,dmgReduce:24,critDmg:35,attack:3500,hp:10000,levelReq:200,quality:10,iconIdx:7};
+         _data["proto_4_94"]={slot:5,name:"疾风之足",defense:6500,defensePct:30,critRate:30,critDmg:40,attack:2600,hp:7800,levelReq:170,quality:10,iconIdx:7};
 
          // 饰品Ⅱ (slot=6) Q1-10  复用饰品图标池
          _data["proto_4_71"]={slot:6,name:"铜戒指",attack:55,defense:12,hp:70,levelReq:12,quality:1,iconIdx:30};
@@ -76,10 +76,10 @@ package game.model {
          _data["proto_4_74"]={slot:6,name:"龙戒",attack:350,attackPct:4,defense:95,hp:550,levelReq:65,quality:4,iconIdx:22};
          _data["proto_4_75"]={slot:6,name:"神戒",attack:540,attackPct:8,lifesteal:5,defense:160,hp:880,levelReq:95,quality:5,iconIdx:24};
          _data["proto_4_76"]={slot:6,name:"乾坤圈",attack:800,attackPct:12,critRate:30,critDmg:15,defense:260,hp:1400,levelReq:140,quality:6,iconIdx:23};
-         _data["proto_4_95"]={slot:6,name:"破军环",attack:1100,attackPct:16,critRate:20,defense:380,hp:2000,levelReq:160,quality:7,iconIdx:21};
-         _data["proto_4_96"]={slot:6,name:"贪狼令",attack:1500,attackPct:20,dmgBonus:8,lifesteal:6,defense:500,hp:2800,levelReq:180,quality:8,iconIdx:26};
-         _data["proto_4_97"]={slot:6,name:"星辰令",attack:2000,attackPct:25,critRate:25,critDmg:22,defense:650,hp:3600,levelReq:195,quality:9,iconIdx:25};
-         _data["proto_4_98"]={slot:6,name:"轮回印",attack:2600,attackPct:30,dmgReduce:10,lifesteal:8,defense:850,hp:4600,levelReq:200,quality:10,iconIdx:29};
+         _data["proto_4_95"]={slot:6,name:"破军环",attack:3000,attackPct:22,critRate:25,defense:1100,hp:5800,levelReq:160,quality:7,iconIdx:21};
+         _data["proto_4_96"]={slot:6,name:"贪狼令",attack:4200,attackPct:28,dmgBonus:12,lifesteal:10,defense:1600,hp:8200,levelReq:180,quality:8,iconIdx:26};
+         _data["proto_4_97"]={slot:6,name:"星辰令",attack:6000,attackPct:35,critRate:30,critDmg:30,defense:2200,hp:11500,levelReq:195,quality:9,iconIdx:25};
+         _data["proto_4_98"]={slot:6,name:"轮回印",attack:8500,attackPct:42,dmgReduce:16,lifesteal:15,defense:3200,hp:15500,levelReq:200,quality:10,iconIdx:29};
       }
       // 兼容旧装备码(proto_4_1~30) → 映射到新数据
       private static var _compat:Object = {
