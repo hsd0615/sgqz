@@ -323,6 +323,7 @@ package com.iflashigame.controller
             case 10020: path = "/api/general/reforge"; break;
             case 10050: path = "/api/general/equip"; break;
             case 10051: path = "/api/general/unequip"; break;
+            case 10052: path = "/api/general/sell"; break;
 
             // Fuben
             case 10016: path = "/api/fuben/count"; break;

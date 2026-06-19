@@ -1049,6 +1049,7 @@ package game.ui
             this.__specTF.width = 110; this.__specTF.height = 130;
             this.__specTF.multiline = true; this.__specTF.wordWrap = true;
             this.__specTF.selectable = false;
+            this.__specTF.mouseEnabled = false;
             addChild(this.__specTF);
          }
          this.__specTF.x = this.__xiaohaoTF.x + this.__xiaohaoTF.width + 15;
