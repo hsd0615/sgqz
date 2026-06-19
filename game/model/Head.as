@@ -168,6 +168,8 @@ package game.model
       public static const HTTP_NEW_EQUIP:int = 10050;
 
       public static const HTTP_NEW_UNEQUIP:int = 10051;
+
+      public static const HTTP_NEW_SELL_EQUIP:int = 10052;
       
       public static const HTTP_NEW_LEITAI_LIST:int = 10030;
       

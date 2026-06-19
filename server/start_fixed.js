@@ -541,7 +541,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '3.0.0';
+  _cachedClientVersion = '3.0.1';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -669,7 +669,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '3.0.0', title: '⚔️ 装备系统全面重做',
+      { version: '3.0.1', title: '⚔️ 装备系统全面重做',
         body: '【装备掉落】\n• 战斗通关概率掉落装备，基于敌将品质和等级\n• 超级武将掉Q7~10，一流掉Q4~7，二流掉Q2~5，三流掉Q1~3\n• Q5+装备全服广播，结果面板显示掉落\n\n【新属性】\n• 新增吸血、增伤、减伤、暴击率、暴击伤害\n• 66件装备，品质1~10+特殊变体\n\n【装备管理】\n• 装备仅武将界面管理，背包不显示\n• 已装备自动隐藏，卸下恢复\n• 装备持久化保存，重新登录不丢失\n\n【商城调整】\n• 装备改为纯掉落获取，商城不再售卖' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
@@ -881,9 +881,9 @@ function handleRequest(socket, req) {
         if (genQ == 0) { minEQ=7; maxEQ=10; }       // 超级
         else if (genQ == 1) { minEQ=4; maxEQ=7; }    // 一流
         else if (genQ == 2) { minEQ=2; maxEQ=5; }    // 二流
-        // 掉率: 低品质分母小=高掉落 三流=等级/200, 二流=等级/350, 一流=等级/600, 超级=等级/1000
-        var rateDiv = [1000,600,350,200][genQ] || 400;
-        var dropProb = Math.min(0.75, Math.max(0.01, eg.level / rateDiv));
+        // 掉率: 超级=等级/2000, 一流=等级/1200, 二流=等级/700, 三流=等级/400 (上限50%)
+        var rateDiv = [2000,1200,700,400][genQ] || 800;
+        var dropProb = Math.min(0.50, Math.max(0.005, eg.level / rateDiv));
         if (Math.random() < dropProb) {
           var rollQ = minEQ + Math.floor(Math.random()*(maxEQ-minEQ+1));
           if (!bestDrop || rollQ > bestDrop.quality) {
@@ -1321,6 +1321,47 @@ function handleRequest(socket, req) {
       respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') };
       respData.bagModel = makeBagModel(p.id);
       console.log('[Unequip] ' + p.role_name + ' ' + g.name + ' 卸下槽位' + (slotIdx+1));
+    } else if (headCode === 10052) {
+      // === 售卖装备 ===
+      var sellCode = String(data.itemCode);
+      var sdef = EQUIP_DATA[sellCode];
+      if (!sdef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
+
+      // 检查是否已被装备(需先卸下)
+      var allGens3 = findGenerals(p.id);
+      for (var _gii = 0; _gii < allGens3.length; _gii++) {
+        var _gg = allGens3[_gii];
+        if ((_gg.equip1||'0') === sellCode || (_gg.equip2||'0') === sellCode || (_gg.equip3||'0') === sellCode ||
+            (_gg.equip4||'0') === sellCode || (_gg.equip5||'0') === sellCode || (_gg.equip6||'0') === sellCode) {
+          return jsonRawResponse(socket, { success: false, message: '该装备已被' + (_gg.name||'武将') + '装备，请先卸下再售卖' });
+        }
+      }
+
+      // 从背包中移除
+      if (!db.bagItems) db.bagItems = [];
+      var sellIdx = -1;
+      for (var sk = 0; sk < db.bagItems.length; sk++) {
+        if (db.bagItems[sk].player_id == p.id && db.bagItems[sk].code === sellCode && (db.bagItems[sk].count||1) > 0) {
+          sellIdx = sk; break;
+        }
+      }
+      if (sellIdx === -1) return jsonRawResponse(socket, { success: false, message: '背包中没有该装备' });
+
+      db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
+      if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
+
+      // 计算售卖价格: 银子=quality×levelReq×3, 点卡=quality>=5?(quality-4)×8:0
+      var eqQ = parseInt(sdef.quality)||1;
+      var eqLv = parseInt(sdef.levelReq)||1;
+      var silverReward = eqQ * eqLv * 3;
+      var diankaReward = eqQ >= 5 ? (eqQ - 4) * 8 : 0;
+
+      p.money = (p.money||0) + silverReward;
+      p.dianka = (p.dianka||0) + diankaReward;
+      respData.money = p.money;
+      respData.dianka = p.dianka;
+      respData.bagModel = makeBagModel(p.id);
+      console.log('[SellEquip] ' + p.role_name + ' 售卖 ' + sdef.name + '(Q'+eqQ+') 银子+' + silverReward + ' 点卡+' + diankaReward);
     }
 
     save();

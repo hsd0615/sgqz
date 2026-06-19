@@ -528,7 +528,12 @@ package game.model
 
       public function get hp() : int
       {
-         return int(this._hp) - Config.timer + this.equipHPBonus;
+         return int(this._hp) - Config.timer;
+      }
+
+      public function get maxHp() : int
+      {
+         return this.baseHp + this.hpAddtion + this.tianfuHP + this.equipHPBonus;
       }
       
       public function set hp(param1:int) : *

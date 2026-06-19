@@ -569,6 +569,30 @@ package game.ui
             _cell.addEventListener(MouseEvent.CLICK, function(p:*):void {
                _self.equipItem(_self._selectingSlot, p.currentTarget.name);
             });
+
+            // 售卖按钮(右下角)
+            var _sellBtn:Sprite = new Sprite();
+            _sellBtn.name = "sell_" + _item.code;
+            _sellBtn.buttonMode = true; _sellBtn.mouseChildren = false;
+            var _sellBg:Shape = new Shape();
+            _sellBg.graphics.beginFill(0x660000,0.85);
+            _sellBg.graphics.lineStyle(1,0xCC4444,0.7);
+            _sellBg.graphics.drawRoundRect(0,0,16,14,3,3);
+            _sellBg.graphics.endFill();
+            _sellBtn.addChild(_sellBg);
+            var _sellTF:TextField = new TextField();
+            _sellTF.defaultTextFormat = new TextFormat("SimSun",9,0xFF6666,true);
+            _sellTF.text = "售"; _sellTF.selectable = false;
+            _sellTF.width = 16; _sellTF.height = 12; _sellTF.x = 1; _sellTF.y = 1;
+            _sellBtn.addChild(_sellTF);
+            _sellBtn.x = _cellW - 18; _sellBtn.y = _cellH - 16;
+            _sellBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
+               p.stopImmediatePropagation();
+               var _sellCode:String = p.currentTarget.name.replace("sell_","");
+               _self.onSellEquipClick(_sellCode);
+            });
+            _cell.addChild(_sellBtn);
+
             this._bagList.addChild(_cell);
             _ci++;
          }
@@ -664,6 +688,57 @@ package game.ui
             else
             {
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:param3.message||"装备失败"}));
+            }
+         });
+      }
+
+      private static function getEquipSellPrice(code:String):Object {
+         var q:int = int(EquipData.get(code,"quality"))||1;
+         var lv:int = int(EquipData.get(code,"levelReq"))||1;
+         return {silver: q * lv * 3, dianka: q >= 5 ? (q - 4) * 8 : 0};
+      }
+
+      private function onSellEquipClick(code:String):void {
+         var _self:GeneralInfoPanel = this;
+         var price:Object = getEquipSellPrice(code);
+         var nm:* = EquipData.get(code,"name");
+         var msg:String = "确定要售卖 [" + nm + "] 吗？\n";
+         msg += "可获得：银子+" + price.silver;
+         if(price.dianka > 0) msg += "  点卡+" + price.dianka;
+         dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+            "type":1,
+            "text":msg,
+            "fun":function():void { _self.sellEquip(code); }
+         }));
+      }
+
+      private function sellEquip(code:String):void {
+         var _self:GeneralInfoPanel = this;
+         var _obj:Object = {};
+         _obj.head = Head.HTTP_NEW_SELL_EQUIP;
+         _obj.agent = Config.AGENT;
+         _obj.ver = Config.VER;
+         _obj.token = Config.token;
+         _obj.roleID = RoleModel.getInstance().roleID;
+         _obj.userID = RoleModel.getInstance().userID;
+         _obj.itemCode = code;
+         _obj.mask = true;
+         AESController.getInstance().sendJSON(_obj, function(param1:Object):void {
+            if(param1.success == true)
+            {
+               if(param1.data.bagModel) RoleModel.getInstance().initBagModel(param1.data.bagModel);
+               if(param1.data.money != undefined) RoleModel.getInstance().money = int(param1.data.money);
+               if(param1.data.dianka != undefined) RoleModel.getInstance().dianka = int(param1.data.dianka);
+               _self.flush();
+               var price:Object = getEquipSellPrice(code);
+               var nm:* = EquipData.get(code,"name");
+               var doneMsg:String = "已售卖 " + nm + "，获得银子+" + price.silver;
+               if(price.dianka > 0) doneMsg += " 点卡+" + price.dianka;
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:doneMsg}));
+            }
+            else
+            {
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:param1.message||"售卖失败"}));
             }
          });
       }
