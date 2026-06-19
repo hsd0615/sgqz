@@ -442,6 +442,7 @@ package game.display
                param2.armyInfo.hp += _lsh;
                if(param2.armyInfo.hp > param2.maxHP) param2.armyInfo.hp = param2.maxHP;
                param2.bloodBar.setCurrent(param2.armyInfo.hp);
+               param2.dispatchEvent(new SoldierEvent(SoldierEvent.HUIFU,true,_lsh));
             }
          }
          if(_armyInfo.hp <= 0)
