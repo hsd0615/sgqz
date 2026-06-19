@@ -29,8 +29,6 @@ package game.ui
       
       private var __qitaLabel:MovieClip;
 
-      private var _zhuangbeiLabel:Sprite;
-      
       private var __diankaTF:TextField;
       
       private var __moneyTF:TextField;
@@ -93,26 +91,6 @@ package game.ui
          this.__junshijiLabel.buttonMode = true;
          this.__wujiangjiLabel.buttonMode = true;
          this.__qitaLabel.buttonMode = true;
-         // 装备标签(程序化创建，SWF皮肤中没有此标签)
-         this._zhuangbeiLabel = new Sprite();
-         var _zbg:Shape = new Shape();
-         _zbg.graphics.beginFill(0x2a1810, 0.9);
-         _zbg.graphics.lineStyle(1, 0x8B6914, 0.7);
-         _zbg.graphics.drawRoundRect(0, 0, 52, 22, 4, 4);
-         _zbg.graphics.endFill();
-         this._zhuangbeiLabel.addChild(_zbg);
-         var _ztf:TextField = new TextField();
-         _ztf.defaultTextFormat = new TextFormat("SimSun", 11, 0xC8A84E);
-         _ztf.text = "装备";
-         _ztf.selectable = false;
-         _ztf.autoSize = TextFieldAutoSize.CENTER;
-         _ztf.x = (52 - _ztf.width) / 2; _ztf.y = 3;
-         this._zhuangbeiLabel.addChild(_ztf);
-         this._zhuangbeiLabel.buttonMode = true;
-         this._zhuangbeiLabel.mouseChildren = false;
-         this._zhuangbeiLabel.x = this.__qitaLabel.x + this.__qitaLabel.width + 4;
-         this._zhuangbeiLabel.y = this.__qitaLabel.y;
-         addChild(this._zhuangbeiLabel);
          this.createBlock();
       }
       
@@ -123,7 +101,6 @@ package game.ui
          this.__junshijiLabel.gotoAndStop(2);
          this.__wujiangjiLabel.gotoAndStop(2);
          this.__qitaLabel.gotoAndStop(2);
-         this._zhuangbeiLabel.alpha = 0.6;
          switch(param1)
          {
             case 1:
@@ -141,8 +118,6 @@ package game.ui
             case 5:
                this.__qitaLabel.gotoAndStop(1);
                break;
-            case 6:
-               this._zhuangbeiLabel.alpha = 1;
          }
          this._currentLabel = param1;
          this._arr = Data.getInstance().getShopData(this._currentLabel);
@@ -205,7 +180,6 @@ package game.ui
          this.__junshijiLabel.addEventListener(MouseEvent.CLICK,this.junshijiLabelClickHandler);
          this.__wujiangjiLabel.addEventListener(MouseEvent.CLICK,this.wujiangjiLabelClickHandler);
          this.__qitaLabel.addEventListener(MouseEvent.CLICK,this.qitaLabelClickHandler);
-         this._zhuangbeiLabel.addEventListener(MouseEvent.CLICK,this.zhuangbeiLabelClickHandler);
          this.__chongzhiBtn.addEventListener(MouseEvent.CLICK,this.chongzhiBtnClickHandler);
          this.__closeBtn.addEventListener(MouseEvent.CLICK,this.closeBtnClickHandler);
          this.__preBtn.addEventListener(MouseEvent.CLICK,this.preBtnClickHandler);
@@ -355,12 +329,6 @@ package game.ui
       {
          param1.stopImmediatePropagation();
          this.initData({"label":5});
-      }
-
-      private function zhuangbeiLabelClickHandler(param1:MouseEvent) : *
-      {
-         param1.stopImmediatePropagation();
-         this.initData({"label":6});
       }
 
       private function chongzhiBtnClickHandler(param1:MouseEvent) : *

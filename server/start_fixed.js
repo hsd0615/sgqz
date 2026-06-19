@@ -541,7 +541,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '3.0.6';
+  _cachedClientVersion = '3.0.7';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -669,7 +669,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '3.0.6', title: '⚔️ 装备系统全面重做',
+      { version: '3.0.7', title: '⚔️ 装备系统全面重做',
         body: '【装备掉落】\n• 战斗通关概率掉落装备，基于敌将品质和等级\n• 超级武将掉Q7~10，一流掉Q4~7，二流掉Q2~5，三流掉Q1~3\n• Q5+装备全服广播，结果面板显示掉落\n\n【新属性】\n• 新增吸血、增伤、减伤、暴击率、暴击伤害\n• 66件装备，品质1~10+特殊变体\n\n【装备管理】\n• 装备仅武将界面管理，背包不显示\n• 已装备自动隐藏，卸下恢复\n• 装备持久化保存，重新登录不丢失\n\n【商城调整】\n• 装备改为纯掉落获取，商城不再售卖' },
       { version: '2.10.12', title: '\u{1F4CB} 装备系统完善',
         body: '【修复】\n• 商城"其他"标签现在正确显示15件装备\n• 武将详情页新增"装备"按钮\n• 装备管理面板可装备/卸下\n• 桌面端和Web端均显示更新公告' },
@@ -1384,11 +1384,12 @@ function handleRequest(socket, req) {
       db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
       if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
 
-      // 计算售卖价格: 银子=quality×levelReq×5, 点卡=quality>=6?(quality-5)×15:0
+      // 计算售卖价格: 普通=Q×Lv×50, 神器(Q8+)=Q×Lv×500, 点卡=Q>=6?(Q-5)×30:0
       var eqQ = parseInt(sdef.quality)||1;
       var eqLv = parseInt(sdef.levelReq)||1;
-      var silverReward = eqQ * eqLv * 5;
-      var diankaReward = eqQ >= 6 ? (eqQ - 5) * 15 : 0;
+      var base = eqQ * eqLv;
+      var silverReward = eqQ >= 8 ? base * 500 : base * 50;
+      var diankaReward = eqQ >= 6 ? (eqQ - 5) * 30 : 0;
 
       p.money = (p.money||0) + silverReward;
       p.dianka = (p.dianka||0) + diankaReward;

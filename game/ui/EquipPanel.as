@@ -437,7 +437,9 @@ package game.ui
       private static function getEquipSellPrice(code:String):Object {
          var q:int = int(EquipData.get(code,"quality"))||1;
          var lv:int = int(EquipData.get(code,"levelReq"))||1;
-         return {silver: q * lv * 5, dianka: q >= 6 ? (q - 5) * 15 : 0};
+         var base:int = q * lv;
+         var silver:int = q >= 8 ? base * 500 : base * 50;
+         return {silver: silver, dianka: q >= 6 ? (q - 5) * 30 : 0};
       }
 
       private function onSellEquipClick(code:String):void {

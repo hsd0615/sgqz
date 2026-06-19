@@ -449,38 +449,4 @@
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
-  <!-- ====== 装备 (category=6) 品质:1普通2精良3稀有4史诗5传说 ====== -->
-  <RECORD><name>铁剑</name><id>shop046</id><category>5</category><code>proto_4_1</code><count>1</count><payType>2</payType><oldPrice>100</oldPrice><newPrice>50</newPrice></RECORD>
-  <RECORD><name>精钢剑</name><id>shop047</id><category>5</category><code>proto_4_2</code><count>1</count><payType>2</payType><oldPrice>300</oldPrice><newPrice>150</newPrice></RECORD>
-  <RECORD><name>青釭剑</name><id>shop048</id><category>5</category><code>proto_4_3</code><count>1</count><payType>2</payType><oldPrice>600</oldPrice><newPrice>300</newPrice></RECORD>
-  <RECORD><name>倚天剑</name><id>shop049</id><category>5</category><code>proto_4_4</code><count>1</count><payType>2</payType><oldPrice>1200</oldPrice><newPrice>600</newPrice></RECORD>
-  <RECORD><name>方天画戟</name><id>shop050</id><category>5</category><code>proto_4_5</code><count>1</count><payType>2</payType><oldPrice>3000</oldPrice><newPrice>1500</newPrice></RECORD>
-  <RECORD><name>皮甲</name><id>shop051</id><category>5</category><code>proto_4_11</code><count>1</count><payType>2</payType><oldPrice>80</oldPrice><newPrice>40</newPrice></RECORD>
-  <RECORD><name>锁子甲</name><id>shop052</id><category>5</category><code>proto_4_12</code><count>1</count><payType>2</payType><oldPrice>240</oldPrice><newPrice>120</newPrice></RECORD>
-  <RECORD><name>明光铠</name><id>shop053</id><category>5</category><code>proto_4_13</code><count>1</count><payType>2</payType><oldPrice>500</oldPrice><newPrice>250</newPrice></RECORD>
-  <RECORD><name>龙鳞甲</name><id>shop054</id><category>5</category><code>proto_4_14</code><count>1</count><payType>2</payType><oldPrice>1000</oldPrice><newPrice>500</newPrice></RECORD>
-  <RECORD><name>玄武战甲</name><id>shop055</id><category>5</category><code>proto_4_15</code><count>1</count><payType>2</payType><oldPrice>2500</oldPrice><newPrice>1200</newPrice></RECORD>
-  <RECORD><name>护身符</name><id>shop056</id><category>5</category><code>proto_4_21</code><count>1</count><payType>2</payType><oldPrice>120</oldPrice><newPrice>60</newPrice></RECORD>
-  <RECORD><name>翡翠环</name><id>shop057</id><category>5</category><code>proto_4_22</code><count>1</count><payType>2</payType><oldPrice>360</oldPrice><newPrice>180</newPrice></RECORD>
-  <RECORD><name>护心镜</name><id>shop058</id><category>5</category><code>proto_4_23</code><count>1</count><payType>2</payType><oldPrice>700</oldPrice><newPrice>350</newPrice></RECORD>
-  <RECORD><name>和氏璧</name><id>shop059</id><category>5</category><code>proto_4_24</code><count>1</count><payType>2</payType><oldPrice>1500</oldPrice><newPrice>800</newPrice></RECORD>
-  <RECORD><name>传国玉玺</name><id>shop060</id><category>5</category><code>proto_4_25</code><count>1</count><payType>2</payType><oldPrice>5000</oldPrice><newPrice>2500</newPrice></RECORD>
-  <!-- 头盔 slot=4 -->
-  <RECORD><name>布帽</name><id>shop061</id><category>5</category><code>proto_4_6</code><count>1</count><payType>2</payType><oldPrice>60</oldPrice><newPrice>30</newPrice></RECORD>
-  <RECORD><name>铁盔</name><id>shop062</id><category>5</category><code>proto_4_7</code><count>1</count><payType>2</payType><oldPrice>200</oldPrice><newPrice>100</newPrice></RECORD>
-  <RECORD><name>银盔</name><id>shop063</id><category>5</category><code>proto_4_8</code><count>1</count><payType>2</payType><oldPrice>450</oldPrice><newPrice>220</newPrice></RECORD>
-  <RECORD><name>金冠</name><id>shop064</id><category>5</category><code>proto_4_9</code><count>1</count><payType>2</payType><oldPrice>900</oldPrice><newPrice>450</newPrice></RECORD>
-  <RECORD><name>龙盔</name><id>shop065</id><category>5</category><code>proto_4_10</code><count>1</count><payType>2</payType><oldPrice>2000</oldPrice><newPrice>1000</newPrice></RECORD>
-  <!-- 战靴 slot=5 -->
-  <RECORD><name>草鞋</name><id>shop066</id><category>5</category><code>proto_4_16</code><count>1</count><payType>2</payType><oldPrice>50</oldPrice><newPrice>25</newPrice></RECORD>
-  <RECORD><name>皮靴</name><id>shop067</id><category>5</category><code>proto_4_17</code><count>1</count><payType>2</payType><oldPrice>180</oldPrice><newPrice>90</newPrice></RECORD>
-  <RECORD><name>铁靴</name><id>shop068</id><category>5</category><code>proto_4_18</code><count>1</count><payType>2</payType><oldPrice>400</oldPrice><newPrice>200</newPrice></RECORD>
-  <RECORD><name>银靴</name><id>shop069</id><category>5</category><code>proto_4_19</code><count>1</count><payType>2</payType><oldPrice>800</oldPrice><newPrice>400</newPrice></RECORD>
-  <RECORD><name>神行靴</name><id>shop070</id><category>5</category><code>proto_4_20</code><count>1</count><payType>2</payType><oldPrice>1800</oldPrice><newPrice>900</newPrice></RECORD>
-  <!-- 饰品Ⅱ slot=6 -->
-  <RECORD><name>铜戒指</name><id>shop071</id><category>5</category><code>proto_4_26</code><count>1</count><payType>2</payType><oldPrice>80</oldPrice><newPrice>40</newPrice></RECORD>
-  <RECORD><name>银戒指</name><id>shop072</id><category>5</category><code>proto_4_27</code><count>1</count><payType>2</payType><oldPrice>250</oldPrice><newPrice>120</newPrice></RECORD>
-  <RECORD><name>金戒指</name><id>shop073</id><category>5</category><code>proto_4_28</code><count>1</count><payType>2</payType><oldPrice>550</oldPrice><newPrice>280</newPrice></RECORD>
-  <RECORD><name>龙戒</name><id>shop074</id><category>5</category><code>proto_4_29</code><count>1</count><payType>2</payType><oldPrice>1100</oldPrice><newPrice>550</newPrice></RECORD>
-  <RECORD><name>神戒</name><id>shop075</id><category>5</category><code>proto_4_30</code><count>1</count><payType>2</payType><oldPrice>2500</oldPrice><newPrice>1200</newPrice></RECORD>
 </RECORDS>
