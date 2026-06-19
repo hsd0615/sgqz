@@ -3025,6 +3025,14 @@ package game
             });
             return;
          }
+         if(RoleModel.getInstance().getChooseSoldiers().length == 0)
+         {
+            this.showMsg({
+               "type":0,
+               "text":"请先在武将界面部署上阵武将，至少需要1名武将才能进入副本。"
+            });
+            return;
+         }
          if(XiongnuConfig.checkGeneralLevel(RoleModel.getInstance().getChooseSoldiers()) == false)
          {
             this.showMsg({
