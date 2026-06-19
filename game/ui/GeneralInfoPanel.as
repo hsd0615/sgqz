@@ -222,23 +222,27 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮SWF的hitTestState仅左下角: 用getBounds(_skin)获取在_skin坐标系
-         // 中的准确位置(而非__shengjiBtn.x/y——那是相对其直接父节点,不是相对_skin)
+         // 修复升级按钮点击区域：SWF的hitTestState仅左下角有效。
+         // 延迟到ADDED_TO_STAGE后创建覆盖层，确保_skin布局完成、getBounds准确。
          var _self4:GeneralInfoPanel = this;
-         var _overlay:Sprite = new Sprite();
-         _overlay.name = "_shengjiOverlay";
-         var _br2:Rectangle = this.__shengjiBtn.getBounds(this._skin);
-         _overlay.x = _br2.x;
-         _overlay.y = _br2.y;
-         _overlay.graphics.beginFill(0xFF0000, 0.01);
-         _overlay.graphics.drawRect(0, 0, _br2.width + 6, _br2.height + 6);
-         _overlay.graphics.endFill();
-         _overlay.buttonMode = true;
-         _overlay.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
-            p.stopImmediatePropagation();
-            _self4.shengjiBtnClickHandler(p);
+         this.addEventListener(Event.ADDED_TO_STAGE, function _onStage(p:Event):void {
+            _self4.removeEventListener(Event.ADDED_TO_STAGE, _onStage);
+            var _ov:Sprite = new Sprite();
+            _ov.name = "_shengjiOverlay";
+            // getBounds(_skin)=按钮在_skin坐标系中的真实位置(不能用btn.x/y,那是相对直接父节点的)
+            var _br2:Rectangle = _self4.__shengjiBtn.getBounds(_self4._skin);
+            _ov.x = _br2.x;
+            _ov.y = _br2.y;
+            _ov.graphics.beginFill(0xFF0000, 0.01);
+            _ov.graphics.drawRect(-4, -4, _br2.width + 8, _br2.height + 8);
+            _ov.graphics.endFill();
+            _ov.buttonMode = true;
+            _ov.addEventListener(MouseEvent.CLICK, function(pe:MouseEvent):void {
+               pe.stopImmediatePropagation();
+               _self4.shengjiBtnClickHandler(pe);
+            });
+            _self4._skin.addChild(_ov);
          });
-         this._skin.addChild(_overlay);
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
          this.__kezhi1Btn.addEventListener(MouseEvent.CLICK,this.kezhi1BtnClickHandler);
          this.__kezhi2Btn.addEventListener(MouseEvent.CLICK,this.kezhi2BtnClickHandler);
