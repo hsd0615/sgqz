@@ -722,8 +722,16 @@ package game.fuben
       private function createEnemy2() : *
       {
          var _loc3_:int = 0;
+         var _loc4_:AbstractSoldier = null;
+         var _loc5_:int = 0;
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
+         // 3座箭塔——比第一关多
+         _loc3_ = 0;
+         while(_loc3_ < 3) {
+            this._rightArmy.push(this._config.getJiantaData());
+            _loc3_++;
+         }
          // 玩家属性基准
          var _loc1_:int = 0, _loc2_:int = 0;
          _loc3_ = 0;
@@ -732,53 +740,52 @@ package game.fuben
             _loc2_ += this._leftArmy[_loc3_].defense;
             _loc3_++;
          }
-         var _avgHp:int = int(_loc1_ / this._leftArmy.length);
-         var _avgDef:int = int(_loc2_ / this._leftArmy.length);
-         var _avgLv:int = 1;
+         // 6个弯刀兵(近战肉盾)——少于第一关的20个，但基础属性更高
          _loc3_ = 0;
-         while(_loc3_ < this._leftArmy.length) { _avgLv += this._leftArmy[_loc3_].level; _loc3_++; }
-         _avgLv = int(_avgLv / this._leftArmy.length);
-         if(_avgLv < 1) _avgLv = 1;
-         _avgLv = Math.max(_avgLv, 150); // 第二关最低150级
-         // 匈奴杂兵 x8
-         _loc3_ = 0;
-         while(_loc3_ < 8) {
-            var _zb:ArmyInfo = Data.getInstance().getArmyInfo("general_10_1", _avgLv, 0, 0, "匈奴杂兵", 2000, 60);
-            _zb.hp = int(_avgHp * 0.6); _zb.baseDefense = _avgDef;
-            this._rightArmy.push(_zb); _loc3_++;
+         while(_loc3_ < 6) {
+            var _wd:ArmyInfo = this._config.getWandaoData(_loc1_, _loc2_, this._leftArmy.length);
+            _wd.hp = int(_wd.hp * 2.0); // 血量翻倍
+            this._rightArmy.push(_wd);
+            _loc3_++;
          }
-         // 匈奴前哨 x4
+         // 6个强弓兵(远程)——第一关没有，第二关新增远程威胁
          _loc3_ = 0;
-         while(_loc3_ < 4) {
-            var _qs:ArmyInfo = Data.getInstance().getArmyInfo("general_11_1", _avgLv + 5, 0, 0, "匈奴前哨", 4000, 70);
-            _qs.hp = int(_avgHp * 0.8); _qs.baseDefense = _avgDef;
-            this._rightArmy.push(_qs); _loc3_++;
+         while(_loc3_ < 6) {
+            var _qg:ArmyInfo = this._config.getQianggongData(this._leftArmy);
+            _qg.hp = int(_qg.hp * 2.5);
+            this._rightArmy.push(_qg);
+            _loc3_++;
          }
-         // 匈奴长弓兵 x2
-         _loc3_ = 0;
-         while(_loc3_ < 2) {
-            var _cg:ArmyInfo = Data.getInstance().getArmyInfo("general_12_1", _avgLv + 10, 0, 0, "匈奴长弓兵", 6000, 80);
-            _cg.hp = int(_avgHp * 1.0); _cg.baseDefense = _avgDef;
-            this._rightArmy.push(_cg); _loc3_++;
-         }
-         // 匈奴头目(首领)
-         var _boss:ArmyInfo = Data.getInstance().getArmyInfo("general_13_1", _avgLv + 15, 0, 0, "匈奴头目", 12000, 100);
-         _boss.hp = _avgHp * 8; _boss.baseDefense = _avgDef;
-         this._rightArmy.push(_boss);
-         // 布置战场
+         // 布置战场: 箭塔在前排，弯刀中排，强弓后排
          this._rightSoldiers = [];
-         var _posArr:Array = [
-            {x:550, y:Xiongnu.POS1.y},
-            {x:520, y:Xiongnu.POS2.y},
-            {x:580, y:Xiongnu.POS3.y}
-         ];
+         // 箭塔(3座) x=670~710, y=300~500
+         var _towerPos:Array = [{x:670,y:310},{x:700,y:420},{x:690,y:490}];
          _loc3_ = 0;
-         while(_loc3_ < this._rightArmy.length) {
-            var _enemy:AbstractSoldier = this.armyFactory(this._rightArmy[_loc3_], -1, false);
-            var _pi:int = (_loc3_ < 3) ? _loc3_ : (_loc3_ % 3);
-            _enemy.x = _posArr[_pi].x; _enemy.y = _posArr[_pi].y;
-            addChild(_enemy);
-            this._rightSoldiers.push(_enemy);
+         while(_loc3_ < 3) {
+            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
+            _loc4_.x = _towerPos[_loc3_].x; _loc4_.y = _towerPos[_loc3_].y;
+            addChildAt(_loc4_, getChildIndex(this._leftSoldiers[0]));
+            this._rightSoldiers.push(_loc4_);
+            _loc3_++;
+         }
+         // 弯刀兵(6个) x=580~620
+         var _wx:int = 580;
+         _loc3_ = 3;
+         while(_loc3_ < 9) {
+            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
+            _loc4_.x = _wx; _loc4_.y = 300 + (_loc3_ - 3) * 35;
+            addChild(_loc4_);
+            this._rightSoldiers.push(_loc4_);
+            _loc3_++;
+         }
+         // 强弓兵(6个) x=530~560
+         var _qx:int = 530;
+         _loc3_ = 9;
+         while(_loc3_ < 15) {
+            _loc4_ = this.armyFactory(this._rightArmy[_loc3_], -1, false);
+            _loc4_.x = _qx; _loc4_.y = 300 + (_loc3_ - 9) * 35;
+            addChild(_loc4_);
+            this._rightSoldiers.push(_loc4_);
             _loc3_++;
          }
       }
