@@ -18,6 +18,7 @@ package game.ui
    import flash.filters.GlowFilter;
    import flash.geom.Point;
    import flash.geom.Rectangle;
+   import flash.utils.Dictionary;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -107,6 +108,7 @@ package game.ui
       private static const SLOT_LABELS:Array = ["武器","铠甲","饰品","头盔","战靴","饰品"];
       private var _bagList:Sprite;
       private var _selectingSlot:int = -1;
+      private var _slotHoverFns:Dictionary = new Dictionary();
 
       public function GeneralInfoPanel(param1:String, param2:ApplicationDomain = null)
       {
@@ -359,9 +361,10 @@ package game.ui
                }
 
                // 先移除旧的悬停监听(防止卸装备后残留)
-               if(_slot.hasOwnProperty("_hoverFn")) {
-                  _slot.removeEventListener(MouseEvent.MOUSE_OVER, _slot["_hoverFn"] as Function);
-                  _slot.removeEventListener(MouseEvent.MOUSE_OUT, _slot["_outFn"] as Function);
+               if(_self._slotHoverFns[_slot] != null) {
+                  var _oldFns:Array = _self._slotHoverFns[_slot] as Array;
+                  _slot.removeEventListener(MouseEvent.MOUSE_OVER, _oldFns[0] as Function);
+                  _slot.removeEventListener(MouseEvent.MOUSE_OUT, _oldFns[1] as Function);
                }
                // 悬停显示装备属性+品质
                var _qName:String = getQualityName(_q);
@@ -383,8 +386,7 @@ package game.ui
                      _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:140,height:130}));
                   };
                   var _outFn:Function = function(p:*):void { _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true)); };
-                  _slot["_hoverFn"] = _hoverFn;
-                  _slot["_outFn"] = _outFn;
+                  _self._slotHoverFns[_slot] = [_hoverFn, _outFn];
                   _slot.addEventListener(MouseEvent.MOUSE_OVER, _hoverFn);
                   _slot.addEventListener(MouseEvent.MOUSE_OUT, _outFn);
                })(_eqCode, _qName);
