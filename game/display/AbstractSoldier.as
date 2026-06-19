@@ -360,9 +360,9 @@ package game.display
             var _heal:int = int(param1 * param2._armyInfo.equipLifesteal / 100);
             if(_heal > 0)
             {
-               param2._armyInfo.hp += _heal;
-               if(param2._armyInfo.hp > param2._maxHP) param2._armyInfo.hp = param2._maxHP;
-               param2._bloodBar.setCurrent(param2._armyInfo.hp);
+               param2.armyInfo.hp += _heal;
+               if(param2.armyInfo.hp > param2.maxHP) param2.armyInfo.hp = param2.maxHP;
+               param2.bloodBar.setCurrent(param2.armyInfo.hp);
             }
          }
 
@@ -464,6 +464,11 @@ package game.display
       public function get maxHP() : int
       {
          return this._maxHP;
+      }
+
+      public function get bloodBar() : ProgressBar
+      {
+         return this._bloodBar;
       }
       
       public function get attack() : int

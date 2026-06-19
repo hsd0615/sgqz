@@ -721,10 +721,11 @@ package game.fuben
       
       private function createEnemy2() : *
       {
-         var _loc1_:int = 0, _loc2_:int = 0, _loc3_:int = 0;
+         var _loc3_:int = 0;
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
          // 玩家属性基准
+         var _loc1_:int = 0, _loc2_:int = 0;
          _loc3_ = 0;
          while(_loc3_ < this._leftArmy.length) {
             _loc1_ += this._leftArmy[_loc3_].hp;
@@ -738,24 +739,38 @@ package game.fuben
          while(_loc3_ < this._leftArmy.length) { _avgLv += this._leftArmy[_loc3_].level; _loc3_++; }
          _avgLv = int(_avgLv / this._leftArmy.length);
          if(_avgLv < 1) _avgLv = 1;
-         // 倭寇精兵 x12 — v3原版皮肤(generalSkin_14)
+         _avgLv = Math.max(_avgLv, 150); // 第二关最低150级
+         // 匈奴杂兵 x8
          _loc3_ = 0;
-         while(_loc3_ < 12) {
-            var _zb:ArmyInfo = Data.getInstance().getArmyInfo("general_14_0", _avgLv, 0, 0, "倭寇精兵", 3000, 80);
-            _zb.hp = int(_avgHp * 0.5); _zb.baseDefense = _avgDef;
+         while(_loc3_ < 8) {
+            var _zb:ArmyInfo = Data.getInstance().getArmyInfo("general_10_1", _avgLv, 0, 0, "匈奴杂兵", 2000, 60);
+            _zb.hp = int(_avgHp * 0.6); _zb.baseDefense = _avgDef;
             this._rightArmy.push(_zb); _loc3_++;
          }
-         // 倭寇头目 — v3原版皮肤(generalSkin_15)
-         var _boss:ArmyInfo = Data.getInstance().getArmyInfo("general_15_1", _avgLv, 0, 0, "倭寇头目", 10000, 100);
-         _boss.hp = _avgHp * 10; _boss.baseDefense = _avgDef;
+         // 匈奴前哨 x4
+         _loc3_ = 0;
+         while(_loc3_ < 4) {
+            var _qs:ArmyInfo = Data.getInstance().getArmyInfo("general_11_1", _avgLv + 5, 0, 0, "匈奴前哨", 4000, 70);
+            _qs.hp = int(_avgHp * 0.8); _qs.baseDefense = _avgDef;
+            this._rightArmy.push(_qs); _loc3_++;
+         }
+         // 匈奴长弓兵 x2
+         _loc3_ = 0;
+         while(_loc3_ < 2) {
+            var _cg:ArmyInfo = Data.getInstance().getArmyInfo("general_12_1", _avgLv + 10, 0, 0, "匈奴长弓兵", 6000, 80);
+            _cg.hp = int(_avgHp * 1.0); _cg.baseDefense = _avgDef;
+            this._rightArmy.push(_cg); _loc3_++;
+         }
+         // 匈奴头目(首领)
+         var _boss:ArmyInfo = Data.getInstance().getArmyInfo("general_13_1", _avgLv + 15, 0, 0, "匈奴头目", 12000, 100);
+         _boss.hp = _avgHp * 8; _boss.baseDefense = _avgDef;
          this._rightArmy.push(_boss);
-         // 敌军放置在战场右侧可见位置
+         // 布置战场
          this._rightSoldiers = [];
-         var _offsetX:int = 500; // 战场右半区
          var _posArr:Array = [
-            {x:_offsetX+120, y:Xiongnu.POS1.y},
-            {x:_offsetX+80,  y:Xiongnu.POS2.y},
-            {x:_offsetX+140, y:Xiongnu.POS3.y}
+            {x:550, y:Xiongnu.POS1.y},
+            {x:520, y:Xiongnu.POS2.y},
+            {x:580, y:Xiongnu.POS3.y}
          ];
          _loc3_ = 0;
          while(_loc3_ < this._rightArmy.length) {
@@ -764,12 +779,6 @@ package game.fuben
             _enemy.x = _posArr[_pi].x; _enemy.y = _posArr[_pi].y;
             addChild(_enemy);
             this._rightSoldiers.push(_enemy);
-            // 隐藏SWF皮肤，覆盖AI帧动画精灵表
-            try{var _sk:*=_enemy.getChildAt(0);if(_sk)_sk.visible=false}catch(_e:Error){}
-            var _isBoss:Boolean = (_loc3_ == this._rightArmy.length - 1);
-            var _url:String = _isBoss ? '/client/wokou_boss_sheet.png' : '/client/wokou_soldier_sheet.png';
-            var _fs:FrameSoldier = new FrameSoldier(_enemy, _url, _isBoss ? 250 : 200, _isBoss ? 300 : 250);
-            _enemy.addChild(_fs);
             _loc3_++;
          }
       }

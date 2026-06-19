@@ -336,15 +336,15 @@ package game.ui
                   else (_slot as MovieClip).addChild(_bmp);
                }
 
-               // 悬停显示装备属性
-               var _eqC:String = _eqCode;
+               // 悬停显示装备属性 (用函数参数绑定避免闭包捕获相同变量)
+               (function(_ec:String):void {
                _slot.addEventListener(MouseEvent.MOUSE_OVER, function(p:*):void {
-                  var _n:* = EquipData.get(_eqC,"name"); var _a:int=int(EquipData.get(_eqC,"attack"))||0;
-                  var _ap:int=int(EquipData.get(_eqC,"attackPct"))||0; var _d:int=int(EquipData.get(_eqC,"defense"))||0;
-                  var _dp:int=int(EquipData.get(_eqC,"defensePct"))||0; var _h:int=int(EquipData.get(_eqC,"hp"))||0;
-                  var _hp:int=int(EquipData.get(_eqC,"hpPct"))||0; var _ls:int=int(EquipData.get(_eqC,"lifesteal"))||0;
-                  var _db:int=int(EquipData.get(_eqC,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_eqC,"dmgReduce"))||0;
-                  var _cr:int=int(EquipData.get(_eqC,"critRate"))||0; var _cd:int=int(EquipData.get(_eqC,"critDmg"))||0;
+                  var _n:* = EquipData.get(_ec,"name"); var _a:int=int(EquipData.get(_ec,"attack"))||0;
+                  var _ap:int=int(EquipData.get(_ec,"attackPct"))||0; var _d:int=int(EquipData.get(_ec,"defense"))||0;
+                  var _dp:int=int(EquipData.get(_ec,"defensePct"))||0; var _h:int=int(EquipData.get(_ec,"hp"))||0;
+                  var _hp:int=int(EquipData.get(_ec,"hpPct"))||0; var _ls:int=int(EquipData.get(_ec,"lifesteal"))||0;
+                  var _db:int=int(EquipData.get(_ec,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_ec,"dmgReduce"))||0;
+                  var _cr:int=int(EquipData.get(_ec,"critRate"))||0; var _cd:int=int(EquipData.get(_ec,"critDmg"))||0;
                   var _t:String = "<b>"+_n+"</b>\n";
                   if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
                   if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
@@ -353,7 +353,7 @@ package game.ui
                   if(_dr>0) _t+="减伤:"+_dr+"%\n"; if(_cr>0) _t+="暴击:"+_cr+"%\n";
                   if(_cd>0) _t+="暴伤:"+_cd+"%\n";
                   _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:130,height:120}));
-               });
+               });})(_eqCode);
                _slot.addEventListener(MouseEvent.MOUSE_OUT, function(p:*):void {
                   _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true));
                });

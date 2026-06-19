@@ -393,6 +393,17 @@ package game.display
          }
          _bloodBar.setCurrent(_armyInfo.hp);
          dispatchEvent(new SoldierEvent(SoldierEvent.BEHURT,true,param1));
+         // 吸血
+         if(param2 != null && param2.armyInfo != null && param2.armyInfo.equipLifesteal > 0 && !param2.isDead)
+         {
+            var _lsh:int = int(param1 * param2.armyInfo.equipLifesteal / 100);
+            if(_lsh > 0)
+            {
+               param2.armyInfo.hp += _lsh;
+               if(param2.hp > param2.maxHP) param2.armyInfo.hp = param2.maxHP;
+               param2.bloodBar.setCurrent(param2.hp);
+            }
+         }
          if(_armyInfo.hp <= 0)
          {
             this.removeAllEvent();
