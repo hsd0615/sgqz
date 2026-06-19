@@ -1419,8 +1419,10 @@ package game.fuben
          var _loc3_:Point = new Point(param1.target.x,param1.target.y - 50);
          var _loc4_:Point = _loc3_.clone();
          _loc4_.y -= 50;
-         var _loc5_:int = param1.data as int;
-         this._tipsLayer.addTips(_loc5_,_loc3_);
+         var _d2:Object = param1.data;
+         var _loc5_:int = _d2 is int ? int(_d2) : (_d2.value || 0);
+         var _crit2:Boolean = _d2 is int ? false : (_d2.isCrit || false);
+         this._tipsLayer.addTips(_loc5_,_loc3_,_crit2);
       }
       
       private function onSoldierShanbiHandler(param1:SoldierEvent) : *

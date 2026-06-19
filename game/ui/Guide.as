@@ -724,8 +724,10 @@ package game.ui
          var _loc2_:Point = new Point(param1.target.x,param1.target.y - 50);
          var _loc3_:Point = _loc2_.clone();
          _loc3_.y -= 50;
-         var _loc4_:int = param1.data as int;
-         this._tipsLayer.addTips(_loc4_,_loc2_);
+         var _dg:Object = param1.data;
+         var _loc4_:int = _dg is int ? int(_dg) : (_dg.value || 0);
+         var _critG:Boolean = _dg is int ? false : (_dg.isCrit || false);
+         this._tipsLayer.addTips(_loc4_,_loc2_,_critG);
       }
       
       private function nextBtnClickHandler(param1:MouseEvent) : *

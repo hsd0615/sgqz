@@ -1142,8 +1142,10 @@ package game
          var _loc2_:Point = new Point(param1.target.x,param1.target.y - 50);
          var _loc3_:Point = _loc2_.clone();
          _loc3_.y -= 50;
-         var _loc4_:int = param1.data as int;
-         this._tipsLayer.addTips(_loc4_,_loc2_);
+         var _d:Object = param1.data;
+         var _val:int = _d is int ? int(_d) : (_d.value || 0);
+         var _crit:Boolean = _d is int ? false : (_d.isCrit || false);
+         this._tipsLayer.addTips(_val,_loc2_,_crit);
       }
       
       private function onSoldierShanbiHandler(param1:SoldierEvent) : *

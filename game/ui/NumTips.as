@@ -26,16 +26,26 @@ package game.ui
          var _loc5_:Sprite = new Sprite();
          var _loc6_:String = String(param1);
          var _loc7_:MovieClip;
-         (_loc7_ = new (this._appDomain.getDefinition("num_jianhao"))()).scaleX = 0.8;
-         _loc7_.scaleY = 0.8;
-         _loc5_.addChild(_loc7_);
+         // 暴击红字：替换减号为红色"暴"字前缀
+         if(param3) {
+            (_loc7_ = new (this._appDomain.getDefinition("num_jianhao"))()).scaleX = 0.8;
+            _loc7_.scaleY = 0.8;
+            _loc7_.transform.colorTransform = new flash.geom.ColorTransform(1,0,0,1,255,0,0,0);
+            _loc5_.addChild(_loc7_);
+         } else {
+            (_loc7_ = new (this._appDomain.getDefinition("num_jianhao"))()).scaleX = 0.8;
+            _loc7_.scaleY = 0.8;
+            _loc5_.addChild(_loc7_);
+         }
          var _loc8_:* = 0;
+         var _redCT:flash.geom.ColorTransform = new flash.geom.ColorTransform(1,0,0,1,255,0,0,0);
          while(_loc8_ < _loc6_.length)
          {
             _loc4_ = _loc6_.substr(_loc8_,1);
             (_loc7_ = new (this._appDomain.getDefinition("num_0" + _loc4_))()).scaleX = 0.8;
             _loc7_.scaleY = 0.8;
             _loc7_.x = _loc5_.width;
+            if(param3) _loc7_.transform.colorTransform = _redCT;
             _loc5_.addChild(_loc7_);
             _loc8_++;
          }

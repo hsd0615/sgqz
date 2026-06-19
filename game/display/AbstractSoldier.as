@@ -14,6 +14,7 @@ package game.display
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.utils.Timer;
+   import game.Logic;
    import game.events.SoldierEvent;
    import game.model.ArmyInfo;
    import game.model.Type;
@@ -352,7 +353,7 @@ package game.display
             this._armyInfo.hp = 0;
          }
          this._bloodBar.setCurrent(this._armyInfo.hp);
-         dispatchEvent(new SoldierEvent(SoldierEvent.BEHURT,true,param1));
+         dispatchEvent(new SoldierEvent(SoldierEvent.BEHURT,true,{value:param1,isCrit:Logic.lastCrit}));
 
          // 吸血: 攻击者回复伤害值的百分比
          if(param2 != null && param2._armyInfo != null && param2._armyInfo.equipLifesteal > 0 && !param2._isDead)

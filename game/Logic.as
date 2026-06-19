@@ -9,8 +9,10 @@ package game
       public static var kezhiXishu:Array = [1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4,1.45,1.5];
 
       public static var kezhiBilv:Array = [0,5,10,15,20,25,30,35,40,45,50];
-       
-      
+
+      public static var lastCrit:Boolean = false;
+
+
       public function Logic()
       {
          super();
@@ -18,6 +20,7 @@ package game
       
       public static function getHurtVale(param1:AbstractSoldier, param2:AbstractSoldier, param3:String = null) : int
       {
+         Logic.lastCrit = false;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
@@ -55,6 +58,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -79,6 +83,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -92,6 +97,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -105,6 +111,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -129,6 +136,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -153,6 +161,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -177,6 +186,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
@@ -201,6 +211,7 @@ package game
             {
                var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
+               Logic.lastCrit = true;
             }
             return _loc6_ <= 0 ? 1 : _loc6_;
          }
