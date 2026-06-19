@@ -160,8 +160,8 @@ package game.ui
          return _cell;
       }
 
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF6600,0xFF4444,0xFF0000,0xFF6600,0xFFFFFF];
-      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊","超凡","入圣"];
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF8C00,0xFF4444,0xFF0000,0xCC0000,0xFF66FF];
+      private var _qualityNames:Array = ["","普通","优秀","精良","史诗","传说","神话","远古","至尊","超凡","入圣"];
 
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
 

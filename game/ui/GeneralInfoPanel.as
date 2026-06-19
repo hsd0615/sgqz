@@ -334,6 +334,14 @@ package game.ui
             }
             _slot.filters = [];
 
+            // 先移除旧的悬停监听(必须在if之前, 空槽也要清)
+            if(_self._slotHoverFns[_slot] != null) {
+               var _oldFns:Array = _self._slotHoverFns[_slot] as Array;
+               _slot.removeEventListener(MouseEvent.MOUSE_OVER, _oldFns[0] as Function);
+               _slot.removeEventListener(MouseEvent.MOUSE_OUT, _oldFns[1] as Function);
+               delete _self._slotHoverFns[_slot];
+            }
+
             if(_eqCode != null && _eqCode != "" && _eqCode != "0")
             {
                var _q:int = int(EquipData.get(_eqCode,"quality"));
@@ -360,15 +368,9 @@ package game.ui
                   else (_slot as MovieClip).addChild(_bmp);
                }
 
-               // 先移除旧的悬停监听(防止卸装备后残留)
-               if(_self._slotHoverFns[_slot] != null) {
-                  var _oldFns:Array = _self._slotHoverFns[_slot] as Array;
-                  _slot.removeEventListener(MouseEvent.MOUSE_OVER, _oldFns[0] as Function);
-                  _slot.removeEventListener(MouseEvent.MOUSE_OUT, _oldFns[1] as Function);
-               }
                // 悬停显示装备属性+品质
                var _qName:String = getQualityName(_q);
-               (function(_ec:String, _qn:String):void {
+               (function(_ec:String, _qn:String, _qcStr:String):void {
                   var _hoverFn:Function = function(p:*):void {
                      var _n:* = EquipData.get(_ec,"name"); var _a:int=int(EquipData.get(_ec,"attack"))||0;
                      var _ap:int=int(EquipData.get(_ec,"attackPct"))||0; var _d:int=int(EquipData.get(_ec,"defense"))||0;
@@ -376,7 +378,7 @@ package game.ui
                      var _hp:int=int(EquipData.get(_ec,"hpPct"))||0; var _ls:int=int(EquipData.get(_ec,"lifesteal"))||0;
                      var _db:int=int(EquipData.get(_ec,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_ec,"dmgReduce"))||0;
                      var _cr:int=int(EquipData.get(_ec,"critRate"))||0; var _cd:int=int(EquipData.get(_ec,"critDmg"))||0;
-                     var _t:String = "<b>"+_n+"</b> <font color='"+getQualityColor(_q).toString(16)+"'>["+_qn+"]</font>\n";
+                     var _t:String = "<font color='"+_qcStr+"'><b>"+_n+"</b> ["+_qn+"]</font>\n";
                      if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
                      if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
                      if(_h||_hp) _t+="气血:"+(_h>0?"+"+_h:_h)+(_hp>0?"+"+_hp+"%":"")+"\n";
@@ -389,7 +391,7 @@ package game.ui
                   _self._slotHoverFns[_slot] = [_hoverFn, _outFn];
                   _slot.addEventListener(MouseEvent.MOUSE_OVER, _hoverFn);
                   _slot.addEventListener(MouseEvent.MOUSE_OUT, _outFn);
-               })(_eqCode, _qName);
+               })(_eqCode, _qName, "#" + getQualityColor(_q).toString(16));
             }
             _si++;
          }
@@ -406,9 +408,10 @@ package game.ui
          return null;
       }
 
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF6600,0xFF4444,0xFF0000,0xFF6600,0xFFFFFF];
+      // 传统RPG品质: 白<绿<蓝<紫<橙<金<暗金<红<深红<彩
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0x4bea13,0x16d2fa,0xe720f9,0xFFD700,0xFF8C00,0xFF4444,0xFF0000,0xCC0000,0xFF66FF];
       private var _qualityBgColors:Array = [0x1a1a1a,0x2a2a2a,0x0d1d05,0x051525,0x150515,0x1d1800,0x1d0d00,0x1d0505,0x1d0000,0x150d00,0x0d0d0d];
-      private var _qualityNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊","超凡","入圣"];
+      private var _qualityNames:Array = ["","普通","优秀","精良","史诗","传说","神话","远古","至尊","超凡","入圣"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
