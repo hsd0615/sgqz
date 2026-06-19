@@ -221,10 +221,10 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮：SWF的hitTestState仅左下角有形状，直接替换为全尺寸
+         // 修复升级按钮：SWF的hitTestState仅左下角，替换全尺寸(hitTestState需alpha>0才生效)
          var _hit:Sprite = new Sprite();
-         _hit.graphics.beginFill(0, 0);
-         _hit.graphics.drawRect(0, 0, 120, 36);
+         _hit.graphics.beginFill(0xFF0000, 0.01);
+         _hit.graphics.drawRect(0, 0, 100, 30);
          _hit.graphics.endFill();
          this.__shengjiBtn.hitTestState = _hit;
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
@@ -702,7 +702,7 @@ package game.ui
          var q:int = int(EquipData.get(code,"quality"))||1;
          var lv:int = int(EquipData.get(code,"levelReq"))||1;
          var base:int = q * lv;
-         var silver:int = q >= 8 ? base * 500 : base * 50;
+         var silver:int = q >= 8 ? base * 5000 : base * 500;
          return {silver: silver, dianka: q >= 6 ? (q - 5) * 30 : 0};
       }
 
