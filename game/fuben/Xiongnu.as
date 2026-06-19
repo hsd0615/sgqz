@@ -235,17 +235,14 @@ package game.fuben
       private function onCoverClickHandler(param1:MouseEvent) : *
       {
          var _loc2_:Class = null;
-         if(param1.target is SimpleButton)
-         {
-            this._cover.removeEventListener(MouseEvent.CLICK,this.onCoverClickHandler);
-            _loc2_ = ApplicationDomain.currentDomain.getDefinition(SkinCode.FUBEN_MASK) as Class;
-            this._mask = new _loc2_() as MovieClip;
-            addChild(this._mask);
-            TweenLite.to(this._cover,1,{
-               "alpha":0,
-               "onComplete":this.showJuqing
-            });
-         }
+         this._cover.removeEventListener(MouseEvent.CLICK,this.onCoverClickHandler);
+         _loc2_ = ApplicationDomain.currentDomain.getDefinition(SkinCode.FUBEN_MASK) as Class;
+         this._mask = new _loc2_() as MovieClip;
+         addChild(this._mask);
+         TweenLite.to(this._cover,1,{
+            "alpha":0,
+            "onComplete":this.showJuqing
+         });
       }
       
       private function showJuqing() : *
