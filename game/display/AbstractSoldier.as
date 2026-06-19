@@ -179,7 +179,15 @@ package game.display
       
       protected function initSkin() : *
       {
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(this._armyInfo.skin) as Class;
+         var _skinName:String = this._armyInfo.skin;
+         var _loc1_:Class;
+         try {
+            _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
+         } catch(_e:Error) {
+            // 进化皮肤(如generalSkin_9_1)不存在时回退到基础皮肤(generalSkin_9)
+            _skinName = _skinName.substr(0, _skinName.lastIndexOf("_"));
+            _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
+         }
          this._skin = new _loc1_() as MovieClip;
          if(this._armyInfo.code == "general_5_19" || this._armyInfo.type == Type.JUNZHU)
          {
