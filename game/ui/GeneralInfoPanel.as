@@ -221,20 +221,12 @@ package game.ui
       {
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.onRoleModelChange);
          this.__shengjiBtn.addEventListener(MouseEvent.CLICK,this.shengjiBtnClickHandler);
-         // 修复升级按钮点击区域：SWF的hitTestState仅左下角有效，用upState尺寸建覆盖层
-         var _self3:GeneralInfoPanel = this;
-         var _hitFix:Sprite = new Sprite();
-         var _up:flash.display.DisplayObject = this.__shengjiBtn.upState;
-         _hitFix.graphics.beginFill(0x000000, 0.01);
-         _hitFix.graphics.drawRect(0, 0, _up.width + 10, _up.height + 8);
-         _hitFix.graphics.endFill();
-         _hitFix.x = this.__shengjiBtn.x;
-         _hitFix.y = this.__shengjiBtn.y;
-         _hitFix.buttonMode = true;
-         _hitFix.addEventListener(MouseEvent.CLICK, function(p:MouseEvent):void {
-            _self3.shengjiBtnClickHandler(p);
-         });
-         this.__shengjiBtn.parent.addChild(_hitFix);
+         // 修复升级按钮：SWF的hitTestState仅左下角有形状，直接替换为全尺寸
+         var _hit:Sprite = new Sprite();
+         _hit.graphics.beginFill(0, 0);
+         _hit.graphics.drawRect(0, 0, 120, 36);
+         _hit.graphics.endFill();
+         this.__shengjiBtn.hitTestState = _hit;
          this.__jinhuaBtn.addEventListener(MouseEvent.CLICK,this.jinhuaBtnClickHandler);
          this.__kezhi1Btn.addEventListener(MouseEvent.CLICK,this.kezhi1BtnClickHandler);
          this.__kezhi2Btn.addEventListener(MouseEvent.CLICK,this.kezhi2BtnClickHandler);
