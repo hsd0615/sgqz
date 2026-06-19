@@ -705,9 +705,8 @@ package game
          this._yuanchengCon.setEnabled(true);
          this._miaozhunjing.removeEventListener(Event.ENTER_FRAME,this.onMiaozhunjingEnterFrameHandler);
          this._miaozhunjing.gotoAndStop(1);
-         removeEventListener(SoldierEvent.ENEMY_LOCKED,this.enemyLockHandler);
-         removeEventListener(SoldierEvent.ENEMY_UNLOCKED,this.enemyUnlockHandler);
-         this._lockedEnemy = null;
+         // 不移除ENEMY_LOCKED/UNLOCKED监听器、不清除_lockedEnemy，
+         // 否则切换武将后鼠标停在敌人上不会重新触发MOUSE_OVER导致瞄准镜锁死
       }
       
       private function clearCurrentSoldier() : *
@@ -790,6 +789,7 @@ package game
          }
          this.clearCurrentSoldier();
          this.resetController();
+         this._lockedEnemy = null;
          Mouse.show();
          Mouse.prototype.isHide = false;
          Mouse.prototype.canFire = false;
