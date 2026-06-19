@@ -1809,6 +1809,13 @@ package game.fuben
       private function showJuqing1() : *
       {
          var _loc1_:int = 0;
+         if(this._leftSoldiers.length == 0) {
+            if(this._timer != null) { this._timer.stop(); this._timer = null; }
+            this._timer = new Timer(500,1);
+            this._timer.addEventListener(TimerEvent.TIMER_COMPLETE,this.juqing1TimerHandler);
+            this._timer.start();
+            return;
+         }
          while(_loc1_ < this._leftSoldiers.length)
          {
             if(this._leftSoldiers[_loc1_].type == Type.QIBING)
@@ -1945,6 +1952,13 @@ package game.fuben
       private function showJuqing2() : *
       {
          var _loc1_:int = 0;
+         if(this._leftSoldiers.length == 0) {
+            if(this._timer != null) { this._timer.stop(); this._timer = null; }
+            this._timer = new Timer(500,1);
+            this._timer.addEventListener(TimerEvent.TIMER_COMPLETE,this.juqing2OverHandler);
+            this._timer.start();
+            return;
+         }
          while(_loc1_ < this._leftSoldiers.length)
          {
             if(this._leftSoldiers[_loc1_].type == Type.QIBING)
@@ -2003,6 +2017,13 @@ package game.fuben
       private function showJuqing3() : *
       {
          var _loc1_:int = 0;
+         if(this._leftSoldiers.length == 0) {
+            if(this._timer != null) { this._timer.stop(); this._timer = null; }
+            this._timer = new Timer(500,1);
+            this._timer.addEventListener(TimerEvent.TIMER_COMPLETE,this.juqing3OverHandler);
+            this._timer.start();
+            return;
+         }
          while(_loc1_ < this._leftSoldiers.length)
          {
             if(this._leftSoldiers[_loc1_].type == Type.QIBING)
