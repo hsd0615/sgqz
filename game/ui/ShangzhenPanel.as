@@ -742,9 +742,19 @@ package game.ui
          param1.stopImmediatePropagation();
          if(this._chooseArmy.length == 0)
          {
-            // 无上阵武将时，自动选前6个可用武将
+            // 无上阵武将时，自动选前6个可用武将(优先投石车)
             var allGens:Vector.<ArmyInfo> = RoleModel.getInstance().getAllSoldiers();
+            var tsIdx:int = -1;
+            for(var ti:int = 0; ti < allGens.length; ti++) {
+               if(allGens[ti].type == Type.TOUSHICHE) { tsIdx = ti; break; }
+            }
             var autoCount:int = Math.min(6, allGens.length);
+            // 确保投石车在前6个之内
+            if(tsIdx >= 0 && tsIdx >= autoCount && autoCount > 0) {
+               var _ts:ArmyInfo = allGens[tsIdx];
+               allGens.splice(tsIdx, 1);
+               allGens.splice(autoCount - 1, 0, _ts);
+            }
             for(var ai:int = 0; ai < autoCount; ai++) {
                this.addSoldierToChoose(allGens[ai].clone());
                RoleModel.getInstance().addChooseSoldier(allGens[ai].code);
