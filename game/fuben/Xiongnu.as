@@ -212,8 +212,8 @@ package game.fuben
          this.createTF();
          this.createPauseBtn();
          this.setKilled(0);
-         // 倭寇副本跳过过场动画，直接开战
-         if(param1 == 2)
+         // 倭寇副本第2关跳过过场动画，直接开战
+         if(param1 == 2 && this._fubenID == StageID.DANG_PING_WO_KOU)
          {
             this.skipIntro();
          }
@@ -273,9 +273,9 @@ package game.fuben
       
       private function createBK() : *
       {
-         if(this._currentStageID == 2)
+         if(this._currentStageID == 2 && this._fubenID == StageID.DANG_PING_WO_KOU)
          {
-            // 倭寇海战背景 — 程序化绘制
+            // 倭寇海战背景 — 程序化绘制（仅倭寇副本第2关）
             this._bk = new Sprite();
             var _g:Graphics = (this._bk as Sprite).graphics;
             var _w:Number = stage.stageWidth;
@@ -553,9 +553,9 @@ package game.fuben
             removeChild(this._title);
             this._title = null;
          }
-         if(this._currentStageID == 2)
+         if(this._currentStageID == 2 && this._fubenID == StageID.DANG_PING_WO_KOU)
          {
-            // 倭寇标题：程序化绘制
+            // 倭寇标题：程序化绘制（仅倭寇副本）
             var _titleSp:Sprite = new Sprite();
             var _tf:TextField = new TextField();
             _tf.defaultTextFormat = new TextFormat("SimHei",26,0xFFD700,true);
@@ -682,31 +682,37 @@ package game.fuben
          this._rightSoldiers = [];
          (_loc4_ = this.armyFactory(this._rightArmy[0],-1,false)).x = 700;
          _loc4_.y = 335;
+         _loc4_.armyInfo.hp = this._rightArmy[0].hp;
          addChildAt(_loc4_,getChildIndex(this._leftSoldiers[0]));
          this._rightSoldiers.push(_loc4_);
          (_loc4_ = this.armyFactory(this._rightArmy[1],-1,false)).x = 640;
          _loc4_.y = 440;
+         _loc4_.armyInfo.hp = this._rightArmy[1].hp;
          addChildAt(_loc4_,getChildIndex(this._gridContainer));
          this._rightSoldiers.push(_loc4_);
          var _loc6_:AbstractSoldier;
          (_loc6_ = this.armyFactory(this._rightArmy[2],-1,false)).x = stage.stageWidth + 130;
          _loc6_.y = Xiongnu.POS1.y;
+         _loc6_.armyInfo.hp = this._rightArmy[2].hp;
          addChildAt(_loc6_,getChildIndex(_loc4_));
          this._rightSoldiers.push(_loc6_);
          var _loc7_:AbstractSoldier;
          (_loc7_ = this.armyFactory(this._rightArmy[3],-1,false)).x = stage.stageWidth + 100;
          _loc7_.y = Xiongnu.POS2.y;
+         _loc7_.armyInfo.hp = this._rightArmy[3].hp;
          addChildAt(_loc7_,getChildIndex(_loc4_));
          this._rightSoldiers.push(_loc7_);
          var _loc8_:AbstractSoldier;
          (_loc8_ = this.armyFactory(this._rightArmy[4],-1,false)).x = stage.stageWidth + 150;
          _loc8_.y = Xiongnu.POS3.y;
+         _loc8_.armyInfo.hp = this._rightArmy[4].hp;
          addChildAt(_loc8_,getChildIndex(_loc4_));
          this._rightSoldiers.push(_loc8_);
          _loc3_ = 0;
          while(_loc3_ < this._rightArmy.length - 2 - 3)
          {
             _loc4_ = this.armyFactory(this._rightArmy[_loc3_ + 5],-1,false);
+            _loc4_.armyInfo.hp = this._rightArmy[_loc3_ + 5].hp;
             if((_loc5_ = _loc3_ % 3 + 2) == 2)
             {
                _loc4_.x = _loc6_.x;
@@ -737,13 +743,32 @@ package game.fuben
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
          var _loc3_:int = 0;
+         var _totalPlayerHP:int = 0;
+         var _totalPlayerDef:int = 0;
+         var _avgPlayerLevel:int = 0;
          _loc3_ = 0;
          while(_loc3_ < this._leftArmy.length)
          {
-            this._rightArmy[_loc3_] = this._leftArmy[_loc3_].clone();
-            this._rightArmy[_loc3_].name = "匈奴铁卫";
-            this._rightArmy[_loc3_].ai = 85;
-            this._rightArmy[_loc3_].delay = 2300;
+            _totalPlayerHP += this._leftArmy[_loc3_].hp;
+            _totalPlayerDef += this._leftArmy[_loc3_].defense;
+            _avgPlayerLevel += this._leftArmy[_loc3_].level;
+            _loc3_++;
+         }
+         _avgPlayerLevel = int(_avgPlayerLevel / this._leftArmy.length);
+         var _enemyCount:int = this._leftArmy.length + 1;
+         var _enemyName:String = this._fubenID == StageID.DANG_PING_WO_KOU ? "倭寇武士" : "匈奴铁卫";
+         var _enemyCode:String = this._fubenID == StageID.DANG_PING_WO_KOU ? "general_14_0" : "general_10_1";
+         var _enemyLevel:int = _avgPlayerLevel;
+         if(_enemyLevel < 1) _enemyLevel = 1;
+         _loc3_ = 0;
+         while(_loc3_ < _enemyCount)
+         {
+            var _enemyAI:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _enemyCode);
+            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _enemyName, int(_enemyAI.delay), int(_enemyAI.ai));
+            _enemy.baseDefense = int(_totalPlayerDef / this._leftArmy.length);
+            _enemy.hp = int(_totalPlayerHP / this._leftArmy.length);
+            _enemy.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));
+            this._rightArmy[_loc3_] = _enemy;
             _loc3_++;
          }
          this._rightSoldiers = [];
@@ -753,6 +778,7 @@ package game.fuben
          while(_loc3_ < _loc4_)
          {
             _loc2_ = this.armyFactory(this._rightArmy[_loc3_],-1,this._direct == -1 ? true : false);
+            _loc2_.armyInfo.hp = this._rightArmy[_loc3_].hp;
             if(_loc2_.type == Type.TOUSHICHE)
             {
                _loc2_.x = 770 - Xiongnu.TS_POS.x;
@@ -784,6 +810,15 @@ package game.fuben
          this._rightSoldiers = [];
          this._rightArmy.push(this._config.getBossData(this._leftArmy));
          var _loc1_:AbstractSoldier = this.armyFactory(this._rightArmy[0],-1,false);
+         // Fix: AbstractSoldier构造函数会将hp重置为maxHp，boss需要恢复自定义HP
+         var _totalPlayerHP:int = 0;
+         var _pi:int = 0;
+         while(_pi < this._leftArmy.length) {
+            _totalPlayerHP += this._leftArmy[_pi].hp;
+            _pi++;
+         }
+         this._rightArmy[0].hp = _totalPlayerHP * 12;
+         _loc1_.armyInfo.hp = this._rightArmy[0].hp;
          this._rightSoldiers.push(_loc1_);
          _loc1_.x = 550;
          _loc1_.y = Xiongnu.POS2.y;

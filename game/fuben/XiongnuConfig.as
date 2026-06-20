@@ -6,6 +6,7 @@ package game.fuben
    import game.display.AbstractSoldier;
    import game.display.JiantaSoldier;
    import game.model.ArmyInfo;
+   import game.model.EquipData;
    import game.model.Type;
    
    public class XiongnuConfig
@@ -90,6 +91,7 @@ package game.fuben
          var _loc1_:Object = Data.getInstance().getFubenAIDelay(1,"general_11_1");
          var _loc2_:ArmyInfo = Data.getInstance().getArmyInfo("general_11_1",1,0,0,"匈奴前哨",int(_loc1_.delay),int(_loc1_.ai));
          _loc2_.baseHp = 100;
+         this.assignEnemyEquip(_loc2_, 3, 1);
          return _loc2_;
       }
       
@@ -108,6 +110,7 @@ package game.fuben
          }
          _loc5_.hp = _loc2_ * 12;
          _loc5_.baseDefense = int(_loc3_ / param1.length);
+         this.assignEnemyEquip(_loc5_, 0, 3);
          return _loc5_;
       }
       
@@ -126,9 +129,10 @@ package game.fuben
          }
          _loc5_.hp = int(_loc2_ / param1.length);
          _loc5_.baseDefense = int(_loc3_ / param1.length);
+         this.assignEnemyEquip(_loc5_, 1, 1);
          return _loc5_;
       }
-      
+
       public function getWandaoData(param1:int, param2:int, param3:int) : ArmyInfo
       {
          var _loc4_:Object = Data.getInstance().getFubenAIDelay(1,"general_10_1");
@@ -136,9 +140,49 @@ package game.fuben
          (_loc5_ = Data.getInstance().getArmyInfo("general_10_1",1,0,0,"匈奴杂兵",int(_loc4_.delay),int(_loc4_.ai))).baseDefense = int(param2 / param3);
          _loc5_.hp = int(param1 / param3);
          _loc5_.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));
+         this.assignEnemyEquip(_loc5_, 2, 1);
          return _loc5_;
       }
       
+      // 给敌方武将分配默认装备
+      private function assignEnemyEquip(param1:ArmyInfo, param2:int, param3:int) : void
+      {
+         if(param1 == null) return;
+         var _genQuality:int = param2; // 0=超级 1=一流 2=二流 3=三流
+         var _stageIdx:int = param3; // 第几关
+         var _genLevel:int = param1.level;
+         if(_genLevel < 5) return;
+         // 根据品质决定装备品质范围
+         var _maxQ:int = 1;
+         if(_genQuality == 0) _maxQ = Math.min(10, 4 + _stageIdx);
+         else if(_genQuality == 1) _maxQ = Math.min(7, 2 + _stageIdx);
+         else if(_genQuality == 2) _maxQ = Math.min(5, 1 + _stageIdx);
+         else _maxQ = Math.min(3, 1 + int(_stageIdx / 2));
+         var _minQ:int = Math.max(1, _maxQ - 3);
+         var _equipSlots:Array = [];
+         for(var _s:int = 1; _s <= 6; _s++) {
+            if(Math.random() < 0.5 + _genLevel * 0.01) {
+               var _slotCodes:Array = EquipData.getBySlot(_s);
+               var _candidates:Array = [];
+               for(var _c:int = 0; _c < _slotCodes.length; _c++) {
+                  var _code:String = _slotCodes[_c];
+                  var _q:int = int(EquipData.get(_code, "quality"));
+                  if(_q >= _minQ && _q <= _maxQ) _candidates.push(_code);
+               }
+               if(_candidates.length > 0) {
+                  _equipSlots.push(_candidates[int(Math.random() * _candidates.length)]);
+               } else {
+                  _equipSlots.push("0");
+               }
+            } else {
+               _equipSlots.push("0");
+            }
+         }
+         if(_equipSlots.length == 6) {
+            param1.setEquipmentStr(_equipSlots.join(","));
+         }
+      }
+
       public function getHurtVale(param1:AbstractSoldier, param2:AbstractSoldier, param3:String = null, param4:int = -1) : int
       {
          var _loc5_:int = param1.type == Type.JUNZHU ? Type.QIBING : param1.type;

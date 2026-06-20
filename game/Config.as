@@ -22,7 +22,7 @@ package game
       public static const GAME:String = "Sanguo";
       
       public static const VER:String = "2.1.4";
-      public static const CLIENT_VER:String = "3.0.36";
+      public static const CLIENT_VER:String = "3.0.37";
       
       public static var token:String = "";
       
