@@ -389,6 +389,26 @@ function ensureAllEquip(pid) {
   if (added > 0) console.log('[Equip] Gave ' + added + ' new equip to gm_admin');
 }
 
+function ensureAmmoItems(pid) {
+  // 8种战车弹药(proto_2_1~8) + 进化卷(proto_1_1~9) 每样99个
+  var ammoCodes = [];
+  for (var i=1; i<=8; i++) ammoCodes.push('proto_2_'+i);
+  for (var i2=1; i2<=9; i2++) ammoCodes.push('proto_1_'+i2);
+  // 其他消耗品 proto_3_1~4
+  for (var i3=1; i3<=4; i3++) ammoCodes.push('proto_3_'+i3);
+
+  var existing = db.bagItems.filter(function(b){return b.player_id===pid;});
+  var existingCodes = existing.map(function(b){return b.code;});
+  var added = 0;
+  ammoCodes.forEach(function(code){
+    if (existingCodes.indexOf(code) < 0) {
+      db.bagItems.push({ id: db.nextId.bagItems++, player_id: pid, code: code, count: 99 });
+      added++;
+    }
+  });
+  if (added > 0) console.log('[Ammo] Gave ' + added + ' ammo/consumable items (x99) to player ' + pid);
+}
+
 function ensureGenerals(pid, list, level, evo, feat, tf) {
   for (const [code, name, kezhi] of list) {
     if (findGenerals(pid).some(g => g.code === code)) continue;
@@ -425,6 +445,8 @@ function createTestAccounts() {
   ensureGenerals(p1.id, ALL_SUPERS, 220, 10, 1, 'tf_20');
   // 给GM测试号发放全部76件装备
   ensureAllEquip(p1.id);
+  // 发放弹药和消耗品(每样99个)
+  ensureAmmoItems(p1.id);
 
   let p2 = findPlayer('test_pro');
   if (!p2) {

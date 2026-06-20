@@ -248,7 +248,9 @@ package game.ui
             var _item:Object = this._allData[_loc4_];
             _loc5_ = this._gridContainer.getChildByName("_grid" + _gridIndex) as MovieClip;
             _loc5_.code = _item.code;
-            _loc5_.countTF.text = RoleModel.getInstance().getBagItemCount(_item.code);
+            var _cnt:int = RoleModel.getInstance().getBagItemCount(_item.code);
+            _loc5_.countTF.text = String(_cnt);
+            _loc5_.countTF.setTextFormat(_loc5_.countTF.defaultTextFormat);
             _loc5_.flag = true;
 
             _loc6_ = this.createItemIcon(_item);
