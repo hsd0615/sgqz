@@ -59,20 +59,22 @@ package game.ui
             _loc1_.sanjiao.visible = false;
             _loc1_.mouseChildren = false;
 
-            // 程序化创建countTF确保数量文本始终可见(不依赖SWF字体嵌入)
-            var _oldTF:TextField = _loc1_.getChildByName("countTF") as TextField;
-            if(_oldTF != null) _loc1_.removeChild(_oldTF);
-            var _newTF:TextField = new TextField();
-            _newTF.name = "countTF";
-            _newTF.defaultTextFormat = new TextFormat("_sans", 13, 0xFFFFFF, true);
-            _newTF.selectable = false;
-            _newTF.mouseEnabled = false;
-            _newTF.width = 44;
-            _newTF.height = 18;
-            _newTF.x = int(_loc1_.width - _newTF.width - 1);
-            _newTF.y = int(_loc1_.height - _newTF.height - 1);
-            _newTF.filters = [new GlowFilter(0x000000, 0.85, 2, 2, 8)];
-            _loc1_.addChild(_newTF);
+            // 确保countTF文本格式正确可见(不依赖SWF字体嵌入)
+            var _tf:TextField = _loc1_.getChildByName("countTF") as TextField;
+            if(_tf == null)
+            {
+               _tf = new TextField();
+               _tf.name = "countTF";
+               _tf.width = 44;
+               _tf.height = 18;
+               _tf.x = int(_loc1_.width - _tf.width - 1);
+               _tf.y = int(_loc1_.height - _tf.height - 1);
+               _loc1_.addChild(_tf);
+            }
+            _tf.defaultTextFormat = new TextFormat("_sans", 13, 0xFFFFFF, true);
+            _tf.selectable = false;
+            _tf.mouseEnabled = false;
+            _tf.filters = [new GlowFilter(0x000000, 0.85, 2, 2, 8)];
 
             this._gridContainer.addChild(_loc1_);
             this._gridArr.push(_loc1_);
