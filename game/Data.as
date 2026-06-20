@@ -428,10 +428,62 @@ package game
             {
                delay = 3000;
             }
-            arr.push(this.getArmyInfo(xml.@code,xml.@level,xml.@evolution == undefined ? 0 : int(xml.@evolution),xml.@feature == undefined ? 0 : int(xml.@feature),xml.@name == undefined ? null : xml.@name,delay,ai,xml.@kezhi == undefined ? null : xml.@kezhi,xml.@tianfu == undefined ? null : xml.@tianfu));
+            var _enemy:ArmyInfo = this.getArmyInfo(xml.@code,xml.@level,xml.@evolution == undefined ? 0 : int(xml.@evolution),xml.@feature == undefined ? 0 : int(xml.@feature),xml.@name == undefined ? null : xml.@name,delay,ai,xml.@kezhi == undefined ? null : xml.@kezhi,xml.@tianfu == undefined ? null : xml.@tianfu);
+            this.assignGateEquip(_enemy, int(xml.@level), level);
+            arr.push(_enemy);
             i++;
          }
          return arr;
+      }
+
+      // 给主线关卡敌方武将分配装备
+      public function assignGateEquip(param1:ArmyInfo, param2:int, param3:int) : void
+      {
+         if(param1 == null || param2 < 5) return;
+         var _genQuality:int = param1.title; // 0=超级 1=一流 2=三流 3=杂兵
+         var _gateLevel:int = param3; // 关卡层级
+         // 根据品质和关卡深度决定装备品质范围
+         var _maxQ:int = 1;
+         if(_genQuality == 0) _maxQ = Math.min(10, 3 + int(_gateLevel / 10));
+         else if(_genQuality == 1) _maxQ = Math.min(7, 1 + int(_gateLevel / 15));
+         else if(_genQuality == 2) _maxQ = Math.min(5, 1 + int(_gateLevel / 20));
+         else _maxQ = Math.min(3, 1 + int(_gateLevel / 30));
+         var _minQ:int = Math.max(1, _maxQ - 3);
+         var _equipSlots:Array = [];
+         var _s:int = 1;
+         while(_s <= 6)
+         {
+            if(Math.random() < 0.4 + param2 * 0.008)
+            {
+               var _slotCodes:Array = EquipData.getBySlot(_s);
+               var _candidates:Array = [];
+               var _c:int = 0;
+               while(_c < _slotCodes.length)
+               {
+                  var _code:String = _slotCodes[_c];
+                  var _q:int = int(EquipData.get(_code, "quality"));
+                  if(_q >= _minQ && _q <= _maxQ) _candidates.push(_code);
+                  _c++;
+               }
+               if(_candidates.length > 0)
+               {
+                  _equipSlots.push(_candidates[int(Math.random() * _candidates.length)]);
+               }
+               else
+               {
+                  _equipSlots.push("0");
+               }
+            }
+            else
+            {
+               _equipSlots.push("0");
+            }
+            _s++;
+         }
+         if(_equipSlots.length == 6)
+         {
+            param1.setEquipmentStr(_equipSlots.join(","));
+         }
       }
       
       public function getZhaomuByLevel(param1:int) : Vector.<String>
