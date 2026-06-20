@@ -186,12 +186,20 @@ package game.display
          } catch(_e:Error) {
             try {
                // 进化皮肤_1不存在,回退到_0
-               _skinName = _skinName.substr(0, _skinName.lastIndexOf("_")) + "_0";
+               var _li:int = _skinName.lastIndexOf("_");
+               if(_li > 0) _skinName = _skinName.substr(0, _li) + "_0";
                _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
             } catch(_e2:Error) {
-               // 连_0也不存在,用原始皮肤名
-               _skinName = this._armyInfo.skin.substr(0, this._armyInfo.skin.lastIndexOf("_"));
-               _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
+               try {
+                  // 连_0也不存在,用去掉后缀的原始皮肤名
+                  var _li2:int = this._armyInfo.skin.lastIndexOf("_");
+                  if(_li2 > 0) _skinName = this._armyInfo.skin.substr(0, _li2);
+                  _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
+               } catch(_e3:Error) {
+                  // 终极回退: 所有皮肤都不存在,用透明占位
+                  this._skin = new MovieClip();
+                  return;
+               }
             }
          }
          this._skin = new _loc1_() as MovieClip;

@@ -421,7 +421,13 @@ package game
          var _loc4_:int = 0;
          while(_loc4_ < _loc3_)
          {
-            _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
+            try {
+               _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
+            } catch(_err:Error) {
+               // 皮肤缺失等异常时回退为Shooter
+               this._leftArmy[_loc4_].type = Type.GONGBING;
+               _loc2_ = new Shooter(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false,this);
+            }
             if(_loc2_.type == Type.TOUSHICHE)
             {
                _loc2_.x = Fight.TS_POS.x;
@@ -449,7 +455,13 @@ package game
          var _loc5_:int = 0;
          while(_loc5_ < _loc3_)
          {
-            _loc2_ = this.armyFactory(this._rightArmy[_loc5_],-1,this._direct == -1 ? true : false);
+            try {
+               _loc2_ = this.armyFactory(this._rightArmy[_loc5_],-1,this._direct == -1 ? true : false);
+            } catch(_err:Error) {
+               // 皮肤缺失等异常时回退为Shooter
+               this._rightArmy[_loc5_].type = Type.GONGBING;
+               _loc2_ = new Shooter(this._rightArmy[_loc5_],-1,this._direct == -1 ? true : false,this);
+            }
             if(_loc2_.type == Type.TOUSHICHE)
             {
                _loc2_.x = 770 - Fight.TS_POS.x;
