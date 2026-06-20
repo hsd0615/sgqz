@@ -793,6 +793,14 @@ function handleRequest(socket, req) {
   if (url === '/api/auth/players') {
     return jsonRawResponse(socket, { success: true, data: db.players.map(p => ({ userID: p.user_id, roleName: p.role_name, level: p.level, imageID: p.image_id, money: p.money })) });
   }
+  if (url.startsWith('/api/auth/player/')) {
+    var lookupUid = url.split('/').pop();
+    var foundPlayer = findPlayer(lookupUid);
+    if (foundPlayer) {
+      return jsonRawResponse(socket, { success: true, data: { userID: foundPlayer.user_id, roleName: foundPlayer.role_name, level: foundPlayer.level, imageID: foundPlayer.image_id, money: foundPlayer.money } });
+    }
+    return jsonRawResponse(socket, { success: false, message: '玩家不存在' });
+  }
 
   // Fight result
   if (url === '/api/game/fight-result') {

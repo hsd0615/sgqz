@@ -1794,26 +1794,33 @@ import game.ui.UpdateChecker;
       
       private function createGateHandler(param1:UIEvent) : *
       {
-         // 开局检查：防止没有武将就进入战斗导致卡死
-         var _chosenSoldiers:Vector.<ArmyInfo> = RoleModel.getInstance().getChooseSoldiers();
-         if(_chosenSoldiers == null || _chosenSoldiers.length == 0)
-         {
-            dispatchEvent(new UIEvent(UIEvent.MESSAGE, true, {
-               "type": 0,
-               "text": "没有可用的武将！请前往\"武将管理\"招募或配置上阵武将后再挑战关卡。"
-            }));
-            return;
+         try {
+            // 开局检查：防止没有武将就进入战斗导致卡死
+            var _chosenSoldiers:Vector.<ArmyInfo> = RoleModel.getInstance().getChooseSoldiers();
+            if(_chosenSoldiers == null || _chosenSoldiers.length == 0)
+            {
+               dispatchEvent(new UIEvent(UIEvent.MESSAGE, true, {
+                  "type": 0,
+                  "text": "没有可用的武将！请前往\"武将管理\"招募或配置上阵武将后再挑战关卡。"
+               }));
+               return;
+            }
+            if(this._fight != null)
+            {
+               this._ui.removeChild(this._fight);
+            }
+            var _enemyArmy:Vector.<ArmyInfo> = Data.getInstance().getGateArmys(param1.data.part,param1.data.level);
+            this._fight = new Fight(_chosenSoldiers, _enemyArmy);
+            RoleModel.getInstance().status = RoleStatus.GUANKA;
+            this._ui.addChild(this._fight);
+            MySound.getInstance().startByName(SoundCode.FIGHT);
+            this._fight.setPartAndLevel(int(param1.data.part),int(param1.data.level));
+            this._fight.startAI(5000,-1);
+         } catch(_err:Error) {
+            var _errMsg:String = "Fight init error: " + _err.message + " | " + _err.getStackTrace();
+            try { var _f:File = File.applicationStorageDirectory.resolvePath("fight_crash.txt"); var _s:FileStream = new FileStream(); _s.open(_f, FileMode.WRITE); _s.writeUTFBytes(_errMsg); _s.close(); } catch(_e:Error) {}
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE, true, {"type":0, "text":"战斗初始化失败: " + _err.message}));
          }
-         if(this._fight != null)
-         {
-            this._ui.removeChild(this._fight);
-         }
-         this._fight = new Fight(_chosenSoldiers, Data.getInstance().getGateArmys(param1.data.part,param1.data.level));
-         RoleModel.getInstance().status = RoleStatus.GUANKA;
-         this._ui.addChild(this._fight);
-         MySound.getInstance().startByName(SoundCode.FIGHT);
-         this._fight.setPartAndLevel(int(param1.data.part),int(param1.data.level));
-         this._fight.startAI(5000,-1);
       }
       
       private function fightCompleteHandler(param1:FightEvent) : *
