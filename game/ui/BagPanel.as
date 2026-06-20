@@ -9,6 +9,7 @@ package game.ui
    import flash.display.SimpleButton;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.filters.GlowFilter;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -57,6 +58,22 @@ package game.ui
             _loc1_ = _skin.getChildByName("_grid" + _loc2_) as MovieClip;
             _loc1_.sanjiao.visible = false;
             _loc1_.mouseChildren = false;
+
+            // 程序化创建countTF确保数量文本始终可见(不依赖SWF字体嵌入)
+            var _oldTF:TextField = _loc1_.getChildByName("countTF") as TextField;
+            if(_oldTF != null) _loc1_.removeChild(_oldTF);
+            var _newTF:TextField = new TextField();
+            _newTF.name = "countTF";
+            _newTF.defaultTextFormat = new TextFormat("_sans", 13, 0xFFFFFF, true);
+            _newTF.selectable = false;
+            _newTF.mouseEnabled = false;
+            _newTF.width = 44;
+            _newTF.height = 18;
+            _newTF.x = int(_loc1_.width - _newTF.width - 1);
+            _newTF.y = int(_loc1_.height - _newTF.height - 1);
+            _newTF.filters = [new GlowFilter(0x000000, 0.85, 2, 2, 8)];
+            _loc1_.addChild(_newTF);
+
             this._gridContainer.addChild(_loc1_);
             this._gridArr.push(_loc1_);
             _loc2_++;
@@ -253,6 +270,11 @@ package game.ui
                if(_loc6_.x < 0) _loc6_.x = 2;
                if(_loc6_.y < 0) _loc6_.y = 2;
                _loc5_.addChildAt(_loc6_, 1);
+               // 确保数量文本显示在图标上方
+               if(_loc5_.countTF != null)
+               {
+                  _loc5_.setChildIndex(_loc5_.countTF, _loc5_.numChildren - 1);
+               }
             }
 
             _loc4_++;
