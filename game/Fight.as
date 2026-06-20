@@ -14,6 +14,9 @@ package game
    import flash.external.ExternalInterface;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import flash.filters.GlowFilter;
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -162,28 +165,34 @@ package game
          return 0;
       }
       
+      private function _dbgLog(msg:String):void {
+         try { var _lf:File=File.applicationStorageDirectory.resolvePath("fight_debug.txt"); var _ls:FileStream=new FileStream(); _ls.open(_lf, FileMode.APPEND); _ls.writeUTFBytes(msg+"\n"); _ls.close(); } catch(_e:Error) {}
+      }
       private function addToStageHandler(param1:Event) : *
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.addToStageHandler);
+         this._dbgLog("=== addToStageHandler ===");
+         this._dbgLog("leftArmy.len=" + (this._leftArmy ? this._leftArmy.length : -1) + " rightArmy.len=" + (this._rightArmy ? this._rightArmy.length : -1));
          try {
             this.initView();
          } catch(_err:Error) {
-            // Flash事件系统静默吞异常,显式捕获防止InitView半失败
-            trace("[Fight] initView crash: " + _err.message);
+            this._dbgLog("CRASH: " + _err.message + " | " + _err.getStackTrace());
          }
+         this._dbgLog("leftSoldiers.len=" + (this._leftSoldiers ? this._leftSoldiers.length : -1) + " rightSoldiers.len=" + (this._rightSoldiers ? this._rightSoldiers.length : -1));
       }
-      
+
       private function initView() : *
       {
-         this.createBK();
-         this.createLeftArmy();
-         this.createRightArmy();
-         this.createGIcon();
-         this.createController();
-         this.createTipsLayer();
-         this.createAmmoTips();
-         this.creatGrid();
-         this.createTF();
+         this._dbgLog("initView: step1 createBK"); this.createBK();
+         this._dbgLog("initView: step2 createLeftArmy"); this.createLeftArmy();
+         this._dbgLog("initView: step3 createRightArmy"); this.createRightArmy();
+         this._dbgLog("initView: step4 createGIcon"); this.createGIcon();
+         this._dbgLog("initView: step5 createController"); this.createController();
+         this._dbgLog("initView: step6 createTipsLayer"); this.createTipsLayer();
+         this._dbgLog("initView: step7 createAmmoTips"); this.createAmmoTips();
+         this._dbgLog("initView: step8 creatGrid"); this.creatGrid();
+         this._dbgLog("initView: step9 createTF"); this.createTF();
+         this._dbgLog("initView: done");
       }
       
       private function initEvent() : *
