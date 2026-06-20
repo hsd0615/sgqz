@@ -17,7 +17,9 @@ package game.ui
       private var _g4:GIcon;
       
       private var _g5:GIcon;
-      
+
+      private var _g6:GIcon;
+
       private var _direct:int;
       
       private var _gArr:Array;
@@ -37,16 +39,19 @@ package game.ui
          this._g3 = new GIcon(SkinCode.GICON);
          this._g4 = new GIcon(SkinCode.GICON);
          this._g5 = new GIcon(SkinCode.GICON);
+         this._g6 = new GIcon(SkinCode.GICON);
          addChild(this._g1);
          addChild(this._g2);
          addChild(this._g3);
          addChild(this._g4);
          addChild(this._g5);
+         addChild(this._g6);
          this._gArr.push(this._g1);
          this._gArr.push(this._g2);
          this._gArr.push(this._g3);
          this._gArr.push(this._g4);
          this._gArr.push(this._g5);
+         this._gArr.push(this._g6);
       }
       
       protected function initEvent() : void
@@ -60,7 +65,7 @@ package game.ui
          var _loc4_:int = 0;
          while(_loc4_ < param1.length)
          {
-            if(param1[_loc4_].type != Type.TOUSHICHE)
+            if(param1[_loc4_].type != Type.TOUSHICHE && _loc3_ < this._gArr.length)
             {
                this._gArr[_loc3_].initData(param1[_loc4_]);
                this._gArr[_loc3_].index = _loc3_;
@@ -80,6 +85,7 @@ package game.ui
             this._g3.x = this._g2.x + this._g2.width;
             this._g4.x = this._g3.x + this._g3.width;
             this._g5.x = this._g4.x + this._g4.width;
+            this._g6.x = this._g5.x + this._g5.width;
          }
          else
          {
@@ -88,6 +94,7 @@ package game.ui
             this._g3.x = this._g2.x + this._g2.width;
             this._g4.x = this._g3.x + this._g3.width;
             this._g5.x = this._g4.x + this._g4.width;
+            this._g6.x = this._g5.x + this._g5.width;
          }
       }
       
@@ -122,6 +129,9 @@ package game.ui
                break;
             case 5:
                this._g5.setSelect();
+               break;
+            case 6:
+               this._g6.setSelect();
          }
       }
    }
