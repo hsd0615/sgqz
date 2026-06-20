@@ -137,7 +137,9 @@ package game.fuben
       private var _cover:MovieClip;
       
       private var _bossTalked:int;
-      
+
+      private var _equipNotifyText:String = "";
+
       private var _currentStageID:int;
       
       private var _pauseBtn:SimpleButton;
@@ -212,6 +214,8 @@ package game.fuben
          this.createTF();
          this.createPauseBtn();
          this.setKilled(0);
+         // 检查敌方是否携带高品质装备(橙色及以上)
+         this.checkEquipNotify();
          // 倭寇副本第2关跳过过场动画，直接开战
          if(param1 == 2 && this._fubenID == StageID.DANG_PING_WO_KOU)
          {
@@ -1843,7 +1847,8 @@ package game.fuben
          var _loc3_:* = null;
          if(this._tf != null)
          {
-            _loc3_ = "已消灭<font color=\'#ffe155\'>匈奴杂兵</font> ";
+            _loc3_ = this._equipNotifyText;
+            _loc3_ += "已消灭<font color=\'#ffe155\'>匈奴杂兵</font> ";
             _loc3_ += param1 + " 个\n";
             _loc3_ += "剩余<font color=\'#ffe155\'>匈奴杂兵</font> ";
             _loc3_ += param2 - param1 + " 个";
@@ -1851,6 +1856,56 @@ package game.fuben
          }
       }
       
+      // 检查敌方是否携带高品质装备(橙色Q7+)，在战斗界面提示玩家
+      private function checkEquipNotify() : void
+      {
+         if(this._rightArmy == null) return;
+         var _highEquips:Array = [];
+         var _ri:int = 0;
+         while(_ri < this._rightArmy.length)
+         {
+            var _army:ArmyInfo = this._rightArmy[_ri] as ArmyInfo;
+            if(_army != null)
+            {
+               var _eqStr:String = _army.getEquipmentStr();
+               if(_eqStr != null && _eqStr != "" && _eqStr != "0,0,0,0,0,0")
+               {
+                  var _parts:Array = _eqStr.split(",");
+                  var _pi:int = 0;
+                  while(_pi < _parts.length)
+                  {
+                     var _code:String = _parts[_pi];
+                     if(_code != "0" && _code != "" && _code != null)
+                     {
+                        var _q:int = int(game.model.EquipData.get(_code, "quality"));
+                        if(_q >= 7)
+                        {
+                           var _eqName:String = game.model.EquipData.get(_code, "name") as String;
+                           _highEquips.push({eqName:_eqName, quality:_q, enemyName:_army.name});
+                           break;
+                        }
+                     }
+                     _pi++;
+                  }
+               }
+            }
+            _ri++;
+         }
+         if(_highEquips.length > 0)
+         {
+            this._equipNotifyText = "<font color='#ff6600' size='14'>⚠ 稀有掉落预警</font>\n";
+            var _hi:int = 0;
+            while(_hi < _highEquips.length)
+            {
+               this._equipNotifyText += "<font color='#ff9900'>[" + _highEquips[_hi].enemyName + "] 携带 </font>";
+               this._equipNotifyText += "<font color='#ff4500'><b>" + _highEquips[_hi].eqName + "</b></font> ";
+               this._equipNotifyText += "<font color='#ffcc00'>(Q" + _highEquips[_hi].quality + ")</font>\n";
+               _hi++;
+            }
+            this._equipNotifyText += "<font color='#ffffff' size='12'>击败该武将并通关即可获得！</font>\n";
+         }
+      }
+
       private function showJuqing1() : *
       {
          var _loc1_:int = 0;
