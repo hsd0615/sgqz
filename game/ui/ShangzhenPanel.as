@@ -580,26 +580,70 @@ package game.ui
          } catch(_e:Error) {}
          this._allArmy = param1.all;
          this._chooseArmy = param1.choose;
+         // 清理陈旧数据：非投石车最多5个，移除多余的
+         if(this._chooseArmy != null) {
+            var _nonTSCount:int = 0;
+            var _cleanIdx:int = 0;
+            while(_cleanIdx < this._chooseArmy.length) {
+               if(this._chooseArmy[_cleanIdx] != null && this._chooseArmy[_cleanIdx].type != Type.TOUSHICHE) {
+                  _nonTSCount++;
+                  if(_nonTSCount > 5) {
+                     RoleModel.getInstance().removeChooseSoldier(this._chooseArmy[_cleanIdx].code);
+                     this._chooseArmy.splice(_cleanIdx, 1);
+                     continue;
+                  }
+               }
+               _cleanIdx++;
+            }
+         }
          this._allArmy.sort(this.sortRule);
          this._currentPage = 1;
          this._maxPage = this._allArmy.length % 6 == 0 ? int(this._allArmy.length / 6) : int(this._allArmy.length / 6) + 1;
+         // DEBUG: log page set
+         try {
+            var _df1:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds1:FileStream = new FileStream();
+            _ds1.open(_df1, FileMode.APPEND);
+            _ds1.writeUTFBytes("[ShangzhenPanel] afterSetPage: _currentPage=" + this._currentPage + " _maxPage=" + this._maxPage + " createAll_guard=" + (this._block21 != null) + " createChoose_guard=" + (this._block11 != null) + "\n");
+            _ds1.close();
+         } catch(_e:Error) {}
          this.createAll();
          this.createChoose();
          var _loc2_:int = 1;
          var _loc3_:int = 1;
          while(_loc3_ <= this._chooseArmy.length)
          {
+            // DEBUG: log each choose iteration
+            try {
+               var _armyEntry:* = this._chooseArmy[_loc3_ - 1];
+               var _df2:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+               var _ds2:FileStream = new FileStream();
+               _ds2.open(_df2, FileMode.APPEND);
+               _ds2.writeUTFBytes("[ShangzhenPanel] whileLoop: idx=" + _loc3_ + " of " + this._chooseArmy.length + " code=" + (_armyEntry ? _armyEntry.code : "NULL") + " type=" + (_armyEntry ? _armyEntry.type : -1) + " isTS=" + (_armyEntry ? (_armyEntry.type == Type.TOUSHICHE) : false) + " _loc2_=" + _loc2_ + " qixieBlock=" + (this._qixieBlock != null) + "\n");
+               _ds2.close();
+            } catch(_e:Error) {}
             if(this._chooseArmy[_loc3_ - 1].type == Type.TOUSHICHE)
             {
-               this._qixieBlock.initData(this._chooseArmy[_loc3_ - 1]);
+               if(this._qixieBlock != null)
+               {
+                  this._qixieBlock.initData(this._chooseArmy[_loc3_ - 1]);
+               }
             }
-            else
+            else if(_loc2_ <= 5)
             {
                this["_block1" + _loc2_].initData(this._chooseArmy[_loc3_ - 1]);
                _loc2_++;
             }
             _loc3_++;
          }
+         // DEBUG: log before flush
+         try {
+            var _df3:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds3:FileStream = new FileStream();
+            _ds3.open(_df3, FileMode.APPEND);
+            _ds3.writeUTFBytes("[ShangzhenPanel] beforeFlush: _currentPage=" + this._currentPage + " _maxPage=" + this._maxPage + " _loc2_=" + _loc2_ + "\n");
+            _ds3.close();
+         } catch(_e:Error) {}
          this.flush();
       }
       
@@ -769,22 +813,25 @@ package game.ui
          param1.stopImmediatePropagation();
          if(this._chooseArmy.length == 0)
          {
-            // 无上阵武将时，自动选前6个可用武将(优先投石车)
+            // 无上阵武将时，自动选将：至多5非投石车+1投石车
             var allGens:Vector.<ArmyInfo> = RoleModel.getInstance().getAllSoldiers();
             var tsIdx:int = -1;
+            var _picked:int = 0;
+            // 先找投石车
             for(var ti:int = 0; ti < allGens.length; ti++) {
                if(allGens[ti].type == Type.TOUSHICHE) { tsIdx = ti; break; }
             }
-            var autoCount:int = Math.min(6, allGens.length);
-            // 确保投石车在前6个之内
-            if(tsIdx >= 0 && tsIdx >= autoCount && autoCount > 0) {
-               var _ts:ArmyInfo = allGens[tsIdx];
-               allGens.splice(tsIdx, 1);
-               allGens.splice(autoCount - 1, 0, _ts);
-            }
-            for(var ai:int = 0; ai < autoCount; ai++) {
+            // 选至多5个非投石车(跳过投石车)
+            for(var ai:int = 0; ai < allGens.length && _picked < 5; ai++) {
+               if(ai == tsIdx) continue;
                this.addSoldierToChoose(allGens[ai].clone());
                RoleModel.getInstance().addChooseSoldier(allGens[ai].code);
+               _picked++;
+            }
+            // 最后选投石车
+            if(tsIdx >= 0) {
+               this.addSoldierToChoose(allGens[tsIdx].clone());
+               RoleModel.getInstance().addChooseSoldier(allGens[tsIdx].code);
             }
          }
          this.sendToHttpNew();
