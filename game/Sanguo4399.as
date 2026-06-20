@@ -831,17 +831,24 @@ import game.ui.UpdateChecker;
                   }
                }
             } catch(e:Error) { trace("[Config] no cache, creating new"); }
-            // 更新当前账号的行
+            // 更新当前账号的行，并移到第一行(下次启动时自动选中)
             var curEntry:String = _loginUserID + ":" + _loginPassword;
-            if(existing[_loginUserID]) {
-               for(var j:int = 0; j < lines.length; j++) {
-                  if(lines[j].indexOf(_loginUserID + ":") == 0 || lines[j] == _loginUserID) {
-                     lines[j] = curEntry;
-                     break;
-                  }
+            var foundIdx:int = -1;
+            for(var j:int = 0; j < lines.length; j++) {
+               if(lines[j].indexOf(_loginUserID + ":") == 0 || lines[j] == _loginUserID) {
+                  lines[j] = curEntry;
+                  foundIdx = j;
+                  break;
+               }
+            }
+            if(foundIdx >= 0) {
+               // 移到第一行使其成为默认登录账号
+               if(foundIdx > 0) {
+                  lines.splice(foundIdx, 1);
+                  lines.unshift(curEntry);
                }
             } else {
-               lines.push(curEntry);
+               lines.unshift(curEntry);
             }
             // 写回
             var fs:FileStream = new FileStream();

@@ -64,15 +64,13 @@ package game.ui
             {
                _tf = new TextField();
                _tf.name = "countTF";
-               _tf.y = int(_loc1_.height - 20);
                _loc1_.addChild(_tf);
             }
-            _tf.defaultTextFormat = new TextFormat("_sans", 12, 0xFFFFFF, true);
+            _tf.defaultTextFormat = new TextFormat("_sans", 10, 0xFFFFFF, true);
             _tf.selectable = false;
             _tf.mouseEnabled = false;
             _tf.autoSize = TextFieldAutoSize.RIGHT;
-            _tf.background = true;
-            _tf.backgroundColor = 0x000000;
+            _tf.background = false;
 
             this._gridContainer.addChild(_loc1_);
             this._gridArr.push(_loc1_);
@@ -249,8 +247,6 @@ package game.ui
             var _cnt:int = RoleModel.getInstance().getBagItemCount(_item.code);
             _loc5_.countTF.text = String(_cnt);
             _loc5_.countTF.setTextFormat(_loc5_.countTF.defaultTextFormat);
-            // 根据文本实际宽度动态右对齐(autoSize RIGHT)
-            _loc5_.countTF.x = int(_loc5_.width - _loc5_.countTF.width - 2);
             _loc5_.flag = true;
 
             _loc6_ = this.createItemIcon(_item);
@@ -274,11 +270,13 @@ package game.ui
                if(_loc6_.x < 0) _loc6_.x = 2;
                if(_loc6_.y < 0) _loc6_.y = 2;
                _loc5_.addChildAt(_loc6_, 1);
-               // 确保数量文本显示在图标上方
-               if(_loc5_.countTF != null)
-               {
-                  _loc5_.setChildIndex(_loc5_.countTF, _loc5_.numChildren - 1);
-               }
+            }
+            // 数量文字定位在图标右下角(不论图标是否存在,默认在格子右下角)
+            if(_loc5_.countTF != null)
+            {
+               _loc5_.countTF.x = int((_loc6_ != null ? _loc6_.x + _loc6_.width : _loc5_.width) - _loc5_.countTF.width + 1);
+               _loc5_.countTF.y = int((_loc6_ != null ? _loc6_.y + _loc6_.height : _loc5_.height) - _loc5_.countTF.height + 1);
+               _loc5_.setChildIndex(_loc5_.countTF, _loc5_.numChildren - 1);
             }
 
             _loc4_++;
