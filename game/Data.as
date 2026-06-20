@@ -440,6 +440,8 @@ package game
       public function assignGateEquip(param1:ArmyInfo, param2:int, param3:int) : void
       {
          if(param1 == null || param2 < 5) return;
+         // 投石车不掉装备
+         if(param1.type == Type.TOUSHICHE) return;
          var _genQuality:int = param1.title; // 0=超级 1=一流 2=三流 3=杂兵
          var _gateLevel:int = param3; // 关卡层级
          // 根据品质和关卡深度决定装备品质范围

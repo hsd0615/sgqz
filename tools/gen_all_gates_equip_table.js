@@ -157,10 +157,12 @@ allEntries.forEach(function (entry) {
             var q = enemy.quality;
             var qn = qualityNames[q] || '三流';
             var qc = 'q' + q;
-            var equip = getEquipForQuality(q, stage.stageIdx);
-            html += '<tr><td><b>' + enemy.name + '</b><br><span style="color:#888;font-size:9px">' + enemy.code + '</span></td>';
+            var isTS = enemy.code && enemy.code.indexOf('general_0_') === 0;
+            var equip = isTS ? {minQ:0, maxQ:0, slots:[[],[],[],[],[],[]]} : getEquipForQuality(q, stage.stageIdx);
+            html += '<tr>';
+            html += '<td><b>' + enemy.name + '</b>' + (isTS ? ' <span style=\"color:#ff4444;font-size:9px\">[不掉]</span>' : '') + '<br><span style=\"color:#888;font-size:9px\">' + enemy.code + '</span></td>';
             html += '<td class="' + qc + '">' + qn + '</td>';
-            html += '<td>Q' + equip.minQ + '~Q' + equip.maxQ + '</td>';
+            html += '<td>' + (isTS ? '<span style=\"color:#ff4444\">不掉装备</span>' : 'Q' + equip.minQ + '~Q' + equip.maxQ) + '</td>';
             for (var si = 0; si < 6; si++) {
                 var seq = equip.slots[si];
                 if (seq.length === 0) {
@@ -197,11 +199,12 @@ partKeys.forEach(function (part) {
             var q = enemy.quality;
             var qn = qualityNames[q] || '三流';
             var qc = 'q' + q;
-            var equip = getEquipForQuality(q, lv.level);
-            html += '<tr><td><b>' + (enemy.name || enemy.code) + '</b><br><span style="color:#888;font-size:9px">' + enemy.code + '</span></td>';
+            var isTS2 = enemy.code && enemy.code.indexOf('general_0_') === 0;
+            var equip = isTS2 ? {minQ:0, maxQ:0, slots:[[],[],[],[],[],[]]} : getEquipForQuality(q, lv.level);
+            html += '<tr><td><b>' + (enemy.name || enemy.code) + '</b>' + (isTS2 ? ' <span style=\"color:#ff4444;font-size:9px\">[不掉]</span>' : '') + '<br><span style=\"color:#888;font-size:9px\">' + enemy.code + '</span></td>';
             html += '<td>' + enemy.level + '</td>';
             html += '<td class="' + qc + '">' + qn + '</td>';
-            html += '<td>Q' + equip.minQ + '~Q' + equip.maxQ + '</td>';
+            html += '<td>' + (isTS2 ? '<span style=\"color:#ff4444\">不掉装备</span>' : 'Q' + equip.minQ + '~Q' + equip.maxQ) + '</td>';
             for (var si = 0; si < 6; si++) {
                 var seq = equip.slots[si];
                 if (seq.length === 0) {

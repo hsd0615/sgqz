@@ -148,6 +148,8 @@ package game.fuben
       private function assignEnemyEquip(param1:ArmyInfo, param2:int, param3:int) : void
       {
          if(param1 == null) return;
+         // 投石车不装备不掉落
+         if(param1.type == Type.TOUSHICHE) return;
          var _genQuality:int = param2; // 0=超级 1=一流 2=二流 3=三流
          var _stageIdx:int = param3; // 第几关
          var _genLevel:int = param1.level;
