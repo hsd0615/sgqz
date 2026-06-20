@@ -111,6 +111,8 @@ package game.ui
          this.__nextBtn = _skin.getChildByName("_nextBtn") as SimpleButton;
          this.__okBtn = _skin.getChildByName("_okBtn") as SimpleButton;
          this.__pageTF = _skin.getChildByName("_pageTF") as TextField;
+         this.createAll();
+         this.createChoose();
       }
       
       override protected function initEvent() : void
@@ -572,8 +574,6 @@ package game.ui
          this._allArmy.sort(this.sortRule);
          this._currentPage = 1;
          this._maxPage = this._allArmy.length % 6 == 0 ? int(this._allArmy.length / 6) : int(this._allArmy.length / 6) + 1;
-         this.createAll();
-         this.createChoose();
          var _loc2_:int = 1;
          var _loc3_:int = 1;
          while(_loc3_ <= this._chooseArmy.length)
@@ -645,6 +645,10 @@ package game.ui
       
       private function createChoose() : *
       {
+         if(this._block11 != null)
+         {
+            return;
+         }
          this._block11 = new GeneralBlock(SkinCode.GENERAL_BLOCK);
          this._block12 = new GeneralBlock(SkinCode.GENERAL_BLOCK);
          this._block13 = new GeneralBlock(SkinCode.GENERAL_BLOCK);
@@ -685,6 +689,10 @@ package game.ui
       
       private function createAll() : *
       {
+         if(this._block21 != null)
+         {
+            return;
+         }
          this._block21 = new GeneralBlock(SkinCode.GENERAL_BLOCK);
          this._block22 = new GeneralBlock(SkinCode.GENERAL_BLOCK);
          this._block23 = new GeneralBlock(SkinCode.GENERAL_BLOCK);

@@ -81,8 +81,8 @@ package game.ui
             this._general.scaleX = 0.65;
             this._general.scaleY = 0.65;
          }
-         this._general.x = this.width / 2;
-         this._general.y = this.height - 15;
+         this._general.x = this._skin.width / 2;
+         this._general.y = this._skin.height - 15;
          addChild(this._general);
          var _loc3_:Shape = new Shape();
          _loc3_.graphics.beginFill(16764006);

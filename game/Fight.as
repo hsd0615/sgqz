@@ -66,7 +66,9 @@ package game
       private static const POS3:Point = new Point(180,390);
       
       private static const POS4:Point = new Point(140,415);
-      
+
+      private static const POS5:Point = new Point(100,440);
+
       private static const ATTACKPOS1:Point = new Point(35,-165);
       
       public static const MERIC:int = 30;
@@ -449,7 +451,7 @@ package game
             }
             else
             {
-               var _posIdx:int = Math.min(_loc1_, 4);
+               var _posIdx:int = Math.min(_loc1_, 5);
                _loc2_.x = Fight["POS" + _posIdx].x;
                _loc2_.y = Fight["POS" + _posIdx].y;
                _loc1_++;
@@ -484,7 +486,7 @@ package game
             }
             else
             {
-               var _posIdx2:int = Math.min(_loc1_, 4);
+               var _posIdx2:int = Math.min(_loc1_, 5);
                _loc2_.x = 770 - Fight["POS" + _posIdx2].x;
                _loc2_.y = Fight["POS" + _posIdx2].y;
                _loc1_++;
