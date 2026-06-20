@@ -7,22 +7,31 @@ var baseDir = __dirname.replace(/tools$/, '');
 // 1. 读取敌方武将数据
 var genXml = fs.readFileSync(path.join(baseDir, 'staticgeneral.xml'), 'utf8');
 var genMap = {};
-var genPattern = /<general>[\s\S]*?<code>(.*?)<\/code>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<type>(.*?)<\/type>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<\/general>/g;
+var genPattern = /<RECORD>[\s\S]*?<code>(.*?)<\/code>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<type>(.*?)<\/type>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<\/RECORD>/g;
 var m;
 while ((m = genPattern.exec(genXml)) !== null) {
     genMap[m[1]] = { code: m[1], name: m[2], type: parseInt(m[3]), title: parseInt(m[4]) };
 }
 
-// 2. 读取装备数据
+// 2. 读取装备数据 (staticequip.xml — 服务端运行时加载源)
 var EQUIP_DATA = {};
-var eqContent = fs.readFileSync(path.join(baseDir, 'server', 'start_fixed.js'), 'utf8');
-var eqPattern = /EQUIP_DATA\["(.*?)"\]\s*=\s*\{([^}]+)\}/g;
-var eqm;
-while ((eqm = eqPattern.exec(eqContent)) !== null) {
-    var props = {};
-    var pms = eqm[2].matchAll(/(\w+):([^,}]+)/g);
-    for (var pm of pms) props[pm[1].trim()] = pm[2].trim();
-    EQUIP_DATA[eqm[1]] = props;
+var eqXml = fs.readFileSync(path.join(baseDir, 'staticequip.xml'), 'utf8');
+var eqBlocks = eqXml.split('<RECORD>');
+for (var ei = 1; ei < eqBlocks.length; ei++) {
+    var block = eqBlocks[ei];
+    var ecm = block.match(/<code>([^<]+)<\/code>/);
+    var esm = block.match(/<slot>([^<]+)<\/slot>/);
+    var enm = block.match(/<name>([^<]+)<\/name>/);
+    var eqm2 = block.match(/<quality>([^<]+)<\/quality>/);
+    var elm = block.match(/<levelReq>([^<]+)<\/levelReq>/);
+    if (ecm && esm && eqm2) {
+        EQUIP_DATA[ecm[1]] = {
+            slot: parseInt(esm[1]),
+            name: enm ? enm[1] : ecm[1],
+            quality: parseInt(eqm2[1]),
+            levelReq: elm ? parseInt(elm[1]) : 1
+        };
+    }
 }
 
 // 3. 解析stage.xml — 副本+主线
@@ -37,11 +46,11 @@ while ((fm = fubenPattern.exec(stageXml)) !== null) {
     var fubenName = fubenID === 1 ? '袭杀匈奴' : (fubenID === 2 ? '荡平倭寇' : '副本' + fubenID);
     var genContent = fm[2];
     var enemies = [];
-    var gPattern = /<general\s+code="(.*?)"(?:\s+level="(.*?)")?\s+name="(.*?)"/g;
+    var gPattern = /<general\s+code="(.*?)"[^>]*name="(.*?)"/g;
     var gm2;
     while ((gm2 = gPattern.exec(genContent)) !== null) {
         var genCd = gm2[1];
-        var genNm = gm2[3];
+        var genNm = gm2[2];
         var genInfo = genMap[genCd] || { title: 3 };
         enemies.push({ code: genCd, name: genNm, quality: genInfo.title });
     }
@@ -55,16 +64,16 @@ while ((fm = fubenPattern.exec(stageXml)) !== null) {
 }
 
 // 解析主线关卡
-var gatePattern = /<gate\s+id="(\d+)"[^>]*part="(\d+)"[^>]*level="(\d+)"[^>]*>([\s\S]*?)<\/gate>/g;
+var gatePattern = /<gate\s[^>]*part="(\d+)"[^>]*level="(\d+)"[^>]*>([\s\S]*?)<\/gate>/g;
 var gateMap = {}; // part -> levels
 var gateCount = 0;
 var gm3;
 while ((gm3 = gatePattern.exec(stageXml)) !== null) {
-    var part = parseInt(gm3[2]);
-    var level = parseInt(gm3[3]);
-    var genContent2 = gm3[4];
+    var part = parseInt(gm3[1]);
+    var level = parseInt(gm3[2]);
+    var genContent2 = gm3[3];
     var enemies2 = [];
-    var gp = /<general\s+code="(.*?)"[^>]*level="(.*?)"[^>]*(?:name="(.*?)")?/g;
+    var gp = /<general\s+code="(.*?)"\s+level="(.*?)"\s+name="(.*?)"/g;
     var gm4;
     while ((gm4 = gp.exec(genContent2)) !== null) {
         var cd = gm4[1];
