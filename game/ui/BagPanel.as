@@ -9,7 +9,6 @@ package game.ui
    import flash.display.SimpleButton;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
-   import flash.filters.GlowFilter;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -65,16 +64,18 @@ package game.ui
             {
                _tf = new TextField();
                _tf.name = "countTF";
-               _tf.width = 44;
-               _tf.height = 18;
-               _tf.x = int(_loc1_.width - _tf.width - 1);
-               _tf.y = int(_loc1_.height - _tf.height - 1);
+               _tf.x = int(_loc1_.width - 44 - 1);
+               _tf.y = int(_loc1_.height - 18 - 1);
                _loc1_.addChild(_tf);
             }
-            _tf.defaultTextFormat = new TextFormat("_sans", 13, 0xFFFFFF, true);
+            _tf.width = 44;
+            _tf.height = 18;
+            _tf.defaultTextFormat = new TextFormat("_sans", 12, 0xFFFFFF, true);
             _tf.selectable = false;
             _tf.mouseEnabled = false;
-            _tf.filters = [new GlowFilter(0x000000, 0.85, 2, 2, 8)];
+            // 使用TextField内置背景替代滤镜(避免位图化导致模糊)
+            _tf.background = true;
+            _tf.backgroundColor = 0x000000;
 
             this._gridContainer.addChild(_loc1_);
             this._gridArr.push(_loc1_);
