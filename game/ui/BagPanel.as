@@ -64,16 +64,13 @@ package game.ui
             {
                _tf = new TextField();
                _tf.name = "countTF";
-               _tf.x = int(_loc1_.width - 44 - 1);
-               _tf.y = int(_loc1_.height - 18 - 1);
+               _tf.y = int(_loc1_.height - 20);
                _loc1_.addChild(_tf);
             }
-            _tf.width = 44;
-            _tf.height = 18;
             _tf.defaultTextFormat = new TextFormat("_sans", 12, 0xFFFFFF, true);
             _tf.selectable = false;
             _tf.mouseEnabled = false;
-            // 使用TextField内置背景替代滤镜(避免位图化导致模糊)
+            _tf.autoSize = TextFieldAutoSize.RIGHT;
             _tf.background = true;
             _tf.backgroundColor = 0x000000;
 
@@ -252,6 +249,8 @@ package game.ui
             var _cnt:int = RoleModel.getInstance().getBagItemCount(_item.code);
             _loc5_.countTF.text = String(_cnt);
             _loc5_.countTF.setTextFormat(_loc5_.countTF.defaultTextFormat);
+            // 根据文本实际宽度动态右对齐(autoSize RIGHT)
+            _loc5_.countTF.x = int(_loc5_.width - _loc5_.countTF.width - 2);
             _loc5_.flag = true;
 
             _loc6_ = this.createItemIcon(_item);
