@@ -258,6 +258,7 @@ import game.ui.UpdateChecker;
       // 账号配置变量
       private var _loginUserID:String = "test_user_001";
       private var _loginPassword:String = "";
+      private var _passwordCache:Object = {};
       private var _registerMode:Boolean = false;
       private var _registerUserID:String = "";
       private var _registerPassword:String = "";
@@ -394,9 +395,11 @@ import game.ui.UpdateChecker;
                   if(line.length > 0 && line.charAt(0) != "#") {
                      var colonPos:int = line.indexOf(":");
                      var uid:String = (colonPos > 0) ? line.substring(0, colonPos) : line;
-                     if(uid.indexOf("new:") == 0) uid = uid.substring(4).split(":")[0];
+                     var pwd:String = (colonPos > 0) ? line.substring(colonPos + 1) : "";
+                     if(uid.indexOf("new:") == 0) { uid = uid.substring(4).split(":")[0]; pwd = uid.substring(4).split(":")[1] || ""; }
                      if(uid.length > 0 && cachedUsers.indexOf(uid) == -1) {
                         cachedUsers.push(uid);
+                        if(pwd.length > 0) _passwordCache[uid] = pwd;
                      }
                   }
                }
@@ -471,7 +474,7 @@ import game.ui.UpdateChecker;
             var item:Sprite = createPlayerItem(p, yPos, j);
             item.name = "_playerItem";
             _mainPanel.addChild(item);
-            yPos += 34;
+            yPos += 26;
          }
       }
 
@@ -488,7 +491,7 @@ import game.ui.UpdateChecker;
          } else {
             selBg.graphics.beginFill(0x1A1018, 0.4 + (index % 2) * 0.15);
          }
-         selBg.graphics.drawRoundRect(0, 0, 288, 32, 3, 3);
+         selBg.graphics.drawRoundRect(0, 0, 288, 24, 3, 3);
          selBg.graphics.endFill();
          selBg.name = "_selBg";
          sp.addChild(selBg);
@@ -496,34 +499,34 @@ import game.ui.UpdateChecker;
          // 头像背景小框
          var imgBg:Shape = new Shape();
          imgBg.graphics.beginFill(0x0A0A16);
-         imgBg.graphics.drawRoundRect(0, 0, 28, 28, 4, 4);
+         imgBg.graphics.drawRoundRect(0, 0, 22, 22, 3, 3);
          imgBg.graphics.endFill();
          imgBg.graphics.lineStyle(1, 0x5C4010, 0.5);
-         imgBg.graphics.drawRoundRect(0, 0, 28, 28, 4, 4);
-         imgBg.x = 4; imgBg.y = 2;
+         imgBg.graphics.drawRoundRect(0, 0, 22, 22, 3, 3);
+         imgBg.x = 3; imgBg.y = 1;
          sp.addChild(imgBg);
 
          var imgTF:TextField = new TextField();
-         imgTF.defaultTextFormat = new TextFormat("_sans", 16, 0xD4A017, true);
+         imgTF.defaultTextFormat = new TextFormat("_sans", 13, 0xD4A017, true);
          imgTF.text = String(p.imageID);
-         imgTF.width = 28; imgTF.height = 22;
-         imgTF.x = 4; imgTF.y = 6;
+         imgTF.width = 22; imgTF.height = 16;
+         imgTF.x = 3; imgTF.y = 4;
          imgTF.selectable = false;
          sp.addChild(imgTF);
 
          var nameTF:TextField = new TextField();
-         nameTF.defaultTextFormat = new TextFormat("_sans", 13, 0xD4A017, true);
+         nameTF.defaultTextFormat = new TextFormat("_sans", 12, 0xD4A017, true);
          nameTF.text = p.roleName;
-         nameTF.width = 90; nameTF.height = 18;
-         nameTF.x = 38; nameTF.y = 2;
+         nameTF.width = 90; nameTF.height = 16;
+         nameTF.x = 32; nameTF.y = 1;
          nameTF.selectable = false;
          sp.addChild(nameTF);
 
          var infoTF:TextField = new TextField();
-         infoTF.defaultTextFormat = new TextFormat("_sans", 10, 0x8B7355);
+         infoTF.defaultTextFormat = new TextFormat("_sans", 9, 0x8B7355);
          infoTF.text = "Lv." + p.level + "  金" + p.money;
-         infoTF.width = 120; infoTF.height = 14;
-         infoTF.x = 38; infoTF.y = 18;
+         infoTF.width = 120; infoTF.height = 12;
+         infoTF.x = 32; infoTF.y = 14;
          infoTF.selectable = false;
          sp.addChild(infoTF);
 
@@ -539,9 +542,12 @@ import game.ui.UpdateChecker;
          sp.buttonMode = true;
          sp.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void {
             _selectedUserID = p.userID;
-            if(_loginUserID != p.userID) { _loginPassword = ""; if(_passInputTF) _passInputTF.text = ""; }
             _loginUserID = p.userID;
             if(_userInputTF) _userInputTF.text = p.userID;
+            // 自动从本地缓存填充密码
+            var _pwd:String = _passwordCache[p.userID] || "";
+            _loginPassword = _pwd;
+            if(_passInputTF) _passInputTF.text = _pwd;
             updatePlayerSelection();
             if(_passInputTF) stage.focus = _passInputTF;
          });

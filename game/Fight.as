@@ -81,14 +81,14 @@ package game
       
       private var _part:int;
       
-      private var _delay:Number = 0;
+      private var _delay:Number = 5000;
 
       
       private var _timer:Timer;
       
-      private var _leftSoldiers:Array;
-      
-      private var _rightSoldiers:Array;
+      private var _leftSoldiers:Array = [];
+
+      private var _rightSoldiers:Array = [];
       
       private var _bk:MovieClip;
       
@@ -165,8 +165,13 @@ package game
       private function addToStageHandler(param1:Event) : *
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.addToStageHandler);
-         this.initView();
+         try {
+            this.initView();
+         } catch(_err:Error) {
+            // Flash事件系统静默吞异常,显式捕获防止InitView半失败
+            trace("[Fight] initView crash: " + _err.message);
          }
+      }
       
       private function initView() : *
       {
