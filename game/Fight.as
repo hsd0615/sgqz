@@ -449,8 +449,9 @@ package game
             }
             else
             {
-               _loc2_.x = Fight["POS" + _loc1_].x;
-               _loc2_.y = Fight["POS" + _loc1_].y;
+               var _posIdx:int = Math.min(_loc1_, 4);
+               _loc2_.x = Fight["POS" + _posIdx].x;
+               _loc2_.y = Fight["POS" + _posIdx].y;
                _loc1_++;
             }
             addChild(_loc2_);
@@ -458,7 +459,7 @@ package game
             _loc4_++;
          }
       }
-      
+
       private function createRightArmy() : *
       {
          var _loc1_:int = 0;
@@ -483,8 +484,9 @@ package game
             }
             else
             {
-               _loc2_.x = 770 - Fight["POS" + _loc1_].x;
-               _loc2_.y = Fight["POS" + _loc1_].y;
+               var _posIdx2:int = Math.min(_loc1_, 4);
+               _loc2_.x = 770 - Fight["POS" + _posIdx2].x;
+               _loc2_.y = Fight["POS" + _posIdx2].y;
                _loc1_++;
             }
             if(_loc5_ < _loc4_)
