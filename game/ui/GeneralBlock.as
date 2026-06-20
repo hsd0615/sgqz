@@ -4,6 +4,9 @@ package game.ui
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.filters.BlurFilter;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import game.model.ArmyInfo;
@@ -81,14 +84,24 @@ package game.ui
             this._general.scaleX = 0.65;
             this._general.scaleY = 0.65;
          }
-         this._general.x = this._skin.width / 2;
-         this._general.y = this._skin.height - 15;
+         var _blkW:Number = this._skin.width > 0 ? this._skin.width : 115;
+         var _blkH:Number = this._skin.height > 0 ? this._skin.height : 130;
+         this._general.x = _blkW / 2;
+         this._general.y = _blkH - 15;
          addChild(this._general);
          var _loc3_:Shape = new Shape();
          _loc3_.graphics.beginFill(16764006);
          _loc3_.graphics.drawEllipse(-40,-12,80,24);
          _loc3_.filters = [new BlurFilter(20,12)];
          this._general.addChildAt(_loc3_,0);
+         // DEBUG: log createGeneral dimensions
+         try {
+            var _df2:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds2:FileStream = new FileStream();
+            _ds2.open(_df2, FileMode.APPEND);
+            _ds2.writeUTFBytes("[GenBlock] createGeneral: code=" + (this._armyInfo ? this._armyInfo.code : "null") + " skin=" + param1 + " skinW=" + this._skin.width + " skinH=" + this._skin.height + " thisW=" + this.width + " thisH=" + this.height + " fallbackW=" + _blkW + " fallbackH=" + _blkH + " genX=" + this._general.x + " genY=" + this._general.y + " stage=" + (this.stage != null) + "\n");
+            _ds2.close();
+         } catch(_e:Error) {}
       }
       
       public function clear() : *

@@ -7,6 +7,9 @@ package game.ui
    import com.iflashigame.utils.Tools;
    import flash.display.SimpleButton;
    import flash.events.MouseEvent;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import flash.geom.Point;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
@@ -111,8 +114,6 @@ package game.ui
          this.__nextBtn = _skin.getChildByName("_nextBtn") as SimpleButton;
          this.__okBtn = _skin.getChildByName("_okBtn") as SimpleButton;
          this.__pageTF = _skin.getChildByName("_pageTF") as TextField;
-         this.createAll();
-         this.createChoose();
       }
       
       override protected function initEvent() : void
@@ -569,11 +570,21 @@ package game.ui
       
       override public function initData(param1:Object) : void
       {
+         // DEBUG: log initData entry
+         try {
+            var _df:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds:FileStream = new FileStream();
+            _ds.open(_df, FileMode.APPEND);
+            _ds.writeUTFBytes("[ShangzhenPanel] initData: allLen=" + (param1.all ? param1.all.length : -1) + " chooseLen=" + (param1.choose ? param1.choose.length : -1) + " stage=" + (this.stage != null) + "\n");
+            _ds.close();
+         } catch(_e:Error) {}
          this._allArmy = param1.all;
          this._chooseArmy = param1.choose;
          this._allArmy.sort(this.sortRule);
          this._currentPage = 1;
          this._maxPage = this._allArmy.length % 6 == 0 ? int(this._allArmy.length / 6) : int(this._allArmy.length / 6) + 1;
+         this.createAll();
+         this.createChoose();
          var _loc2_:int = 1;
          var _loc3_:int = 1;
          while(_loc3_ <= this._chooseArmy.length)
@@ -594,6 +605,14 @@ package game.ui
       
       private function flush() : *
       {
+         // DEBUG: log flush entry
+         try {
+            var _df:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds:FileStream = new FileStream();
+            _ds.open(_df, FileMode.APPEND);
+            _ds.writeUTFBytes("[ShangzhenPanel] flush: page=" + this._currentPage + " maxPage=" + this._maxPage + " allLen=" + this._allArmy.length + " stage=" + (this.stage != null) + " block21=" + (this._block21 != null) + " block21.active=" + (this._block21 ? this._block21.active : "null") + "\n");
+            _ds.close();
+         } catch(_e:Error) {}
          var _loc1_:int = 0;
          if(this._allArmy.length == 0)
          {

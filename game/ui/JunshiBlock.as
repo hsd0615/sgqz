@@ -2,6 +2,9 @@ package game.ui
 {
    import com.iflashigame.ui.BaseUI;
    import flash.display.MovieClip;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import game.model.ArmyInfo;
@@ -63,9 +66,19 @@ package game.ui
             this._general.scaleX = 0.45;
             this._general.scaleY = 0.45;
          }
-         this._general.x = this.width / 2 + 22;
-         this._general.y = this.height;
+         var _blkW:Number = this._skin.width > 0 ? this._skin.width : 130;
+         var _blkH:Number = this._skin.height > 0 ? this._skin.height : 130;
+         this._general.x = _blkW / 2 + 22;
+         this._general.y = _blkH;
          addChildAt(this._general,0);
+         // DEBUG: log createGeneral dimensions
+         try {
+            var _df2:File = File.applicationStorageDirectory.resolvePath("debug_shangzhen.txt");
+            var _ds2:FileStream = new FileStream();
+            _ds2.open(_df2, FileMode.APPEND);
+            _ds2.writeUTFBytes("[JunshiBlock] createGeneral: code=" + (this._armyInfo ? this._armyInfo.code : "null") + " skin=" + param1 + " skinW=" + this._skin.width + " skinH=" + this._skin.height + " thisW=" + this.width + " thisH=" + this.height + " fallbackW=" + _blkW + " fallbackH=" + _blkH + " genX=" + this._general.x + " genY=" + this._general.y + " stage=" + (this.stage != null) + "\n");
+            _ds2.close();
+         } catch(_e:Error) {}
       }
       
       public function clear() : *
