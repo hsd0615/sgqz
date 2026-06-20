@@ -622,30 +622,36 @@ package game.fuben
       
       private function armyFactory(param1:ArmyInfo, param2:int, param3:Boolean) : AbstractSoldier
       {
-         switch(param1.type)
-         {
-            case Type.TOUSHICHE:
-               return new Gunner(param1.clone(),param2,param3,this);
-            case Type.QIBING:
-               return new Saber(param1.clone(),param2,param3,this);
-            case Type.JIANTABING:
-               return new JiantaSoldier(param1.clone(),param2,param3);
-            case Type.QIANGGONGBING:
-               return new QianggongSoldier(param1.clone(),param2,param3);
-            case Type.WANDAOBING:
-               return new WandaoSoldier(param1.clone(),param2,param3);
-            case Type.BOSS:
-               return new Boss(param1.clone(),param2,param3);
-            case Type.JUNZHU:
-               return new Junzhu(param1.clone(),param2,param3,this);
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-               return new Saber(param1.clone(),param2,param3,this);
-            default:
-               return new Shooter(param1.clone(),param2,param3,this);
+         try {
+            switch(param1.type)
+            {
+               case Type.TOUSHICHE:
+                  return new Gunner(param1.clone(),param2,param3,this);
+               case Type.QIBING:
+                  return new Saber(param1.clone(),param2,param3,this);
+               case Type.JIANTABING:
+                  return new JiantaSoldier(param1.clone(),param2,param3);
+               case Type.QIANGGONGBING:
+                  return new QianggongSoldier(param1.clone(),param2,param3);
+               case Type.WANDAOBING:
+                  return new WandaoSoldier(param1.clone(),param2,param3);
+               case Type.BOSS:
+                  return new Boss(param1.clone(),param2,param3);
+               case Type.JUNZHU:
+                  return new Junzhu(param1.clone(),param2,param3,this);
+               case 14:
+               case 15:
+               case 16:
+               case 17:
+                  return new Saber(param1.clone(),param2,param3,this);
+               default:
+                  return new Shooter(param1.clone(),param2,param3,this);
+            }
+         } catch(_e:Error) {
+            param1.type = Type.GONGBING;
+            return new Shooter(param1.clone(),param2,param3,this);
          }
+         return new Shooter(param1.clone(),param2,param3,this);
       }
       
       private function createEnemy1() : *
