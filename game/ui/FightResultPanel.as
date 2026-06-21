@@ -182,7 +182,7 @@ package game.ui
             if(param1.equipDrop != null) {
                _loc3_ += "\n<font color='#FFD700' size='13'>【装备掉落】</font>\n";
                var _ed:Object = param1.equipDrop;
-               var _eqName:String = String(_ed.name||"?");
+               var _eqName:String = String(EquipData.get(_ed.code,"name") || _ed.name || "?");
                var _eqQ:int = int(_ed.quality||1);
                var _eqQColors:Array = ["#CCC","#CCC","#CCC","#4bea13","#16d2fa","#e720f9","#FFD700","#FF6600","#FF4444","#FF0000","#FFFFFF"];
                var _eqQNames:Array = ["","普通","精良","稀有","史诗","传说","神话","远古","至尊","超凡","入圣"];

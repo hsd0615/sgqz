@@ -74,6 +74,8 @@ package game.model
       private var _tianfuDefence:Number;
       
       private var _shanbi:Number;
+      public var isEnemy:Boolean = false;
+      public var dropEquipCode:String = "";
       
       public function ArmyInfo()
       {
@@ -107,6 +109,8 @@ package game.model
          _loc1_.setKezhiStr(this.getKezhiStr());
          _loc1_.setEquipmentStr(this.getEquipmentStr());
          _loc1_.hp = this.hp;
+         _loc1_.isEnemy = this.isEnemy;
+         _loc1_.dropEquipCode = this.dropEquipCode;
          return _loc1_;
       }
       
@@ -405,7 +409,10 @@ package game.model
       {
          if(param1 == "" || param1 == null || param1 == "0") return 0;
          var _val:* = EquipData.get(param1,param2);
-         return _val ? int(_val) : 0;
+         if(!_val) return 0;
+         var _n:int = int(Number(_val));
+         if(this.dropEquipCode != "" && param1 == this.dropEquipCode) _n = int(_n * 0.5);
+         return _n;
       }
 
       // 装备白值加成(攻/防/HP基础值) -- 6槽汇总

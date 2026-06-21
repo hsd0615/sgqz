@@ -430,6 +430,7 @@ package game
             }
             var _enemy:ArmyInfo = this.getArmyInfo(xml.@code,xml.@level,xml.@evolution == undefined ? 0 : int(xml.@evolution),xml.@feature == undefined ? 0 : int(xml.@feature),xml.@name == undefined ? null : xml.@name,delay,ai,xml.@kezhi == undefined ? null : xml.@kezhi,xml.@tianfu == undefined ? null : xml.@tianfu);
             this.assignGateEquip(_enemy, int(xml.@level), level);
+            _enemy.isEnemy = true;
             arr.push(_enemy);
             i++;
          }
@@ -446,16 +447,16 @@ package game
          var _gateLevel:int = param3; // 关卡层级
          // 根据品质和关卡深度决定装备品质范围
          var _maxQ:int = 1;
-         if(_genQuality == 0) _maxQ = Math.min(10, 3 + int(_gateLevel / 10));
-         else if(_genQuality == 1) _maxQ = Math.min(7, 1 + int(_gateLevel / 15));
-         else if(_genQuality == 2) _maxQ = Math.min(5, 1 + int(_gateLevel / 20));
-         else _maxQ = Math.min(3, 1 + int(_gateLevel / 30));
+         if(_genQuality == 0) _maxQ = Math.min(6, 2 + int(_gateLevel / 15));
+         else if(_genQuality == 1) _maxQ = Math.min(5, 2 + int(_gateLevel / 15));
+         else if(_genQuality == 2) _maxQ = Math.min(5, 1 + int(_gateLevel / 15));
+         else _maxQ = Math.min(4, 1 + int(_gateLevel / 15));
          var _minQ:int = Math.max(1, _maxQ - 3);
          var _equipSlots:Array = [];
          var _s:int = 1;
          while(_s <= 6)
          {
-            if(Math.random() < 0.4 + param2 * 0.008)
+            if(Math.random() < Math.min(0.75, 0.25 + param2 * 0.004))
             {
                var _slotCodes:Array = EquipData.getBySlot(_s);
                var _candidates:Array = [];

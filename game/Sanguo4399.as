@@ -1882,6 +1882,10 @@ import game.ui.UpdateChecker;
                   if(_eoi < _data.enemy.length)
                   {
                      _data.enemy[_eoi].setEquipmentStr(_ee.equips.join(","));
+                     if(_ee.dropEquip == true && _ee.equips.length >= 6)
+                     {
+                        _data.enemy[_eoi].dropEquipCode = String(_ee.equips[5]);
+                     }
                   }
                   _eoi++;
                }
@@ -2021,7 +2025,7 @@ import game.ui.UpdateChecker;
             this._ui.showFightResult(_loc4_);
             MySound.getInstance().startEventSoundByName(SoundCode.WIN);
             if(param1.data.equipDrop != null) {
-               this._ui.showMsg({type:0, text:"获得装备: " + param1.data.equipDrop.name + " (品质" + param1.data.equipDrop.quality + ")"});
+               this._ui.showMsg({type:0, text:"获得装备: " + (EquipData.get(param1.data.equipDrop.code,"name") || param1.data.equipDrop.name) + " (品质" + param1.data.equipDrop.quality + ")"});
             }
             this.newPart(RoleModel.getInstance().checkHistory());
             RoleModel.getInstance().throttleSave();

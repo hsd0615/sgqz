@@ -769,6 +769,7 @@ package game.fuben
          {
             var _enemyAI:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _enemyCode);
             var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _enemyName, int(_enemyAI.delay), int(_enemyAI.ai));
+            _enemy.isEnemy = true;
             _enemy.baseDefense = int(_totalPlayerDef / this._leftArmy.length);
             _enemy.hp = int(_totalPlayerHP / this._leftArmy.length);
             _enemy.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));

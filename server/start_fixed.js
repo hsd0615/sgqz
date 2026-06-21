@@ -291,14 +291,14 @@ function getDefaultEquipForEnemy(enemyCode, genQuality, genLevel, fubenID, stage
   if (genLevel < 5) return equips; // 太低等级不给装备
   // 根据品质决定装备品质范围
   var maxQ = 1;
-  if (genQuality == 0) maxQ = Math.min(10, 4 + stageIdx + fubenID);       // 超级: Q4-10
-  else if (genQuality == 1) maxQ = Math.min(7, 2 + stageIdx);              // 一流: Q2-7
-  else if (genQuality == 2) maxQ = Math.min(5, 1 + stageIdx);              // 二流: Q1-5
-  else maxQ = Math.min(3, 1 + Math.floor(stageIdx / 2));                   // 三流: Q1-3
+  if (genQuality == 0) maxQ = Math.min(6, 2 + Math.floor(stageIdx / 15));  // 超级: Q3-6
+  else if (genQuality == 1) maxQ = Math.min(5, 2 + Math.floor(stageIdx / 15)); // 一流: Q2-5
+  else if (genQuality == 2) maxQ = Math.min(5, 1 + Math.floor(stageIdx / 15)); // 二流: Q2-5
+  else maxQ = Math.min(4, 1 + Math.floor(stageIdx / 15));                   // 三流: Q1-4
   var minQ = Math.max(1, maxQ - 3);
   // 为每个装备槽随机选择装备
   for (var s = 0; s < 6; s++) {
-    if (Math.random() < 0.5 + genLevel * 0.01) { // 等级越高越容易有装备
+    if (Math.random() < Math.min(0.75, 0.25 + genLevel * 0.004)) { // 等级越高越容易有装备(上限75%)
       var slotCandidates = [];
       for (var ek in EQUIP_DATA) {
         var eq = EQUIP_DATA[ek];
@@ -859,12 +859,12 @@ function handleRequest(socket, req) {
       if (fpgenQ == 0) { fpminEQ = 7; fpmaxEQ = 10; }
       else if (fpgenQ == 1) { fpminEQ = 4; fpmaxEQ = 7; }
       else if (fpgenQ == 2) { fpminEQ = 2; fpmaxEQ = 5; }
-      var fprateDiv = [3000, 1800, 900, 450][fpgenQ] || 1000;
-      var fpprob = Math.min(0.40, Math.max(0.003, fpgenLevel / fprateDiv));
+      var fprateDiv = [2000, 1200, 600, 300][fpgenQ] || 1000;
+      var fpprob = Math.min(0.40, Math.max(0.005, fpgenLevel / fprateDiv));
       if (Math.random() < fpprob) {
         var fprollQ = fpminEQ + Math.floor(Math.random() * (fpmaxEQ - fpminEQ + 1));
         if (!fpbestDrop || fprollQ > fpbestDrop.quality) {
-          fpbestDrop = { quality: fprollQ, enemyIdx: fpei, genCode: fpec, genName: (Data.getInstance() ? '' : '') };
+          fpbestDrop = { quality: fprollQ, enemyIdx: fpei, genCode: fpec, genName: '' };
         }
       }
     }
@@ -1028,10 +1028,10 @@ function handleRequest(socket, req) {
       // 没有预计算时回退到战后随机计算
       if (!equipDrop && fn >= 5) {
         var eqQuality = fpart <= 2 ? 3 : (fpart <= 4 ? 2 : (fpart <= 7 ? 1 : 0));
-        var eqRateDiv = [3000, 1800, 900, 450][eqQuality] || 1000;
+        var eqRateDiv = [2000, 1200, 600, 300][eqQuality] || 1000;
         var eqMinQ = eqQuality == 0 ? 7 : (eqQuality == 1 ? 4 : (eqQuality == 2 ? 2 : 1));
         var eqMaxQ = eqQuality == 0 ? 10 : (eqQuality == 1 ? 7 : (eqQuality == 2 ? 5 : 3));
-        var eqProb = Math.min(0.40, Math.max(0.003, fn / eqRateDiv));
+        var eqProb = Math.min(0.40, Math.max(0.005, fn / eqRateDiv));
         if (Math.random() < eqProb) {
           var eqRollQ = eqMinQ + Math.floor(Math.random() * (eqMaxQ - eqMinQ + 1));
           var eqCands = [];
@@ -1123,8 +1123,8 @@ function handleRequest(socket, req) {
       if (genQ == 0) { minEQ = 7; maxEQ = 10; }
       else if (genQ == 1) { minEQ = 4; maxEQ = 7; }
       else if (genQ == 2) { minEQ = 2; maxEQ = 5; }
-      var rateDiv = [3000, 1800, 900, 450][genQ] || 1000;
-      var dropProb = Math.min(0.40, Math.max(0.003, genLevel / rateDiv));
+      var rateDiv = [2000, 1200, 600, 300][genQ] || 1000;
+      var dropProb = Math.min(0.40, Math.max(0.005, genLevel / rateDiv));
       if (Math.random() < dropProb) {
         var rollQ = minEQ + Math.floor(Math.random() * (maxEQ - minEQ + 1));
         if (!bestDrop || rollQ > bestDrop.quality) {
@@ -1221,10 +1221,10 @@ function handleRequest(socket, req) {
       // 没有预计算时回退到战后随机计算
       if (!fubenEquipDrop && flv >= 5) {
         var feqQuality = fi <= 1 ? 3 : (fi == 2 ? 2 : 1);
-        var feqRateDiv = [3000, 1800, 900, 450][feqQuality] || 1000;
+        var feqRateDiv = [2000, 1200, 600, 300][feqQuality] || 1000;
         var feqMinQ = feqQuality == 1 ? 4 : (feqQuality == 2 ? 2 : 1);
         var feqMaxQ = feqQuality == 1 ? 7 : (feqQuality == 2 ? 5 : 3);
-        var feqProb = Math.min(0.40, Math.max(0.003, flv / feqRateDiv));
+        var feqProb = Math.min(0.40, Math.max(0.005, flv / feqRateDiv));
         if (Math.random() < feqProb) {
           var feqRollQ = feqMinQ + Math.floor(Math.random() * (feqMaxQ - feqMinQ + 1));
           var feqCands = [];
