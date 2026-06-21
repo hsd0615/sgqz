@@ -86,13 +86,13 @@ package game.ui.fuben
          switch(this._index)
          {
             case 1:
-               this.showResult1(param1.forward);
+               this.showResult1(param1.forward, param1.equipDrop);
                break;
             case 2:
-               this.showResult2(param1.forward);
+               this.showResult2(param1.forward, param1.equipDrop);
                break;
             case 3:
-               this.showResult3(param1.forward);
+               this.showResult3(param1.forward, param1.equipDrop);
          }
          MySound.getInstance().startEventSoundByName(SoundCode.WIN);
       }
@@ -106,34 +106,43 @@ package game.ui.fuben
          this.__exitBtn.visible = true;
       }
       
-      private function showResult1(param1:Array) : *
+      private function showResult1(param1:Array, param2:Object = null) : *
       {
          this.hideAll();
          this.__title1.visible = true;
          var _loc2_:* = "已成功清除匈奴营寨前哨，请继续深入敌营。\n";
          _loc2_ += "过关奖励：银子+" + param1[0] + " 功勋+" + param1[1] + " 声望+" + param1[2] + "\n";
+         if(param2 != null) {
+            _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
+         }
          _loc2_ += "下一关奖励更丰厚，加油吧！";
          this.__tf.text = _loc2_;
          this.__nextBtn.visible = true;
       }
-      
-      private function showResult2(param1:Array) : *
+
+      private function showResult2(param1:Array, param2:Object = null) : *
       {
          this.hideAll();
          this.__title1.visible = true;
          var _loc2_:* = "已剿灭匈奴营寨内围，请继续深入敌营，擒拿头目。\n";
          _loc2_ += "过关奖励：银子+" + param1[0] + " 功勋+" + param1[1] + " 声望+" + param1[2] + "\n";
+         if(param2 != null) {
+            _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
+         }
          _loc2_ += "过全部关卡可获得特殊奖励，继续加油！";
          this.__tf.text = _loc2_;
          this.__nextBtn.visible = true;
       }
-      
-      private function showResult3(param1:Array) : *
+
+      private function showResult3(param1:Array, param2:Object = null) : *
       {
          this.hideAll();
          this.__title1.visible = true;
          var _loc2_:* = "匈奴头目已被成功擒获，任务完成。\n";
          _loc2_ += "过关奖励：银子+" + param1[0] + " 功勋+" + param1[1] + " 声望+" + param1[2] + "\n";
+         if(param2 != null) {
+            _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
+         }
          _loc2_ += "请进入翻牌界面抽取特殊奖励！";
          this.__tf.text = _loc2_;
          this.__okBtn.visible = true;

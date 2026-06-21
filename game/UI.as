@@ -3124,6 +3124,10 @@ package game
             }
             this.openFubenResultPanel();
             this._fubenResultPanel.initData(param1.data);
+            // 装备掉落提示
+            if(param1.data.equipDrop != null) {
+               this.showMsg({type:0, text:"获得装备: " + param1.data.equipDrop.name + " (品质" + param1.data.equipDrop.quality + ")"});
+            }
             RoleModel.getInstance().throttleSave();
          }
          else
