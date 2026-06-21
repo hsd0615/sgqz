@@ -9,6 +9,7 @@ package game.ui
    import game.Data;
    import game.events.FightEvent;
    import game.events.UIEvent;
+   import game.model.EquipData;
    
    public class FightResultPanel extends BaseUI
    {

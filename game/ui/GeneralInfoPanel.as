@@ -396,6 +396,22 @@ package game.ui
             }
             _si++;
          }
+
+         // 确保装备槽始终在最顶层，不被后续flush()添加的元素遮挡点击
+         var _ti:int = 0;
+         while(_ti < 6)
+         {
+            var _ts:DisplayObject = this._equipSlots[_ti] as DisplayObject;
+            if(_ts != null && contains(_ts))
+            {
+               setChildIndex(_ts, numChildren - 1);
+            }
+            _ti++;
+         }
+         if(this._bagList != null && contains(this._bagList))
+         {
+            setChildIndex(this._bagList, numChildren - 1);
+         }
       }
 
       private function getEquipBmp(param1:String) : Bitmap
@@ -816,6 +832,7 @@ package game.ui
          var _loc2_:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
          this._general = new _loc2_() as MovieClip;
          this._general.mouseChildren = false;
+         this._general.mouseEnabled = false;
          if(this._armyInfo.code == "general_5_19" || this._armyInfo.type == Type.JUNZHU)
          {
             this._general.scaleX = 0.52;

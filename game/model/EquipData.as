@@ -90,7 +90,12 @@ package game.model {
          "proto_4_16":"proto_4_63","proto_4_17":"proto_4_64","proto_4_18":"proto_4_65","proto_4_19":"proto_4_66","proto_4_20":"proto_4_67",
          "proto_4_26":"proto_4_71","proto_4_27":"proto_4_72","proto_4_28":"proto_4_73","proto_4_29":"proto_4_74","proto_4_30":"proto_4_75"
       };
-      public static function get(c:String,k:String):* { init(); var _r=_data[c]; if(!_r&&_compat[c]) _r=_data[_compat[c]]; return (_r&&_r[k]!=undefined)?_r[k]:null; }
+      public static function get(c:String,k:String):* {
+         init();
+         var _r:Object = _data[c];
+         if(!_r && _compat[c]) _r = _data[_compat[c]];
+         return (_r && _r[k] != undefined) ? _r[k] : null;
+      }
       public static function getBySlot(s:int):Array { init(); var a:Array=[]; for(var k:String in _data) if(_data[k].slot==s) a.push(k); return a; }
       public static function getAllCodes():Array { init(); var a:Array=[]; for(var k:String in _data) a.push(k); return a; }
       public static function getShopEquipItems():Array { return []; /* 装备改为通关掉落

@@ -593,7 +593,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.3';
+  _cachedClientVersion = '4.0.6';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -721,6 +721,12 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '4.0.6', title: '🔧 修复装备栏点击无响应',
+        body: '【修复】\n• 修复武将详情页装备槽点击无响应问题\n• 武将模型不再拦截装备槽鼠标事件\n• 装备槽显示列表自动置顶，确保始终可点击' },
+      { version: '4.0.5', title: '📊 掉率提升+低品质敌军后期增强',
+        body: '【调整】\n• 装备掉率提升约50%\n• 低品质敌军后期装备品质上限提高\n• 装备名称统一，修复37处不一致' },
+      { version: '4.0.4', title: '🔧 装备掉落修复+敌军数值重平衡',
+        body: '【修复】\n• Data.getInstance()遗留代码导致掉落崩溃\n• 装备名称37处不一致已同步\n\n【平衡】\n• 敌方装备仅30%属性\n• 品质上限降低' },
       { version: '4.0.2', title: '🎯 战斗中掉落预警',
         body: '【新增】\n• 主线关卡进入战斗前预计算掉落，战斗中显示Q5+装备预警\n• 副本后台调用战前掉落预计算，与战后奖励联动\n• 副本掉落预警阈值从Q7降至Q5（传说品质即提示）\n\n【技术】\n• 新增 /api/game/fight-prepare 端点\n• /api/fuben/prepare 新增URL映射\n• 主线+副本掉落均优先使用战前预计算结果' },
       { version: '4.0.1', title: '🔧 装备掉落修复',
@@ -1006,17 +1012,8 @@ function handleRequest(socket, req) {
           var pmDef = EQUIP_DATA[pendingMainDrop.code];
           if (pmDef) {
             if (!db.bagItems) db.bagItems = [];
-            var pmExist = -1;
-            for (var pmEx = 0; pmEx < db.bagItems.length; pmEx++) {
-              if (db.bagItems[pmEx].player_id == p.id && db.bagItems[pmEx].code === pendingMainDrop.code) {
-                pmExist = pmEx; break;
-              }
-            }
-            if (pmExist >= 0) {
-              db.bagItems[pmExist].count = (db.bagItems[pmExist].count || 1) + 1;
-            } else {
+              // 装备不堆叠,每次掉落创建独立条目
               db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: pendingMainDrop.code, count: 1 });
-            }
             equipDrop = { code: pendingMainDrop.code, name: pmDef.name, quality: pendingMainDrop.quality };
             if (pendingMainDrop.quality >= 5) {
               broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + pmDef.name + '](品质' + pendingMainDrop.quality + ')，全服首通福利！');
@@ -1040,17 +1037,8 @@ function handleRequest(socket, req) {
             var eqCode = eqCands[Math.floor(Math.random() * eqCands.length)];
             var eqDef = EQUIP_DATA[eqCode];
             if (!db.bagItems) db.bagItems = [];
-            var eqExist = -1;
-            for (var eqEx = 0; eqEx < db.bagItems.length; eqEx++) {
-              if (db.bagItems[eqEx].player_id == p.id && db.bagItems[eqEx].code === eqCode) {
-                eqExist = eqEx; break;
-              }
-            }
-            if (eqExist >= 0) {
-              db.bagItems[eqExist].count = (db.bagItems[eqExist].count || 1) + 1;
-            } else {
-              db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: eqCode, count: 1 });
-            }
+            // 装备不堆叠,每次掉落创建独立条目
+            db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: eqCode, count: 1 });
             equipDrop = { code: eqCode, name: eqDef.name, quality: eqRollQ };
             if (eqRollQ >= 5) {
               broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + eqDef.name + '](品质' + eqRollQ + ')，全服首通福利！');
@@ -1199,17 +1187,8 @@ function handleRequest(socket, req) {
           var fuDef = EQUIP_DATA[fuPending.code];
           if (fuDef) {
             if (!db.bagItems) db.bagItems = [];
-            var fuExist = -1;
-            for (var fuEx = 0; fuEx < db.bagItems.length; fuEx++) {
-              if (db.bagItems[fuEx].player_id == p.id && db.bagItems[fuEx].code === fuPending.code) {
-                fuExist = fuEx; break;
-              }
-            }
-            if (fuExist >= 0) {
-              db.bagItems[fuExist].count = (db.bagItems[fuExist].count || 1) + 1;
-            } else {
+              // 装备不堆叠,每次掉落创建独立条目
               db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: fuPending.code, count: 1 });
-            }
             fubenEquipDrop = { code: fuPending.code, name: fuDef.name, quality: fuPending.quality };
             if (fuPending.quality >= 5) {
               broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 副本获得 [' + fuDef.name + '](品质' + fuPending.quality + ')，运气爆棚！');
@@ -1233,17 +1212,8 @@ function handleRequest(socket, req) {
             var feqCode = feqCands[Math.floor(Math.random() * feqCands.length)];
             var feqDef = EQUIP_DATA[feqCode];
             if (!db.bagItems) db.bagItems = [];
-            var feqExist = -1;
-            for (var feqEx = 0; feqEx < db.bagItems.length; feqEx++) {
-              if (db.bagItems[feqEx].player_id == p.id && db.bagItems[feqEx].code === feqCode) {
-                feqExist = feqEx; break;
-              }
-            }
-            if (feqExist >= 0) {
-              db.bagItems[feqExist].count = (db.bagItems[feqExist].count || 1) + 1;
-            } else {
-              db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: feqCode, count: 1 });
-            }
+            // 装备不堆叠,每次掉落创建独立条目
+            db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: feqCode, count: 1 });
             fubenEquipDrop = { code: feqCode, name: feqDef.name, quality: feqRollQ };
             if (feqRollQ >= 5) {
               broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 副本获得 [' + feqDef.name + '](品质' + feqRollQ + ')，运气爆棚！');

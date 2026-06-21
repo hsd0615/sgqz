@@ -27,6 +27,7 @@ package game
          var _atkDmgBonus:int = param1.armyInfo ? param1.armyInfo.equipDmgBonus : 0;
          var _atkDmgReduce:int = param2.armyInfo ? param2.armyInfo.equipDmgReduce : 0;
          var _critRate:int = param1.armyInfo ? param1.armyInfo.equipCritRate : 0;
+         var _critDmg:int;
          if(param1.type == Type.TOUSHICHE)
          {
             return getHurtByToushiche(param1,param2,param3);
@@ -56,7 +57,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -81,7 +82,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -95,7 +96,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -109,7 +110,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -134,7 +135,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -159,7 +160,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -184,7 +185,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -209,7 +210,7 @@ package game
             if(_atkDmgReduce > 0) _loc6_ = int(_loc6_ * (1 - _atkDmgReduce / 100));
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc6_ = int(_loc6_ * _critDmg / 100);
                Logic.lastCrit = true;
             }
@@ -297,6 +298,7 @@ package game
          var _atkDmgBonus:int = param1.armyInfo ? param1.armyInfo.equipDmgBonus : 0;
          // 装备减伤加成
          var _atkDmgReduce:int = param2.armyInfo ? param2.armyInfo.equipDmgReduce : 0;
+         var _critDmg:int;
 
          if(param3 == null)
          {
@@ -320,7 +322,7 @@ package game
             var _critRate:int = param1.armyInfo ? param1.armyInfo.equipCritRate : 0;
             if(_critRate > 0 && Math.random() * 100 < _critRate)
             {
-               var _critDmg:int = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
+               _critDmg = 150 + (param1.armyInfo ? param1.armyInfo.equipCritDmg : 0);
                _loc4_ = int(_loc4_ * _critDmg / 100);
             }
             return _loc4_ <= 0 ? 1 : _loc4_;

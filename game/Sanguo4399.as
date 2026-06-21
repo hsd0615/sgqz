@@ -50,6 +50,7 @@ package game
    import game.model.Cache;
    import game.model.Head;
    import game.model.RoleModel;
+   import game.model.EquipData;
    import game.model.RoleStatus;
    import game.ui.SkinCode;
    import game.ui.TalkFrame;
@@ -2026,6 +2027,8 @@ import game.ui.UpdateChecker;
             MySound.getInstance().startEventSoundByName(SoundCode.WIN);
             if(param1.data.equipDrop != null) {
                this._ui.showMsg({type:0, text:"获得装备: " + (EquipData.get(param1.data.equipDrop.code,"name") || param1.data.equipDrop.name) + " (品质" + param1.data.equipDrop.quality + ")"});
+               // 立即添加到本地背包
+               RoleModel.getInstance().addBagItem(Math.floor(Math.random() * 100000), String(param1.data.equipDrop.code), 1);
             }
             this.newPart(RoleModel.getInstance().checkHistory());
             RoleModel.getInstance().throttleSave();
