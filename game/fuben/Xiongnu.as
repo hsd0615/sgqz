@@ -1878,7 +1878,7 @@ package game.fuben
                      if(_code != "0" && _code != "" && _code != null)
                      {
                         var _q:int = int(game.model.EquipData.get(_code, "quality"));
-                        if(_q >= 7)
+                        if(_q >= 5)
                         {
                            var _eqName:String = game.model.EquipData.get(_code, "name") as String;
                            _highEquips.push({eqName:_eqName, quality:_q, enemyName:_army.name});

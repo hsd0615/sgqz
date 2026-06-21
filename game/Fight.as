@@ -124,9 +124,11 @@ package game
       private var _lockedEnemy:AbstractSoldier;
       
       private var _tf:TextField;
-      
+
       private var _tfArr:Array;
-      
+
+      private var _equipNotifyTF:TextField;
+
       public var _date:Number;
       
       private var _biansu:int = 0;
@@ -247,6 +249,25 @@ package game
          this._retreatBtn.x = 710; this._retreatBtn.y = 2;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn);
+      }
+
+      public function showEquipNotify(param1:String) : void
+      {
+         if(this._equipNotifyTF == null) {
+            this._equipNotifyTF = new TextField();
+            this._equipNotifyTF.defaultTextFormat = new TextFormat("SimSun", 13, 0xFF6600, true);
+            this._equipNotifyTF.selectable = false;
+            this._equipNotifyTF.mouseEnabled = false;
+            this._equipNotifyTF.width = 500;
+            this._equipNotifyTF.wordWrap = true;
+            this._equipNotifyTF.multiline = true;
+            var _glow:GlowFilter = new GlowFilter(0x000000, 0.8, 3, 3, 2);
+            this._equipNotifyTF.filters = [_glow];
+            addChild(this._equipNotifyTF);
+         }
+         this._equipNotifyTF.htmlText = "<font color='#FF6600' size='14'>⚠ " + param1 + "</font>";
+         this._equipNotifyTF.x = 200;
+         this._equipNotifyTF.y = 10;
       }
 
       private function retreatClickHandler(param1:MouseEvent) : *

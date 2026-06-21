@@ -3143,7 +3143,38 @@ package game
       private function startFubenHandler(param1:UIEvent) : *
       {
          this.closeFubenHandler(null);
-         this.startFuben(int(param1.data.stageID),int(param1.data.index));
+         var _fuID:int = int(param1.data.stageID);
+         var _fuIdx:int = int(param1.data.index);
+         this.startFuben(_fuID,_fuIdx);
+         // 异步调用服务端战前掉落预计算(fire-and-forget)
+         var _chosen:Vector.<ArmyInfo> = RoleModel.getInstance().getChooseSoldiers();
+         var _avgLv:int = 0;
+         var _ali:int = 0;
+         while(_ali < _chosen.length) { _avgLv += _chosen[_ali].level; _ali++; }
+         _avgLv = Math.max(1, int(_avgLv / Math.max(1, _chosen.length)));
+         var _ecs:Array = ["general_10_1"];
+         var _els:Array = [String(_avgLv)];
+         if(_fuIdx == 1) { _ecs.push("general_11_1"); _els.push(String(_avgLv)); }
+         else if(_fuIdx == 2) { _ecs.push("general_12_1"); _els.push(String(_avgLv)); }
+         else { _ecs.push("general_13_1"); _els.push(String(_avgLv)); }
+         var _req:Object = {};
+         _req.head = Head.HTTP_NEW_FUBEN_PREPARE;
+         _req.agent = Config.AGENT;
+         _req.ver = Config.VER;
+         _req.token = Config.token;
+         _req.roleID = RoleModel.getInstance().roleID;
+         _req.userID = RoleModel.getInstance().userID;
+         _req.fubenID = _fuID;
+         _req.stageIndex = _fuIdx;
+         _req.enemyCodes = _ecs.join(",");
+         _req.enemyLevels = _els.join(",");
+         _req.mask = true;
+         AESController.getInstance().sendJSON(_req,this.fubenPrepareResponse);
+      }
+
+      private function fubenPrepareResponse(param1:Object) : void
+      {
+         // fire-and-forget: 服务端已存储预计算结果，副本通关后自动使用
       }
       
       private function closeFubenHandler(param1:UIEvent) : *

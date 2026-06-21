@@ -303,6 +303,7 @@ package com.iflashigame.controller
 
             // Game
             case 10011: path = "/api/game/fight-result"; break;
+            case 10023: path = "/api/game/fight-prepare"; break;
             case 10012: path = "/api/game/p2p-result"; break;
             case 18: path = "/api/game/save"; break;
             case 10014: path = "/api/game/history"; break;
@@ -328,6 +329,7 @@ package com.iflashigame.controller
             // Fuben
             case 10016: path = "/api/fuben/count"; break;
             case 10017: path = "/api/fuben/enter"; break;
+            case 10024: path = "/api/fuben/prepare"; break;
             case 10018: path = "/api/fuben/award"; break;
             case 10019: path = "/api/fuben/flip"; break;
 

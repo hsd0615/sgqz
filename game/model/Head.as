@@ -165,6 +165,10 @@ package game.model
       
       public static const HTTP_NEW_BUCHANG:int = 10022;
 
+      public static const HTTP_NEW_FIGHT_PREPARE:int = 10023;
+
+      public static const HTTP_NEW_FUBEN_PREPARE:int = 10024;
+
       public static const HTTP_NEW_EQUIP:int = 10050;
 
       public static const HTTP_NEW_UNEQUIP:int = 10051;

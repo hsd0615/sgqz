@@ -72,6 +72,7 @@ import game.ui.UpdateChecker;
       private var _ui:UI;
       
       private var _fight:Fight;
+      private var _pendingGateData:Object;
       private var _onlineCountUI:OnlineCountUI;
       
       private var _tipsLayer:Sprite;
@@ -1816,16 +1817,82 @@ import game.ui.UpdateChecker;
                this._ui.removeChild(this._fight);
             }
             var _enemyArmy:Vector.<ArmyInfo> = Data.getInstance().getGateArmys(param1.data.part,param1.data.level);
-            this._fight = new Fight(_chosenSoldiers, _enemyArmy);
-            RoleModel.getInstance().status = RoleStatus.GUANKA;
-            this._ui.addChild(this._fight);
-            MySound.getInstance().startByName(SoundCode.FIGHT);
-            this._fight.setPartAndLevel(int(param1.data.part),int(param1.data.level));
-            this._fight.startAI(5000,-1);
+            // 构建敌方信息用于战前掉落预计算
+            var _enemyCodes:Array = [];
+            var _enemyLevels:Array = [];
+            var _ei:int = 0;
+            while(_ei < _enemyArmy.length)
+            {
+               _enemyCodes.push(_enemyArmy[_ei].code);
+               _enemyLevels.push(_enemyArmy[_ei].level);
+               _ei++;
+            }
+            // 暂存数据，等待prepare响应后再创建Fight
+            this._pendingGateData = {
+               "part":param1.data.part,
+               "level":param1.data.level,
+               "chosen":_chosenSoldiers,
+               "enemy":_enemyArmy
+            };
+            var _req:Object = {};
+            _req.head = Head.HTTP_NEW_FIGHT_PREPARE;
+            _req.agent = Config.AGENT;
+            _req.ver = Config.VER;
+            _req.token = Config.token;
+            _req.roleID = RoleModel.getInstance().roleID;
+            _req.userID = RoleModel.getInstance().userID;
+            _req.part = param1.data.part;
+            _req.level = param1.data.level;
+            _req.enemyCodes = _enemyCodes.join(",");
+            _req.enemyLevels = _enemyLevels.join(",");
+            _req.mask = true;
+            AESController.getInstance().sendJSON(_req,this.fightPrepareResponse);
          } catch(_err:Error) {
             var _errMsg:String = "Fight init error: " + _err.message + " | " + _err.getStackTrace();
             try { var _f:File = File.applicationStorageDirectory.resolvePath("fight_crash.txt"); var _s:FileStream = new FileStream(); _s.open(_f, FileMode.WRITE); _s.writeUTFBytes(_errMsg); _s.close(); } catch(_e:Error) {}
             dispatchEvent(new UIEvent(UIEvent.MESSAGE, true, {"type":0, "text":"战斗初始化失败: " + _err.message}));
+         }
+      }
+
+      private function createFightNow() : void
+      {
+         var _data:Object = this._pendingGateData;
+         if(_data == null) return;
+         this._pendingGateData = null;
+         this._fight = new Fight(_data.chosen, _data.enemy);
+         RoleModel.getInstance().status = RoleStatus.GUANKA;
+         this._ui.addChild(this._fight);
+         MySound.getInstance().startByName(SoundCode.FIGHT);
+         this._fight.setPartAndLevel(int(_data.part),int(_data.level));
+         this._fight.startAI(5000,-1);
+      }
+
+      private function fightPrepareResponse(param1:Object) : void
+      {
+         if(param1.success && this._pendingGateData != null)
+         {
+            var _data:Object = this._pendingGateData;
+            // 将预计算的装备分配给敌方武将
+            if(param1.data.enemyEquips != null)
+            {
+               var _eoi:int = 0;
+               while(_eoi < param1.data.enemyEquips.length)
+               {
+                  var _ee:Object = param1.data.enemyEquips[_eoi];
+                  if(_eoi < _data.enemy.length)
+                  {
+                     _data.enemy[_eoi].setEquipmentStr(_ee.equips.join(","));
+                  }
+                  _eoi++;
+               }
+            }
+         }
+         // 无论prepare是否成功都创建战斗
+         this.createFightNow();
+         // 显示掉落预警
+         if(param1.success && param1.data.dropNotify != null && this._fight != null)
+         {
+            this._fight.showEquipNotify(param1.data.dropNotify.msg);
          }
       }
       
