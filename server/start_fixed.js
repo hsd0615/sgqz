@@ -284,9 +284,10 @@ function canDropEquip(code) {
   return !m; // 投石车排除
 }
 // 根据敌将品质和关卡难度分配默认装备
-function getDefaultEquipForEnemy(genQuality, genLevel, fubenID, stageIdx) {
+function getDefaultEquipForEnemy(enemyCode, genQuality, genLevel, fubenID, stageIdx) {
   // 返回6槽装备数组 [weapon, armor, acc1, helmet, boots, acc2]
   var equips = ['0', '0', '0', '0', '0', '0'];
+  if (!canDropEquip(enemyCode)) return equips; // 投石车(type=0)不装备
   if (genLevel < 5) return equips; // 太低等级不给装备
   // 根据品质决定装备品质范围
   var maxQ = 1;
@@ -592,7 +593,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.2';
+  _cachedClientVersion = '4.0.3';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -851,7 +852,7 @@ function handleRequest(socket, req) {
       var fpec = fpenemyCodes[fpei];
       var fpgenQ = parseGeneralQuality(fpec);
       var fpgenLevel = fpenemyLevels[fpei] || fplevel;
-      var fpdefaultEquips = getDefaultEquipForEnemy(fpgenQ, fpgenLevel, 0, fplevel);
+      var fpdefaultEquips = getDefaultEquipForEnemy(fpec, fpgenQ, fpgenLevel, 0, fplevel);
       fpenemyEquips.push({ code: fpec, equips: fpdefaultEquips });
       if (!canDropEquip(fpec)) continue;
       var fpminEQ = 1, fpmaxEQ = 3;
@@ -1114,7 +1115,7 @@ function handleRequest(socket, req) {
       var genQ = parseGeneralQuality(ec);
       var genLevel = parseInt(data.enemyLevels ? data.enemyLevels.split(',')[ei] : '1') || 1;
       // 给敌方分配适合关卡难度的默认装备
-      var defaultEquips = getDefaultEquipForEnemy(genQ, genLevel, fubenID, stageIdx);
+      var defaultEquips = getDefaultEquipForEnemy(ec, genQ, genLevel, fubenID, stageIdx);
       enemyEquips.push({ code: ec, equips: defaultEquips });
       // 计算装备掉落
       if (!canDropEquip(ec)) continue;
