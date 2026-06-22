@@ -1267,11 +1267,6 @@ import game.ui.UpdateChecker;
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
-               // 存储全服公告供聊天区显示
-               var _announcements3:Array = param1.data.announcements as Array;
-               if(_announcements3 && _announcements3.length > 0) {
-                  RoleModel.getInstance().pendingAnnouncements = _announcements3;
-               }
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();
             }

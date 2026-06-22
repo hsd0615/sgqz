@@ -152,19 +152,6 @@ package game.ui
          this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
          this._currentChannel = 1;
-         // 显示全服公告(世界聊天格式,与sendWorld一致)
-         var _pa:Array = RoleModel.getInstance().pendingAnnouncements;
-         if(_pa && _pa.length > 0) {
-            for(var _pai:int = 0; _pai < _pa.length; _pai++) {
-               var _pao:Object = _pa[_pai];
-               var _pat:String = new Date(_pao.time).toLocaleTimeString();
-               var _pam:String = _pao.msg as String;
-               if(_pam.indexOf("[系统]") == 0) _pam = _pam.substring(4);
-               this._allArr.push("<font color=\'#00ff00\'>【世界】</font>[系统][" + _pat + "]：" + _pam + "\n");
-            }
-            this._talkField.setMultiText(this._allArr);
-            RoleModel.getInstance().pendingAnnouncements = null;
-         }
       }
       
       override protected function initEvent() : void
