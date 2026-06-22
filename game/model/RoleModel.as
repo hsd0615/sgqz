@@ -63,6 +63,7 @@ package game.model
 		public var loginServer:int = 1;
 		
 		private var _armys:Vector.<ArmyInfo>;
+		public function get armys():Vector.<ArmyInfo> { return this._armys; }
 		
 		private var _chooseSoldiers:Vector.<String>;
 		
