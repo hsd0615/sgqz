@@ -528,19 +528,12 @@ function makeRoleModel(p) {
   };
 }
 function makeArmyModel(playerId) {
-  return findGenerals(playerId).map(g => {
-    // 补全空名字
-    if (!g.name || g.name === '') {
-      var gdef = GENERAL_DATA[g.code];
-      if (gdef) g.name = gdef.name;
-    }
-    return {
-      id: g.general_id, code: g.code, name: g.name, genius: g.tianfu||null, level: g.level,
-      feature: g.feature, evolution: g.evolution,
-      kezhi: getKezhiStr(g),
-      equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
-    };
-  });
+  return findGenerals(playerId).map(g => ({
+    id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
+    feature: g.feature, evolution: g.evolution,
+    kezhi: getKezhiStr(g),
+    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
+  }));
 }
 function makeBagModel(playerId) {
   if (!db.bagItems) return [];
@@ -1199,19 +1192,28 @@ function handleRequest(socket, req) {
       }
     };
     if (fi === 3) {
-      // 翻牌奖励: 装备品质降低 (Lv1-14→Q1, Lv15-29→Q2, ... Lv135+→Q10)
-      var flipEqQ = Math.min(10, Math.max(1, Math.floor(flv / 15) + 1));
-      var flipEqCands = [];
-      for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === flipEqQ) flipEqCands.push(fek); }
-      var flipEqCode = flipEqCands.length > 0 ? flipEqCands[Math.floor(Math.random() * flipEqCands.length)] : '';
-      resp.data.pai = [
-        '2|' + (flv * 300),
-        '1|' + flipEqCode + '|1',
-        '1|proto_3_1|1',
-        '1|proto_3_2|3',
-        '1|proto_3_3|1',
-        '1|proto_3_4|1'
-      ];
+      // 翻牌: 每格独立随机 — 40%装备(品质在基础值附近波动) + 60%道具
+      var baseQ = Math.min(10, Math.max(1, Math.floor(flv / 15) + 1));
+      var pai = [];
+      for (var pi = 0; pi < 6; pi++) {
+        if (Math.random() < 0.4) {
+          // 装备: 品质在baseQ±2范围内随机, 越接近baseQ概率越高
+          var qOffset = Math.floor(Math.random() * 5) - 2; // -2,-1,0,1,2
+          var eqQ = Math.min(10, Math.max(1, baseQ + qOffset));
+          var eqc = [];
+          for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
+          if (eqc.length > 0) {
+            pai.push('1|' + eqc[Math.floor(Math.random() * eqc.length)] + '|1');
+          } else {
+            pai.push('2|' + (flv * 200)); // fallback银子
+          }
+        } else {
+          // 道具
+          var items = ['proto_3_1|1','proto_3_2|3','proto_3_3|1','proto_3_4|1','proto_2_1|3','proto_2_6|5','proto_1_1|5'];
+          pai.push('1|' + items[Math.floor(Math.random() * items.length)]);
+        }
+      }
+      resp.data.pai = pai;
     }
     console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' money+=' + amoney);
     return jsonRawResponse(socket, resp);
