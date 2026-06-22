@@ -122,7 +122,8 @@ package game.ui
          this.__switchBtn = _skin.getChildByName("_switchBtn") as MovieClip;
          this.__worldChannelBtn.buttonMode = true;
          this.__privateChannelBtn.buttonMode = true;
-         this.__switchBtn.buttonMode = false; this.__switchBtn.visible = false;
+         this.__switchBtn.gotoAndStop(2);
+         this.__switchBtn.buttonMode = false;
          this._talkField = new TalkField(this.__bk.width - 15,this.__bk.height - 8);
          this._talkField.x = this.__bk.x + 15;
          this._talkField.y = this.__bk.y + 4;
@@ -151,13 +152,16 @@ package game.ui
          this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
          this._currentChannel = 1;
-         // 显示登录公告
+         // 显示全服公告(世界聊天格式)
          var _pa:Array = RoleModel.getInstance().pendingAnnouncements;
          if(_pa && _pa.length > 0) {
             for(var _pai:int = 0; _pai < _pa.length; _pai++) {
                var _pao:Object = _pa[_pai];
                var _pat:String = new Date(_pao.time).toLocaleTimeString();
-               this._allArr.push("<font color='#FFD700'>[系统][" + _pat + "] " + _pao.msg + "</font>");
+               var _pam:String = _pao.msg as String;
+               // 去掉[系统]前缀避免重复, 格式化为世界聊天样式
+               if(_pam.indexOf("[系统]") == 0) _pam = _pam.substring(4);
+               this._allArr.push("<font color='#00ff00'>【世界】</font><font color='#ff0000'>[系统][" + _pat + "]：" + _pam + "</font>");
             }
             this._talkField.setMultiText(this._allArr);
             RoleModel.getInstance().pendingAnnouncements = null;
