@@ -151,6 +151,17 @@ package game.ui
          this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
          this._currentChannel = 1;
+         // 显示登录公告
+         var _pa:Array = RoleModel.getInstance().pendingAnnouncements;
+         if(_pa && _pa.length > 0) {
+            for(var _pai:int = 0; _pai < _pa.length; _pai++) {
+               var _pao:Object = _pa[_pai];
+               var _pat:String = new Date(_pao.time).toLocaleTimeString();
+               this._allArr.push("<font color='#FFD700'>[系统][" + _pat + "] " + _pao.msg + "</font>");
+            }
+            this._talkField.setMultiText(this._allArr);
+            RoleModel.getInstance().pendingAnnouncements = null;
+         }
       }
       
       override protected function initEvent() : void

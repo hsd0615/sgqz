@@ -1267,16 +1267,10 @@ import game.ui.UpdateChecker;
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
-               // 显示全服公告(弹窗方式)
-               var _announcements2:Array = param1.data.announcements as Array;
-               if(_announcements2 && _announcements2.length > 0) {
-                  var _annText:String = "<font color='#FFD700'><b>📢 全服公告</b></font>\n";
-                  for(var _annI2:int = 0; _annI2 < _announcements2.length; _annI2++) {
-                     var _ann2:Object = _announcements2[_annI2];
-                     var _annTime2:String = new Date(_ann2.time).toLocaleTimeString();
-                     _annText += "[" + _annTime2 + "] " + _ann2.msg + "\n";
-                  }
-                  this._ui.showMsg({type:0, text:_annText, width:400, height:200});
+               // 存储全服公告供聊天区显示
+               var _announcements3:Array = param1.data.announcements as Array;
+               if(_announcements3 && _announcements3.length > 0) {
+                  RoleModel.getInstance().pendingAnnouncements = _announcements3;
                }
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();

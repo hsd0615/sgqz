@@ -744,7 +744,8 @@ function handleRequest(socket, req) {
 
   // 客户端版本号 - 动态读取 /opt/client/version，确保与已部署 SWF 同步
   if (url === '/api/version') {
-    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.96.41.243:3000/client/main.swf' });
+    var _ts = Date.now();
+    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.96.41.243:3000/client/main.swf?v=' + _ts });
   }
 
   // 更新公告 - 返回最近版本更新内容（面向玩家）

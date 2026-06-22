@@ -61,6 +61,7 @@ package game.model
 		private var _dianka:String;
 		
 		public var loginServer:int = 1;
+		public var pendingAnnouncements:Array = null;
 		
 		private var _armys:Vector.<ArmyInfo>;
 		public function get armys():Vector.<ArmyInfo> { return this._armys; }
