@@ -903,10 +903,6 @@ function handleRequest(socket, req) {
         fpenemyEquips[dropEnemyIdx].equips[5] = fpcode;
         fpenemyEquips[dropEnemyIdx].dropEquip = true;
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
-        if (fpmeqQ >= 5) {
-          var fpenemyName = fpenemyCodes[dropEnemyIdx] || '敌方武将';
-          fpdropNotify = { msg: '【稀有掉落】' + fpdef.name + '(品质' + fpmeqQ + ') 已由敌方武将装备，击败该武将并通关即可获得！', quality: fpmeqQ, enemyIdx: dropEnemyIdx, enemyName: fpenemyName, eqName: fpdef.name };
-        }
       }
     }
     if (!p._pendingMainEquipDrop) p._pendingMainEquipDrop = {};
@@ -1034,9 +1030,6 @@ function handleRequest(socket, req) {
           if (!db.bagItems) db.bagItems = [];
           db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: pendingDrop.code, count: 1 });
           equipDrop = { code: pendingDrop.code, name: pdDef.name, quality: pendingDrop.quality };
-          if (pendingDrop.quality >= 5) {
-            broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + pdDef.name + '](品质' + pendingDrop.quality + ')，全服首通福利！');
-          }
         }
         delete p._pendingMainEquipDrop[mainKey];
       }
@@ -1063,7 +1056,6 @@ function handleRequest(socket, req) {
             if (!db.bagItems) db.bagItems = [];
             db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
             equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
-            if (meqQ >= 5) broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
           }
         }
       }
@@ -1152,10 +1144,6 @@ function handleRequest(socket, req) {
         enemyEquips[bestDrop.enemyIdx].equips[5] = dropCode;
         enemyEquips[bestDrop.enemyIdx].dropEquip = true;
         equipDrop = { code: dropCode, name: dropDef.name, quality: bestDrop.quality, enemyIdx: bestDrop.enemyIdx };
-        // Q5+传说及以上装备通知
-        if (bestDrop.quality >= 5) {
-          dropNotify = { msg: '【稀有掉落】' + dropDef.name + '(品质' + bestDrop.quality + ') 已由敌方武将装备，击败该武将并通关即可获得！', quality: bestDrop.quality };
-        }
       }
     }
     // 存储预计算结果到player上，战后使用
