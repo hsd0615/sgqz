@@ -861,19 +861,20 @@ function handleRequest(socket, req) {
       var fpdefaultEquips = getDefaultEquipForEnemy(fpec, fpgenQ, fpgenLevel, 0, fplevel);
       fpenemyEquips.push({ code: fpec, equips: fpdefaultEquips });
       if (!canDropEquip(fpec)) continue;
-      var fpminEQ = 1, fpmaxEQ = 3;
-      if (fpgenQ == 0) { fpminEQ = 7; fpmaxEQ = 10; }
-      else if (fpgenQ == 1) { fpminEQ = 4; fpmaxEQ = 7; }
-      else if (fpgenQ == 2) { fpminEQ = 2; fpmaxEQ = 5; }
-      var fprateDiv = [2000, 1200, 600, 300][fpgenQ] || 1000;
-      var fpprob = Math.min(0.40, Math.max(0.005, fpgenLevel / fprateDiv));
-      if (Math.random() < fpprob) {
-        var fprollQ = fpminEQ + Math.floor(Math.random() * (fpmaxEQ - fpminEQ + 1));
-        // 彩色品质(Q10)二次概率判定, 仅降低最高彩色掉落, 红色(Q9)及以下不受影响
-        if (fprollQ >= 10 && Math.random() > 0.35) fprollQ = 9;
-        if (!fpbestDrop || fprollQ > fpbestDrop.quality) {
-          fpbestDrop = { quality: fprollQ, enemyIdx: fpei, genCode: fpec, genName: '' };
-        }
+      // 预计算掉落(与result共用, 非概率判定—result直接使用此结果)
+      var fpmainCenterQ = Math.min(8, Math.floor(fplevel / 25) + Math.floor(fppart / 10) + 1);
+      var fprawW = [0,0,0,0,0,0,0,0,0,0,0];
+      for (var fpmq = 1; fpmq <= 10; fpmq++) {
+        var fpmdist = Math.abs(fpmq - fpmainCenterQ);
+        if (fpmq >= 9) fprawW[fpmq] = fpmq === 9 ? 3 : 1.5;
+        else fprawW[fpmq] = Math.max(1, 25 - fpmdist * 8);
+      }
+      var fptotalW = 0; for (var fptw = 1; fptw <= 10; fptw++) fptotalW += fprawW[fptw];
+      var fproll = Math.random() * fptotalW;
+      var fpmeqQ = 1, fpmacc = 0;
+      for (var fpmwi = 1; fpmwi <= 10; fpmwi++) { fpmacc += fprawW[fpmwi]; if (fproll < fpmacc) { fpmeqQ = fpmwi; break; } }
+      if (!fpbestDrop || fpmeqQ > fpbestDrop.quality) {
+        fpbestDrop = { quality: fpmeqQ, enemyIdx: fpei, genCode: fpec, genName: '' };
       }
     }
     if (fpbestDrop) {
@@ -1003,35 +1004,49 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备掉落 — 等级+章节影响掉率与品质
+    // 装备掉落 — 优先用prepare预计算, 否则现场加权随机
     var equipDrop = null;
     var mainPai = [];
-    if (isWin && fn >= 5) {
-      // 掉率: 基于玩家等级与章节, 上限70%
-      var dropProb = Math.min(0.70, Math.max(0.15, (flevel / 200) + (fpart / 50)));
-      if (Math.random() < dropProb) {
-        // centerQ基于等级+章节
-        var mainCenterQ = Math.min(8, Math.floor(flevel / 25) + Math.floor(fpart / 10) + 1);
-        var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
-        for (var mq = 1; mq <= 10; mq++) {
-          var mdist = Math.abs(mq - mainCenterQ);
-          if (mq >= 9) mRawW[mq] = mq === 9 ? 3 : 1.5;
-          else mRawW[mq] = Math.max(1, 25 - mdist * 8);
-        }
-        var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
-        var mroll = Math.random() * mTotalW;
-        var meqQ = 1, macc = 0;
-        for (var mwi = 1; mwi <= 10; mwi++) { macc += mRawW[mwi]; if (mroll < macc) { meqQ = mwi; break; } }
-        var meqc = [];
-        for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
-        if (meqc.length > 0) {
-          var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
-          var meqDef = EQUIP_DATA[meqCode];
+    if (isWin && flevel >= 5) {
+      var mainKey = fpart + '_' + flevel;
+      // 优先使用战前prepare预计算的掉落
+      if (p._pendingMainEquipDrop && p._pendingMainEquipDrop[mainKey]) {
+        var pendingDrop = p._pendingMainEquipDrop[mainKey];
+        if (pendingDrop && pendingDrop.code && EQUIP_DATA[pendingDrop.code]) {
+          var pdDef = EQUIP_DATA[pendingDrop.code];
           if (!db.bagItems) db.bagItems = [];
-          db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
-          equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
-          if (meqQ >= 5) {
-            broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
+          db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: pendingDrop.code, count: 1 });
+          equipDrop = { code: pendingDrop.code, name: pdDef.name, quality: pendingDrop.quality };
+          if (pendingDrop.quality >= 5) {
+            broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + pdDef.name + '](品质' + pendingDrop.quality + ')，全服首通福利！');
+          }
+        }
+        delete p._pendingMainEquipDrop[mainKey];
+      }
+      // 无预计算时(兜底): 现场加权随机
+      if (!equipDrop) {
+        var dropProb = Math.min(0.70, Math.max(0.15, (flevel / 200) + (fpart / 50)));
+        if (Math.random() < dropProb) {
+          var mainCenterQ = Math.min(8, Math.floor(flevel / 25) + Math.floor(fpart / 10) + 1);
+          var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
+          for (var mq = 1; mq <= 10; mq++) {
+            var mdist = Math.abs(mq - mainCenterQ);
+            if (mq >= 9) mRawW[mq] = mq === 9 ? 3 : 1.5;
+            else mRawW[mq] = Math.max(1, 25 - mdist * 8);
+          }
+          var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
+          var mroll = Math.random() * mTotalW;
+          var meqQ = 1, macc = 0;
+          for (var mwi = 1; mwi <= 10; mwi++) { macc += mRawW[mwi]; if (mroll < macc) { meqQ = mwi; break; } }
+          var meqc = [];
+          for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
+          if (meqc.length > 0) {
+            var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
+            var meqDef = EQUIP_DATA[meqCode];
+            if (!db.bagItems) db.bagItems = [];
+            db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
+            equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
+            if (meqQ >= 5) broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
           }
         }
       }
