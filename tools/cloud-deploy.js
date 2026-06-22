@@ -83,7 +83,7 @@ async function uploadFile(host, port, localPath, remoteName, label) {
   }
 
   // Large file - chunked
-  const CHUNK = 40000;
+  const CHUNK = 3000;
   const totalChunks = Math.ceil(b64.length / CHUNK);
   console.log(`  分${totalChunks}块上传...`);
   const tmpFile = '/tmp/_upload_' + remoteName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -94,7 +94,7 @@ async function uploadFile(host, port, localPath, remoteName, label) {
   for (let i = 0; i < totalChunks; i++) {
     const chunk = b64.substring(i * CHUNK, (i + 1) * CHUNK);
     const r = await execRemote(host, port,
-      `echo '${chunk}' >> ${tmpFile} && echo OK`, `Chunk ${i+1}/${totalChunks}`);
+      `printf '%s' '${chunk}' >> ${tmpFile} && echo OK`, `Chunk ${i+1}/${totalChunks}`);
     if (!r) {
       console.log(`  ✗ 第${i+1}块失败`);
       return false;
