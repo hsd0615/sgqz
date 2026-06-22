@@ -756,6 +756,10 @@ package game.ui
             this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
             return;
          }
+         // 过滤掉已装备的(无法售卖)
+         _allItems = _allItems.filter(function(_itm:Object):Boolean {
+            return !RoleModel.getInstance().isEquippedByAny(_itm.code);
+         });
          if(this._batchPage2 == 0 && this._batchFilterQ2 == 0) {
             this._batchSelected2 = {};
             for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].id]=true;
