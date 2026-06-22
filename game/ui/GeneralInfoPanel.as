@@ -734,7 +734,7 @@ package game.ui
          _btf2.text = "📦 批量售卖"; _btf2.selectable = false;
          _btf2.width = 68; _btf2.height = 14; _btf2.x = 2; _btf2.y = 2;
          _batchBtn2.addChild(_btf2);
-         _batchBtn2.x = _listW - 78; _batchBtn2.y = _fy - 2;
+         _batchBtn2.x = _listW - 74; _batchBtn2.y = _fy + 4;
          _batchBtn2.addEventListener(MouseEvent.CLICK, function(p:*):void {
             p.stopImmediatePropagation();
             _self.showBatchSellView();

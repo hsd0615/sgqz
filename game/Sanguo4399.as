@@ -2174,7 +2174,13 @@ import game.ui.UpdateChecker;
       
       private function useAmmoResponse(param1:Object) : *
       {
-         if(param1.success != true)
+         if(param1.success == true)
+         {
+            // 同步服务端背包数据，防止客户端与服务端不一致
+            if(param1.data && param1.data.bagModel)
+               RoleModel.getInstance().initBagModel(param1.data.bagModel);
+         }
+         else
          {
             this._ui.showMsg({
                "type":0,
