@@ -757,9 +757,11 @@ package game.ui
             return;
          }
          // 过滤掉已装备的(无法售卖)
-         _allItems = _allItems.filter(function(_itm:Object):Boolean {
-            return !RoleModel.getInstance().isEquippedByAny(_itm.code);
-         });
+         var _filteredItems:Array = [];
+         for(var _fi2:int=0;_fi2<_allItems.length;_fi2++) {
+            if(!RoleModel.getInstance().isEquippedByAny(_allItems[_fi2].code)) _filteredItems.push(_allItems[_fi2]);
+         }
+         _allItems = _filteredItems;
          if(this._batchPage2 == 0 && this._batchFilterQ2 == 0) {
             this._batchSelected2 = {};
             for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].id]=true;
