@@ -1192,25 +1192,22 @@ function handleRequest(socket, req) {
       }
     };
     if (fi === 3) {
-      // 翻牌: 每格独立随机 — 40%装备(品质在基础值附近波动) + 60%道具
-      var baseQ = Math.min(10, Math.max(1, Math.floor(flv / 15) + 1));
+      // 翻牌: 6格全装备, 品质加权随机(低品质概率高)
+      // Q1:20% Q2:18% Q3:16% Q4:14% Q5:12% Q6:8% Q7:6% Q8:4% Q9:1.5% Q10:0.5%
+      var weights = [0, 20, 38, 54, 68, 80, 88, 94, 98, 99.5, 100];
       var pai = [];
       for (var pi = 0; pi < 6; pi++) {
-        if (Math.random() < 0.4) {
-          // 装备: 品质在baseQ±2范围内随机, 越接近baseQ概率越高
-          var qOffset = Math.floor(Math.random() * 5) - 2; // -2,-1,0,1,2
-          var eqQ = Math.min(10, Math.max(1, baseQ + qOffset));
-          var eqc = [];
-          for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
-          if (eqc.length > 0) {
-            pai.push('1|' + eqc[Math.floor(Math.random() * eqc.length)] + '|1');
-          } else {
-            pai.push('2|' + (flv * 200)); // fallback银子
-          }
+        var roll = Math.random() * 100;
+        var eqQ = 1;
+        for (var wi = 1; wi <= 10; wi++) {
+          if (roll < weights[wi]) { eqQ = wi; break; }
+        }
+        var eqc = [];
+        for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
+        if (eqc.length > 0) {
+          pai.push('1|' + eqc[Math.floor(Math.random() * eqc.length)] + '|1');
         } else {
-          // 道具
-          var items = ['proto_3_1|1','proto_3_2|3','proto_3_3|1','proto_3_4|1','proto_2_1|3','proto_2_6|5','proto_1_1|5'];
-          pai.push('1|' + items[Math.floor(Math.random() * items.length)]);
+          pai.push('2|' + (flv * 200));
         }
       }
       resp.data.pai = pai;
