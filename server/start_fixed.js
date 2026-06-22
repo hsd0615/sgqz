@@ -1003,15 +1003,12 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备翻牌 — 类似匈奴副本, 通关后翻牌选装备
+    // 装备掉落 — 品质加权随机(类似匈奴翻牌, 每关一次)
     var equipDrop = null;
     var mainPai = [];
     if (isWin && fn >= 5) {
-      // 翻牌数量: 章节越高越多 (第1-5章3张, 6-15章4张, 16+章5张)
-      var paiCount = fpart <= 5 ? 3 : (fpart <= 15 ? 4 : 5);
-      // centerQ基于玩家等级+章节: 高等级高章节=更好品质
+      // centerQ基于等级+章节
       var mainCenterQ = Math.min(8, Math.floor(fn / 25) + Math.floor(fpart / 10) + 1);
-      // 权重: Q1-8钟形分布, Q9上限3%, Q10上限1.5%
       var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
       for (var mq = 1; mq <= 10; mq++) {
         var mdist = Math.abs(mq - mainCenterQ);
@@ -1019,27 +1016,19 @@ function handleRequest(socket, req) {
         else mRawW[mq] = Math.max(1, 25 - mdist * 8);
       }
       var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
-      var mCumW = [0]; for (var mcw = 1; mcw <= 10; mcw++) mCumW[mcw] = mCumW[mcw-1] + mRawW[mcw] / mTotalW * 100;
-      mCumW[10] = 100;
-
-      for (var mpi = 0; mpi < paiCount; mpi++) {
-        var mroll = Math.random() * 100;
-        var meqQ = 1;
-        for (var mwi = 1; mwi <= 10; mwi++) { if (mroll < mCumW[mwi]) { meqQ = mwi; break; } }
-        var meqc = [];
-        for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
-        if (meqc.length > 0) {
-          var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
-          mainPai.push('1|' + meqCode + '|1');
-        }
-      }
-      // 取第一张牌作为equipDrop(兼容旧版客户端显示)
-      if (mainPai.length > 0) {
-        var firstParts = mainPai[0].split('|');
-        var firstCode = firstParts[1];
-        var firstDef = EQUIP_DATA[firstCode];
-        if (firstDef) {
-          equipDrop = { code: firstCode, name: firstDef.name, quality: firstDef.quality };
+      var mroll = Math.random() * mTotalW;
+      var meqQ = 1, macc = 0;
+      for (var mwi = 1; mwi <= 10; mwi++) { macc += mRawW[mwi]; if (mroll < macc) { meqQ = mwi; break; } }
+      var meqc = [];
+      for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
+      if (meqc.length > 0) {
+        var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
+        var meqDef = EQUIP_DATA[meqCode];
+        if (!db.bagItems) db.bagItems = [];
+        db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
+        equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
+        if (meqQ >= 5) {
+          broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
         }
       }
     }
@@ -1052,8 +1041,7 @@ function handleRequest(socket, req) {
         part: fpart, level: flevel,
         finished: p.finished_stages,
         money: battleMoney, exploit: battleExploit, reverence: battleReverence,
-        equipDrop: equipDrop,
-        pai: mainPai
+        equipDrop: equipDrop
       }
     };
     if (awardData) resp.data.award = awardData;
