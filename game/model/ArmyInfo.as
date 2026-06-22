@@ -413,7 +413,7 @@ package game.model
          var _val:* = EquipData.get(param1,param2);
          if(!_val) return 0;
          var _n:int = int(Number(_val));
-         if(this.isEnemy && param1 == this._equip6 && param1 != "0") _n = int(_n * 0.3);
+         if(this.dropEquipCode != "" && param1 == this.dropEquipCode) _n = int(_n * 0.3);
          return _n;
       }
 
