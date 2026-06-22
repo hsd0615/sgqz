@@ -1526,8 +1526,10 @@ function handleRequest(socket, req) {
       var itemCode = String(data.itemCode);
       var edef = EQUIP_DATA[itemCode];
       if (!edef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
-      // 饰品(slot=3)可在两个饰品槽(UI idx 2或5)通用
-      if (edef.slot !== slotIdx + 1 && !(edef.slot === 3 && (slotIdx === 2 || slotIdx === 5))) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
+      // 饰品(slot=3或旧slot=6)可在两个饰品槽(UI idx 2或5)通用
+      var isAccessory = (edef.slot === 3 || edef.slot === 6);
+      var isAccessorySlot = (slotIdx === 2 || slotIdx === 5);
+      if (edef.slot !== slotIdx + 1 && !(isAccessory && isAccessorySlot)) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
 
       // 检查该装备是否已被其他武将装备
       var allGens = findGenerals(p.id);

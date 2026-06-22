@@ -75,12 +75,12 @@ package game.ui
          //   [战靴]                     y=195
          //           [饰品Ⅱ]            y=195
          var _slotLayout:Array = [
-            {label:"头盔", x:195, y:35},       // slot 3, top-center
-            {label:"武器", x:5, y:115},        // slot 0, middle-left
-            {label:"铠甲", x:195, y:115},      // slot 1, middle-center
-            {label:"饰品Ⅰ", x:385, y:115},     // slot 2, middle-right
-            {label:"战靴", x:100, y:195},      // slot 4, bottom-left
-            {label:"饰品Ⅱ", x:290, y:195}      // slot 5, bottom-right
+            {label:"头盔", x:195, y:43},       // slot 3, top-center
+            {label:"武器", x:5, y:123},        // slot 0, middle-left
+            {label:"铠甲", x:195, y:123},      // slot 1, middle-center
+            {label:"饰品Ⅰ", x:385, y:123},     // slot 2, middle-right
+            {label:"战靴", x:100, y:187},      // slot 4, bottom-left
+            {label:"饰品Ⅱ", x:290, y:187}      // slot 5, bottom-right
          ];
          var _slotIndices:Array = [3, 0, 1, 2, 4, 5];
 
