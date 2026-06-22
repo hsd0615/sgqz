@@ -1509,9 +1509,10 @@ function handleRequest(socket, req) {
         p.money -= 1000; p.exploit -= 1000;
         respData.money = p.money; respData.exploit = p.exploit;
         respData.itemID = consumedItemId;
-        // 升级克制(概率: Lv1=90%, Lv5=50%, Lv9=10%)
+        // 升级克制(概率与客户端Logic.getKezhiJilv一致)
         var curLv = (g['kezhi'+(ki+1)+'_level'] || 1);
-        var kezhiRate = Math.max(0.1, 1.0 - curLv * 0.1);
+        var kezhiTable = [1.0, 0.85, 0.70, 0.55, 0.40, 0.28, 0.20, 0.14, 0.10, 0.07, 0.05];
+        var kezhiRate = kezhiTable[Math.min(curLv, 10)];
         var kezhiOk = Math.random() < kezhiRate;
         if (kezhiOk) {
           if (ki === 0) { g.kezhi1_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
