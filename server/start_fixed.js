@@ -528,12 +528,19 @@ function makeRoleModel(p) {
   };
 }
 function makeArmyModel(playerId) {
-  return findGenerals(playerId).map(g => ({
-    id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
-    feature: g.feature, evolution: g.evolution,
-    kezhi: getKezhiStr(g),  // XML类型权威 + DB等级
-    equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
-  }));
+  return findGenerals(playerId).map(g => {
+    // 补全空名字
+    if (!g.name || g.name === '') {
+      var gdef = GENERAL_DATA[g.code];
+      if (gdef) g.name = gdef.name;
+    }
+    return {
+      id: g.general_id, code: g.code, name: g.name, genius: g.tianfu||null, level: g.level,
+      feature: g.feature, evolution: g.evolution,
+      kezhi: getKezhiStr(g),
+      equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
+    };
+  });
 }
 function makeBagModel(playerId) {
   if (!db.bagItems) return [];
