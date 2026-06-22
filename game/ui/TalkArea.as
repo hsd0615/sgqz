@@ -148,8 +148,8 @@ package game.ui
          this.__talkInputTF.restrict = "^[]<>\'\"|#　";
          this.__talkInputTF.text = "";
          this.__worldChannelBtn.gotoAndStop(1);
-         this.__privateChannelBtn.gotoAndStop(2);
-         this._currentChannel = 1;
+         this.__privateChannelBtn.visible = false;
+         this._currentChannel = 2;
       }
       
       override protected function initEvent() : void
