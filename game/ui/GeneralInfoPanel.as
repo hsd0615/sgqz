@@ -16,6 +16,8 @@ package game.ui
    import flash.events.MouseEvent;
    import flash.filters.BlurFilter;
    import flash.filters.GlowFilter;
+   import flash.display.GradientType;
+   import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
@@ -348,11 +350,17 @@ package game.ui
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                var _qc:uint = getQualityBgColor(_q);
 
-               // 品质纯色背景(不透明覆盖)
+               // 品质背景(彩色Q10用彩虹渐变)
                var _bg:Shape = new Shape();
-               _bg.graphics.beginFill(_qc, 0.95);
-               _bg.graphics.drawRoundRect(0, 0, 34, 34, 4, 4);
-               _bg.graphics.endFill();
+               if(_q == 10) {
+                  drawRainbowBg(_bg, 34, 34, 0.95);
+                  var _glow:GlowFilter = new GlowFilter(0xFF66FF, 0.7, 8, 8, 2, 1);
+                  _bg.filters = [_glow];
+               } else {
+                  _bg.graphics.beginFill(_qc, 0.95);
+                  _bg.graphics.drawRoundRect(0, 0, 34, 34, 4, 4);
+                  _bg.graphics.endFill();
+               }
                if(_slot is Sprite) (_slot as Sprite).addChild(_bg);
                else (_slot as MovieClip).addChild(_bg);
 
@@ -432,6 +440,16 @@ package game.ui
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
+
+      // 彩色(Q10)彩虹渐变背景
+      private static const RAINBOW_COLORS:Array = [0xFF0000,0xFF8800,0xFFFF00,0x00FF00,0x0088FF,0xFF00FF];
+      private static function drawRainbowBg(shape:Shape, w:Number, h:Number, alpha:Number=0.95):void {
+         var _m:Matrix = new Matrix();
+         _m.createGradientBox(w, h, Math.PI/6, 0, 0);
+         shape.graphics.beginGradientFill(GradientType.LINEAR, RAINBOW_COLORS, [1,1,1,1,1,1], [0,51,102,153,204,255], _m);
+         shape.graphics.drawRoundRect(0, 0, w, h, 4, 4);
+         shape.graphics.endFill();
+      }
 
       private function onEquipSlotClick(param1:MouseEvent) : void
       {
@@ -568,12 +586,18 @@ package game.ui
             _cell.buttonMode = true;
             _cell.name = _item.code;
 
-            // 品质背景
+            // 品质背景(Q10彩色用彩虹渐变)
             var _cbg:Shape = new Shape();
-            _cbg.graphics.beginFill(getQualityBgColor(_q),0.65);
-            _cbg.graphics.lineStyle(1,getQualityColor(_q),0.5);
-            _cbg.graphics.drawRoundRect(1,1,_cellW-2,_cellH-2,3,3);
-            _cbg.graphics.endFill();
+            if(_q == 10) {
+               drawRainbowBg(_cbg, _cellW-1, _cellH-1, 0.65);
+               _cbg.x = 1; _cbg.y = 1;
+               _cbg.filters = [new GlowFilter(0xFF66FF, 0.5, 6, 6, 2, 1)];
+            } else {
+               _cbg.graphics.beginFill(getQualityBgColor(_q),0.65);
+               _cbg.graphics.lineStyle(1,getQualityColor(_q),0.5);
+               _cbg.graphics.drawRoundRect(1,1,_cellW-2,_cellH-2,3,3);
+               _cbg.graphics.endFill();
+            }
             _cell.addChild(_cbg);
 
             // 图标(缩小)
