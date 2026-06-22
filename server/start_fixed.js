@@ -2138,6 +2138,16 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { success: true, messages: newMsgs, serverTime: Date.now() });
   }
 
+  // 强制重载装备数据(部署后调用)
+  if (url === '/api/admin/reload-equip') {
+    EQUIP_DATA = {};
+    loadEquipData();
+    var _rc = Object.keys(EQUIP_DATA).length;
+    var _ra = 0; for (var _rek in EQUIP_DATA) { if (EQUIP_DATA[_rek].slot === 3 || EQUIP_DATA[_rek].slot === 6) _ra++; }
+    console.log('[Reload] EQUIP_DATA reloaded: ' + _rc + ' items, 饰品: ' + _ra);
+    return jsonRawResponse(socket, { success: true, data: { equipCount: _rc, accessoryCount: _ra } });
+  }
+
   // Other API endpoints — 返回当前玩家资源（防止覆盖归零）
   if (url.startsWith('/api/')) {
     const p = findPlayerByRequest(data);
