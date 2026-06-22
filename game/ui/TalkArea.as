@@ -150,7 +150,7 @@ package game.ui
          this.__worldChannelBtn.gotoAndStop(1);
          this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
-         this._currentChannel = 2;
+         this._currentChannel = 1;
       }
       
       override protected function initEvent() : void
