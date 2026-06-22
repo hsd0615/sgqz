@@ -1613,7 +1613,11 @@ function handleRequest(socket, req) {
       } else if (data.itemCode) {
         sellCodes = [String(data.itemCode)];
       }
-      if (sellCodes.length === 0) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
+      if (sellCodes.length === 0) {
+        console.log('[SellEquip] EMPTY ' + p.role_name + ' body=' + JSON.stringify(data).substring(0,200));
+        return jsonRawResponse(socket, { success: false, message: '无效的装备' });
+      }
+      console.log('[SellEquip] REQ ' + p.role_name + ' codes=' + sellCodes.join(',') + ' count=' + sellCodes.length);
 
       // 收集已装备的code列表
       var allGens3 = findGenerals(p.id);

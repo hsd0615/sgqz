@@ -354,7 +354,7 @@ package game.ui
                var _bg:Shape = new Shape();
                if(_q == 10) {
                   drawRainbowBorder(_bg, 34, 34, 0.95);
-                  var _glow:GlowFilter = new GlowFilter(0xFF66FF, 0.7, 8, 8, 2, 1);
+                  var _glow:GlowFilter = new GlowFilter(0xFFFFCC, 0.7, 8, 8, 2, 1);
                   _bg.filters = [_glow];
                } else {
                   _bg.graphics.beginFill(_qc, 0.95);
@@ -441,13 +441,12 @@ package game.ui
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
 
-      // 彩色(Q10)彩虹渐变边框
-      private static const RAINBOW_COLORS:Array = [0xFF0000,0xFF8800,0xFFFF00,0x00FF00,0x0088FF,0xFF00FF];
+      // 彩色(Q10)偏白炫彩边框
+      private static const RAINBOW_COLORS:Array = [0xFFAAAA,0xFFCC88,0xFFFFAA,0xAAFFAA,0xAACCFF,0xFFAAFF];
       private static function drawRainbowBorder(shape:Shape, w:Number, h:Number, borderW:Number=2.5):void {
          var _m:Matrix = new Matrix();
          _m.createGradientBox(w, h, Math.PI/6, 0, 0);
-         // 彩虹渐变填充整体 → 内部再画暗色矩形形成边框效果
-         shape.graphics.beginGradientFill(GradientType.LINEAR, RAINBOW_COLORS, [1,1,1,1,1,1], [0,51,102,153,204,255], _m);
+         shape.graphics.beginGradientFill(GradientType.LINEAR, RAINBOW_COLORS, [0.6,0.6,0.6,0.6,0.6,0.6], [0,51,102,153,204,255], _m);
          shape.graphics.drawRoundRect(0, 0, w, h, 4, 4);
          shape.graphics.endFill();
          shape.graphics.beginFill(0x0d0804, 1);
@@ -595,7 +594,7 @@ package game.ui
             if(_q == 10) {
                drawRainbowBorder(_cbg, _cellW-1, _cellH-1, 0.65);
                _cbg.x = 1; _cbg.y = 1;
-               _cbg.filters = [new GlowFilter(0xFF66FF, 0.5, 6, 6, 2, 1)];
+               _cbg.filters = [new GlowFilter(0xFFFFCC, 0.5, 6, 6, 2, 1)];
             } else {
                _cbg.graphics.beginFill(getQualityBgColor(_q),0.65);
                _cbg.graphics.lineStyle(1,getQualityColor(_q),0.5);
