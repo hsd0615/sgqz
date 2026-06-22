@@ -400,6 +400,17 @@ package game.model
 		      }
 		      _loc2_++;
 		   }
+		   // 按品质降序→名称升序排列
+		   _result.sort(function(a:Object, b:Object):int {
+			   var qa:int = int(EquipData.get(a.code,"quality")) || 0;
+			   var qb:int = int(EquipData.get(b.code,"quality")) || 0;
+			   if(qa != qb) return qb - qa;
+			   var na:String = String(EquipData.get(a.code,"name") || a.code);
+			   var nb:String = String(EquipData.get(b.code,"name") || b.code);
+			   if(na < nb) return -1;
+			   if(na > nb) return 1;
+			   return 0;
+		   });
 		   return _result;
 		}
 		
