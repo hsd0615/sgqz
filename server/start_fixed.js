@@ -898,10 +898,7 @@ function handleRequest(socket, req) {
       if (fpcands.length > 0) {
         var fpcode = fpcands[Math.floor(Math.random() * fpcands.length)];
         var fpdef = EQUIP_DATA[fpcode];
-        // 敌人穿同部位Q1弱化版, 掉落仍为高品质
-		var fpdummy2 = null;
-		for (var fd2 in EQUIP_DATA) { if (EQUIP_DATA[fd2].slot === fpdef.slot && EQUIP_DATA[fd2].quality === 1) { fpdummy2 = fd2; break; } }
-		fpenemyEquips[dropEnemyIdx].equips[5] = fpdummy2 || fpcode;
+        fpenemyEquips[dropEnemyIdx].equips[5] = fpcode;
         fpenemyEquips[dropEnemyIdx].dropEquip = true;
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
 		if (fpmeqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
