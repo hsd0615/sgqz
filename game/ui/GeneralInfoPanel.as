@@ -757,10 +757,28 @@ package game.ui
             this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
             return;
          }
-         // 过滤掉已装备的(无法售卖)
+         // 过滤已装备的: 只跳过已装备份数, 保留多余副本
+         var _equipCount:Object = {};
+         var _armys:Vector.<ArmyInfo> = RoleModel.getInstance().armys;
+         if(_armys) {
+            for(var _ai2:int=0;_ai2<_armys.length;_ai2++) {
+               var _ea:ArmyInfo = _armys[_ai2] as ArmyInfo;
+               if(_ea.equip1) _equipCount[_ea.equip1] = (int(_equipCount[_ea.equip1])||0) + 1;
+               if(_ea.equip2) _equipCount[_ea.equip2] = (int(_equipCount[_ea.equip2])||0) + 1;
+               if(_ea.equip3) _equipCount[_ea.equip3] = (int(_equipCount[_ea.equip3])||0) + 1;
+               if(_ea.equip4) _equipCount[_ea.equip4] = (int(_equipCount[_ea.equip4])||0) + 1;
+               if(_ea.equip5) _equipCount[_ea.equip5] = (int(_equipCount[_ea.equip5])||0) + 1;
+               if(_ea.equip6) _equipCount[_ea.equip6] = (int(_equipCount[_ea.equip6])||0) + 1;
+            }
+         }
+         var _skipCount:Object = {};
          var _filteredItems:Array = [];
          for(var _fi2:int=0;_fi2<_allItems.length;_fi2++) {
-            if(!RoleModel.getInstance().isEquippedByAny(_allItems[_fi2].code)) _filteredItems.push(_allItems[_fi2]);
+            var _eqc:String = _allItems[_fi2].code;
+            var _ec2:int = int(_equipCount[_eqc]) || 0;
+            var _sk2:int = int(_skipCount[_eqc]) || 0;
+            if(_sk2 < _ec2) { _skipCount[_eqc] = _sk2 + 1; }
+            else { _filteredItems.push(_allItems[_fi2]); }
          }
          _allItems = _filteredItems;
          if(this._batchPage2 == 0 && this._batchFilterQ2 == 0) {
@@ -980,7 +998,6 @@ package game.ui
                if(param1.data.dianka!=undefined) RoleModel.getInstance().dianka=int(param1.data.dianka);
                _self.hideEquipBagList();
                _self.flush();
-               if(_self._selectingSlot >= 0) _self.showEquipBagList(_self._selectingSlot);
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                   type:0,text:"批量售卖完成！售出"+(param1.data.soldCount||codes.length)+"件，银子+"+(param1.data.totalSilver||0)+(param1.data.totalDianka>0?" 点卡+"+param1.data.totalDianka:"")
                }));
@@ -1032,6 +1049,7 @@ package game.ui
                }
                if(param3.data.money != undefined) RoleModel.getInstance().money = int(param3.data.money);
                _self.flush();
+               if(_self._bagList.visible) _self.showEquipBagList(_self._selectingSlot);
                var _en2:* = EquipData.get(param2,"name");
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"已装备 " + String(_en2||"")}));
             }
