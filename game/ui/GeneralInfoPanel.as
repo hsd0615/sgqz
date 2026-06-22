@@ -496,6 +496,7 @@ package game.ui
                }
                if(param2.data.money != undefined) RoleModel.getInstance().money = int(param2.data.money);
                _self.flush();
+               if(_self._bagList.visible) _self.showEquipBagList(_self._selectingSlot);
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"装备已卸下,已放回背包。"}));
             }
             else
@@ -979,6 +980,7 @@ package game.ui
                if(param1.data.dianka!=undefined) RoleModel.getInstance().dianka=int(param1.data.dianka);
                _self.hideEquipBagList();
                _self.flush();
+               if(_self._selectingSlot >= 0) _self.showEquipBagList(_self._selectingSlot);
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                   type:0,text:"批量售卖完成！售出"+(param1.data.soldCount||codes.length)+"件，银子+"+(param1.data.totalSilver||0)+(param1.data.totalDianka>0?" 点卡+"+param1.data.totalDianka:"")
                }));
@@ -1079,6 +1081,7 @@ package game.ui
                if(param1.data.money != undefined) RoleModel.getInstance().money = int(param1.data.money);
                if(param1.data.dianka != undefined) RoleModel.getInstance().dianka = int(param1.data.dianka);
                _self.flush();
+               if(_self._bagList.visible) _self.showEquipBagList(_self._selectingSlot);
                var price:Object = getEquipSellPrice(code);
                var nm:* = EquipData.get(code,"name");
                var doneMsg:String = "已售卖 " + nm + "，获得银子+" + price.silver;
