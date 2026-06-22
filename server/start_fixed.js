@@ -883,7 +883,7 @@ function handleRequest(socket, req) {
       fprawW[10] = 0.5; // Q10固定极低
       for (var fpmq = 1; fpmq <= 9; fpmq++) {
         var fpmdist = Math.abs(fpmq - fpidealQ);
-        fprawW[fpmq] = Math.max(1, 25 - fpmdist * 4);
+        fprawW[fpmq] = Math.max(1, 25 - fpmdist * 3);
       }
       var fptotalW = 0; for (var fptw = 1; fptw <= 10; fptw++) fptotalW += fprawW[fptw];
       var fproll = Math.random() * fptotalW;
@@ -1048,7 +1048,7 @@ function handleRequest(socket, req) {
           mRawW[10] = 0.5;
           for (var mq = 1; mq <= 9; mq++) {
             var mdist = Math.abs(mq - mIdealQ);
-            mRawW[mq] = Math.max(1, 25 - mdist * 4);
+            mRawW[mq] = Math.max(1, 25 - mdist * 3);
           }
           var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
           var mroll = Math.random() * mTotalW;
