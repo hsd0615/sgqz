@@ -835,9 +835,9 @@ package game.ui
             this._bagList.addChild(_qb2);
          }
 
-         // 全选/取消
+         // 全选/取消(该品质所有页)
          var _ab2:Sprite=new Sprite(); _ab2.buttonMode=true; _ab2.mouseChildren=false;
-         _ab2.x=_w-58; _ab2.y=_qy;
+         _ab2.x=6; _ab2.y=_qy+18;
          _ab2.graphics.beginFill(0x332200,0.9);
          _ab2.graphics.lineStyle(1,0x8B6914); _ab2.graphics.drawRoundRect(0,0,54,14,3,3);
          _ab2.graphics.endFill();
@@ -847,8 +847,12 @@ package game.ui
          _ab2.addChild(_atf3);
          _ab2.addEventListener(MouseEvent.CLICK,function(p:*):void{
             var _any2:Boolean=false;
-            for(var _k:String in _self._batchSelected2){if(_self._batchSelected2[_k]){_any2=true;break;}}
-            for(var _k2:String in _self._batchSelected2) _self._batchSelected2[_k2]=!_any2;
+            for(var _fi3:int=0;_fi3<_allItems.length;_fi3++) {
+               if(_self._batchSelected2[_allItems[_fi3].id]) { _any2=true; break; }
+            }
+            for(var _fi4:int=0;_fi4<_allItems.length;_fi4++) {
+               _self._batchSelected2[_allItems[_fi4].id] = !_any2;
+            }
             _self.showBatchSellView();
          });
          this._bagList.addChild(_ab2);
