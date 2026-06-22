@@ -865,10 +865,12 @@ function handleRequest(socket, req) {
       if (fpgenQ == 0) { fpminEQ = 7; fpmaxEQ = 10; }
       else if (fpgenQ == 1) { fpminEQ = 4; fpmaxEQ = 7; }
       else if (fpgenQ == 2) { fpminEQ = 2; fpmaxEQ = 5; }
-      var fprateDiv = [4000, 2400, 1200, 600][fpgenQ] || 2000;
-      var fpprob = Math.min(0.20, Math.max(0.002, fpgenLevel / fprateDiv));
+      var fprateDiv = [2000, 1200, 600, 300][fpgenQ] || 1000;
+      var fpprob = Math.min(0.40, Math.max(0.005, fpgenLevel / fprateDiv));
       if (Math.random() < fpprob) {
         var fprollQ = fpminEQ + Math.floor(Math.random() * (fpmaxEQ - fpminEQ + 1));
+        // 彩色品质(Q6+)二次概率判定, 降低高品质掉落
+        if (fprollQ >= 6 && Math.random() > 0.35) fprollQ = 5;
         if (!fpbestDrop || fprollQ > fpbestDrop.quality) {
           fpbestDrop = { quality: fprollQ, enemyIdx: fpei, genCode: fpec, genName: '' };
         }
@@ -1031,6 +1033,8 @@ function handleRequest(socket, req) {
         var eqProb = Math.min(0.40, Math.max(0.005, fn / eqRateDiv));
         if (Math.random() < eqProb) {
           var eqRollQ = eqMinQ + Math.floor(Math.random() * (eqMaxQ - eqMinQ + 1));
+          // 彩色品质(Q6+)二次概率判定, 降低高品质掉落
+          if (eqRollQ >= 6 && Math.random() > 0.35) eqRollQ = 5;
           var eqCands = [];
           for (var eqEk in EQUIP_DATA) { if (EQUIP_DATA[eqEk].quality === eqRollQ) eqCands.push(eqEk); }
           if (eqCands.length > 0) {
