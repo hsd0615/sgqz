@@ -380,17 +380,17 @@ package game.ui
             _sellBtn2.name = "sell_" + _item.code;
             _sellBtn2.buttonMode = true; _sellBtn2.mouseChildren = false;
             var _sb2:Shape = new Shape();
-            _sb2.graphics.beginFill(0x660000,0.85);
-            _sb2.graphics.lineStyle(1,0xCC4444,0.7);
-            _sb2.graphics.drawRoundRect(0,0,18,16,3,3);
+            _sb2.graphics.beginFill(0x1a1a1a,0.7);
+            _sb2.graphics.lineStyle(0.5,0x999999,0.6);
+            _sb2.graphics.drawRoundRect(0,0,13,11,2,2);
             _sb2.graphics.endFill();
             _sellBtn2.addChild(_sb2);
             var _stf2:TextField = new TextField();
-            _stf2.defaultTextFormat = new TextFormat("SimSun",9,0xFF6666,true);
+            _stf2.defaultTextFormat = new TextFormat("SimSun",6,0xCCCCCC,false);
             _stf2.text = "售"; _stf2.selectable = false;
-            _stf2.width = 18; _stf2.height = 14; _stf2.x = 1; _stf2.y = 1;
+            _stf2.width = 13; _stf2.height = 10; _stf2.x = 0; _stf2.y = -1;
             _sellBtn2.addChild(_stf2);
-            _sellBtn2.x = _listW - 24; _sellBtn2.y = 4;
+            _sellBtn2.x = _listW - 19; _sellBtn2.y = 5;
             _sellBtn2.addEventListener(MouseEvent.CLICK, function(p:*):void {
                p.stopImmediatePropagation();
                var _sc:String = p.currentTarget.name.replace("sell_","");

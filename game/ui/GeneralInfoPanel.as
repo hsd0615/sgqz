@@ -658,17 +658,17 @@ package game.ui
             _sellBtn.name = "sell_" + _item.code;
             _sellBtn.buttonMode = true; _sellBtn.mouseChildren = false;
             var _sellBg:Shape = new Shape();
-            _sellBg.graphics.beginFill(0x660000,0.85);
-            _sellBg.graphics.lineStyle(1,0xCC4444,0.7);
-            _sellBg.graphics.drawRoundRect(0,0,16,14,3,3);
+            _sellBg.graphics.beginFill(0x1a1a1a,0.7);
+            _sellBg.graphics.lineStyle(0.5,0x999999,0.6);
+            _sellBg.graphics.drawRoundRect(0,0,12,10,2,2);
             _sellBg.graphics.endFill();
             _sellBtn.addChild(_sellBg);
             var _sellTF:TextField = new TextField();
-            _sellTF.defaultTextFormat = new TextFormat("SimSun",7,0xFFFFFF,false);
+            _sellTF.defaultTextFormat = new TextFormat("SimSun",6,0xCCCCCC,false);
             _sellTF.text = "售"; _sellTF.selectable = false;
-            _sellTF.width = 12; _sellTF.height = 10; _sellTF.x = 1; _sellTF.y = 0;
+            _sellTF.width = 12; _sellTF.height = 10; _sellTF.x = 0; _sellTF.y = -1;
             _sellBtn.addChild(_sellTF);
-            _sellBtn.x = _cellW - 14; _sellBtn.y = _cellH - 13;
+            _sellBtn.x = _cellW - 14; _sellBtn.y = _cellH - 12;
             _sellBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
                p.stopImmediatePropagation();
                var _sellCode:String = p.currentTarget.name.replace("sell_","");
