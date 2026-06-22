@@ -148,6 +148,7 @@ package game.ui
          this.__talkInputTF.restrict = "^[]<>\'\"|#　";
          this.__talkInputTF.text = "";
          this.__worldChannelBtn.gotoAndStop(1);
+         this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
          this._currentChannel = 2;
       }

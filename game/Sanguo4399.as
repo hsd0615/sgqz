@@ -1267,16 +1267,16 @@ import game.ui.UpdateChecker;
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
-               // 显示全服公告
-               var _announcements:Array = param1.data.announcements as Array;
-               if(_announcements && _announcements.length > 0) {
-                  for(var _annI:int = _announcements.length-1; _annI >= 0; _annI--) {
-                     var _ann:Object = _announcements[_annI];
-                     var _annTime:String = new Date(_ann.time).toLocaleTimeString();
-                     ChatManager.getInstance().dispatchEvent(new TalkEvent(TalkEvent.CHAT_PLAIN,true,{
-                        channel:"world", name:"系统", msg:"["+_annTime+"] "+_ann.msg, color:"#ff0000"
-                     }));
+               // 显示全服公告(弹窗方式)
+               var _announcements2:Array = param1.data.announcements as Array;
+               if(_announcements2 && _announcements2.length > 0) {
+                  var _annText:String = "<font color='#FFD700'><b>📢 全服公告</b></font>\n";
+                  for(var _annI2:int = 0; _annI2 < _announcements2.length; _annI2++) {
+                     var _ann2:Object = _announcements2[_annI2];
+                     var _annTime2:String = new Date(_ann2.time).toLocaleTimeString();
+                     _annText += "[" + _annTime2 + "] " + _ann2.msg + "\n";
                   }
+                  this._ui.showMsg({type:0, text:_annText, width:400, height:200});
                }
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();
