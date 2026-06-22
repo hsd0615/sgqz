@@ -401,7 +401,7 @@ package game.model
 		                  }
 		               }
 		               var _sk:int = int(_skipCount[_code]) || 0;
-		               if(_sk < _ec) { _skipCount[_code] = _sk + 1; _loc2_++; continue; }
+		               if(_sk < _ec) { var _skipNeed:int = _ec - _sk; var _skipThis:int = _skipNeed < _count ? _skipNeed : _count; _skipCount[_code] = _sk + _skipThis; _count -= _skipThis; if(_count <= 0) { _loc2_++; continue; } }
 		            }
 
 
