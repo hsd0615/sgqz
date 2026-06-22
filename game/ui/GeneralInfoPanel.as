@@ -441,12 +441,12 @@ package game.ui
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
 
-      // 彩色(Q10)偏白炫彩边框
-      private static const RAINBOW_COLORS:Array = [0xFFAAAA,0xFFCC88,0xFFFFAA,0xAAFFAA,0xAACCFF,0xFFAAFF];
+      // 彩色(Q10)高级炫彩边框 — 白金色系+微光
+      private static const RAINBOW_COLORS:Array = [0xFFD700,0xFFAA44,0xFFFFFF,0x44FFAA,0x44AAFF,0xFF88CC,0xFFD700];
       private static function drawRainbowBorder(shape:Shape, w:Number, h:Number, borderW:Number=2.5):void {
          var _m:Matrix = new Matrix();
-         _m.createGradientBox(w, h, Math.PI/6, 0, 0);
-         shape.graphics.beginGradientFill(GradientType.LINEAR, RAINBOW_COLORS, [0.6,0.6,0.6,0.6,0.6,0.6], [0,51,102,153,204,255], _m);
+         _m.createGradientBox(w, h, Math.PI/4, 0, 0);
+         shape.graphics.beginGradientFill(GradientType.LINEAR, RAINBOW_COLORS, [0.7,0.5,0.95,0.5,0.5,0.5,0.7], [0,43,85,128,170,213,255], _m);
          shape.graphics.drawRoundRect(0, 0, w, h, 4, 4);
          shape.graphics.endFill();
          shape.graphics.beginFill(0x0d0804, 1);
