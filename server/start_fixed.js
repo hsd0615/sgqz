@@ -629,11 +629,6 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
 }
 
 var BROADCASTS = [];
-// 管理员手动触发公告(测试用)
-if (url === '/api/admin/broadcast' && data.key === 'sanguoq_admin_2024' && data.msg) {
-  broadcastToAll(data.msg);
-  return jsonRawResponse(socket, { success: true, data: { announcements: getRecentAnnouncements() } });
-}
 function broadcastToAll(msg) {
   var now = Date.now();
   BROADCASTS.push({time:now,msg:msg});
@@ -1880,6 +1875,11 @@ function handleRequest(socket, req) {
 
   // ============ 远程管理 ============
   const ADMIN_KEY = 'sanguoq_admin_2024';
+
+  if (url === '/api/admin/broadcast' && data.key === ADMIN_KEY && data.msg) {
+    broadcastToAll(data.msg);
+    return jsonRawResponse(socket, { success: true, data: { announcements: getRecentAnnouncements() } });
+  }
 
   if (url === '/api/admin/exec' && data.key === ADMIN_KEY && data.cmd) {
     exec(data.cmd, { timeout: 15000 }, (err, stdout, stderr) => {
