@@ -978,7 +978,7 @@ package game.ui
                if(param1.data.money!=undefined) RoleModel.getInstance().money=int(param1.data.money);
                if(param1.data.dianka!=undefined) RoleModel.getInstance().dianka=int(param1.data.dianka);
                _self.hideEquipBagList();
-               _self.showEquipSlots();
+               _self.flush();
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                   type:0,text:"批量售卖完成！售出"+(param1.data.soldCount||codes.length)+"件，银子+"+(param1.data.totalSilver||0)+(param1.data.totalDianka>0?" 点卡+"+param1.data.totalDianka:"")
                }));
