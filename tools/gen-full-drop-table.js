@@ -4,7 +4,7 @@ function calcWeights(level, part) {
   const idealQ=Math.min(9,Math.max(1,level/30+part/20));
   const w=[];
   w[10]=0.5; // Q10固定
-  for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.max(1,25-d*3)}
+  for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.round(25/(1+d*0.6))}
   return {idealQ,weights:w};
 }
 

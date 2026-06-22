@@ -1,7 +1,7 @@
 const fs=require('fs'),path=require('path');
 function calcWeights(level, part) {
   const idealQ=Math.min(9,Math.max(1,level/30+part/20));
-  const w=[];w[10]=0.5;for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.max(1,25-d*3)}
+  const w=[];w[10]=0.5;for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.round(25/(1+d*0.6))}
   const t=w.slice(1).reduce((a,b)=>a+b,0);return{idealQ,weights:w.slice(1).map(x=>x/t*100)};
 }
 let h='<!DOCTYPE html><html><head><meta charset=utf-8><title>主线掉落逻辑</title>';
