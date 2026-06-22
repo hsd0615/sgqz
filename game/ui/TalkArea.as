@@ -152,6 +152,18 @@ package game.ui
          this.__worldChannelBtn.visible = true;
          this.__privateChannelBtn.visible = false;
          this._currentChannel = 1;
+         // 显示全服通告(装备掉落等实时消息)
+         var _pa:Array = RoleModel.getInstance().pendingAnnouncements;
+         if(_pa && _pa.length > 0) {
+            for(var _pai:int = 0; _pai < _pa.length; _pai++) {
+               var _pao:Object = _pa[_pai];
+               var _pat:String = new Date(_pao.time).toLocaleTimeString();
+               var _pam:String = _pao.msg as String;
+               this._allArr.push("<font color='#00ff00'>【世界】</font><font color='#ff0000'>[通告][" + _pat + "]：" + _pam + "</font>\n");
+            }
+            this._talkField.setMultiText(this._allArr);
+            RoleModel.getInstance().pendingAnnouncements = null;
+         }
       }
       
       override protected function initEvent() : void

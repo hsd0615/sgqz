@@ -1267,6 +1267,7 @@ import game.ui.UpdateChecker;
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
+               if(param1.data.announcements) RoleModel.getInstance().pendingAnnouncements = param1.data.announcements as Array;
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();
             }
@@ -1516,6 +1517,7 @@ import game.ui.UpdateChecker;
             {
                this._netDirect = true;
                RoleModel.getInstance().initData(param1.data);
+               if(param1.data.announcements) RoleModel.getInstance().pendingAnnouncements = param1.data.announcements as Array;
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();
             }
