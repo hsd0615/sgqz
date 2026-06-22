@@ -693,7 +693,216 @@ package game.ui
             }
          }
 
+         // 批量售卖按钮(页脚右侧)
+         var _batchBtn2:Sprite = new Sprite();
+         _batchBtn2.buttonMode = true; _batchBtn2.mouseChildren = false;
+         var _bbg2:Shape = new Shape();
+         _bbg2.graphics.beginFill(0x442200, 0.9);
+         _bbg2.graphics.lineStyle(1, 0xFF9900, 0.7);
+         _bbg2.graphics.drawRoundRect(0, 0, 70, 18, 3, 3);
+         _bbg2.graphics.endFill();
+         _batchBtn2.addChild(_bbg2);
+         var _btf2:TextField = new TextField();
+         _btf2.defaultTextFormat = new TextFormat("SimSun", 10, 0xFF9900, true);
+         _btf2.text = "📦 批量售卖"; _btf2.selectable = false;
+         _btf2.width = 68; _btf2.height = 14; _btf2.x = 2; _btf2.y = 2;
+         _batchBtn2.addChild(_btf2);
+         _batchBtn2.x = _listW - 78; _batchBtn2.y = _fy - 2;
+         _batchBtn2.addEventListener(MouseEvent.CLICK, function(p:*):void {
+            p.stopImmediatePropagation();
+            _self.showBatchSellView();
+         });
+         this._bagList.addChild(_batchBtn2);
+
          this._bagList.visible = true;
+      }
+
+      // ========== 批量售卖 ==========
+      private var _batchSelected2:Object = {};
+      private var _batchFilterQ2:int = 0;
+
+      private function showBatchSellView() : void {
+         var _self:GeneralInfoPanel = this;
+         var _allItems:Array = RoleModel.getInstance().getBagEquipItems(0);
+         if(_allItems.length == 0) {
+            this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
+            return;
+         }
+         this._batchSelected2 = {};
+         for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].code]=true;
+
+         while(this._bagList.numChildren>0) this._bagList.removeChildAt(0);
+         var _w:int=380; var _h:int=320;
+         this._bagList.x = int((400-_w)/2)-20;
+         this._bagList.y = int((300-_h)/2)-30;
+         this._bagList.graphics.clear();
+         this._bagList.graphics.beginFill(0x0d0804,0.98);
+         this._bagList.graphics.lineStyle(2,0x8B6914,0.9);
+         this._bagList.graphics.drawRoundRect(0,0,_w,_h,8,8);
+         this._bagList.graphics.endFill();
+
+         var _ttf2:TextField = new TextField();
+         _ttf2.defaultTextFormat = new TextFormat("SimHei",12,0xFFD700,true);
+         _ttf2.text = "批量售卖 ("+_allItems.length+"件)"; _ttf2.selectable=false;
+         _ttf2.autoSize = TextFieldAutoSize.CENTER; _ttf2.x=(_w-_ttf2.width)/2; _ttf2.y=6;
+         this._bagList.addChild(_ttf2);
+
+         var _close2:TextField = new TextField();
+         _close2.defaultTextFormat = new TextFormat("SimHei",14,0xCC4444,true);
+         _close2.text="✕"; _close2.selectable=false; _close2.width=22; _close2.height=20;
+         _close2.x=_w-26; _close2.y=3;
+         _close2.addEventListener(MouseEvent.CLICK,function(p:*):void{_self.hideEquipBagList();});
+         this._bagList.addChild(_close2);
+
+         // 品质筛选
+         var _qy:int=28;
+         var _qt2:TextField = new TextField();
+         _qt2.defaultTextFormat = new TextFormat("SimSun",9,0x998866);
+         _qt2.text="品质:"; _qt2.selectable=false; _qt2.width=30; _qt2.height=14;
+         _qt2.x=6; _qt2.y=_qy+1; this._bagList.addChild(_qt2);
+         for(var _qi2:int=1;_qi2<=10;_qi2++){
+            var _qb2:Sprite=new Sprite(); _qb2.name="q2btn"+_qi2;
+            _qb2.buttonMode=true; _qb2.mouseChildren=false;
+            var _qx2:int=38+(_qi2-1)*33;
+            var _qs2:Shape=new Shape();
+            _qs2.graphics.beginFill(_qi2==_self._batchFilterQ2?0x8B6914:0x221100,0.9);
+            _qs2.graphics.lineStyle(1,_qi2==_self._batchFilterQ2?0xFFD700:0x554422);
+            _qs2.graphics.drawRoundRect(0,0,30,14,3,3); _qs2.graphics.endFill();
+            _qb2.addChild(_qs2);
+            var _qtf3:TextField=new TextField();
+            _qtf3.defaultTextFormat=new TextFormat("SimSun",8,_qi2==_self._batchFilterQ2?0xFFD700:0x776644);
+            _qtf3.text="Q"+_qi2; _qtf3.selectable=false; _qtf3.width=30; _qtf3.height=12; _qtf3.x=0; _qtf3.y=1;
+            _qb2.addChild(_qtf3); _qb2.x=_qx2; _qb2.y=_qy;
+            _qb2.addEventListener(MouseEvent.CLICK,function(p:*):void{
+               var _qn2:int=int(p.currentTarget.name.replace("q2btn",""));
+               _self._batchFilterQ2=(_self._batchFilterQ2==_qn2)?0:_qn2;
+               _self.showBatchSellView();
+            });
+            this._bagList.addChild(_qb2);
+         }
+
+         // 全选/取消
+         var _ab2:Sprite=new Sprite(); _ab2.buttonMode=true; _ab2.mouseChildren=false;
+         _ab2.x=_w-60; _ab2.y=_qy;
+         var _abg3:Shape=new Shape();
+         _abg3.graphics.beginFill(0x332200,0.9);
+         _abg3.graphics.lineStyle(1,0x8B6914); _abg3.graphics.drawRoundRect(0,0,54,14,3,3);
+         _abg3.graphics.endFill(); _ab2.addChild(_abg3);
+         var _atf3:TextField=new TextField();
+         _atf3.defaultTextFormat=new TextFormat("SimSun",9,0xCCAA44);
+         _atf3.text="全选/取消"; _atf3.selectable=false; _atf3.width=54; _atf3.height=12; _atf3.x=0; _atf3.y=1;
+         _ab2.addChild(_atf3);
+         _ab2.addEventListener(MouseEvent.CLICK,function(p:*):void{
+            var _any2:Boolean=false;
+            for(var _k:String in _self._batchSelected2){if(_self._batchSelected2[_k]){_any2=true;break;}}
+            for(var _k2:String in _self._batchSelected2) _self._batchSelected2[_k2]=!_any2;
+            _self.showBatchSellView();
+         });
+         this._bagList.addChild(_ab2);
+
+         // 物品列表
+         var _ly:int=_qy+18; var _vn:int=0;
+         for(var _vi2:int=0;_vi2<_allItems.length;_vi2++){
+            var _it:Object=_allItems[_vi2];
+            var _q2:int=int(EquipData.get(_it.code,"quality"));
+            if(_self._batchFilterQ2>0&&_q2!=_self._batchFilterQ2) continue;
+            if(_vn>=9) break; _vn++;
+            var _rw2:Sprite=new Sprite(); _rw2.y=_ly+(_vn-1)*22;
+
+            var _cb2:Sprite=new Sprite(); _cb2.name="bcb_"+_it.code; _cb2.mouseChildren=false;
+            var _cbs3:Shape=new Shape();
+            var _sel3:Boolean=_self._batchSelected2[_it.code]==true;
+            _cbs3.graphics.beginFill(_sel3?0x8B6914:0x1a1008,0.9);
+            _cbs3.graphics.lineStyle(1,_sel3?0xFFD700:0x554422,0.8);
+            _cbs3.graphics.drawRoundRect(0,0,14,14,2,2); _cbs3.graphics.endFill();
+            if(_sel3){_cbs3.graphics.lineStyle(2,0xFFD700,1); _cbs3.graphics.moveTo(3,7); _cbs3.graphics.lineTo(6,10); _cbs3.graphics.lineTo(11,4);}
+            _cb2.addChild(_cbs3); _cb2.x=8; _cb2.y=3;
+            _cb2.addEventListener(MouseEvent.CLICK,function(p:*):void{
+               p.stopImmediatePropagation();
+               var _c3:String=p.currentTarget.name.replace("bcb_","");
+               _self._batchSelected2[_c3]=!_self._batchSelected2[_c3];
+               _self.showBatchSellView();
+            });
+            _rw2.addChild(_cb2);
+
+            var _ntf:TextField=new TextField();
+            _ntf.defaultTextFormat=new TextFormat("SimSun",10,getQualityColor(_q2));
+            var _nm2:*=EquipData.get(_it.code,"name");
+            var _lv3:int=int(EquipData.get(_it.code,"levelReq"))||1;
+            var _pr2:Object=getEquipSellPrice(_it.code);
+            _ntf.text=_nm2+" Q"+_q2+" Lv"+_lv3+"  ¥"+_pr2.silver;
+            _ntf.selectable=false; _ntf.width=300; _ntf.height=18;
+            _ntf.x=28; _ntf.y=1;
+            _rw2.addChild(_ntf);
+            this._bagList.addChild(_rw2);
+         }
+
+         // 底部统计
+         var _totS:int=0,_totD:int=0,_scnt:int=0; var _scodes:Array=[];
+         for(var _si:int=0;_si<_allItems.length;_si++){
+            var _c4:String=_allItems[_si].code;
+            var _q4:int=int(EquipData.get(_c4,"quality"));
+            if(_self._batchSelected2[_c4]!=true) continue;
+            if(_self._batchFilterQ2>0&&_q4!=_self._batchFilterQ2) continue;
+            var _p4:Object=getEquipSellPrice(_c4);
+            _totS+=_p4.silver; _totD+=_p4.dianka; _scnt++;
+            _scodes.push(_c4);
+         }
+         var _bmy:int=_h-34;
+         var _stf4:TextField=new TextField();
+         _stf4.defaultTextFormat=new TextFormat("SimHei",11,0xFFD700);
+         _stf4.text="选中"+_scnt+"件  银子+"+_totS+(_totD>0?"  点卡+"+_totD:"");
+         _stf4.selectable=false; _stf4.autoSize=TextFieldAutoSize.CENTER;
+         _stf4.x=(_w-_stf4.width)/2; _stf4.y=_bmy; this._bagList.addChild(_stf4);
+
+         if(_scnt>0){
+            var _cb3:Sprite=new Sprite(); _cb3.buttonMode=true; _cb3.mouseChildren=false;
+            _cb3.x=(_w-120)/2; _cb3.y=_bmy+18;
+            var _cs3:Shape=new Shape();
+            _cs3.graphics.beginFill(0x8B0000,0.9);
+            _cs3.graphics.lineStyle(1.5,0xFF6600,0.8);
+            _cs3.graphics.drawRoundRect(0,0,120,22,4,4); _cs3.graphics.endFill();
+            _cb3.addChild(_cs3);
+            var _ct3:TextField=new TextField();
+            _ct3.defaultTextFormat=new TextFormat("SimHei",12,0xFFD700,true);
+            _ct3.text="确认批量售卖"; _ct3.selectable=false;
+            _ct3.autoSize=TextFieldAutoSize.CENTER; _ct3.x=(120-_ct3.width)/2; _ct3.y=3;
+            _cb3.addChild(_ct3);
+            var _fc:Array=_scodes; var _fs:int=_totS; var _fd:int=_totD;
+            _cb3.addEventListener(MouseEvent.CLICK,function(p:*):void{
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+                  "type":1,"text":"确定要批量售卖"+_fc.length+"件装备吗？\n可得银子+"+_fs+(_fd>0?" 点卡+"+_fd:""),
+                  "fun":function():void{_self.batchSellEquip2(_fc);}
+               }));
+            });
+            this._bagList.addChild(_cb3);
+         }
+         this._bagList.visible=true;
+      }
+
+      private function batchSellEquip2(codes:Array):void{
+         var _self:GeneralInfoPanel=this;
+         var _obj:Object={};
+         _obj.head=Head.HTTP_NEW_SELL_EQUIP;
+         _obj.agent=Config.AGENT; _obj.ver=Config.VER;
+         _obj.token=Config.token;
+         _obj.roleID=RoleModel.getInstance().roleID;
+         _obj.userID=RoleModel.getInstance().userID;
+         _obj.itemCodes=codes.join(",");
+         _obj.mask=true;
+         AESController.getInstance().sendJSON(_obj,function(param1:Object):void{
+            if(param1.success==true){
+               if(param1.data.bagModel) RoleModel.getInstance().initBagModel(param1.data.bagModel);
+               if(param1.data.money!=undefined) RoleModel.getInstance().money=int(param1.data.money);
+               if(param1.data.dianka!=undefined) RoleModel.getInstance().dianka=int(param1.data.dianka);
+               _self.hideEquipBagList();
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+                  type:0,text:"批量售卖完成！售出"+(param1.data.soldCount||codes.length)+"件，银子+"+(param1.data.totalSilver||0)+(param1.data.totalDianka>0?" 点卡+"+param1.data.totalDianka:"")
+               }));
+            }else{
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:param1.message||"批量售卖失败"}));
+            }
+         });
       }
 
       private function hideEquipBagList() : void

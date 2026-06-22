@@ -865,8 +865,8 @@ function handleRequest(socket, req) {
       if (fpgenQ == 0) { fpminEQ = 7; fpmaxEQ = 10; }
       else if (fpgenQ == 1) { fpminEQ = 4; fpmaxEQ = 7; }
       else if (fpgenQ == 2) { fpminEQ = 2; fpmaxEQ = 5; }
-      var fprateDiv = [2000, 1200, 600, 300][fpgenQ] || 1000;
-      var fpprob = Math.min(0.40, Math.max(0.005, fpgenLevel / fprateDiv));
+      var fprateDiv = [4000, 2400, 1200, 600][fpgenQ] || 2000;
+      var fpprob = Math.min(0.20, Math.max(0.002, fpgenLevel / fprateDiv));
       if (Math.random() < fpprob) {
         var fprollQ = fpminEQ + Math.floor(Math.random() * (fpmaxEQ - fpminEQ + 1));
         if (!fpbestDrop || fprollQ > fpbestDrop.quality) {
@@ -1176,52 +1176,8 @@ function handleRequest(socket, req) {
     var aexploit = flv * Math.floor(mul/2);
     var areverence = flv * Math.floor(mul/2);
     p.money += amoney; p.exploit += aexploit; p.reverence += areverence;
-    // 装备掉落 — 优先使用战前预计算结果
+    // 装备不再从副本战斗中掉落,改为翻牌奖励
     var fubenEquipDrop = null;
-    if (data.result == 1 || data.result == '1') {
-      var fuDropKey = (data.stageID||'1') + '_' + fi;
-      // 优先使用战前prepare预计算的掉落
-      if (p._pendingEquipDrop && p._pendingEquipDrop[fuDropKey]) {
-        var fuPending = p._pendingEquipDrop[fuDropKey];
-        if (fuPending && fuPending.code) {
-          var fuDef = EQUIP_DATA[fuPending.code];
-          if (fuDef) {
-            if (!db.bagItems) db.bagItems = [];
-              // 装备不堆叠,每次掉落创建独立条目
-              db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: fuPending.code, count: 1 });
-            fubenEquipDrop = { code: fuPending.code, name: fuDef.name, quality: fuPending.quality };
-            if (fuPending.quality >= 5) {
-              broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 副本获得 [' + fuDef.name + '](品质' + fuPending.quality + ')，运气爆棚！');
-            }
-          }
-        }
-        delete p._pendingEquipDrop[fuDropKey];
-      }
-      // 没有预计算时回退到战后随机计算
-      if (!fubenEquipDrop && flv >= 5) {
-        var feqQuality = fi <= 1 ? 3 : (fi == 2 ? 2 : 1);
-        var feqRateDiv = [2000, 1200, 600, 300][feqQuality] || 1000;
-        var feqMinQ = feqQuality == 1 ? 4 : (feqQuality == 2 ? 2 : 1);
-        var feqMaxQ = feqQuality == 1 ? 7 : (feqQuality == 2 ? 5 : 3);
-        var feqProb = Math.min(0.40, Math.max(0.005, flv / feqRateDiv));
-        if (Math.random() < feqProb) {
-          var feqRollQ = feqMinQ + Math.floor(Math.random() * (feqMaxQ - feqMinQ + 1));
-          var feqCands = [];
-          for (var feqEk in EQUIP_DATA) { if (EQUIP_DATA[feqEk].quality === feqRollQ) feqCands.push(feqEk); }
-          if (feqCands.length > 0) {
-            var feqCode = feqCands[Math.floor(Math.random() * feqCands.length)];
-            var feqDef = EQUIP_DATA[feqCode];
-            if (!db.bagItems) db.bagItems = [];
-            // 装备不堆叠,每次掉落创建独立条目
-            db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: feqCode, count: 1 });
-            fubenEquipDrop = { code: feqCode, name: feqDef.name, quality: feqRollQ };
-            if (feqRollQ >= 5) {
-              broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 副本获得 [' + feqDef.name + '](品质' + feqRollQ + ')，运气爆棚！');
-            }
-          }
-        }
-      }
-    }
     save();
     var resp = {
       success: true,
@@ -1232,7 +1188,24 @@ function handleRequest(socket, req) {
       }
     };
     if (fi === 3) {
-      resp.data.pai = ['2|10000', '1|proto_2_1|1', '1|proto_2_6|5', '1|proto_3_1|1', '1|proto_3_3|1', '1|proto_3_4|1'];
+      // 翻牌奖励: 装备品质与玩家等级挂钩 (Lv1-9→Q1, Lv10-19→Q2, ... Lv90+→Q10)
+      var flipEqQ = Math.min(10, Math.max(1, Math.floor(flv / 10) + 1));
+      var flipEqCands = [];
+      for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === flipEqQ) flipEqCands.push(fek); }
+      var flipEqCode = flipEqCands.length > 0 ? flipEqCands[Math.floor(Math.random() * flipEqCands.length)] : '';
+      // 随机品质波动: 50%概率+1品质, 20%概率+2品质
+      if (Math.random() < 0.5 && flipEqQ < 10) {
+        var fq2 = flipEqQ + (Math.random() < 0.4 ? 2 : 1);
+        if (fq2 <= 10) { var fqc2 = []; for (var fek2 in EQUIP_DATA) { if (EQUIP_DATA[fek2].quality === fq2) fqc2.push(fek2); } if (fqc2.length > 0) { flipEqCode = fqc2[Math.floor(Math.random() * fqc2.length)]; flipEqQ = fq2; } }
+      }
+      resp.data.pai = [
+        '2|' + (flv * 500),
+        '1|' + flipEqCode + '|1',
+        '1|proto_2_1|1',
+        '1|proto_2_6|5',
+        '1|proto_3_1|1',
+        '1|proto_3_3|1'
+      ];
     }
     console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' money+=' + amoney);
     return jsonRawResponse(socket, resp);

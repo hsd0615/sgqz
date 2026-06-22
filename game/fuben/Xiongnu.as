@@ -72,6 +72,10 @@ package game.fuben
       private static const POS3:Point = new Point(180,410);
       
       private static const POS4:Point = new Point(140,435);
+
+      private static const POS5:Point = new Point(100,460);
+
+      private static const POS6:Point = new Point(60,485);
       
       private static const ATTACKPOS1:Point = new Point(35,-165);
       
