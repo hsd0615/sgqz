@@ -33,7 +33,6 @@ export function createTestAccounts() {
     { code: 'general_7_14', name: '张飞', kezhi: '5:1|4:1|7:1' },     // 长枪超级
     { code: 'general_3_13', name: '关羽', kezhi: '2:1|1:1|6:1' },     // 朴刀超级
     { code: 'general_1_15', name: '黄忠', kezhi: '5:1|7:1|9:1' },     // 弓兵超级
-    { code: 'general_1_23', name: '姜维', kezhi: '5:1|7:1|9:1' },     // 弓兵超级
     { code: 'general_2_11', name: '貂蝉', kezhi: '5:1|4:1|7:1' },     // 飞刀超级
     { code: 'general_6_15', name: '魏延', kezhi: '6:1|1:1|8:1' },     // 武斗超级
     { code: 'general_0_1', name: '投石车', kezhi: '3:1|8:1|9:1' },    // 攻城超级

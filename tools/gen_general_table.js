@@ -347,7 +347,6 @@ h3 { color: #ffcc80; margin: 15px 0 8px; }
 <p class="subtitle">
     总计 <span>${generals.length}</span> 名武将 |
     等级: 10 / 50 / 100 / 200 |
-    鞠义(general_2_12): 飞刀兵→<span>骑兵</span>, 一流→<span>三流</span>
 </p>
 
 <div class="scroll-hint">⬅ ➡ 表格较宽，可左右滚动查看完整数据</div>
@@ -441,7 +440,6 @@ ${topTables}
 <p><strong>点卡招募成功率：</strong>消耗1000声望+20点卡(或求贤令道具)，成功率为XML中dianka字段值(%)，不消耗招募机会</p>
 <p><strong>招募池：</strong>显示该武将首次可招募时，招募池中的总武将数(不含已拥有)，系统随机从池中抽取1个进行招募</p>
 <p><strong>招募等级：</strong>若玩家等级&lt;50，招募到的武将等级 = max(1, 玩家等级-20)；若≥50，则为30级</p>
-<p>注: 鞠义(general_2_12)兵种由飞刀兵改为骑兵(type=9)，品质由一流武将改为三流武将(title=3)</p>
 </div>
 
 <div class="footer">
@@ -458,17 +456,6 @@ Generated: ${new Date().toLocaleString('zh-CN')} | 三国Q战4399版 v1.042 | �
 function main() {
     const generals = parseGenerals();
     const xishu = parseXishu();
-
-    // Apply 鞠义 modification: type→骑兵(9), title→三流武将(3)
-    for (const g of generals) {
-        if (g.code === 'general_2_12' && g.name === '鞠义') {
-            g.type = 9;     // 骑兵
-            g.title = 3;    // 三流武将
-            // Also adjust base stats to match the new type/title
-            // Original: hp=880, attack=920, defense=310 (飞刀兵/一流)
-            // Keep original base stats - the xishu change will recalculate
-        }
-    }
 
     const html = genHTML(generals, xishu);
     const htmlPath = path.join(os.homedir(), 'Desktop', '武将数值表.html');

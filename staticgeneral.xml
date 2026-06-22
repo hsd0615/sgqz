@@ -552,29 +552,6 @@
     <proto>proto_1_1</proto>
 </RECORD>
   <RECORD>
-    <code>general_1_23</code>
-    <name>绿营弓箭手</name>
-    <type>1</type>
-    <title>1</title>
-    <kezhi>5:1|7:1|9:1</kezhi>
-    <skin>generalSkin_1</skin>
-    <hp>720</hp>
-    <attack>390</attack>
-    <defense>265</defense>
-    <cd>6</cd>
-    <mcd>6</mcd>
-    <baoji>5</baoji>
-    <attackDistance>9</attackDistance>
-    <moveDistance>2.5</moveDistance>
-    <recruitLevel>1</recruitLevel>
-    <money>10</money>
-    <jinbi>5</jinbi>
-    <dianka>20</dianka>
-    <coint>10</coint>
-    <price>-1</price>
-    <proto>proto_1_1</proto>
-  </RECORD>
-  <RECORD>
     <code>general_2_1</code>
     <name>飞刀兵</name>
     <type>2</type>
@@ -4231,52 +4208,6 @@
     <price>-1</price>
     <proto/>
 </RECORD>
-  <RECORD>
-    <code>general_2_12</code>
-    <name>绿营飞刀兵</name>
-    <type>2</type>
-    <title>1</title>
-    <kezhi>5:1|4:1|7:1</kezhi>
-    <skin>generalSkin_2</skin>
-    <hp>735</hp>
-    <attack>385</attack>
-    <defense>280</defense>
-    <cd>6</cd>
-    <mcd>6</mcd>
-    <baoji>5</baoji>
-    <attackDistance>5.5</attackDistance>
-    <moveDistance>3</moveDistance>
-    <recruitLevel>1</recruitLevel>
-    <money>20</money>
-    <jinbi>20</jinbi>
-    <dianka>30</dianka>
-    <coint>30</coint>
-    <price>-1</price>
-    <proto>proto_1_2</proto>
-</RECORD>
-  <RECORD>
-    <code>general_2_13</code>
-    <name>八旗飞刀兵</name>
-    <type>2</type>
-    <title>0</title>
-    <kezhi>5:1|4:1|7:1</kezhi>
-    <skin>generalSkin_2</skin>
-    <hp>780</hp>
-    <attack>435</attack>
-    <defense>350</defense>
-    <cd>6</cd>
-    <mcd>6</mcd>
-    <baoji>5</baoji>
-    <attackDistance>5.5</attackDistance>
-    <moveDistance>3</moveDistance>
-    <recruitLevel>1</recruitLevel>
-    <money>20</money>
-    <jinbi>20</jinbi>
-    <dianka>30</dianka>
-    <coint>30</coint>
-    <price>-1</price>
-    <proto>proto_1_2</proto>
-    </RECORD>
   <RECORD>
 <code>general_15_1</code>
     <name>倭寇头目</name>

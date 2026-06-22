@@ -68,7 +68,7 @@ package game.display
          mouseEnabled = false;
          this._armyInfo = param1;
          this._maxHP = this._armyInfo.maxHp;
-         this._armyInfo.hp = this._armyInfo.maxHp;
+         if(!this._armyInfo.forceHp) this._armyInfo.hp = this._armyInfo.maxHp;
          this._direct = param2;
          this._isPlayer = param3;
          this._world = param4;

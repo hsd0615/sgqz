@@ -116,7 +116,7 @@ package game.ui.fuben
             _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
          }
          _loc2_ += "下一关奖励更丰厚，加油吧！";
-         this.__tf.text = _loc2_;
+         this.__tf.htmlText = _loc2_;
          this.__nextBtn.visible = true;
       }
 
@@ -130,7 +130,7 @@ package game.ui.fuben
             _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
          }
          _loc2_ += "过全部关卡可获得特殊奖励，继续加油！";
-         this.__tf.text = _loc2_;
+         this.__tf.htmlText = _loc2_;
          this.__nextBtn.visible = true;
       }
 
@@ -144,7 +144,7 @@ package game.ui.fuben
             _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
          }
          _loc2_ += "请进入翻牌界面抽取特殊奖励！";
-         this.__tf.text = _loc2_;
+         this.__tf.htmlText = _loc2_;
          this.__okBtn.visible = true;
       }
       

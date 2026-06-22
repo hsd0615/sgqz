@@ -749,12 +749,14 @@ package game.fuben
          var _loc3_:int = 0;
          var _totalPlayerHP:int = 0;
          var _totalPlayerDef:int = 0;
+         var _totalPlayerAtk:int = 0;
          var _avgPlayerLevel:int = 0;
          _loc3_ = 0;
          while(_loc3_ < this._leftArmy.length)
          {
             _totalPlayerHP += this._leftArmy[_loc3_].hp;
             _totalPlayerDef += this._leftArmy[_loc3_].defense;
+            _totalPlayerAtk += this._leftArmy[_loc3_].attack;
             _avgPlayerLevel += this._leftArmy[_loc3_].level;
             _loc3_++;
          }
@@ -771,7 +773,9 @@ package game.fuben
             var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _enemyName, int(_enemyAI.delay), int(_enemyAI.ai));
             _enemy.isEnemy = true;
             _enemy.baseDefense = int(_totalPlayerDef / this._leftArmy.length);
+            _enemy.baseAttack = int(_totalPlayerAtk / this._leftArmy.length);
             _enemy.hp = int(_totalPlayerHP / this._leftArmy.length);
+            _enemy.forceHp = true;
             _enemy.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));
             this._rightArmy[_loc3_] = _enemy;
             _loc3_++;
@@ -814,6 +818,7 @@ package game.fuben
          this._rightArmy = new Vector.<ArmyInfo>();
          this._rightSoldiers = [];
          this._rightArmy.push(this._config.getBossData(this._leftArmy));
+         this._rightArmy[0].forceHp = true;
          var _loc1_:AbstractSoldier = this.armyFactory(this._rightArmy[0],-1,false);
          // Fix: AbstractSoldier构造函数会将hp重置为maxHp，boss需要恢复自定义HP
          var _totalPlayerHP:int = 0;

@@ -453,7 +453,7 @@ function ensureGenerals(pid, list, level, evo, feat, tf) {
 const ALL_SUPERS = [
   ['general_9_18','吕布','6:1|1:1|8:1'],['general_9_20','马超','6:1|1:1|8:1'],['general_9_16','夏侯惇','6:1|1:1|8:1'],
   ['general_7_19','赵云','5:1|4:1|7:1'],['general_7_14','张飞','5:1|4:1|7:1'],['general_3_13','关羽','2:1|1:1|6:1'],
-  ['general_1_15','黄忠','5:1|7:1|9:1'],['general_1_23','姜维','5:1|7:1|9:1'],['general_2_11','貂蝉','5:1|4:1|7:1'],
+  ['general_1_15','黄忠','5:1|7:1|9:1'],['general_2_11','貂蝉','5:1|4:1|7:1'],
   ['general_6_15','魏延','6:1|1:1|8:1'],['general_0_1','投石车','3:1|8:1|9:1'],
 ];
 const PRO_GENERALS = [
@@ -593,7 +593,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.6';
+  _cachedClientVersion = '4.0.7';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -721,7 +721,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '4.0.6', title: '🔧 修复装备栏点击无响应',
+      { version: '4.0.7', title: '🔧 修复装备栏点击无响应',
         body: '【修复】\n• 修复武将详情页装备槽点击无响应问题\n• 武将模型不再拦截装备槽鼠标事件\n• 装备槽显示列表自动置顶，确保始终可点击' },
       { version: '4.0.5', title: '📊 掉率提升+低品质敌军后期增强',
         body: '【调整】\n• 装备掉率提升约50%\n• 低品质敌军后期装备品质上限提高\n• 装备名称统一，修复37处不一致' },
@@ -1287,6 +1287,26 @@ function handleRequest(socket, req) {
       save();
     }
     return jsonRawResponse(socket, { success: true, data: { choose: p.choose || '' } });
+  }
+
+  // ============ 弹药消耗 ============
+  if (url === '/api/game/use-ammo') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    var ammoBagId = parseInt(data.id);
+    if (!ammoBagId || ammoBagId <= 0) return jsonRawResponse(socket, { success: false, message: '无效的弹药ID' });
+    if (!db.bagItems) db.bagItems = [];
+    var ammoIdx = -1;
+    for (var ai = 0; ai < db.bagItems.length; ai++) {
+      if (db.bagItems[ai].player_id == p.id && db.bagItems[ai].id === ammoBagId && (db.bagItems[ai].count || 1) > 0) {
+        ammoIdx = ai; break;
+      }
+    }
+    if (ammoIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有弹药' });
+    db.bagItems[ammoIdx].count = (db.bagItems[ammoIdx].count || 1) - 1;
+    if (db.bagItems[ammoIdx].count <= 0) db.bagItems.splice(ammoIdx, 1);
+    save();
+    return jsonRawResponse(socket, { success: true, stamp: data.stamp, head: String(data.head || ''), data: { bagModel: makeBagModel(p.id) } });
   }
 
   // ============ 武将招募 ============

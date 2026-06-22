@@ -76,6 +76,7 @@ package game.model
       private var _shanbi:Number;
       public var isEnemy:Boolean = false;
       public var dropEquipCode:String = "";
+      public var forceHp:Boolean = false;
       
       public function ArmyInfo()
       {
@@ -109,6 +110,7 @@ package game.model
          _loc1_.setKezhiStr(this.getKezhiStr());
          _loc1_.setEquipmentStr(this.getEquipmentStr());
          _loc1_.hp = this.hp;
+         _loc1_.forceHp = this.forceHp;
          _loc1_.isEnemy = this.isEnemy;
          _loc1_.dropEquipCode = this.dropEquipCode;
          return _loc1_;
@@ -537,7 +539,7 @@ package game.model
       {
          var _raw:int = int(this._hp) - Config.timer;
          var _max:int = this.maxHp;
-         if(_raw > _max) _raw = _max;
+         if(!this.forceHp && _raw > _max) _raw = _max;
          if(_raw < 0) _raw = 0;
          return _raw;
       }

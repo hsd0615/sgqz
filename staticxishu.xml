@@ -263,4 +263,47 @@
     <attack>2.5</attack>
     <defence>2.9</defence>
   </RECORD>
+  <!-- === 匈奴副本兵种(type 10-13) === -->
+  <RECORD>
+    <code>10_1</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>10_0</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>11_1</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>11_0</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>12_1</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>12_0</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
+  <RECORD>
+    <code>13_0</code>
+    <hp>3.0</hp>
+    <attack>1.8</attack>
+    <defence>1.8</defence>
+  </RECORD>
 </RECORDS>

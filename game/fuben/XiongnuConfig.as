@@ -91,6 +91,7 @@ package game.fuben
          var _loc1_:Object = Data.getInstance().getFubenAIDelay(1,"general_11_1");
          var _loc2_:ArmyInfo = Data.getInstance().getArmyInfo("general_11_1",1,0,0,"匈奴前哨",int(_loc1_.delay),int(_loc1_.ai));
          _loc2_.baseHp = 100;
+         _loc2_.forceHp = true;
          this.assignEnemyEquip(_loc2_, 3, 1);
          return _loc2_;
       }
@@ -110,6 +111,7 @@ package game.fuben
          }
          _loc5_.hp = _loc2_ * 12;
          _loc5_.baseDefense = int(_loc3_ / param1.length);
+         _loc5_.forceHp = true;
          this.assignEnemyEquip(_loc5_, 0, 3);
          return _loc5_;
       }
@@ -129,6 +131,7 @@ package game.fuben
          }
          _loc5_.hp = int(_loc2_ / param1.length);
          _loc5_.baseDefense = int(_loc3_ / param1.length);
+         _loc5_.forceHp = true;
          this.assignEnemyEquip(_loc5_, 1, 1);
          return _loc5_;
       }
@@ -140,6 +143,7 @@ package game.fuben
          (_loc5_ = Data.getInstance().getArmyInfo("general_10_1",1,0,0,"匈奴杂兵",int(_loc4_.delay),int(_loc4_.ai))).baseDefense = int(param2 / param3);
          _loc5_.hp = int(param1 / param3);
          _loc5_.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));
+         _loc5_.forceHp = true;
          this.assignEnemyEquip(_loc5_, 2, 1);
          return _loc5_;
       }
