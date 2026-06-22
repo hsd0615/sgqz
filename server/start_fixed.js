@@ -1199,7 +1199,7 @@ function handleRequest(socket, req) {
       var rawW = [0,0,0,0,0,0,0,0,0,0,0];
       for (var wq = 1; wq <= 10; wq++) {
         var dist = Math.abs(wq - centerQ);
-        if (wq >= 9) rawW[wq] = wq === 9 ? 2 : 1; // Q9/Q10硬上限
+        if (wq >= 9) rawW[wq] = wq === 9 ? 3 : 2; // Q9/Q10上限
         else rawW[wq] = Math.max(1, 25 - dist * 8); // 离centerQ越近权重越高
       }
       // 构建累积分布
