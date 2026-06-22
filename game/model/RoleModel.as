@@ -359,7 +359,7 @@ package game.model
 		   });
 		}
 
-		private function isEquippedByAny(param1:String):Boolean {
+		public function isEquippedByAny(param1:String):Boolean {
 		   if(!this._armys) return false;
 		   for(var _i:int=0;_i<this._armys.length;_i++){
 		      var _a:ArmyInfo = this._armys[_i] as ArmyInfo;
