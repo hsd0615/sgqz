@@ -2645,29 +2645,6 @@
     <proto>proto_1_7</proto>
 </RECORD>
   <RECORD>
-    <code>general_7_21</code>
-    <name>镶红旗旗军</name>
-    <type>7</type>
-    <title>2</title>
-    <kezhi>3:1|4:1|8:1</kezhi>
-    <skin>generalSkin_7</skin>
-    <hp>3510</hp>
-    <attack>970</attack>
-    <defense>850</defense>
-    <cd>5.5</cd>
-    <mcd>5.5</mcd>
-    <baoji>5</baoji>
-    <attackDistance>5</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>1</recruitLevel>
-    <money>20</money>
-    <jinbi>20</jinbi>
-    <dianka>30</dianka>
-    <coint>30</coint>
-    <price>-1</price>
-    <proto>proto_1_7</proto>
-  </RECORD>
-  <RECORD>
     <code>general_7_9</code>
     <name>谭雄</name>
     <type>7</type>
