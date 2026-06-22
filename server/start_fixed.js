@@ -1003,32 +1003,36 @@ function handleRequest(socket, req) {
     }
     p.finished_stages = fin.join('|');
 
-    // 装备掉落 — 品质加权随机(类似匈奴翻牌, 每关一次)
+    // 装备掉落 — 等级+章节影响掉率与品质
     var equipDrop = null;
     var mainPai = [];
     if (isWin && fn >= 5) {
-      // centerQ基于等级+章节
-      var mainCenterQ = Math.min(8, Math.floor(fn / 25) + Math.floor(fpart / 10) + 1);
-      var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
-      for (var mq = 1; mq <= 10; mq++) {
-        var mdist = Math.abs(mq - mainCenterQ);
-        if (mq >= 9) mRawW[mq] = mq === 9 ? 3 : 1.5;
-        else mRawW[mq] = Math.max(1, 25 - mdist * 8);
-      }
-      var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
-      var mroll = Math.random() * mTotalW;
-      var meqQ = 1, macc = 0;
-      for (var mwi = 1; mwi <= 10; mwi++) { macc += mRawW[mwi]; if (mroll < macc) { meqQ = mwi; break; } }
-      var meqc = [];
-      for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
-      if (meqc.length > 0) {
-        var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
-        var meqDef = EQUIP_DATA[meqCode];
-        if (!db.bagItems) db.bagItems = [];
-        db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
-        equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
-        if (meqQ >= 5) {
-          broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
+      // 掉率: 基于玩家等级与章节, 上限70%
+      var dropProb = Math.min(0.70, Math.max(0.15, (flevel / 200) + (fpart / 50)));
+      if (Math.random() < dropProb) {
+        // centerQ基于等级+章节
+        var mainCenterQ = Math.min(8, Math.floor(flevel / 25) + Math.floor(fpart / 10) + 1);
+        var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
+        for (var mq = 1; mq <= 10; mq++) {
+          var mdist = Math.abs(mq - mainCenterQ);
+          if (mq >= 9) mRawW[mq] = mq === 9 ? 3 : 1.5;
+          else mRawW[mq] = Math.max(1, 25 - mdist * 8);
+        }
+        var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
+        var mroll = Math.random() * mTotalW;
+        var meqQ = 1, macc = 0;
+        for (var mwi = 1; mwi <= 10; mwi++) { macc += mRawW[mwi]; if (mroll < macc) { meqQ = mwi; break; } }
+        var meqc = [];
+        for (var mek in EQUIP_DATA) { if (EQUIP_DATA[mek].quality === meqQ) meqc.push(mek); }
+        if (meqc.length > 0) {
+          var meqCode = meqc[Math.floor(Math.random() * meqc.length)];
+          var meqDef = EQUIP_DATA[meqCode];
+          if (!db.bagItems) db.bagItems = [];
+          db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
+          equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
+          if (meqQ >= 5) {
+            broadcastToAll('[系统] 恭喜 ' + p.role_name + ' 通关第' + fpart + '章获得 [' + meqDef.name + '](品质' + meqQ + ')，全服首通福利！');
+          }
         }
       }
     }
