@@ -763,12 +763,12 @@ package game.ui
          if(_armys) {
             for(var _ai2:int=0;_ai2<_armys.length;_ai2++) {
                var _ea:ArmyInfo = _armys[_ai2] as ArmyInfo;
-               if(_ea.equip1) _equipCount[_ea.equip1] = (int(_equipCount[_ea.equip1])||0) + 1;
-               if(_ea.equip2) _equipCount[_ea.equip2] = (int(_equipCount[_ea.equip2])||0) + 1;
-               if(_ea.equip3) _equipCount[_ea.equip3] = (int(_equipCount[_ea.equip3])||0) + 1;
-               if(_ea.equip4) _equipCount[_ea.equip4] = (int(_equipCount[_ea.equip4])||0) + 1;
-               if(_ea.equip5) _equipCount[_ea.equip5] = (int(_equipCount[_ea.equip5])||0) + 1;
-               if(_ea.equip6) _equipCount[_ea.equip6] = (int(_equipCount[_ea.equip6])||0) + 1;
+               if(_ea.equip1 && _ea.equip1 != "0") _equipCount[_ea.equip1] = (int(_equipCount[_ea.equip1])||0) + 1;
+               if(_ea.equip2 && _ea.equip2 != "0") _equipCount[_ea.equip2] = (int(_equipCount[_ea.equip2])||0) + 1;
+               if(_ea.equip3 && _ea.equip3 != "0") _equipCount[_ea.equip3] = (int(_equipCount[_ea.equip3])||0) + 1;
+               if(_ea.equip4 && _ea.equip4 != "0") _equipCount[_ea.equip4] = (int(_equipCount[_ea.equip4])||0) + 1;
+               if(_ea.equip5 && _ea.equip5 != "0") _equipCount[_ea.equip5] = (int(_equipCount[_ea.equip5])||0) + 1;
+               if(_ea.equip6 && _ea.equip6 != "0") _equipCount[_ea.equip6] = (int(_equipCount[_ea.equip6])||0) + 1;
             }
          }
          var _skipCount:Object = {};
