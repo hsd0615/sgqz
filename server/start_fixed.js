@@ -289,16 +289,14 @@ function getDefaultEquipForEnemy(enemyCode, genQuality, genLevel, fubenID, stage
   var equips = ['0', '0', '0', '0', '0', '0'];
   if (!canDropEquip(enemyCode)) return equips; // 投石车(type=0)不装备
   if (genLevel < 5) return equips; // 太低等级不给装备
-  // 根据品质决定装备品质范围
-  var maxQ = 1;
-  if (genQuality == 0) maxQ = Math.min(6, 2 + Math.floor(stageIdx / 15));  // 超级: Q3-6
-  else if (genQuality == 1) maxQ = Math.min(5, 2 + Math.floor(stageIdx / 15)); // 一流: Q2-5
-  else if (genQuality == 2) maxQ = Math.min(5, 1 + Math.floor(stageIdx / 15)); // 二流: Q2-5
-  else maxQ = Math.min(4, 1 + Math.floor(stageIdx / 15));                   // 三流: Q1-4
+  // 品质范围: level/20 + qualityBias(超级+2,一流+1)
+  var lvBonus = Math.floor(genLevel / 20);
+  var qBias = genQuality == 0 ? 2 : (genQuality == 1 ? 1 : 0);
+  var maxQ = Math.min(10, 1 + lvBonus + qBias);
   var minQ = Math.max(1, maxQ - 3);
   // 为每个装备槽随机选择装备
   for (var s = 0; s < 6; s++) {
-    if (Math.random() < Math.min(0.75, 0.25 + genLevel * 0.004)) { // 等级越高越容易有装备(上限75%)
+    if (Math.random() < Math.min(0.75, 0.20 + genLevel * 0.005)) { // 等级越高越容易有装备
       var slotCandidates = [];
       for (var ek in EQUIP_DATA) {
         var eq = EQUIP_DATA[ek];
@@ -903,6 +901,8 @@ function handleRequest(socket, req) {
         fpenemyEquips[dropEnemyIdx].equips[5] = fpcode;
         fpenemyEquips[dropEnemyIdx].dropEquip = true;
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
+		if (fpmeqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
+t        if (fpmeqQ >= 10) broadcastToAll('[系统] 🌈 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
       }
     }
     if (!p._pendingMainEquipDrop) p._pendingMainEquipDrop = {};
@@ -1056,6 +1056,7 @@ function handleRequest(socket, req) {
             if (!db.bagItems) db.bagItems = [];
             db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
             equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
+			if (meqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 获得彩色装备 [' + meqDef.name + '](品质10)！');
           }
         }
       }
