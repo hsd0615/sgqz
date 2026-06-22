@@ -399,11 +399,9 @@ function migrateEquipment() {
 }
 
 function ensureAllEquip(pid) {
-  // 仅发放Q8+装备(橙色及以上)
+  // 发放全部装备各一件
   var allCodes = [];
-  for (var ek in EQUIP_DATA) {
-    if (EQUIP_DATA[ek].quality >= 8) allCodes.push(ek);
-  }
+  for (var ek in EQUIP_DATA) { allCodes.push(ek); }
 
   var existing = db.bagItems.filter(function(b){return b.player_id===pid;}).map(function(b){return b.code;});
   var added = 0;
@@ -511,7 +509,7 @@ initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
 migrateEquipment();
-	cleanLowQualityEquip(); // 4b. 补充装备字段
+	//cleanLowQualityEquip(); // 4b. 补充装备字段
 save();             // 5. 保存
 
 // 启动时清理全服Q7以下装备

@@ -350,16 +350,19 @@ package game.ui
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                var _qc:uint = getQualityBgColor(_q);
 
-               // 品质背景(彩色Q10用彩虹渐变)
+               // 品质边框(彩色Q10用彩虹渐变)
                var _bg:Shape = new Shape();
                if(_q == 10) {
                   drawRainbowBorder(_bg, 34, 34, 0.95);
-                  var _glow:GlowFilter = new GlowFilter(0xFFFFCC, 0.7, 8, 8, 2, 1);
-                  _bg.filters = [_glow];
+                  _bg.filters = [new GlowFilter(0xFFFFCC, 0.7, 8, 8, 2, 1)];
                } else {
-                  _bg.graphics.beginFill(_qc, 0.95);
+                  // 高级感边框: 品质色边框+暗底+微光
+                  var _qc2:uint = getQualityColor(_q);
+                  _bg.graphics.beginFill(0x0a0a0a, 0.92);
+                  _bg.graphics.lineStyle(1.5, _qc2, 0.9);
                   _bg.graphics.drawRoundRect(0, 0, 34, 34, 4, 4);
                   _bg.graphics.endFill();
+                  _bg.filters = [new GlowFilter(_qc2, 0.3, 4, 4, 1, 1)];
                }
                if(_slot is Sprite) (_slot as Sprite).addChild(_bg);
                else (_slot as MovieClip).addChild(_bg);
@@ -590,15 +593,16 @@ package game.ui
             _cell.buttonMode = true;
             _cell.name = _item.code;
 
-            // 品质背景(Q10彩色用彩虹渐变)
+            // 品质边框(Q10彩色用彩虹渐变)
             var _cbg:Shape = new Shape();
             if(_q == 10) {
                drawRainbowBorder(_cbg, _cellW-1, _cellH-1, 0.65);
                _cbg.x = 1; _cbg.y = 1;
                _cbg.filters = [new GlowFilter(0xFFFFCC, 0.5, 6, 6, 2, 1)];
             } else {
-               _cbg.graphics.beginFill(getQualityBgColor(_q),0.65);
-               _cbg.graphics.lineStyle(1,getQualityColor(_q),0.5);
+               var _qc3:uint = getQualityColor(_q);
+               _cbg.graphics.beginFill(0x0a0a0a, 0.88);
+               _cbg.graphics.lineStyle(2, _qc3, 0.85);
                _cbg.graphics.drawRoundRect(1,1,_cellW-2,_cellH-2,3,3);
                _cbg.graphics.endFill();
             }
