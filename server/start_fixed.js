@@ -629,6 +629,11 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
 }
 
 var BROADCASTS = [];
+// 管理员手动触发公告(测试用)
+if (url === '/api/admin/broadcast' && data.key === 'sanguoq_admin_2024' && data.msg) {
+  broadcastToAll(data.msg);
+  return jsonRawResponse(socket, { success: true, data: { announcements: getRecentAnnouncements() } });
+}
 function broadcastToAll(msg) {
   var now = Date.now();
   BROADCASTS.push({time:now,msg:msg});

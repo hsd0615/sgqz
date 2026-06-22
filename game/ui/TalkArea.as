@@ -51,7 +51,7 @@ package game.ui
       
       private var __switchBtn:MovieClip;
       
-      private var _talkChannel:int = 1;
+      private var _talkChannel:int = 2;
       
       private var _allArr:Array;
       
@@ -122,7 +122,7 @@ package game.ui
          this.__switchBtn = _skin.getChildByName("_switchBtn") as MovieClip;
          this.__worldChannelBtn.buttonMode = true;
          this.__privateChannelBtn.buttonMode = true;
-         this.__switchBtn.buttonMode = true;
+         this.__switchBtn.buttonMode = false; this.__switchBtn.visible = false;
          this._talkField = new TalkField(this.__bk.width - 15,this.__bk.height - 8);
          this._talkField.x = this.__bk.x + 15;
          this._talkField.y = this.__bk.y + 4;
@@ -173,9 +173,6 @@ package game.ui
          this._talkField.addEventListener(TextEvent.LINK,this.onTalkFieldClickHandler);
          this._labaTimer.addEventListener(TimerEvent.TIMER,this.onLabaTimerHandler);
          addEventListener(Event.REMOVED_FROM_STAGE,this.removeFromStageHandler);
-         this.__switchBtn.addEventListener(MouseEvent.MOUSE_OVER,this.switchBtnMouseOverHandler);
-         this.__switchBtn.addEventListener(MouseEvent.MOUSE_OUT,this.switchBtnMouseOutHandler);
-         this.__switchBtn.addEventListener(MouseEvent.CLICK,this.switchBtnMouseClickHandler);
       }
       
       private function switchBtnMouseOverHandler(param1:MouseEvent) : void
