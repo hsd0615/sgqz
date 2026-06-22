@@ -289,10 +289,10 @@ function getDefaultEquipForEnemy(enemyCode, genQuality, genLevel, fubenID, stage
   var equips = ['0', '0', '0', '0', '0', '0'];
   if (!canDropEquip(enemyCode)) return equips; // 投石车(type=0)不装备
   if (genLevel < 5) return equips; // 太低等级不给装备
-  // 品质范围: level/20 + qualityBias(超级+2,一流+1)
+  // 敌人装备品质低于掉落品质: maxQ=9, 仅关卡掉落Q10时敌人可有Q10
   var lvBonus = Math.floor(genLevel / 20);
   var qBias = genQuality == 0 ? 2 : (genQuality == 1 ? 1 : 0);
-  var maxQ = Math.min(10, 1 + lvBonus + qBias);
+  var maxQ = Math.min(9, 1 + lvBonus + qBias);
   var minQ = Math.max(1, maxQ - 3);
   // 为每个装备槽随机选择装备
   for (var s = 0; s < 6; s++) {
