@@ -681,8 +681,8 @@ package game.ui
          }
 
          // 翻页栏
+         var _fy:int = _listH - _footerH + 4;
          if(_totalPages > 1) {
-            var _fy:int = _listH - _footerH + 4;
             var _btnW:int = 22;
             function mkPgBtn(label:String, enabled:Boolean, handler:Function):Sprite {
                var s:Sprite = new Sprite();
@@ -734,7 +734,7 @@ package game.ui
          _btf2.text = "📦 批量售卖"; _btf2.selectable = false;
          _btf2.width = 68; _btf2.height = 14; _btf2.x = 2; _btf2.y = 2;
          _batchBtn2.addChild(_btf2);
-         _batchBtn2.x = _listW - 74; _batchBtn2.y = _fy + 4;
+         _batchBtn2.x = _listW - 78; _batchBtn2.y = _listH - _footerH - 4;
          _batchBtn2.addEventListener(MouseEvent.CLICK, function(p:*):void {
             p.stopImmediatePropagation();
             _self.showBatchSellView();
