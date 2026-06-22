@@ -664,11 +664,11 @@ package game.ui
             _sellBg.graphics.endFill();
             _sellBtn.addChild(_sellBg);
             var _sellTF:TextField = new TextField();
-            _sellTF.defaultTextFormat = new TextFormat("SimSun",9,0xFF6666,true);
+            _sellTF.defaultTextFormat = new TextFormat("SimSun",7,0xFFFFFF,false);
             _sellTF.text = "售"; _sellTF.selectable = false;
-            _sellTF.width = 16; _sellTF.height = 12; _sellTF.x = 1; _sellTF.y = 1;
+            _sellTF.width = 12; _sellTF.height = 10; _sellTF.x = 1; _sellTF.y = 0;
             _sellBtn.addChild(_sellTF);
-            _sellBtn.x = _cellW - 18; _sellBtn.y = _cellH - 16;
+            _sellBtn.x = _cellW - 14; _sellBtn.y = _cellH - 13;
             _sellBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
                p.stopImmediatePropagation();
                var _sellCode:String = p.currentTarget.name.replace("sell_","");
