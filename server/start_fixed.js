@@ -1509,11 +1509,16 @@ function handleRequest(socket, req) {
         p.money -= 1000; p.exploit -= 1000;
         respData.money = p.money; respData.exploit = p.exploit;
         respData.itemID = consumedItemId;
-        // 升级克制
-        if (ki === 0) { g.kezhi1_level = (g.kezhi1_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
-        else if (ki === 1) { g.kezhi2_level = (g.kezhi2_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
-        else if (ki === 2) { g.kezhi3_level = (g.kezhi3_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
-        console.log('[Kezhi] ' + p.role_name + ' ' + g.name + ' kezhi' + (ki+1) + ' → Lv.' + (g['kezhi'+(ki+1)+'_level']||1));
+        // 升级克制(概率: Lv1=90%, Lv5=50%, Lv9=10%)
+        var curLv = (g['kezhi'+(ki+1)+'_level'] || 1);
+        var kezhiRate = Math.max(0.1, 1.0 - curLv * 0.1);
+        var kezhiOk = Math.random() < kezhiRate;
+        if (kezhiOk) {
+          if (ki === 0) { g.kezhi1_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
+          else if (ki === 1) { g.kezhi2_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
+          else if (ki === 2) { g.kezhi3_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
+        }
+        console.log('[Kezhi] ' + p.role_name + ' ' + g.name + ' kezhi' + (ki+1) + ' Lv.' + curLv + '→' + (kezhiOk ? (curLv+1) : 'FAIL') + ' rate=' + (kezhiRate*100).toFixed(0) + '%');
       }
     } else if (headCode === 10007) {
       // === 天赋激活/重洗 ===
