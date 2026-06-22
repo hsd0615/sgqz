@@ -1192,15 +1192,27 @@ function handleRequest(socket, req) {
       }
     };
     if (fi === 3) {
-      // 翻牌: 6格全装备, 品质加权随机(低品质概率高)
-      // Q1:20% Q2:18% Q3:16% Q4:14% Q5:12% Q6:8% Q7:6% Q8:4% Q9:1.5% Q10:0.5%
-      var weights = [0, 20, 38, 54, 68, 80, 88, 94, 98, 99.5, 100];
+      // 翻牌: 6格全装备, 品质与等级挂钩但Q9/Q10有上限
+      // centerQ随等级上移: Lv1→Q1, Lv30→Q3, Lv60→Q5, Lv90→Q6, Lv120+→Q7
+      var centerQ = Math.min(7, Math.floor(flv / 20) + 1);
+      // 以centerQ为中心的权重分布, Q9上限2%, Q10上限1%
+      var rawW = [0,0,0,0,0,0,0,0,0,0,0];
+      for (var wq = 1; wq <= 10; wq++) {
+        var dist = Math.abs(wq - centerQ);
+        if (wq >= 9) rawW[wq] = wq === 9 ? 2 : 1; // Q9/Q10硬上限
+        else rawW[wq] = Math.max(1, 25 - dist * 8); // 离centerQ越近权重越高
+      }
+      // 构建累积分布
+      var totalW = 0; for (var tw = 1; tw <= 10; tw++) totalW += rawW[tw];
+      var cumW = [0]; for (var cw = 1; cw <= 10; cw++) cumW[cw] = cumW[cw-1] + rawW[cw] / totalW * 100;
+      cumW[10] = 100;
+
       var pai = [];
       for (var pi = 0; pi < 6; pi++) {
         var roll = Math.random() * 100;
         var eqQ = 1;
         for (var wi = 1; wi <= 10; wi++) {
-          if (roll < weights[wi]) { eqQ = wi; break; }
+          if (roll < cumW[wi]) { eqQ = wi; break; }
         }
         var eqc = [];
         for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
