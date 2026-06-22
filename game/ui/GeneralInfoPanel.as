@@ -356,13 +356,13 @@ package game.ui
                   drawRainbowBorder(_bg, 34, 34, 0.95);
                   _bg.filters = [new GlowFilter(0xFFFFCC, 0.7, 8, 8, 2, 1)];
                } else {
-                  // 高级感边框: 品质色边框+暗底+微光
+                  // 高级感边框: 品质色细边+暗底+微光
                   var _qc2:uint = getQualityColor(_q);
-                  _bg.graphics.beginFill(0x0a0a0a, 0.92);
-                  _bg.graphics.lineStyle(1.5, _qc2, 0.9);
+                  _bg.graphics.beginFill(0x0d0804, 0.90);
+                  _bg.graphics.lineStyle(0.8, _qc2, 0.6);
                   _bg.graphics.drawRoundRect(0, 0, 34, 34, 4, 4);
                   _bg.graphics.endFill();
-                  _bg.filters = [new GlowFilter(_qc2, 0.3, 4, 4, 1, 1)];
+                  _bg.filters = [new GlowFilter(_qc2, 0.15, 3, 3, 1, 1)];
                }
                if(_slot is Sprite) (_slot as Sprite).addChild(_bg);
                else (_slot as MovieClip).addChild(_bg);
@@ -601,8 +601,8 @@ package game.ui
                _cbg.filters = [new GlowFilter(0xFFFFCC, 0.5, 6, 6, 2, 1)];
             } else {
                var _qc3:uint = getQualityColor(_q);
-               _cbg.graphics.beginFill(0x0a0a0a, 0.88);
-               _cbg.graphics.lineStyle(2, _qc3, 0.85);
+               _cbg.graphics.beginFill(0x0d0804, 0.85);
+               _cbg.graphics.lineStyle(1, _qc3, 0.55);
                _cbg.graphics.drawRoundRect(1,1,_cellW-2,_cellH-2,3,3);
                _cbg.graphics.endFill();
             }
