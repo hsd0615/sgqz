@@ -1441,19 +1441,32 @@ function handleRequest(socket, req) {
       }
 
       p.money -= evoCost;
+      // 消耗进化卷(proto_1_x, 按进化等级选对应卷)
+      var evoItemCode = 'proto_1_' + ((g.evolution||0) + 1);
+      var evoItemIdx = -1;
+      for (var _evi = 0; _evi < (db.bagItems||[]).length; _evi++) {
+        if (db.bagItems[_evi].player_id == p.id && db.bagItems[_evi].code === evoItemCode && (db.bagItems[_evi].count||1) > 0) {
+          evoItemIdx = _evi; break;
+        }
+      }
+      var evoConsumedId = 0;
+      if (evoItemIdx >= 0) {
+        db.bagItems[evoItemIdx].count = (db.bagItems[evoItemIdx].count||1) - 1;
+        evoConsumedId = db.bagItems[evoItemIdx].id;
+        if (db.bagItems[evoItemIdx].count <= 0) db.bagItems.splice(evoItemIdx, 1);
+      }
       var evoSuccess = Math.random() < evoProb;
       if (evoSuccess) {
         g.evolution = (g.evolution || 0) + 1;
-        // 第一次进化随机分配攻击属相 (1-4)
         if (g.evolution === 1 && (g.feature||0) === 0) {
           g.feature = Math.floor(Math.random() * 4) + 1;
         }
         respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) };
       }
       respData.money = p.money;
-      respData.itemID = 0; // 客户端会扣除道具
-      console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' Evo.' + (g.evolution||0) + ' success=' + evoSuccess + ' prob=' + evoProb.toFixed(1));
-      console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' → Evo.' + g.evolution);
+      respData.itemID = evoConsumedId;
+      respData.bagModel = makeBagModel(p.id);
+      console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' Evo.' + (g.evolution||0) + ' success=' + evoSuccess + ' prob=' + evoProb.toFixed(1) + ' scroll=' + evoItemCode + ' consumed=' + (evoConsumedId>0));
     } else if (headCode === 10008) {
       // === 上阵部署 — 保存武将选择 ===
       p.choose = data.choose || '';
@@ -1535,15 +1548,29 @@ function handleRequest(socket, req) {
         return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
       }
 
-      // 检查该装备是否已被其他武将装备
+      // 检查背包中是否有未装备的副本(同code可有多件)
       var allGens = findGenerals(p.id);
+      var equippedCount = 0;
       for (var _gi = 0; _gi < allGens.length; _gi++) {
         var _og = allGens[_gi];
-        if (_og.general_id === g.general_id) continue;
-        if ((_og.equip1||'0') === itemCode || (_og.equip2||'0') === itemCode || (_og.equip3||'0') === itemCode ||
-            (_og.equip4||'0') === itemCode || (_og.equip5||'0') === itemCode || (_og.equip6||'0') === itemCode) {
-          return jsonRawResponse(socket, { success: false, message: '该装备已被' + (_og.name||'其他武将') + '装备，请先卸下' });
+        for (var _es2 = 1; _es2 <= 6; _es2++) {
+          if ((_og['equip'+_es2]||'0') === itemCode) equippedCount++;
         }
+      }
+      // 如果当前武将已有同code则不重复计数(换槽场景)
+      var curHasSame = false;
+      for (var _es3 = 1; _es3 <= 6; _es3++) {
+        if ((g['equip'+_es3]||'0') === itemCode) { curHasSame = true; break; }
+      }
+      var bagTotal = 0;
+      for (var _bj2 = 0; _bj2 < (db.bagItems||[]).length; _bj2++) {
+        if (db.bagItems[_bj2].player_id == p.id && db.bagItems[_bj2].code === itemCode) {
+          bagTotal += (db.bagItems[_bj2].count||1);
+        }
+      }
+      // 如果当前武将还没有此装备，需要背包中有额外的副本
+      if (!curHasSame && bagTotal <= 0) {
+        return jsonRawResponse(socket, { success: false, message: '背包中没有多余的该装备' });
       }
 
       // 查找背包中的装备

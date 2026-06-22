@@ -763,7 +763,7 @@ package game.ui
 
          while(this._bagList.numChildren>0) this._bagList.removeChildAt(0);
          var _w:int=370; var _h:int=270; var _pageSize:int=7;
-         this._bagList.x = int((400-_w)/2) - 20;
+         this._bagList.x = int((400-_w)/2) - 40;
          this._bagList.y = int((300-_h)/2) - 30;
          this._bagList.graphics.clear();
          this._bagList.graphics.beginFill(0x0d0804,0.98);
