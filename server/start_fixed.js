@@ -868,43 +868,44 @@ function handleRequest(socket, req) {
     var fpenemyEquips = [];
     var fpequipDrop = null;
     var fpdropNotify = null;
-    var fpbestDrop = null;
     for (var fpei = 0; fpei < fpenemyCodes.length; fpei++) {
       var fpec = fpenemyCodes[fpei];
       var fpgenQ = parseGeneralQuality(fpec);
       var fpgenLevel = fpenemyLevels[fpei] || fplevel;
       var fpdefaultEquips = getDefaultEquipForEnemy(fpec, fpgenQ, fpgenLevel, 0, fplevel);
       fpenemyEquips.push({ code: fpec, equips: fpdefaultEquips });
-      if (!canDropEquip(fpec)) continue;
-      // 预计算掉落(与result共用, 非概率判定—result直接使用此结果)
-      // Q10固定0.5, Q1-Q9权重基于连续idealQ(平缓变化)
-      var fpidealQ = Math.min(9, Math.max(1, fplevel / 30 + fppart / 20));
-      var fprawW = [0,0,0,0,0,0,0,0,0,0,0];
-      fprawW[10] = 0.5; // Q10固定极低
-      for (var fpmq = 1; fpmq <= 9; fpmq++) {
-        var fpmdist = Math.abs(fpmq - fpidealQ);
-        fprawW[fpmq] = Math.max(1, 25 - fpmdist * 3);
-      }
-      var fptotalW = 0; for (var fptw = 1; fptw <= 10; fptw++) fptotalW += fprawW[fptw];
-      var fproll = Math.random() * fptotalW;
-      var fpmeqQ = 1, fpmacc = 0;
-      for (var fpmwi = 1; fpmwi <= 10; fpmwi++) { fpmacc += fprawW[fpmwi]; if (fproll < fpmacc) { fpmeqQ = fpmwi; break; } }
-      if (!fpbestDrop || fpmeqQ > fpbestDrop.quality) {
-        fpbestDrop = { quality: fpmeqQ, enemyIdx: fpei, genCode: fpec, genName: '' };
-      }
     }
-    if (fpbestDrop) {
+    // 单次品质roll(非多敌人取最优)
+    var fpidealQ = Math.min(9, Math.max(1, fplevel / 30 + fppart / 20));
+    var fprawW = [0,0,0,0,0,0,0,0,0,0,0];
+    fprawW[10] = 0.5;
+    for (var fpmq = 1; fpmq <= 9; fpmq++) {
+      var fpmdist = Math.abs(fpmq - fpidealQ);
+      fprawW[fpmq] = Math.max(1, 25 - fpmdist * 3);
+    }
+    var fptotalW = 0; for (var fptw = 1; fptw <= 10; fptw++) fptotalW += fprawW[fptw];
+    var fproll = Math.random() * fptotalW;
+    var fpmeqQ = 1, fpmacc = 0;
+    for (var fpmwi = 1; fpmwi <= 10; fpmwi++) { fpmacc += fprawW[fpmwi]; if (fproll < fpmacc) { fpmeqQ = fpmwi; break; } }
+    // 随机选一个能掉落的敌人
+    var dropEnemyIdx = 0;
+    for (var fpei2 = 0; fpei2 < fpenemyCodes.length; fpei2++) {
+      if (canDropEquip(fpenemyCodes[fpei2])) { dropEnemyIdx = fpei2; break; }
+    }
+    // 单次概率判定(与result一致)
+    var fpdropProb = Math.min(0.40, Math.max(0.20, (fplevel / 400) + (fppart / 100)));
+    if (Math.random() < fpdropProb) {
       var fpcands = [];
-      for (var fpek in EQUIP_DATA) { if (EQUIP_DATA[fpek].quality === fpbestDrop.quality) fpcands.push(fpek); }
+      for (var fpek in EQUIP_DATA) { if (EQUIP_DATA[fpek].quality === fpmeqQ) fpcands.push(fpek); }
       if (fpcands.length > 0) {
         var fpcode = fpcands[Math.floor(Math.random() * fpcands.length)];
         var fpdef = EQUIP_DATA[fpcode];
-        fpenemyEquips[fpbestDrop.enemyIdx].equips[5] = fpcode;
-        fpenemyEquips[fpbestDrop.enemyIdx].dropEquip = true;
-        fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpbestDrop.quality, enemyIdx: fpbestDrop.enemyIdx };
-        if (fpbestDrop.quality >= 5) {
-          var fpenemyName = fpenemyCodes[fpbestDrop.enemyIdx] || '敌方武将';
-          fpdropNotify = { msg: '【稀有掉落】' + fpdef.name + '(品质' + fpbestDrop.quality + ') 已由敌方武将装备，击败该武将并通关即可获得！', quality: fpbestDrop.quality, enemyIdx: fpbestDrop.enemyIdx, enemyName: fpenemyName, eqName: fpdef.name };
+        fpenemyEquips[dropEnemyIdx].equips[5] = fpcode;
+        fpenemyEquips[dropEnemyIdx].dropEquip = true;
+        fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
+        if (fpmeqQ >= 5) {
+          var fpenemyName = fpenemyCodes[dropEnemyIdx] || '敌方武将';
+          fpdropNotify = { msg: '【稀有掉落】' + fpdef.name + '(品质' + fpmeqQ + ') 已由敌方武将装备，击败该武将并通关即可获得！', quality: fpmeqQ, enemyIdx: dropEnemyIdx, enemyName: fpenemyName, eqName: fpdef.name };
         }
       }
     }
