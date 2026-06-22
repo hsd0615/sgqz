@@ -1584,18 +1584,10 @@ function handleRequest(socket, req) {
       }
       if (bagIdx === -1) return jsonRawResponse(socket, { success: false, message: '背包中没有该装备' });
 
-      // 如果目标槽已有装备，先卸下归还背包
+      // 如果目标槽已有装备，先卸下归还背包(装备不堆叠)
       var oldCode = g[slotMap[slotIdx]];
       if (oldCode && oldCode !== '0') {
-        var oldFound = false;
-        for (var oj = 0; oj < db.bagItems.length; oj++) {
-          if (db.bagItems[oj].player_id == p.id && db.bagItems[oj].code === oldCode) {
-            db.bagItems[oj].count = (db.bagItems[oj].count||1) + 1; oldFound = true; break;
-          }
-        }
-        if (!oldFound) {
-          db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: oldCode, count: 1 });
-        }
+        db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: oldCode, count: 1 });
       }
 
       // 扣除背包中的装备
@@ -1617,17 +1609,9 @@ function handleRequest(socket, req) {
       var curCode = g[slotMap[slotIdx]];
       if (!curCode || curCode === '0') return jsonRawResponse(socket, { success: false, message: '该槽位没有装备' });
 
-      // 归还背包
+      // 归还背包(装备不堆叠, 每件独立条目)
       if (!db.bagItems) db.bagItems = [];
-      var added = false;
-      for (var uj = 0; uj < db.bagItems.length; uj++) {
-        if (db.bagItems[uj].player_id == p.id && db.bagItems[uj].code === curCode) {
-          db.bagItems[uj].count = (db.bagItems[uj].count||1) + 1; added = true; break;
-        }
-      }
-      if (!added) {
-        db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: curCode, count: 1 });
-      }
+      db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: curCode, count: 1 });
 
       g[slotMap[slotIdx]] = '0';
       respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g), equipment: (g.equip1||'0')+','+(g.equip2||'0')+','+(g.equip3||'0')+','+(g.equip4||'0')+','+(g.equip5||'0')+','+(g.equip6||'0') };
