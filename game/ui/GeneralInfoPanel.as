@@ -192,12 +192,12 @@ package game.ui
 
          // 布局: 左列=头盔/铠甲/战靴, 右列=武器/饰品Ⅰ/饰品Ⅱ
          var _slotPositions:Array = [
-            {x:-160, y:-204},  // 0:武器   (右,上)
+            {x:-160, y:-206},  // 0:武器   (右,上)
             {x:-329, y:-146},  // 1:铠甲   (左,中)
             {x:-160, y:-146},  // 2:饰品Ⅰ (右,中)
-            {x:-329, y:-204},  // 3:头盔   (左,上)
-            {x:-329, y:-89},   // 4:战靴   (左,下)
-            {x:-160, y:-89}    // 5:饰品Ⅱ (右,下)
+            {x:-329, y:-206},  // 3:头盔   (左,上)
+            {x:-329, y:-87},   // 4:战靴   (左,下)
+            {x:-160, y:-87}    // 5:饰品Ⅱ (右,下)
          ];
 
          var _j:int = 0;
@@ -757,9 +757,9 @@ package game.ui
             this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
             return;
          }
-         if(this._batchPage2 == 0) {
+         if(this._batchPage2 == 0 && this._batchFilterQ2 == 0) {
             this._batchSelected2 = {};
-            for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].code]=true;
+            for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].id]=true;
          }
 
          while(this._bagList.numChildren>0) this._bagList.removeChildAt(0);
@@ -795,11 +795,9 @@ package game.ui
             var _qb2:Sprite=new Sprite(); _qb2.name="q2btn"+_qi2;
             _qb2.buttonMode=true; _qb2.mouseChildren=false;
             var _qx2:int=34+(_qi2-1)*33;
-            var _qs2:Shape=new Shape();
-            _qs2.graphics.beginFill(_qi2==_self._batchFilterQ2?0x8B6914:0x221100,0.9);
-            _qs2.graphics.lineStyle(1,_qi2==_self._batchFilterQ2?0xFFD700:0x554422);
-            _qs2.graphics.drawRoundRect(0,0,29,14,3,3); _qs2.graphics.endFill();
-            _qb2.addChild(_qs2);
+            _qb2.graphics.beginFill(_qi2==_self._batchFilterQ2?0x8B6914:0x221100,0.9);
+            _qb2.graphics.lineStyle(1,_qi2==_self._batchFilterQ2?0xFFD700:0x554422);
+            _qb2.graphics.drawRoundRect(0,0,29,14,3,3); _qb2.graphics.endFill();
             var _qtf3:TextField=new TextField();
             _qtf3.defaultTextFormat=new TextFormat("SimSun",8,_qi2==_self._batchFilterQ2?0xFFD700:0x776644);
             _qtf3.text="Q"+_qi2; _qtf3.selectable=false; _qtf3.width=29; _qtf3.height=12; _qtf3.x=0; _qtf3.y=1;
@@ -816,10 +814,9 @@ package game.ui
          // 全选/取消
          var _ab2:Sprite=new Sprite(); _ab2.buttonMode=true; _ab2.mouseChildren=false;
          _ab2.x=_w-58; _ab2.y=_qy;
-         var _abg3:Shape=new Shape();
-         _abg3.graphics.beginFill(0x332200,0.9);
-         _abg3.graphics.lineStyle(1,0x8B6914); _abg3.graphics.drawRoundRect(0,0,54,14,3,3);
-         _abg3.graphics.endFill(); _ab2.addChild(_abg3);
+         _ab2.graphics.beginFill(0x332200,0.9);
+         _ab2.graphics.lineStyle(1,0x8B6914); _ab2.graphics.drawRoundRect(0,0,54,14,3,3);
+         _ab2.graphics.endFill();
          var _atf3:TextField=new TextField();
          _atf3.defaultTextFormat=new TextFormat("SimSun",9,0xCCAA44);
          _atf3.text="全选/取消"; _atf3.selectable=false; _atf3.width=54; _atf3.height=12; _atf3.x=0; _atf3.y=1;
@@ -853,19 +850,18 @@ package game.ui
             var _rw2:Sprite=new Sprite(); _rw2.y=_ly+_rn*24;
             _rw2.mouseEnabled = false;
 
-            var _cb2:Sprite=new Sprite(); _cb2.name="bcb_"+_it.code;
+            var _sel3:Boolean=_self._batchSelected2[_it.id]==true;
+            var _cb2:Sprite=new Sprite(); _cb2.name="bcb_"+_it.id;
             _cb2.mouseChildren=false; _cb2.buttonMode=true;
-            var _cbs3:Shape=new Shape();
-            var _sel3:Boolean=_self._batchSelected2[_it.code]==true;
-            _cbs3.graphics.beginFill(_sel3?0x8B6914:0x1a1008,0.9);
-            _cbs3.graphics.lineStyle(1,_sel3?0xFFD700:0x554422,0.8);
-            _cbs3.graphics.drawRoundRect(0,0,14,14,2,2); _cbs3.graphics.endFill();
-            if(_sel3){_cbs3.graphics.lineStyle(2,0xFFD700,1); _cbs3.graphics.moveTo(3,7); _cbs3.graphics.lineTo(6,10); _cbs3.graphics.lineTo(11,4);}
-            _cb2.addChild(_cbs3); _cb2.x=6; _cb2.y=3;
+            _cb2.graphics.beginFill(_sel3?0x8B6914:0x1a1008,0.9);
+            _cb2.graphics.lineStyle(1,_sel3?0xFFD700:0x554422,0.8);
+            _cb2.graphics.drawRoundRect(0,0,14,14,2,2); _cb2.graphics.endFill();
+            if(_sel3){_cb2.graphics.lineStyle(2,0xFFD700,1); _cb2.graphics.moveTo(3,7); _cb2.graphics.lineTo(6,10); _cb2.graphics.lineTo(11,4);}
+            _cb2.x=6; _cb2.y=3;
             _cb2.addEventListener(MouseEvent.CLICK,function(p:*):void{
                p.stopImmediatePropagation();
-               var _c3:String=p.currentTarget.name.replace("bcb_","");
-               _self._batchSelected2[_c3]=!_self._batchSelected2[_c3];
+               var _bid:Number = Number(p.currentTarget.name.replace("bcb_",""));
+               _self._batchSelected2[_bid]=!_self._batchSelected2[_bid];
                _self.showBatchSellView();
             });
             _rw2.addChild(_cb2);
@@ -921,13 +917,13 @@ package game.ui
          // 底部统计
          var _totS:int=0,_totD:int=0,_scnt:int=0; var _scodes:Array=[];
          for(var _si:int=0;_si<_allItems.length;_si++){
-            var _c4:String=_allItems[_si].code;
-            if(_self._batchSelected2[_c4]!=true) continue;
-            var _q4:int=int(EquipData.get(_c4,"quality"));
+            var _it4:Object=_allItems[_si];
+            if(_self._batchSelected2[_it4.id]!=true) continue;
+            var _q4:int=int(EquipData.get(_it4.code,"quality"));
             if(_self._batchFilterQ2>0&&_q4!=_self._batchFilterQ2) continue;
-            var _p4:Object=getEquipSellPrice(_c4);
+            var _p4:Object=getEquipSellPrice(_it4.code);
             _totS+=_p4.silver; _totD+=_p4.dianka; _scnt++;
-            _scodes.push(_c4);
+            _scodes.push(_it4.code);
          }
          var _bmy:int=_h-40;
          var _stf4:TextField=new TextField();

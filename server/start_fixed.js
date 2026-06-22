@@ -1529,7 +1529,11 @@ function handleRequest(socket, req) {
       // 饰品(slot=3或旧slot=6)可在两个饰品槽(UI idx 2或5)通用
       var isAccessory = (edef.slot === 3 || edef.slot === 6);
       var isAccessorySlot = (slotIdx === 2 || slotIdx === 5);
-      if (edef.slot !== slotIdx + 1 && !(isAccessory && isAccessorySlot)) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
+      if (edef.slot !== slotIdx + 1 && !(isAccessory && isAccessorySlot)) {
+        console.log('[Equip] MISMATCH ' + p.role_name + ' item=' + itemCode + ' slot=' + edef.slot + ' uiSlot=' + slotIdx + ' expected=' + (slotIdx+1) + ' isAcc=' + isAccessory + ' isAccSlot=' + isAccessorySlot + ' name=' + (edef.name||'?'));
+        return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
+      }
+      console.log('[Equip] OK ' + p.role_name + ' item=' + itemCode + '(' + (edef.name||'?') + ') slot=' + edef.slot + ' → uiSlot=' + slotIdx);
 
       // 检查该装备是否已被其他武将装备
       var allGens = findGenerals(p.id);
