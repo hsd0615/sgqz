@@ -869,8 +869,8 @@ function handleRequest(socket, req) {
       var fpprob = Math.min(0.40, Math.max(0.005, fpgenLevel / fprateDiv));
       if (Math.random() < fpprob) {
         var fprollQ = fpminEQ + Math.floor(Math.random() * (fpmaxEQ - fpminEQ + 1));
-        // 彩色品质(Q6-Q9)二次概率判定, 降低紫色/橙色掉落, 红色(Q10)不受影响
-        if (fprollQ >= 6 && fprollQ < 10 && Math.random() > 0.35) fprollQ = 5;
+        // 彩色品质(Q10)二次概率判定, 仅降低最高彩色掉落, 红色(Q9)及以下不受影响
+        if (fprollQ >= 10 && Math.random() > 0.35) fprollQ = 9;
         if (!fpbestDrop || fprollQ > fpbestDrop.quality) {
           fpbestDrop = { quality: fprollQ, enemyIdx: fpei, genCode: fpec, genName: '' };
         }
@@ -1033,8 +1033,8 @@ function handleRequest(socket, req) {
         var eqProb = Math.min(0.40, Math.max(0.005, fn / eqRateDiv));
         if (Math.random() < eqProb) {
           var eqRollQ = eqMinQ + Math.floor(Math.random() * (eqMaxQ - eqMinQ + 1));
-          // 彩色品质(Q6-Q9)二次概率判定, 降低紫色/橙色掉落, 红色(Q10)不受影响
-          if (eqRollQ >= 6 && eqRollQ < 10 && Math.random() > 0.35) eqRollQ = 5;
+          // 彩色品质(Q10)二次概率判定, 仅降低最高彩色掉落, 红色(Q9)及以下不受影响
+          if (eqRollQ >= 10 && Math.random() > 0.35) eqRollQ = 9;
           var eqCands = [];
           for (var eqEk in EQUIP_DATA) { if (EQUIP_DATA[eqEk].quality === eqRollQ) eqCands.push(eqEk); }
           if (eqCands.length > 0) {
