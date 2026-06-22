@@ -902,7 +902,6 @@ function handleRequest(socket, req) {
         fpenemyEquips[dropEnemyIdx].dropEquip = true;
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
 		if (fpmeqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
-t        if (fpmeqQ >= 10) broadcastToAll('[系统] 🌈 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
       }
     }
     if (!p._pendingMainEquipDrop) p._pendingMainEquipDrop = {};
