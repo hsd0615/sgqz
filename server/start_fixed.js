@@ -1040,7 +1040,7 @@ function handleRequest(socket, req) {
       }
       // 无预计算时(兜底): 现场加权随机
       if (!equipDrop) {
-        var dropProb = Math.min(0.50, Math.max(0.25, (flevel / 300) + (fpart / 80)));
+        var dropProb = Math.min(0.40, Math.max(0.25, (flevel / 300) + (fpart / 80)));
         if (Math.random() < dropProb) {
           var mainCenterQ = Math.min(8, Math.floor(flevel / 25) + Math.floor(fpart / 10) + 1);
           var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
