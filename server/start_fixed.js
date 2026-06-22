@@ -1666,24 +1666,12 @@ function handleRequest(socket, req) {
       }
       console.log('[SellEquip] REQ ' + p.role_name + ' codes=' + sellCodes.join(',') + ' count=' + sellCodes.length);
 
-      // 收集已装备的code列表
-      var allGens3 = findGenerals(p.id);
-      var equippedSet = {};
-      for (var _gii = 0; _gii < allGens3.length; _gii++) {
-        var _gg = allGens3[_gii];
-        for (var _es = 1; _es <= 6; _es++) {
-          var _ec = _gg['equip'+_es];
-          if (_ec && _ec !== '0') equippedSet[_ec] = true;
-        }
-      }
-
       var totalSilver = 0, totalDianka = 0, soldCount = 0, skipNoDef = 0, skipEquipped = 0, skipNoBag = 0;
       if (!db.bagItems) db.bagItems = [];
       for (var _si = 0; _si < sellCodes.length; _si++) {
         var sellCode = sellCodes[_si];
         var sdef = EQUIP_DATA[sellCode];
         if (!sdef) { skipNoDef++; continue; }
-        if (equippedSet[sellCode]) { skipEquipped++; continue; }
         // 从背包中移除
         var sellIdx = -1;
         for (var sk = 0; sk < db.bagItems.length; sk++) {
