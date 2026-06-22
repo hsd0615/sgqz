@@ -69,17 +69,17 @@ package game.model {
          _data["proto_4_93"]={slot:5,name:"破灭靴",defense:8500,defensePct:40,dmgReduce:24,critDmg:35,attack:3500,hp:10000,levelReq:200,quality:10,iconIdx:7};
          _data["proto_4_94"]={slot:5,name:"疾风之足",defense:6500,defensePct:30,critRate:30,critDmg:40,attack:2600,hp:7800,levelReq:170,quality:10,iconIdx:7};
 
-         // 饰品Ⅱ (slot=6) Q1-10  复用饰品图标池
-         _data["proto_4_71"]={slot:6,name:"铜戒指",attack:55,defense:12,hp:70,levelReq:12,quality:1,iconIdx:30};
-         _data["proto_4_72"]={slot:6,name:"银戒指",attack:125,defense:28,hp:170,levelReq:28,quality:2,iconIdx:27};
-         _data["proto_4_73"]={slot:6,name:"金戒指",attack:220,defense:55,hp:330,levelReq:45,quality:3,iconIdx:22};
-         _data["proto_4_74"]={slot:6,name:"龙戒",attack:350,attackPct:4,defense:95,hp:550,levelReq:65,quality:4,iconIdx:22};
-         _data["proto_4_75"]={slot:6,name:"神戒",attack:540,attackPct:8,lifesteal:5,defense:160,hp:880,levelReq:95,quality:5,iconIdx:24};
-         _data["proto_4_76"]={slot:6,name:"乾坤圈",attack:800,attackPct:12,critRate:30,critDmg:15,defense:260,hp:1400,levelReq:140,quality:6,iconIdx:23};
-         _data["proto_4_95"]={slot:6,name:"破军环",attack:3000,attackPct:22,critRate:25,defense:1100,hp:5800,levelReq:160,quality:7,iconIdx:21};
-         _data["proto_4_96"]={slot:6,name:"贪狼令",attack:4200,attackPct:28,dmgBonus:12,lifesteal:10,defense:1600,hp:8200,levelReq:180,quality:8,iconIdx:26};
-         _data["proto_4_97"]={slot:6,name:"星辰令",attack:6000,attackPct:35,critRate:30,critDmg:30,defense:2200,hp:11500,levelReq:195,quality:9,iconIdx:25};
-         _data["proto_4_98"]={slot:6,name:"轮回印",attack:8500,attackPct:42,dmgReduce:16,lifesteal:15,defense:3200,hp:15500,levelReq:200,quality:10,iconIdx:29};
+         // 饰品 (slot=3) Q1-10  饰品Ⅰ+饰品Ⅱ合并
+         _data["proto_4_71"]={slot:3,name:"铜戒指",attack:55,defense:12,hp:70,levelReq:12,quality:1,iconIdx:30};
+         _data["proto_4_72"]={slot:3,name:"银戒指",attack:125,defense:28,hp:170,levelReq:28,quality:2,iconIdx:27};
+         _data["proto_4_73"]={slot:3,name:"金戒指",attack:220,defense:55,hp:330,levelReq:45,quality:3,iconIdx:22};
+         _data["proto_4_74"]={slot:3,name:"龙戒",attack:350,attackPct:4,defense:95,hp:550,levelReq:65,quality:4,iconIdx:22};
+         _data["proto_4_75"]={slot:3,name:"神戒",attack:540,attackPct:8,lifesteal:5,defense:160,hp:880,levelReq:95,quality:5,iconIdx:24};
+         _data["proto_4_76"]={slot:3,name:"乾坤圈",attack:800,attackPct:12,critRate:30,critDmg:15,defense:260,hp:1400,levelReq:140,quality:6,iconIdx:23};
+         _data["proto_4_95"]={slot:3,name:"破军环",attack:3000,attackPct:22,critRate:25,defense:1100,hp:5800,levelReq:160,quality:7,iconIdx:21};
+         _data["proto_4_96"]={slot:3,name:"贪狼令",attack:4200,attackPct:28,dmgBonus:12,lifesteal:10,defense:1600,hp:8200,levelReq:180,quality:8,iconIdx:26};
+         _data["proto_4_97"]={slot:3,name:"星辰令",attack:6000,attackPct:35,critRate:30,critDmg:30,defense:2200,hp:11500,levelReq:195,quality:9,iconIdx:25};
+         _data["proto_4_98"]={slot:3,name:"轮回印",attack:8500,attackPct:42,dmgReduce:16,lifesteal:15,defense:3200,hp:15500,levelReq:200,quality:10,iconIdx:29};
       }
       // 兼容旧装备码(proto_4_1~30) → 映射到新数据
       private static var _compat:Object = {

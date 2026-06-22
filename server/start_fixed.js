@@ -1549,7 +1549,8 @@ function handleRequest(socket, req) {
       var itemCode = String(data.itemCode);
       var edef = EQUIP_DATA[itemCode];
       if (!edef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
-      if (edef.slot !== slotIdx + 1) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
+      // 饰品(slot=3)可在两个饰品槽(UI idx 2或5)通用
+      if (edef.slot !== slotIdx + 1 && !(edef.slot === 3 && (slotIdx === 2 || slotIdx === 5))) return jsonRawResponse(socket, { success: false, message: '装备类型不匹配' });
 
       // 检查该装备是否已被其他武将装备
       var allGens = findGenerals(p.id);
@@ -1622,47 +1623,61 @@ function handleRequest(socket, req) {
       respData.bagModel = makeBagModel(p.id);
       console.log('[Unequip] ' + p.role_name + ' ' + g.name + ' 卸下槽位' + (slotIdx+1));
     } else if (headCode === 10052) {
-      // === 售卖装备 ===
-      var sellCode = String(data.itemCode);
-      var sdef = EQUIP_DATA[sellCode];
-      if (!sdef) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
+      // === 售卖装备 (支持批量: data.itemCodes=code1,code2,...) ===
+      var sellCodes = [];
+      if (data.itemCodes) {
+        sellCodes = String(data.itemCodes).split(',').map(function(c){return c.trim();}).filter(Boolean);
+      } else if (data.itemCode) {
+        sellCodes = [String(data.itemCode)];
+      }
+      if (sellCodes.length === 0) return jsonRawResponse(socket, { success: false, message: '无效的装备' });
 
-      // 检查是否已被装备(需先卸下)
+      // 收集已装备的code列表
       var allGens3 = findGenerals(p.id);
+      var equippedSet = {};
       for (var _gii = 0; _gii < allGens3.length; _gii++) {
         var _gg = allGens3[_gii];
-        if ((_gg.equip1||'0') === sellCode || (_gg.equip2||'0') === sellCode || (_gg.equip3||'0') === sellCode ||
-            (_gg.equip4||'0') === sellCode || (_gg.equip5||'0') === sellCode || (_gg.equip6||'0') === sellCode) {
-          return jsonRawResponse(socket, { success: false, message: '该装备已被' + (_gg.name||'武将') + '装备，请先卸下再售卖' });
+        for (var _es = 1; _es <= 6; _es++) {
+          var _ec = _gg['equip'+_es];
+          if (_ec && _ec !== '0') equippedSet[_ec] = true;
         }
       }
 
-      // 从背包中移除
+      var totalSilver = 0, totalDianka = 0, soldCount = 0;
       if (!db.bagItems) db.bagItems = [];
-      var sellIdx = -1;
-      for (var sk = 0; sk < db.bagItems.length; sk++) {
-        if (db.bagItems[sk].player_id == p.id && db.bagItems[sk].code === sellCode && (db.bagItems[sk].count||1) > 0) {
-          sellIdx = sk; break;
+      for (var _si = 0; _si < sellCodes.length; _si++) {
+        var sellCode = sellCodes[_si];
+        var sdef = EQUIP_DATA[sellCode];
+        if (!sdef) continue;
+        // 跳过已装备的
+        if (equippedSet[sellCode]) continue;
+        // 从背包中移除
+        var sellIdx = -1;
+        for (var sk = 0; sk < db.bagItems.length; sk++) {
+          if (db.bagItems[sk].player_id == p.id && db.bagItems[sk].code === sellCode && (db.bagItems[sk].count||1) > 0) {
+            sellIdx = sk; break;
+          }
         }
+        if (sellIdx === -1) continue;
+        db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
+        if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
+        // 计算价格
+        var eqQ = parseInt(sdef.quality)||1;
+        var eqLv = parseInt(sdef.levelReq)||1;
+        totalSilver += eqQ * eqLv * 50;
+        totalDianka += eqQ >= 6 ? (eqQ - 5) * 10 : 0;
+        soldCount++;
       }
-      if (sellIdx === -1) return jsonRawResponse(socket, { success: false, message: '背包中没有该装备' });
-
-      db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
-      if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
-
-      // 售卖价格: Q×Lv×500(普通), Q×Lv×5000(神器Q8+), 点卡=Q>=6?(Q-5)×30
-      var eqQ = parseInt(sdef.quality)||1;
-      var eqLv = parseInt(sdef.levelReq)||1;
-      var base = eqQ * eqLv;
-      var silverReward = eqQ >= 8 ? base * 5000 : base * 500;
-      var diankaReward = eqQ >= 6 ? (eqQ - 5) * 30 : 0;
-
-      p.money = parseInt(p.money||0) + silverReward;
-      p.dianka = parseInt(p.dianka||0) + diankaReward;
+      p.money = parseInt(p.money||0) + totalSilver;
+      p.dianka = parseInt(p.dianka||0) + totalDianka;
       respData.money = p.money;
       respData.dianka = p.dianka;
       respData.bagModel = makeBagModel(p.id);
-      console.log('[SellEquip] ' + p.role_name + ' 售卖 ' + sdef.name + '(Q'+eqQ+' Lv'+eqLv+') 银子+' + silverReward + ' 点卡+' + diankaReward + ' 余额=' + p.money);
+      respData.soldCount = soldCount;
+      respData.totalSilver = totalSilver;
+      respData.totalDianka = totalDianka;
+      save();
+      console.log('[SellEquip] ' + p.role_name + ' 批量售卖' + soldCount + '件 银子+' + totalSilver + ' 点卡+' + totalDianka + ' 余额=' + p.money);
     } else if (headCode === 10013) {
       // === 消耗弹药 ===
       var ammoCode = String(data.itemCode);

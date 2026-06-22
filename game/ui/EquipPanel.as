@@ -20,8 +20,8 @@ package game.ui
 
    public class EquipPanel extends Sprite
    {
-      // 6槽位: 0=武器 1=铠甲 2=饰品Ⅰ 3=头盔 4=战靴 5=饰品Ⅱ
-      private var _slotLabels:Array = ["武器","铠甲","饰品Ⅰ","头盔","战靴","饰品Ⅱ"];
+      // 6槽位: 0=武器 1=铠甲 2=饰品 3=头盔 4=战靴 5=饰品
+      private var _slotLabels:Array = ["武器","铠甲","饰品","头盔","战靴","饰品"];
       private var _slotIcons:Array = ["weapon","armor","accessory","helmet","boots","accessory"];
       // 槽位布局坐标 (x,y)
       private static const SLOT_POS:Array = [
@@ -117,6 +117,28 @@ package game.ui
             _self.close();
          });
          addChild(_closeBtn);
+
+         // 批量售卖按钮
+         var _batchBtn:Sprite = new Sprite();
+         var _bbs:Shape = new Shape();
+         _bbs.graphics.beginFill(0x5a2010, 0.9);
+         _bbs.graphics.lineStyle(1, 0xC8A84E, 0.8);
+         _bbs.graphics.drawRoundRect(0, 0, 80, 26, 5, 5);
+         _bbs.graphics.endFill();
+         _batchBtn.addChild(_bbs);
+         var _bTF:TextField = new TextField();
+         _bTF.defaultTextFormat = new TextFormat("SimHei", 12, 0xFFD700, true);
+         _bTF.text = "批量售卖";
+         _bTF.selectable = false; _bTF.autoSize = TextFieldAutoSize.CENTER;
+         _bTF.x = (80 - _bTF.width) / 2; _bTF.y = 5;
+         _batchBtn.addChild(_bTF);
+         _batchBtn.buttonMode = true;
+         _batchBtn.x = (_w - 80) / 2 + 100; _batchBtn.y = _h - 38;
+         _batchBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
+            p.stopImmediatePropagation();
+            _self.showBatchSell();
+         });
+         addChild(_batchBtn);
 
          // 背包选择列表(初始隐藏)
          this._bagList = new Sprite();
@@ -437,9 +459,8 @@ package game.ui
       private static function getEquipSellPrice(code:String):Object {
          var q:int = int(EquipData.get(code,"quality"))||1;
          var lv:int = int(EquipData.get(code,"levelReq"))||1;
-         var base:int = q * lv;
-         var silver:int = q >= 8 ? base * 5000 : base * 500;
-         return {silver: silver, dianka: q >= 6 ? (q - 5) * 30 : 0};
+         var silver:int = q * lv * 50;
+         return {silver: silver, dianka: q >= 6 ? (q - 5) * 10 : 0};
       }
 
       private function onSellEquipClick(code:String):void {
@@ -483,6 +504,222 @@ package game.ui
             else
             {
                _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:param1.message||"售卖失败"}));
+            }
+         });
+      }
+
+      // ========== 批量售卖 ==========
+      private var _batchSelected:Object = {};
+      private var _batchFilterQ:int = 0;
+
+      private function showBatchSell() : void {
+         this.hideBagList();
+         var _self:EquipPanel = this;
+         var _allItems:Array = RoleModel.getInstance().getBagEquipItems(0);
+         if(_allItems.length == 0) {
+            this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
+            return;
+         }
+         this._batchSelected = {};
+         for(var _ai:int = 0; _ai < _allItems.length; _ai++) {
+            this._batchSelected[_allItems[_ai].code] = true;
+         }
+
+         var _w:int = 400; var _h:int = 300;
+         var _bx:int = 20; var _by:int = 60;
+         this._bagList.x = _bx; this._bagList.y = _by;
+         this._bagList.graphics.clear();
+         this._bagList.graphics.beginFill(0x1a1008, 0.97);
+         this._bagList.graphics.lineStyle(1.5, 0xC8A84E, 0.9);
+         this._bagList.graphics.drawRoundRect(0, 0, _w, _h, 8, 8);
+         this._bagList.graphics.endFill();
+
+         var _tTF:TextField = new TextField();
+         _tTF.defaultTextFormat = new TextFormat("SimHei", 13, 0xFFD700, true);
+         _tTF.text = "批量售卖 (" + _allItems.length + "件)"; _tTF.selectable = false;
+         _tTF.autoSize = TextFieldAutoSize.CENTER; _tTF.x = (_w - _tTF.width)/2; _tTF.y = 6;
+         this._bagList.addChild(_tTF);
+
+         // 品质筛选
+         var _qRowY:int = 30;
+         var _qlTF:TextField = new TextField();
+         _qlTF.defaultTextFormat = new TextFormat("SimSun", 10, 0x998866);
+         _qlTF.text = "品质:"; _qlTF.selectable = false;
+         _qlTF.width = 35; _qlTF.height = 16; _qlTF.x = 6; _qlTF.y = _qRowY + 2;
+         this._bagList.addChild(_qlTF);
+         for(var _qi:int = 1; _qi <= 10; _qi++) {
+            var _qb:Sprite = new Sprite();
+            _qb.name = "qbtn" + _qi;
+            _qb.buttonMode = true; _qb.mouseChildren = false;
+            var _qx:int = 40 + (_qi-1) * 35;
+            var _qs:Shape = new Shape();
+            var _qc:uint = (_qi == this._batchFilterQ) ? 0x8B6914 : 0x221100;
+            _qs.graphics.beginFill(_qc, 0.9);
+            _qs.graphics.lineStyle(1, _qi == this._batchFilterQ ? 0xFFD700 : 0x554422, 0.7);
+            _qs.graphics.drawRoundRect(0, 0, 32, 16, 3, 3);
+            _qs.graphics.endFill();
+            _qb.addChild(_qs);
+            var _qtf:TextField = new TextField();
+            _qtf.defaultTextFormat = new TextFormat("SimSun", 9, _qi == this._batchFilterQ ? 0xFFD700 : 0x776644);
+            _qtf.text = "Q" + _qi; _qtf.selectable = false; _qtf.width = 32; _qtf.height = 14; _qtf.x = 0; _qtf.y = 1;
+            _qb.addChild(_qtf);
+            _qb.x = _qx; _qb.y = _qRowY;
+            _qb.addEventListener(MouseEvent.CLICK, function(p:*):void {
+               var _qn:int = int(p.currentTarget.name.replace("qbtn",""));
+               _self._batchFilterQ = (_self._batchFilterQ == _qn) ? 0 : _qn;
+               _self.showBatchSell();
+            });
+            this._bagList.addChild(_qb);
+         }
+
+         // 全选/取消
+         var _allBtn:Sprite = new Sprite();
+         _allBtn.buttonMode = true; _allBtn.mouseChildren = false;
+         _allBtn.x = _w - 66; _allBtn.y = _qRowY;
+         var _abg:Shape = new Shape();
+         _abg.graphics.beginFill(0x332200, 0.9);
+         _abg.graphics.lineStyle(1, 0x8B6914, 0.7);
+         _abg.graphics.drawRoundRect(0, 0, 60, 16, 3, 3);
+         _abg.graphics.endFill();
+         _allBtn.addChild(_abg);
+         var _atf:TextField = new TextField();
+         _atf.defaultTextFormat = new TextFormat("SimSun", 10, 0xCCAA44);
+         _atf.text = "全选/取消"; _atf.selectable = false;
+         _atf.width = 60; _atf.height = 14; _atf.x = 0; _atf.y = 1;
+         _allBtn.addChild(_atf);
+         _allBtn.addEventListener(MouseEvent.CLICK, function(p:*):void {
+            var _any:Boolean = false;
+            for(var _k:String in _self._batchSelected) { if(_self._batchSelected[_k]) { _any = true; break; } }
+            for(var _k2:String in _self._batchSelected) _self._batchSelected[_k2] = !_any;
+            _self.showBatchSell();
+         });
+         this._bagList.addChild(_allBtn);
+
+         // 物品列表
+         var _listY:int = _qRowY + 22;
+         var _vis:int = 0;
+         for(var _vi:int = 0; _vi < _allItems.length; _vi++) {
+            var _it2:Object = _allItems[_vi];
+            var _q:int = int(EquipData.get(_it2.code,"quality"));
+            if(this._batchFilterQ > 0 && _q != this._batchFilterQ) continue;
+            if(_vis >= 9) break; _vis++;
+            var _row2:Sprite = new Sprite();
+            _row2.y = _listY + (_vis-1) * 24;
+            _row2.name = "row_" + _it2.code;
+
+            var _cb:Sprite = new Sprite();
+            _cb.name = "cb_" + _it2.code;
+            _cb.mouseChildren = false;
+            var _cbs:Shape = new Shape();
+            var _sel2:Boolean = this._batchSelected[_it2.code] == true;
+            _cbs.graphics.beginFill(_sel2 ? 0x8B6914 : 0x1a1008, 0.9);
+            _cbs.graphics.lineStyle(1, _sel2 ? 0xFFD700 : 0x554422, 0.8);
+            _cbs.graphics.drawRoundRect(0, 0, 14, 14, 2, 2);
+            _cbs.graphics.endFill();
+            if(_sel2) {
+               _cbs.graphics.lineStyle(2, 0xFFD700, 1);
+               _cbs.graphics.moveTo(3, 7); _cbs.graphics.lineTo(6, 10); _cbs.graphics.lineTo(11, 4);
+            }
+            _cb.addChild(_cbs);
+            _cb.x = 6; _cb.y = 3;
+            _cb.addEventListener(MouseEvent.CLICK, function(p:*):void {
+               p.stopImmediatePropagation();
+               var _c2:String = p.currentTarget.name.replace("cb_","");
+               _self._batchSelected[_c2] = !_self._batchSelected[_c2];
+               _self.showBatchSell();
+            });
+            _row2.addChild(_cb);
+
+            var _nTF2:TextField = new TextField();
+            _nTF2.defaultTextFormat = new TextFormat("SimSun", 10, this.getQualityColor(_q));
+            var _nm2:* = EquipData.get(_it2.code,"name");
+            var _lv2:int = int(EquipData.get(_it2.code,"levelReq"))||1;
+            var _pr2:Object = getEquipSellPrice(_it2.code);
+            _nTF2.text = _nm2 + " Q" + _q + " Lv" + _lv2 + "  ¥" + _pr2.silver;
+            _nTF2.selectable = false; _nTF2.width = 320; _nTF2.height = 20;
+            _nTF2.x = 26; _nTF2.y = 1;
+            _row2.addChild(_nTF2);
+            this._bagList.addChild(_row2);
+         }
+
+         // 底部统计
+         var _totalS:int = 0; var _totalD:int = 0; var _sellCount:int = 0;
+         var _selectedCodes:Array = [];
+         for(var _si2:int = 0; _si2 < _allItems.length; _si2++) {
+            var _code3:String = _allItems[_si2].code;
+            if(this._batchSelected[_code3] == true) {
+               var _q3:int = int(EquipData.get(_code3,"quality"));
+               if(this._batchFilterQ > 0 && _q3 != this._batchFilterQ) continue;
+               var _p3:Object = getEquipSellPrice(_code3);
+               _totalS += _p3.silver; _totalD += _p3.dianka; _sellCount++;
+               _selectedCodes.push(_code3);
+            }
+         }
+
+         var _btmY:int = _h - 34;
+         var _sumTF:TextField = new TextField();
+         _sumTF.defaultTextFormat = new TextFormat("SimHei", 11, 0xFFD700);
+         _sumTF.text = "选中" + _sellCount + "件  银子+" + _totalS + (_totalD > 0 ? "  点卡+" + _totalD : "");
+         _sumTF.selectable = false; _sumTF.autoSize = TextFieldAutoSize.CENTER;
+         _sumTF.x = (_w - _sumTF.width)/2; _sumTF.y = _btmY;
+         this._bagList.addChild(_sumTF);
+
+         if(_sellCount > 0) {
+            var _cnf:Sprite = new Sprite();
+            _cnf.buttonMode = true; _cnf.mouseChildren = false;
+            _cnf.x = (_w - 120)/2; _cnf.y = _btmY + 18;
+            var _cbg2:Shape = new Shape();
+            _cbg2.graphics.beginFill(0x8B0000, 0.9);
+            _cbg2.graphics.lineStyle(1.5, 0xFF6600, 0.8);
+            _cbg2.graphics.drawRoundRect(0, 0, 120, 22, 4, 4);
+            _cbg2.graphics.endFill();
+            _cnf.addChild(_cbg2);
+            var _ct2:TextField = new TextField();
+            _ct2.defaultTextFormat = new TextFormat("SimHei", 12, 0xFFD700, true);
+            _ct2.text = "确认批量售卖"; _ct2.selectable = false;
+            _ct2.autoSize = TextFieldAutoSize.CENTER; _ct2.x = (120 - _ct2.width)/2; _ct2.y = 3;
+            _cnf.addChild(_ct2);
+            var _finalCodes:Array = _selectedCodes;
+            var _finalS:int = _totalS; var _finalD:int = _totalD;
+            _cnf.addEventListener(MouseEvent.CLICK, function(p:*):void {
+               var _msg:String = "确定要批量售卖" + _finalCodes.length + "件装备吗？\n可得银子+" + _finalS + (_finalD > 0 ? " 点卡+" + _finalD : "");
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+                  "type":1, "text":_msg,
+                  "fun":function():void { _self.batchSellEquip(_finalCodes); }
+               }));
+            });
+            this._bagList.addChild(_cnf);
+         }
+
+         this._bagList.visible = true;
+      }
+
+      private function batchSellEquip(codes:Array):void {
+         var _self:EquipPanel = this;
+         var _obj:Object = {};
+         _obj.head = Head.HTTP_NEW_SELL_EQUIP;
+         _obj.agent = Config.AGENT;
+         _obj.ver = Config.VER;
+         _obj.token = Config.token;
+         _obj.roleID = RoleModel.getInstance().roleID;
+         _obj.userID = RoleModel.getInstance().userID;
+         _obj.itemCodes = codes.join(",");
+         _obj.mask = true;
+         AESController.getInstance().sendJSON(_obj, function(param1:Object):void {
+            if(param1.success == true)
+            {
+               if(param1.data.bagModel) RoleModel.getInstance().initBagModel(param1.data.bagModel);
+               if(param1.data.money != undefined) RoleModel.getInstance().money = int(param1.data.money);
+               if(param1.data.dianka != undefined) RoleModel.getInstance().dianka = int(param1.data.dianka);
+               _self.refresh();
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
+                  type:0, text:"批量售卖完成！售出" + (param1.data.soldCount||codes.length) + "件，银子+" + (param1.data.totalSilver||0) + (param1.data.totalDianka > 0 ? " 点卡+" + param1.data.totalDianka : "")
+               }));
+               _self.close();
+            }
+            else
+            {
+               _self.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:param1.message||"批量售卖失败"}));
             }
          });
       }

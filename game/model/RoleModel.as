@@ -409,7 +409,7 @@ package game.model
 		            {
 		               _result.push({code:_code, count:_count, id:this._bag[_loc2_].id, type:4});
 		            }
-		            else if(int(_eqSlot || _type) == param1)
+		            else if(int(_eqSlot || _type) == param1 || ((param1 == 3 || param1 == 6) && int(_eqSlot || _type) == 3))
 		            {
 		               _result.push({code:_code, count:_count, id:this._bag[_loc2_].id, type:4});
 		            }
