@@ -1192,23 +1192,18 @@ function handleRequest(socket, req) {
       }
     };
     if (fi === 3) {
-      // 翻牌奖励: 装备品质与玩家等级挂钩 (Lv1-9→Q1, Lv10-19→Q2, ... Lv90+→Q10)
-      var flipEqQ = Math.min(10, Math.max(1, Math.floor(flv / 10) + 1));
+      // 翻牌奖励: 装备品质降低 (Lv1-14→Q1, Lv15-29→Q2, ... Lv135+→Q10)
+      var flipEqQ = Math.min(10, Math.max(1, Math.floor(flv / 15) + 1));
       var flipEqCands = [];
       for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === flipEqQ) flipEqCands.push(fek); }
       var flipEqCode = flipEqCands.length > 0 ? flipEqCands[Math.floor(Math.random() * flipEqCands.length)] : '';
-      // 随机品质波动: 50%概率+1品质, 20%概率+2品质
-      if (Math.random() < 0.5 && flipEqQ < 10) {
-        var fq2 = flipEqQ + (Math.random() < 0.4 ? 2 : 1);
-        if (fq2 <= 10) { var fqc2 = []; for (var fek2 in EQUIP_DATA) { if (EQUIP_DATA[fek2].quality === fq2) fqc2.push(fek2); } if (fqc2.length > 0) { flipEqCode = fqc2[Math.floor(Math.random() * fqc2.length)]; flipEqQ = fq2; } }
-      }
       resp.data.pai = [
-        '2|' + (flv * 500),
+        '2|' + (flv * 300),
         '1|' + flipEqCode + '|1',
-        '1|proto_2_1|1',
-        '1|proto_2_6|5',
         '1|proto_3_1|1',
-        '1|proto_3_3|1'
+        '1|proto_3_2|3',
+        '1|proto_3_3|1',
+        '1|proto_3_4|1'
       ];
     }
     console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' money+=' + amoney);
