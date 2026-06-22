@@ -877,13 +877,13 @@ function handleRequest(socket, req) {
       fpenemyEquips.push({ code: fpec, equips: fpdefaultEquips });
       if (!canDropEquip(fpec)) continue;
       // 预计算掉落(与result共用, 非概率判定—result直接使用此结果)
-      // Q10固定极低概率(0.5), Q1-Q9随等级变化(高级别→高品质权重高)
-      var fpmainCenterQ = Math.min(8, Math.floor(fplevel / 25) + Math.floor(fppart / 15) + 1);
+      // Q10固定0.5, Q1-Q9权重基于连续idealQ(平缓变化)
+      var fpidealQ = Math.min(9, Math.max(1, fplevel / 30 + fppart / 20));
       var fprawW = [0,0,0,0,0,0,0,0,0,0,0];
       fprawW[10] = 0.5; // Q10固定极低
       for (var fpmq = 1; fpmq <= 9; fpmq++) {
-        var fpmdist = Math.abs(fpmq - fpmainCenterQ);
-        fprawW[fpmq] = Math.max(1, 20 - fpmdist * 5);
+        var fpmdist = Math.abs(fpmq - fpidealQ);
+        fprawW[fpmq] = Math.max(1, 25 - fpmdist * 4);
       }
       var fptotalW = 0; for (var fptw = 1; fptw <= 10; fptw++) fptotalW += fprawW[fptw];
       var fproll = Math.random() * fptotalW;
@@ -1043,12 +1043,12 @@ function handleRequest(socket, req) {
       if (!equipDrop) {
         var dropProb = Math.min(0.40, Math.max(0.20, (flevel / 400) + (fpart / 100)));
         if (Math.random() < dropProb) {
-          var mainCenterQ = Math.min(8, Math.floor(flevel / 25) + Math.floor(fpart / 15) + 1);
+          var mIdealQ = Math.min(9, Math.max(1, flevel / 30 + fpart / 20));
           var mRawW = [0,0,0,0,0,0,0,0,0,0,0];
           mRawW[10] = 0.5;
           for (var mq = 1; mq <= 9; mq++) {
-            var mdist = Math.abs(mq - mainCenterQ);
-            mRawW[mq] = Math.max(1, 20 - mdist * 5);
+            var mdist = Math.abs(mq - mIdealQ);
+            mRawW[mq] = Math.max(1, 25 - mdist * 4);
           }
           var mTotalW = 0; for (var mtw = 1; mtw <= 10; mtw++) mTotalW += mRawW[mtw];
           var mroll = Math.random() * mTotalW;
