@@ -1,8 +1,8 @@
 const fs=require('fs'),path=require('path');
 function calcWeights(level, part) {
-  const c=Math.min(8,Math.floor(level/25)+Math.floor(part/10)+1);
-  const w=[];for(let q=1;q<=10;q++){const d=Math.abs(q-c);if(q>=9)w[q]=q===9?3:1.5;else w[q]=Math.max(1,25-d*8)}
-  const t=w.slice(1).reduce((a,b)=>a+b,0);return{centerQ:c,weights:w.slice(1).map(x=>x/t*100)};
+  const idealQ=Math.min(9,Math.max(1,level/30+part/20));
+  const w=[];w[10]=0.5;for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.max(1,25-d*3)}
+  const t=w.slice(1).reduce((a,b)=>a+b,0);return{idealQ,weights:w.slice(1).map(x=>x/t*100)};
 }
 let h='<!DOCTYPE html><html><head><meta charset=utf-8><title>主线掉落逻辑</title>';
 h+='<style>body{background:#0d0804;color:#d4c8a0;font:14px SimHei;padding:20px;max-width:1000px;margin:0 auto}';
@@ -23,12 +23,12 @@ for(const lv of[10,30,50,80,100,150,200]){
 }
 h+='</table>';
 
-h+='<h2>品质加权</h2><p class=formula>centerQ=min(8,floor(level/25)+floor(part/10)+1)</p>';
-h+='<p>rawW[q]=max(1,25-|q-centerQ|×8); Q9权重3; Q10权重1.5</p>';
+h+='<h2>品质加权</h2><p class=formula>idealQ=min(8,floor(level/25)+floor(part/10)+1)</p>';
+h+='<p>rawW[q]=max(1,25-|q-idealQ|×8); Q9权重3; Q10权重1.5</p>';
 h+='<table><tr><th>场景</th><th>cQ</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th><th>Q10</th></tr>';
 for(const[lv,pt,nm] of[[20,3,'Lv20Ch3'],[50,8,'Lv50Ch8'],[80,15,'Lv80Ch15'],[120,22,'Lv120Ch22'],[180,28,'Lv180Ch28']]){
-  const{centerQ,weights}=calcWeights(lv,pt);
-  h+='<tr><td>'+nm+'</td><td>Q'+centerQ+'</td>';
+  const{idealQ,weights}=calcWeights(lv,pt);
+  h+='<tr><td>'+nm+'</td><td>Q'+idealQ+'</td>';
   for(let q=0;q<10;q++)h+='<td>'+weights[q].toFixed(1)+'%</td>';
   h+='</tr>'
 }

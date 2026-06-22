@@ -1,11 +1,11 @@
 const fs=require('fs'),path=require('path');
 
 function calcWeights(level, part) {
-  const c=Math.min(8,Math.floor(level/25)+Math.floor(part/15)+1);
+  const idealQ=Math.min(9,Math.max(1,level/30+part/20));
   const w=[];
   w[10]=0.5; // Q10固定
-  for(let q=1;q<=9;q++){const d=Math.abs(q-c);w[q]=Math.max(1,25-d*8)}
-  return {centerQ:c,weights:w};
+  for(let q=1;q<=9;q++){const d=Math.abs(q-idealQ);w[q]=Math.max(1,25-d*3)}
+  return {idealQ,weights:w};
 }
 
 function dropProb(lv,pt){return Math.min(0.40,Math.max(0.20,lv/400+pt/100))}
@@ -23,7 +23,7 @@ h+='<p class=note>掉率=min(40%,max(20%,等级/400+章节/100)) | Q10固定0.5�
 const levels=[1,10,20,30,40,50,60,70,80,90,100,120,140,160,180,200];
 const parts=[1,3,5,8,10,12,15,18,20,22,25,28,30];
 
-h+='<table><tr><th>等级</th><th>章节</th><th>掉率</th><th>peakQ</th>';
+h+='<table><tr><th>等级</th><th>章节</th><th>掉率</th><th>idealQ</th>';
 for(let q=1;q<=10;q++)h+='<th>Q'+q+'</th>';
 h+='</tr>';
 
