@@ -413,7 +413,7 @@ package game.model
          var _val:* = EquipData.get(param1,param2);
          if(!_val) return 0;
          var _n:int = int(Number(_val));
-         if(this.dropEquipCode != "" && param1 == this.dropEquipCode) _n = int(_n * 0.5);
+         if(this.isEnemy && param1 == this._equip6 && param1 != "0") _n = int(_n * 0.3);
          return _n;
       }
 
@@ -483,10 +483,10 @@ package game.model
          return int((this.baseHp + this.hpAddtion + this.tianfuHP) * this.equipHPPct / 100);
       }
 
-      // 装备总加成, 敌人slot5(掉落槽)仅30%
-      public function get equipAttackBonus():int { var _v:int = this.equipAttackFlat + this.equipAttackPctBonus; return this.isEnemy ? int(_v * 0.7) : _v; }
-      public function get equipDefenseBonus():int { var _v:int = this.equipDefenseFlat + this.equipDefensePctBonus; return this.isEnemy ? int(_v * 0.7) : _v; }
-      public function get equipHPBonus():int { var _v:int = this.equipHPFlat + this.equipHPPctBonus; return this.isEnemy ? int(_v * 0.7) : _v; }
+      // 装备总加成(白值+百分比)
+      public function get equipAttackBonus():int { return this.equipAttackFlat + this.equipAttackPctBonus; }
+      public function get equipDefenseBonus():int { return this.equipDefenseFlat + this.equipDefensePctBonus; }
+      public function get equipHPBonus():int { return this.equipHPFlat + this.equipHPPctBonus; }
 
       // ── 新装备属性 ──
       // 增伤% (对敌方造成伤害增加)
