@@ -3,5 +3,8 @@
     "@alicloud/pop-core": "^1.8.0",
     "canvas": "^3.2.3",
     "docx": "^9.7.1"
+  },
+  "devDependencies": {
+    "@alicloud/ecs20140526": "^7.8.6"
   }
 }

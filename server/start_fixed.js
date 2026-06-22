@@ -399,14 +399,11 @@ function migrateEquipment() {
 }
 
 function ensureAllEquip(pid) {
-  // 全部76件装备代码
+  // 仅发放Q8+装备(橙色及以上)
   var allCodes = [];
-  // 旧装备 proto_4_1~5(武器),6~10(头盔),11~15(铠甲),16~20(战靴),21~25(饰品Ⅰ),26~30(饰品Ⅱ)
-  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].forEach(function(n){
-    allCodes.push('proto_4_'+n);
-  });
-  // 新武侠装备 proto_4_31~76
-  for (var i=31; i<=76; i++) allCodes.push('proto_4_'+i);
+  for (var ek in EQUIP_DATA) {
+    if (EQUIP_DATA[ek].quality >= 8) allCodes.push(ek);
+  }
 
   var existing = db.bagItems.filter(function(b){return b.player_id===pid;}).map(function(b){return b.code;});
   var added = 0;
@@ -416,7 +413,7 @@ function ensureAllEquip(pid) {
       added++;
     }
   });
-  if (added > 0) console.log('[Equip] Gave ' + added + ' new equip to gm_admin');
+  if (added > 0) console.log('[Equip] Gave ' + added + ' Q8+ equip to gm_admin');
 }
 
 function ensureAmmoItems(pid) {
@@ -513,8 +510,28 @@ buildGameDataCache(); // 1g. 构建游戏数据缓存(供/api/game-data)
 initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
-migrateEquipment(); // 4b. 补充装备字段
+migrateEquipment();
+	cleanLowQualityEquip(); // 4b. 补充装备字段
 save();             // 5. 保存
+
+// 启动时清理全服Q7以下装备
+function cleanLowQualityEquip() {
+  var lowQ = {};
+  for (var ek in EQUIP_DATA) { if (EQUIP_DATA[ek].quality < 8) lowQ[ek] = true; }
+  var br = 0, er = 0;
+  db.bagItems = db.bagItems.filter(function(b) {
+    if (!b.code || !b.code.startsWith('proto_4_')) return true;
+    if (lowQ[b.code]) { br++; return false; }
+    return true;
+  });
+  db.generals.forEach(function(g) {
+    for (var s = 1; s <= 6; s++) {
+      var eq = g['equip' + s];
+      if (eq && eq !== '0' && lowQ[eq]) { g['equip' + s] = '0'; er++; }
+    }
+  });
+  if (br > 0 || er > 0) console.log('[Cleanup] 移除低品质装备: 背包' + br + '件, 卸下' + er + '件');
+}
 
 // ============ 辅助函数 ============
 function makeRoleModel(p) {
