@@ -630,9 +630,25 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
 
 var BROADCASTS = [];
 function broadcastToAll(msg) {
-  BROADCASTS.push({time:Date.now(),msg:msg});
-  if(BROADCASTS.length>20) BROADCASTS.shift();
+  var now = Date.now();
+  BROADCASTS.push({time:now,msg:msg});
+  if(BROADCASTS.length>50) BROADCASTS.shift();
+  // 持久化存储
+  if(!db.announcements) db.announcements = [];
+  db.announcements.push({time:now, msg:msg});
+  // 清理1小时前的旧公告
+  var cutoff = now - 3600000;
+  db.announcements = db.announcements.filter(function(a){return a.time > cutoff});
+  if(db.announcements.length > 100) db.announcements = db.announcements.slice(-50);
+  save();
   console.log('[Broadcast] '+msg);
+}
+
+// 获取最近公告(登录时调用)
+function getRecentAnnouncements() {
+  if(!db.announcements) return [];
+  var cutoff = Date.now() - 3600000;
+  return db.announcements.filter(function(a){return a.time > cutoff});
 }
 function jsonRawResponse(socket, data) {
   const body = JSON.stringify(data);
@@ -788,6 +804,7 @@ function handleRequest(socket, req) {
           armyModel: allArmy, bagModel: bagModel,
           process: { history: p.history||'', finished: p.finished_stages||'' },
           roleModel: makeRoleModel(p),
+          announcements: getRecentAnnouncements(),
         }
       });
     }

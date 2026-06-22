@@ -152,8 +152,8 @@ import game.ui.UpdateChecker;
          Config.timer = 0;
 
          // 默认关闭音乐和音效
-         MySound.getInstance().bkDisabled = true;
-         MySound.getInstance().eventDisabled = true;
+         MySound.getInstance().bkDisabled = false;
+         MySound.getInstance().eventDisabled = false;
 
          testServerConnection();
          RoleModel.getInstance().agent = Config.AGENT;
