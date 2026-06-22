@@ -273,7 +273,7 @@ package game.ui
          {
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":1,
-               "text":"使用求贤令需要花费20点卡，将会大大提升招募几率，且不消耗招募次数，是否确认使用？",
+               "text":"点卡招募需要花费20点卡，将会大大提升招募几率，且不消耗招募次数，是否确认使用？",
                "fun":this.realyDianka
             }));
          }

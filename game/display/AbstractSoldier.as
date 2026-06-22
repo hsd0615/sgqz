@@ -68,7 +68,11 @@ package game.display
          mouseEnabled = false;
          this._armyInfo = param1;
          this._maxHP = this._armyInfo.maxHp;
-         if(!this._armyInfo.forceHp) this._armyInfo.hp = this._armyInfo.maxHp;
+         if(!this._armyInfo.forceHp) {
+            this._armyInfo.hp = this._armyInfo.maxHp;
+         } else {
+            this._maxHP = this._armyInfo.hp;
+         }
          this._direct = param2;
          this._isPlayer = param3;
          this._world = param4;
@@ -258,7 +262,7 @@ package game.display
          this._bloodBar.mouseChildren = false;
          this._bloodBar.mouseEnabled = false;
          this._coolingBar.setMax(this._armyInfo.cd * 1000,true);
-         this._bloodBar.setMax(this._armyInfo.maxHp,true);
+         this._bloodBar.setMax(this.maxHP,true);
          addChild(this._bloodBar);
          if(this._isPlayer)
          {

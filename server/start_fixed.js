@@ -1304,7 +1304,9 @@ function handleRequest(socket, req) {
     }
     if (ammoIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有弹药' });
     db.bagItems[ammoIdx].count = (db.bagItems[ammoIdx].count || 1) - 1;
-    if (db.bagItems[ammoIdx].count <= 0) db.bagItems.splice(ammoIdx, 1);
+    var ammoRemain = db.bagItems[ammoIdx] ? (db.bagItems[ammoIdx].count||0) : 0;
+    if (db.bagItems[ammoIdx] && db.bagItems[ammoIdx].count <= 0) db.bagItems.splice(ammoIdx, 1);
+    console.log('[Ammo] ' + p.role_name + ' use bagId=' + ammoBagId + ' remain=' + ammoRemain);
     save();
     return jsonRawResponse(socket, { success: true, stamp: data.stamp, head: String(data.head || ''), data: { bagModel: makeBagModel(p.id) } });
   }
@@ -1511,11 +1513,12 @@ function handleRequest(socket, req) {
           }
         }
         if (tokenIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有克制进阶符' });
+        var consumedItemId = db.bagItems[tokenIdx].id;
         db.bagItems[tokenIdx].count = (db.bagItems[tokenIdx].count||1) - 1;
         if (db.bagItems[tokenIdx].count <= 0) db.bagItems.splice(tokenIdx, 1);
         p.money -= 1000; p.exploit -= 1000;
         respData.money = p.money; respData.exploit = p.exploit;
-        respData.itemID = db.bagItems[tokenIdx] ? db.bagItems[tokenIdx].id : 0;
+        respData.itemID = consumedItemId;
         // 升级克制
         if (ki === 0) { g.kezhi1_level = (g.kezhi1_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
         else if (ki === 1) { g.kezhi2_level = (g.kezhi2_level || 1) + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
