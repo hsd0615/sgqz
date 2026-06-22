@@ -384,25 +384,8 @@ package game.model
 		         var _isEquip:Boolean = (int(_type) == 4) || (_eqSlot != null && int(_eqSlot) > 0);
 		         if(_isEquip)
 		         {
-		            // 跳过已被其他武将装备的物品
-		            // 已装备的code只跳过对应份数,保留多余副本
-		            
-		            if(isEquippedByAny(_code)) {
-		               var _ec:int = 0;
-		               if(this._armys) {
-		                  for(var _ei:int = 0; _ei < this._armys.length; _ei++) {
-		                     var _ea:ArmyInfo = this._armys[_ei] as ArmyInfo;
-		                     if(_ea.equip1 == _code) _ec++;
-		                     if(_ea.equip2 == _code) _ec++;
-		                     if(_ea.equip3 == _code) _ec++;
-		                     if(_ea.equip4 == _code) _ec++;
-		                     if(_ea.equip5 == _code) _ec++;
-		                     if(_ea.equip6 == _code) _ec++;
-		                  }
-		               }
-		               var _sk:int = int(_skipCount[_code]) || 0;
-		               if(_sk < _ec) { var _skipNeed:int = _ec - _sk; var _skipThis:int = _skipNeed < _count ? _skipNeed : _count; _skipCount[_code] = _sk + _skipThis; _count -= _skipThis; if(_count <= 0) { _loc2_++; continue; } }
-		            }
+		            // 所有装备统一显示, 不因武将不同而变化
+		            // 装备时服务端会自动处理卸下/替换逻辑
 
 
 		            if(param1 == 0)
