@@ -1657,14 +1657,13 @@ function handleRequest(socket, req) {
         }
       }
 
-      var totalSilver = 0, totalDianka = 0, soldCount = 0;
+      var totalSilver = 0, totalDianka = 0, soldCount = 0, skipNoDef = 0, skipEquipped = 0, skipNoBag = 0;
       if (!db.bagItems) db.bagItems = [];
       for (var _si = 0; _si < sellCodes.length; _si++) {
         var sellCode = sellCodes[_si];
         var sdef = EQUIP_DATA[sellCode];
-        if (!sdef) continue;
-        // 跳过已装备的
-        if (equippedSet[sellCode]) continue;
+        if (!sdef) { skipNoDef++; continue; }
+        if (equippedSet[sellCode]) { skipEquipped++; continue; }
         // 从背包中移除
         var sellIdx = -1;
         for (var sk = 0; sk < db.bagItems.length; sk++) {
@@ -1672,7 +1671,7 @@ function handleRequest(socket, req) {
             sellIdx = sk; break;
           }
         }
-        if (sellIdx === -1) continue;
+        if (sellIdx === -1) { skipNoBag++; continue; }
         db.bagItems[sellIdx].count = (db.bagItems[sellIdx].count||1) - 1;
         if (db.bagItems[sellIdx].count <= 0) db.bagItems.splice(sellIdx, 1);
         // 计算价格
@@ -1691,7 +1690,7 @@ function handleRequest(socket, req) {
       respData.totalSilver = totalSilver;
       respData.totalDianka = totalDianka;
       save();
-      console.log('[SellEquip] ' + p.role_name + ' 批量售卖' + soldCount + '件 银子+' + totalSilver + ' 点卡+' + totalDianka + ' 余额=' + p.money);
+      console.log('[SellEquip] ' + p.role_name + ' 批量售卖' + soldCount + '件 银子+' + totalSilver + ' 点卡+' + totalDianka + ' skip(无定义:' + skipNoDef + ' 已装备:' + skipEquipped + ' 无背包:' + skipNoBag + ') 余额=' + p.money);
     } else if (headCode === 10013) {
       // === 消耗弹药 ===
       var ammoCode = String(data.itemCode);
