@@ -757,30 +757,7 @@ package game.ui
             this.dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{type:0,text:"背包中没有可售卖的装备。"}));
             return;
          }
-         // 过滤已装备的: 只跳过已装备份数, 保留多余副本
-         var _equipCount:Object = {};
-         var _armys:Vector.<ArmyInfo> = RoleModel.getInstance().armys;
-         if(_armys) {
-            for(var _ai2:int=0;_ai2<_armys.length;_ai2++) {
-               var _ea:ArmyInfo = _armys[_ai2] as ArmyInfo;
-               if(_ea.equip1 && _ea.equip1 != "0") _equipCount[_ea.equip1] = (int(_equipCount[_ea.equip1])||0) + 1;
-               if(_ea.equip2 && _ea.equip2 != "0") _equipCount[_ea.equip2] = (int(_equipCount[_ea.equip2])||0) + 1;
-               if(_ea.equip3 && _ea.equip3 != "0") _equipCount[_ea.equip3] = (int(_equipCount[_ea.equip3])||0) + 1;
-               if(_ea.equip4 && _ea.equip4 != "0") _equipCount[_ea.equip4] = (int(_equipCount[_ea.equip4])||0) + 1;
-               if(_ea.equip5 && _ea.equip5 != "0") _equipCount[_ea.equip5] = (int(_equipCount[_ea.equip5])||0) + 1;
-               if(_ea.equip6 && _ea.equip6 != "0") _equipCount[_ea.equip6] = (int(_equipCount[_ea.equip6])||0) + 1;
-            }
-         }
-         var _skipCount:Object = {};
-         var _filteredItems:Array = [];
-         for(var _fi2:int=0;_fi2<_allItems.length;_fi2++) {
-            var _eqc:String = _allItems[_fi2].code;
-            var _ec2:int = int(_equipCount[_eqc]) || 0;
-            var _sk2:int = int(_skipCount[_eqc]) || 0;
-            if(_sk2 < _ec2) { _skipCount[_eqc] = _sk2 + 1; }
-            else { _filteredItems.push(_allItems[_fi2]); }
-         }
-         _allItems = _filteredItems;
+         // 显示所有背包装备(服务端处理售出)
          if(this._batchPage2 == 0 && this._batchFilterQ2 == 0) {
             this._batchSelected2 = {};
             for(var _i:int=0;_i<_allItems.length;_i++) this._batchSelected2[_allItems[_i].id]=true;
