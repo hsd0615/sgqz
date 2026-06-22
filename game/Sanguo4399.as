@@ -1267,6 +1267,17 @@ import game.ui.UpdateChecker;
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
+               // 显示全服公告
+               var _announcements:Array = param1.data.announcements as Array;
+               if(_announcements && _announcements.length > 0) {
+                  for(var _annI:int = _announcements.length-1; _annI >= 0; _annI--) {
+                     var _ann:Object = _announcements[_annI];
+                     var _annTime:String = new Date(_ann.time).toLocaleTimeString();
+                     ChatManager.getInstance().dispatchEvent(new TalkEvent(TalkEvent.CHAT_PLAIN,true,{
+                        channel:"world", name:"系统", msg:"["+_annTime+"] "+_ann.msg, color:"#ff0000"
+                     }));
+                  }
+               }
                this._ui.openSelectServerPanel();
                this._ui.createNewsInfoPanel();
             }
