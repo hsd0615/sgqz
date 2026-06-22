@@ -296,6 +296,7 @@ package game
          var _loc10_:String = null;
          var _loc11_:ArmyInfo = new ArmyInfo();
          var _loc12_:Object = this.getLine("general",param1);
+         if(_loc12_ == null) return null;
          _loc11_.code = param1;
          _loc11_.name = _loc12_.name;
          _loc11_.type = int(_loc12_.type);

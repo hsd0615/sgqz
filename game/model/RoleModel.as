@@ -803,6 +803,7 @@ package game.model
 		      _loc7_ = String(_loc2_[4]);
 		      _loc8_ = String(_loc2_[5]);
 		      var _newArmy:ArmyInfo = Data.getInstance().getArmyInfo(_loc3_,_loc4_,_loc5_,_loc6_,null,3000,100,_loc7_,_loc8_);
+		      if(_newArmy == null) { _loc10_++; continue; }
 		      if(_loc2_.length > 6 && _loc2_[6] != null && _loc2_[6] != "")
 		      {
 		         _newArmy.setEquipmentStr(String(_loc2_[6]));
@@ -1265,7 +1266,9 @@ package game.model
 		      _loc5_ = int(param1[_loc9_].feature);
 		      _loc6_ = String(param1[_loc9_].kezhi);
 		      _loc7_ = String(param1[_loc9_].genius);
-		      (_loc8_ = Data.getInstance().getArmyInfo(_loc2_,_loc3_,_loc4_,_loc5_,null,3000,100,_loc6_,_loc7_)).id = Number(param1[_loc9_].id);
+		      _loc8_ = Data.getInstance().getArmyInfo(_loc2_,_loc3_,_loc4_,_loc5_,null,3000,100,_loc6_,_loc7_);
+		      if(_loc8_ == null) { _loc9_++; continue; }
+		      _loc8_.id = Number(param1[_loc9_].id);
 		      if(param1[_loc9_].equipment != null && param1[_loc9_].equipment != "")
 		      {
 		         _loc8_.setEquipmentStr(String(param1[_loc9_].equipment));
