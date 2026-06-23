@@ -1974,6 +1974,13 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, { ok: true, data: result });
   }
 
+  if (url === '/api/admin/fuben-logs' && data.key === ADMIN_KEY) {
+    var targetId = data.userID || data.roleID || 0;
+    var fp = db.players.find(pp => pp.user_id == targetId || pp.id == targetId);
+    if (!fp) return jsonRawResponse(socket, { ok: false, error: 'player not found' });
+    return jsonRawResponse(socket, { ok: true, player: fp.role_name, logs: fp._fubenLogs || [] });
+  }
+
   if (url === '/api/admin/grant-equip' && data.key === ADMIN_KEY) {
     var targetId = data.userID;
     var p = db.players.find(pp => pp.user_id == targetId || pp.id == targetId);
