@@ -1823,8 +1823,8 @@ function handleRequest(socket, req) {
         if (_cr._battlePlayers) delete _cr._battlePlayers;
         if (_cr._battleCoolDown) delete _cr._battleCoolDown;
       }
-      // battle数据超过5分钟自动过期
-      if (_cr._battlePeers && _cr._battlePeers.time && (_now - _cr._battlePeers.time > 300000)) {
+      // battle数据过期: 无time(旧数据)或超过5分钟
+      if (_cr._battlePeers && (!_cr._battlePeers.time || (_now - _cr._battlePeers.time > 300000))) {
         delete _cr._battlePeers;
         delete _cr._battlePlayers;
       }
