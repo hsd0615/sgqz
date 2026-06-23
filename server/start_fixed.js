@@ -1813,13 +1813,29 @@ function handleRequest(socket, req) {
   if (url.startsWith('/api/leitai/') || url.startsWith('/api/fuben/') || url.startsWith('/api/misc/')) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
-    // 自动清理空房的残留battle数据
+    // 自动清理残留battle数据
+    var _now = Date.now();
     for (var _cri = 0; _cri < db.leitaiRooms.length; _cri++) {
       var _cr = db.leitaiRooms[_cri];
+      // 空房: 清所有残留
       if (_cr.rStatus === 0 && !_cr.mInfo) {
         if (_cr._battlePeers) delete _cr._battlePeers;
         if (_cr._battlePlayers) delete _cr._battlePlayers;
         if (_cr._battleCoolDown) delete _cr._battleCoolDown;
+      }
+      // battle数据超过5分钟自动过期
+      if (_cr._battlePeers && _cr._battlePeers.time && (_now - _cr._battlePeers.time > 300000)) {
+        delete _cr._battlePeers;
+        delete _cr._battlePlayers;
+      }
+      // 擂主变更: battle数据与当前不匹配
+      if (_cr.mInfo && _cr._battlePeers && _cr._battlePeers.master !== _cr.mInfo.pID) {
+        delete _cr._battlePeers;
+        delete _cr._battlePlayers;
+      }
+      // 冷却时间超过5分钟自动清除
+      if (_cr._battleCoolDown && _now - _cr._battleCoolDown > 300000) {
+        delete _cr._battleCoolDown;
       }
     }
     const res = getResourceData(p);
@@ -1843,6 +1859,9 @@ function handleRequest(socket, req) {
       for (const r of db.leitaiRooms) {
         if (r.mInfo && r.mInfo.id === p.id && r.rID !== rid) {
           r.rStatus = 0; r.mInfo = null; r.rCount = 0;
+          delete r._battlePeers;
+          delete r._battlePlayers;
+          delete r._battleCoolDown;
           console.log('[Leitai] 释放旧擂台 rID=' + r.rID);
         }
       }
@@ -1920,7 +1939,7 @@ function handleRequest(socket, req) {
       if (masterWebSession) { masterWebSession.farPeerId = attackerPid; }
 
       // 存储对战双方的NetGroup peerID (用于battle_accept时查找和传递)
-      room._battlePeers = { attacker: attackerPid, master: masterPID };
+      room._battlePeers = { attacker: attackerPid, master: masterPID, time: Date.now() };
       room._battlePlayers = { attacker: p.id, master: masterPlayerId };
 
       // 通知擂主 — TCP relay优先, 否则推入pollQueue(所有客户端通过/api/poll/recv轮询)
