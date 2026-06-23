@@ -58,16 +58,24 @@ package com.iflashigame.net
       }
 
       private function toJson(o:Object) : String {
+         // 使用原生JSON.stringify — 手动序列化不支持嵌套对象导致msg字段变成null
+         try {
+            if (JSON is Object && JSON.stringify is Function) {
+               return JSON.stringify(o);
+            }
+         } catch(_e:Error) {}
          var p:Array = [];
          for (var k:String in o) {
             var v:* = o[k]; var vs:String;
             if (v is String) vs = '"' + String(v).replace(/\\/g,"\\\\").replace(/"/g,"\\\"") + '"';
             else if (v is Number || v is int) vs = v.toString();
             else if (v is Boolean) vs = v ? "true" : "false";
-            else vs = "null";
+            else if (v is Array) { var arr:Array = []; for each(var av:* in v) { arr.push(this.toJson(av)); } vs = '[' + arr.join(',') + ']'; }
+            else if (v is Object) vs = this.toJson(v);
+            else vs = 'null';
             p.push('"' + k + '":' + vs);
          }
-         return "{" + p.join(",") + "}";
+         return '{' + p.join(',') + '}';
       }
 
       private function doPoll(evt:TimerEvent) : void

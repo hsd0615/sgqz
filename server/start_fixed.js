@@ -650,11 +650,25 @@ var BROADCASTS = [];
 // 统一消息发送: 双通道投递 (poll优先, TCP同步)
 function sendToPlayer(p, msg) {
   if (!p) return false;
-  // 转义方括号为HTML实体 - HttpPollConnection用indexOf(']')截JSON数组,消息内]会截断
-  // &#91; &#93; 在Flash TextField中渲染为 [ ], 不影响显示
+  // poll: 转义方括号(防HttpPollConnection JSON截断)
+  var pollMsg = msg;
   if (msg.text && typeof msg.text === 'string') {
-    msg = Object.assign({}, msg, { text: msg.text.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
+    pollMsg = Object.assign({}, msg, { text: msg.text.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
   }
+  if (msg.plain && typeof msg.plain === 'string') {
+    pollMsg = Object.assign({}, pollMsg, { plain: msg.plain.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
+  }
+  if (!p._pollQueue) p._pollQueue = [];
+  p._pollQueue.push({ time: Date.now(), msg: pollMsg });
+  // TCP: 原始消息(不转义) — AIR客户端不需要
+  var sessions = Array.from(tcpSessions.values());
+  for (var si = 0; si < sessions.length; si++) {
+    if (String(sessions[si].playerId) === String(p.id)) {
+      tcpSend(sessions[si], msg);
+    }
+  }
+  return true;
+}
   if (msg.plain && typeof msg.plain === 'string') {
     msg = Object.assign({}, msg, { plain: msg.plain.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
   }
@@ -668,7 +682,6 @@ function sendToPlayer(p, msg) {
     }
   }
   return true;
-}
 function broadcastToAll(msg) {
   var now = Date.now();
   BROADCASTS.push({time:now,msg:msg});
