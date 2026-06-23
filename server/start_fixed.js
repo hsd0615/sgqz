@@ -1813,8 +1813,29 @@ function handleRequest(socket, req) {
   if (url.startsWith('/api/leitai/') || url.startsWith('/api/fuben/') || url.startsWith('/api/misc/')) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
-    // 自动清理残留battle数据
+    // 自动清理: 释放断线擂主的房间 + 清理残留battle数据
     var _now = Date.now();
+    // 先释放断线擂主: TCP session不存在 或 2分钟未轮询
+    for (var _rri = 0; _rri < db.leitaiRooms.length; _rri++) {
+      var _rr = db.leitaiRooms[_rri];
+      if (!_rr.mInfo || _rr.rStatus === 0) continue;
+      var _masterOnline = false;
+      // 检查TCP session
+      var _sessions = Array.from(tcpSessions.values());
+      for (var _si = 0; _si < _sessions.length; _si++) {
+        if (String(_sessions[_si].playerId) === String(_rr.mInfo.id)) { _masterOnline = true; break; }
+      }
+      // 检查web poll (2分钟内有活动)
+      var _mp = db.players.find(function(pl){ return String(pl.id) === String(_rr.mInfo.id); });
+      if (!_masterOnline && _mp && _mp.lastSeen && (_now - _mp.lastSeen < 120000)) {
+        _masterOnline = true;
+      }
+      if (!_masterOnline) {
+        _rr.rStatus = 0; _rr.mInfo = null; _rr.rCount = 0;
+        delete _rr._battlePeers; delete _rr._battlePlayers; delete _rr._battleCoolDown;
+        console.log('[Leitai] 自动释放断线擂主 rID=' + _rr.rID);
+      }
+    }
     for (var _cri = 0; _cri < db.leitaiRooms.length; _cri++) {
       var _cr = db.leitaiRooms[_cri];
       // 空房: 清所有残留
@@ -2772,6 +2793,14 @@ const tcpServer = net.createServer((socket) => {
     if (session.peerId) {
       for (const room of session.rooms) { const r = tcpRooms.get(room); if (r) { r.delete(session.peerId); if (r.size === 0) tcpRooms.delete(room); } }
       if (session.farPeerId) { const o = tcpSessions.get(session.farPeerId); if (o) { o.farPeerId = null; tcpSend(o, { type: 'battle_opponent_disconnected', peerId: session.peerId }); } }
+      // 释放该玩家占用的擂台
+      for (const room of db.leitaiRooms) {
+        if (room.mInfo && String(room.mInfo.id) === String(session.playerId)) {
+          room.rStatus = 0; room.mInfo = null; room.rCount = 0;
+          delete room._battlePeers; delete room._battlePlayers; delete room._battleCoolDown;
+          console.log('[Leitai] TCP断开释放擂台 rID=' + room.rID + ' player=' + session.roleName);
+        }
+      }
       tcpSessions.delete(session.peerId);
     }
   });
