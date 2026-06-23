@@ -27,6 +27,7 @@ package game
    import game.fuben.Xiongnu;
    import game.fuben.XiongnuConfig;
    import game.model.ArmyInfo;
+   import game.model.EquipData;
    import game.model.Head;
    import game.model.RoleModel;
    import game.model.RoleStatus;
@@ -3127,6 +3128,7 @@ package game
             // 装备掉落提示
             if(param1.data.equipDrop != null) {
                this.showMsg({type:0, text:"获得装备: " + param1.data.equipDrop.name + " (品质" + param1.data.equipDrop.quality + ")"});
+               RoleModel.getInstance().addBagItem(Math.floor(Math.random() * 100000), String(param1.data.equipDrop.code), 1);
             }
             RoleModel.getInstance().throttleSave();
          }
@@ -3233,6 +3235,10 @@ package game
                   "type":NetInfoType.SYSTEM,
                   "text":_loc3_
                }));
+               // 本地提示
+               var _eqName:String = EquipData.get(param1.data.item.code,"name") as String;
+               if(!_eqName) _eqName = Data.getInstance().getAttributes("proto",param1.data.item.code,"name");
+               this.showMsg({type:0, text:"获得装备: " + (_eqName || param1.data.item.code)});
             }
             this.closeFanpaiPanel();
          }

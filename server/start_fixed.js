@@ -507,8 +507,22 @@ initLeitai();       // 2. 初始化擂台
 createTestAccounts();// 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
 migrateEquipment();
+	migrateBagItems();  // 统一背包旧格式
 	//cleanLowQualityEquip(); // 4b. 补充装备字段
 save();             // 5. 保存
+
+
+	// 统一背包道具格式: 旧格式(item_code/item_count) -> 新格式(code/count)
+	function migrateBagItems() {
+	  if (!db.bagItems) return;
+	  var migrated = 0;
+	  for (var bi = 0; bi < db.bagItems.length; bi++) {
+	    var item = db.bagItems[bi];
+	    if (item.item_code && !item.code) { item.code = item.item_code; delete item.item_code; migrated++; }
+	    if (item.item_count !== undefined && item.count === undefined) { item.count = item.item_count; delete item.item_count; migrated++; }
+	  }
+	  if (migrated > 0) console.log('[Migrate] Fixed ' + migrated + ' bag item format issues');
+	}
 
 // 启动时清理全服Q7以下装备
 function cleanLowQualityEquip() {
@@ -606,7 +620,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.7';
+  _cachedClientVersion = '4.0.8';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -751,6 +765,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
+      { version: '4.0.8', title: '🔧 匈奴副本修复+进化卷+装备掉落修复',
+        body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 修复进化卷不消耗（服务端scroll code匹配错误）\n• 修复副本装备掉落不显示（equipDrop硬编码null）\n• 翻牌获得装备增加本地提示' },
       { version: '4.0.7', title: '⚔️ 装备系统重构+全服回档',
         body: '【全服回档】\n• 非管理员账号装备清空、克制重置为1级\n• 关卡进度回退至洛阳兵变(第1-2章)\n\n【装备掉落】\n• 主线关卡通关概率掉落，品质随等级和章节提升\n• Q10彩色装备全关卡极低概率掉落，掉落全服广播\n• 副本翻牌全部装备，品质随机\n• 高品敌人装备属性削弱\n\n【批量售卖】\n• 装备栏右下角售字，品质筛选+全选跨页\n• 同名装备多副本可独立售卖\n• 背包装备统一显示\n\n【聊天系统】\n• 精简为世界频道，移除当前/私聊\n\n【其他修复】\n• 弹药持久化、进化卷消耗、饰品槽通用\n• 声音默认开启、品质边框细边微光' },
       { version: '4.0.5', title: '📊 掉率提升+低品质敌军后期增强',
@@ -891,8 +907,10 @@ function handleRequest(socket, req) {
       var fpdefaultEquips = getDefaultEquipForEnemy(fpec, fpgenQ, fpgenLevel, 0, fplevel);
       fpenemyEquips.push({ code: fpec, equips: fpdefaultEquips });
     }
-    // 单次品质roll(非多敌人取最优)
-    var fpidealQ = Math.min(9, Math.max(1, fplevel / 30 + fppart / 20));
+    // 关卡等级<5不掉落装备(与result端点一致)
+    if (fplevel >= 5) {
+      // 单次品质roll(非多敌人取最优)
+      var fpidealQ = Math.min(9, Math.max(1, fplevel / 30 + fppart / 20));
     var fprawW = [0,0,0,0,0,0,0,0,0,0,0];
     fprawW[10] = 0.5;
     for (var fpmq = 1; fpmq <= 9; fpmq++) {
@@ -921,6 +939,7 @@ function handleRequest(socket, req) {
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
 		if (fpmeqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
       }
+    }
     }
     if (!p._pendingMainEquipDrop) p._pendingMainEquipDrop = {};
     var fpmainKey = fppart + '_' + fplevel;
@@ -1036,7 +1055,6 @@ function handleRequest(socket, req) {
 
     // 装备掉落 — 优先用prepare预计算, 否则现场加权随机
     var equipDrop = null;
-    var mainPai = [];
     if (isWin && flevel >= 5) {
       var mainKey = fpart + '_' + flevel;
       // 优先使用战前prepare预计算的掉落
@@ -1078,6 +1096,22 @@ function handleRequest(socket, req) {
         }
       }
     }
+    // 战斗计数器
+    if (!p.battle_total) p.battle_total = 0;
+    if (!p.battle_wins) p.battle_wins = 0;
+    if (!p.battle_drops) p.battle_drops = 0;
+    p.battle_total++;
+    if (isWin) p.battle_wins++;
+    if (equipDrop) p.battle_drops++;
+
+    // 每场战斗日志（含重打）
+    var stageName = fpart + '_' + flevel;
+    console.log('[Battle] ' + p.role_name + ' | ' + stageName +
+      ' | ' + (isWin ? 'WIN' : 'LOSS') +
+      ' | 首通:' + (isFirstClear ? 'Y' : 'N') +
+      ' | 掉落:' + (equipDrop ? equipDrop.name + '(Q' + equipDrop.quality + ')' : '无') +
+      ' | 总场次:' + p.battle_total + ' 总掉落:' + p.battle_drops);
+
     save();
 
     var resp = {
@@ -1087,7 +1121,10 @@ function handleRequest(socket, req) {
         part: fpart, level: flevel,
         finished: p.finished_stages,
         money: battleMoney, exploit: battleExploit, reverence: battleReverence,
-        equipDrop: equipDrop
+        equipDrop: equipDrop,
+        battleTotal: p.battle_total,
+        battleWins: p.battle_wins,
+        battleDrops: p.battle_drops
       }
     };
     if (awardData) resp.data.award = awardData;
@@ -1203,8 +1240,18 @@ function handleRequest(socket, req) {
     var aexploit = flv * Math.floor(mul/2);
     var areverence = flv * Math.floor(mul/2);
     p.money += amoney; p.exploit += aexploit; p.reverence += areverence;
-    // 装备不再从副本战斗中掉落,改为翻牌奖励
-    var fubenEquipDrop = null;
+    // 读取战前预计算的装备掉落
+    var dropKey = data.stageID + '_' + fi;
+    var fubenEquipDrop = (p._pendingEquipDrop && p._pendingEquipDrop[dropKey]) || null;
+    // 清除已消费的预计算数据
+    if (p._pendingEquipDrop && p._pendingEquipDrop[dropKey]) {
+      delete p._pendingEquipDrop[dropKey];
+    }
+    // 装备掉落入包
+    if (fubenEquipDrop && fubenEquipDrop.code) {
+      if (!db.bagItems) db.bagItems = [];
+      db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: fubenEquipDrop.code, count: 1 });
+    }
     save();
     var resp = {
       success: true,
@@ -1311,14 +1358,16 @@ function handleRequest(socket, req) {
     if (!db.bagItems) db.bagItems = [];
     var ammoIdx = -1;
     for (var ai = 0; ai < db.bagItems.length; ai++) {
-      if (db.bagItems[ai].player_id == p.id && db.bagItems[ai].id === ammoBagId && (db.bagItems[ai].count || 1) > 0) {
+      if (db.bagItems[ai].player_id == p.id && db.bagItems[ai].id === ammoBagId && (db.bagItems[ai].count || db.bagItems[ai].item_count || 0) > 0) {
         ammoIdx = ai; break;
       }
     }
     if (ammoIdx === -1) return jsonRawResponse(socket, { success: false, message: '没有弹药' });
-    db.bagItems[ammoIdx].count = (db.bagItems[ammoIdx].count || 1) - 1;
-    var ammoRemain = db.bagItems[ammoIdx] ? (db.bagItems[ammoIdx].count||0) : 0;
-    if (db.bagItems[ammoIdx] && db.bagItems[ammoIdx].count <= 0) db.bagItems.splice(ammoIdx, 1);
+    var _abit = db.bagItems[ammoIdx];
+    if (_abit.count !== undefined) _abit.count = (_abit.count || 1) - 1;
+    else if (_abit.item_count !== undefined) _abit.item_count = (_abit.item_count || 1) - 1;
+    var ammoRemain = _abit.count || _abit.item_count || 0;
+    if (ammoRemain <= 0) db.bagItems.splice(ammoIdx, 1);
     console.log('[Ammo] ' + p.role_name + ' use bagId=' + ammoBagId + ' remain=' + ammoRemain);
     save();
     return jsonRawResponse(socket, { success: true, stamp: data.stamp, head: String(data.head || ''), data: { bagModel: makeBagModel(p.id) } });
@@ -1477,19 +1526,27 @@ function handleRequest(socket, req) {
       }
 
       p.money -= evoCost;
-      // 消耗进化卷(proto_1_x, 按进化等级选对应卷)
-      var evoItemCode = 'proto_1_' + ((g.evolution||0) + 1);
+      // 消耗进化卷: 根据武将code中的type确定进化卷 (与客户端一致)
+      // general code格式: general_<type>_<variant>, 如 general_1_0 → type=1 → proto_1_1
+      var _codeParts = g.code.split('_');
+      var _generalType = _codeParts[1];
+      var evoItemCode = 'proto_1_' + _generalType;
       var evoItemIdx = -1;
       for (var _evi = 0; _evi < (db.bagItems||[]).length; _evi++) {
-        if (db.bagItems[_evi].player_id == p.id && db.bagItems[_evi].code === evoItemCode && (db.bagItems[_evi].count||1) > 0) {
+        var _bi = db.bagItems[_evi];
+        var _bicode = _bi.code || _bi.item_code;  // 兼容新旧格式
+        var _bicount = _bi.count || _bi.item_count || 0;
+        if (_bi.player_id == p.id && _bicode === evoItemCode && _bicount > 0) {
           evoItemIdx = _evi; break;
         }
       }
       var evoConsumedId = 0;
       if (evoItemIdx >= 0) {
-        db.bagItems[evoItemIdx].count = (db.bagItems[evoItemIdx].count||1) - 1;
-        evoConsumedId = db.bagItems[evoItemIdx].id;
-        if (db.bagItems[evoItemIdx].count <= 0) db.bagItems.splice(evoItemIdx, 1);
+        var _bit = db.bagItems[evoItemIdx];
+        if (_bit.count !== undefined) _bit.count = (_bit.count||1) - 1;
+        else if (_bit.item_count !== undefined) _bit.item_count = (_bit.item_count||1) - 1;
+        evoConsumedId = _bit.id;
+        if ((_bit.count||_bit.item_count||0) <= 0) db.bagItems.splice(evoItemIdx, 1);
       }
       var evoSuccess = Math.random() < evoProb;
       if (evoSuccess) {

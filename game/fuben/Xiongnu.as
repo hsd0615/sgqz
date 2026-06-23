@@ -751,36 +751,22 @@ package game.fuben
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
          var _loc3_:int = 0;
-         var _totalPlayerHP:int = 0;
-         var _totalPlayerDef:int = 0;
-         var _totalPlayerAtk:int = 0;
-         var _avgPlayerLevel:int = 0;
+         // 复制己方将领作为敌方镜像 (一对一复制)
          _loc3_ = 0;
          while(_loc3_ < this._leftArmy.length)
          {
-            _totalPlayerHP += this._leftArmy[_loc3_].hp;
-            _totalPlayerDef += this._leftArmy[_loc3_].defense;
-            _totalPlayerAtk += this._leftArmy[_loc3_].attack;
-            _avgPlayerLevel += this._leftArmy[_loc3_].level;
-            _loc3_++;
-         }
-         _avgPlayerLevel = int(_avgPlayerLevel / this._leftArmy.length);
-         var _enemyCount:int = this._leftArmy.length + 1;
-         var _enemyName:String = this._fubenID == StageID.DANG_PING_WO_KOU ? "倭寇武士" : "匈奴铁卫";
-         var _enemyCode:String = this._fubenID == StageID.DANG_PING_WO_KOU ? "general_14_0" : "general_10_1";
-         var _enemyLevel:int = _avgPlayerLevel;
-         if(_enemyLevel < 1) _enemyLevel = 1;
-         _loc3_ = 0;
-         while(_loc3_ < _enemyCount)
-         {
+            var _playerGen:ArmyInfo = this._leftArmy[_loc3_];
+            var _enemyCode:String = _playerGen.code;
+            var _enemyLevel:int = _playerGen.level;
+            if(_enemyLevel < 1) _enemyLevel = 1;
             var _enemyAI:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _enemyCode);
-            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _enemyName, int(_enemyAI.delay), int(_enemyAI.ai));
+            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _playerGen.name, int(_enemyAI.delay), int(_enemyAI.ai));
             _enemy.isEnemy = true;
-            _enemy.baseDefense = int(_totalPlayerDef / this._leftArmy.length);
-            _enemy.baseAttack = int(_totalPlayerAtk / this._leftArmy.length);
-            _enemy.hp = int(_totalPlayerHP / this._leftArmy.length);
+            _enemy.baseDefense = _playerGen.defense;
+            _enemy.baseAttack = _playerGen.attack;
+            _enemy.hp = _playerGen.hp;
             _enemy.forceHp = true;
-            _enemy.attackDistance = 3 + Number((1.5 * Math.random()).toFixed(1));
+            _enemy.attackDistance = _playerGen.attackDistance;
             this._rightArmy[_loc3_] = _enemy;
             _loc3_++;
          }
