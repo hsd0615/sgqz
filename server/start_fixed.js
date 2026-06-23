@@ -1963,7 +1963,7 @@ function handleRequest(socket, req) {
       room._battlePeers = { attacker: attackerPid, master: masterPID, time: Date.now() };
       room._battlePlayers = { attacker: p.id, master: masterPlayerId };
 
-      // 通知擂主 — TCP relay优先, 否则推入pollQueue(所有客户端通过/api/poll/recv轮询)
+      // 通知擂主 + 直接发送battle_start给双方 (跳过battle_accept relay)
       const battleReq = { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true };
       if (masterSession) {
         tcpSend(masterSession, battleReq);
@@ -1972,6 +1972,33 @@ function handleRequest(socket, req) {
         if (mp) {
           if (!mp._pollQueue) mp._pollQueue = [];
           mp._pollQueue.push({ time: Date.now(), msg: battleReq });
+        }
+      }
+      // 直接发送battle_start给攻擂者 (不用等battle_accept relay)
+      var atkBS = { time: Date.now(), msg: {
+        type: 'battle_start', direct: -1, opponentPID: masterPID,
+        leftInfo: { name: p.role_name, level: p.level || 1, image: p.image_id || 1 },
+        rightInfo: { name: (db.players.find(pl=>String(pl.id)===String(masterPlayerId))||{}).role_name || '擂主', level: 0, image: 1 }
+      }};
+      if (atkSession) {
+        tcpSend(atkSession, atkBS.msg);
+      } else {
+        if (!p._pollQueue) p._pollQueue = [];
+        p._pollQueue.push(atkBS);
+      }
+      // 直接发送battle_start给擂主
+      var masterBS = { time: Date.now(), msg: {
+        type: 'battle_start', direct: 1, opponentPID: attackerPid,
+        leftInfo: { name: (db.players.find(pl=>String(pl.id)===String(masterPlayerId))||{}).role_name || '擂主', level: 0, image: 1 },
+        rightInfo: { name: p.role_name, level: p.level || 1, image: p.image_id || 1 }
+      }};
+      if (masterSession) {
+        tcpSend(masterSession, masterBS.msg);
+      } else {
+        const mp2 = db.players.find(pl => String(pl.id) === String(masterPlayerId));
+        if (mp2) {
+          if (!mp2._pollQueue) mp2._pollQueue = [];
+          mp2._pollQueue.push(masterBS);
         }
       }
       console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' master=' + masterPlayerId + ' tcp=' + !!masterSession + ' pollRelay=' + !(!!masterSession));
@@ -2522,15 +2549,27 @@ function processPollMessage(player, msg) {
 
   // 聊天
   else if (msg.type === 'chat') {
-    if (!globalWebRooms || !globalWebRooms[msg.room]) return;
-    for (var pid3 of globalWebRooms[msg.room]) {
-      if (pid3 !== player._pollPeerId) {
-        var chatTarget = findPlayerByPollPeerId(pid3);
-        if (chatTarget && chatTarget._pollQueue) {
-          chatTarget._pollQueue.push({ time: Date.now(), msg: {
-            type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName,
-            text: msg.text || msg.data, plain: msg.plain || null
-          }});
+    // 世界频道: 广播给所有web poll客户端
+    if (msg.room === 'world') {
+      var chatMsg = { time: Date.now(), msg: { type: 'chat', room: 'world', from: session.peerId, fromName: session.roleName, text: msg.text || msg.data, plain: msg.plain || null } };
+      for (var cpi = 0; cpi < db.players.length; cpi++) {
+        var cp = db.players[cpi];
+        if (cp._pollQueue && cp._pollPeerId && cp._pollPeerId !== player._pollPeerId) {
+          cp._pollQueue.push(chatMsg);
+        }
+      }
+    }
+    // 房间内转发
+    if (globalWebRooms && globalWebRooms[msg.room]) {
+      for (var pid3 of globalWebRooms[msg.room]) {
+        if (pid3 !== player._pollPeerId) {
+          var chatTarget = findPlayerByPollPeerId(pid3);
+          if (chatTarget && chatTarget._pollQueue) {
+            chatTarget._pollQueue.push({ time: Date.now(), msg: {
+              type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName,
+              text: msg.text || msg.data, plain: msg.plain || null
+            }});
+          }
         }
       }
     }
@@ -2701,11 +2740,22 @@ function tcpHandleMessage(session, msg) {
       const room = tcpRooms.get(msg.room);
       const plainPreview = msg.plain ? msg.plain.replace(/<[^>]*>/g,'').substring(0,50) : (msg.text||'').substring(0,30);
       console.log('[TCP] ' + session.roleName + ' chat: "' + plainPreview + '" in ' + msg.room);
+      // TCP房间内转发
       if (room) {
         for (const pid of room) {
           if (pid !== session.peerId) {
             const other = tcpSessions.get(pid);
             if (other) tcpSend(other, { type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName, text: msg.text || msg.data, plain: msg.plain || null });
+          }
+        }
+      }
+      // 同时转发给所有web poll客户端 (世界频道)
+      if (msg.room === 'world') {
+        var chatMsg = { time: Date.now(), msg: { type: 'chat', room: 'world', from: session.peerId, fromName: session.roleName, text: msg.text || msg.data, plain: msg.plain || null } };
+        for (var cpi = 0; cpi < db.players.length; cpi++) {
+          var cp = db.players[cpi];
+          if (cp._pollQueue && cp._pollPeerId) {
+            cp._pollQueue.push(chatMsg);
           }
         }
       }
