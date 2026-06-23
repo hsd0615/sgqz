@@ -2377,12 +2377,12 @@ function handleRequest(socket, req) {
     p.lastSeen = Date.now();
     if (!p._pollQueue) p._pollQueue = [];
     const since = data.since || 0;
-    // 返回裸消息(不包裹time), 和TCP格式一致
-    const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since).map(m => m.msg || m);
-    // 同时检查TCP relay消息
+    // 保持 {msg: {...}} 包裹格式 — HttpPollConnection需要 _m.msg 提取
+    const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since);
+    // 同时检查TCP relay消息 — 必须包装为 {msg: ...} 格式
     if (p._tcpRelayQueue) {
       for (const rm of p._tcpRelayQueue) {
-        newMsgs.push(rm.msg || rm);
+        newMsgs.push(rm.msg ? rm : { time: Date.now(), msg: rm.msg || rm });
       }
       p._tcpRelayQueue = [];
     }
