@@ -2548,7 +2548,9 @@ function processPollMessage(player, msg) {
 
   // 聊天
   else if (msg.type === 'chat') {
-    var chatMsg = { type: 'chat', room: msg.room || 'world', from: session.peerId, fromName: session.roleName, text: msg.text || msg.data, plain: msg.plain || null };
+    // Flash客户端text是ByteArray, 真实文字在plain
+    const realText = (typeof msg.plain === 'string' && msg.plain) || (typeof msg.text === 'string' && msg.text) || '';
+    var chatMsg = { type: 'chat', room: msg.room || 'world', from: session.peerId, fromName: session.roleName, text: realText, plain: realText };
     // 世界频道: sendToPlayer发给所有玩家
     if ((msg.room || 'world') === 'world') {
       for (var cpi = 0; cpi < db.players.length; cpi++) {
@@ -2730,9 +2732,11 @@ function tcpHandleMessage(session, msg) {
     }
     case 'chat': {
       const room = tcpRooms.get(msg.room);
-      const plainPreview = msg.plain ? msg.plain.replace(/<[^>]*>/g,'').substring(0,50) : (msg.text||'').substring(0,30);
+      // Flash客户端text是ByteArray(序列化为对象), 真实文字在plain字段
+      const realText = (typeof msg.plain === 'string' && msg.plain) || (typeof msg.text === 'string' && msg.text) || '';
+      const plainPreview = realText.replace(/<[^>]*>/g,'').substring(0,50);
       console.log('[TCP] ' + session.roleName + ' chat: "' + plainPreview + '" in ' + msg.room);
-      var chatMsg = { type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName, text: msg.text || msg.data, plain: msg.plain || null };
+      var chatMsg = { type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName, text: realText, plain: realText };
       // 世界频道: 用sendToPlayer发给所有玩家
       if (msg.room === 'world') {
         for (var cpi = 0; cpi < db.players.length; cpi++) {
