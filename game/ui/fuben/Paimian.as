@@ -88,11 +88,16 @@ package game.ui.fuben
       private function createIcon(param1:String) : *
       {
          var _loc2_:String = Data.getInstance().getAttributes("proto",param1,"icon");
-         var _loc3_:Class = ApplicationDomain.currentDomain.getDefinition(_loc2_) as Class;
-         this._icon = new Bitmap(new _loc3_() as BitmapData);
-         addChild(this._icon);
-         this._icon.x = this._tmpX + 2;
-         this._icon.y = this._tmpY + 2;
+         if(!_loc2_) _loc2_ = param1;
+         try {
+            var _loc3_:Class = ApplicationDomain.currentDomain.getDefinition(_loc2_) as Class;
+            this._icon = new Bitmap(new _loc3_() as BitmapData);
+            addChild(this._icon);
+            this._icon.x = this._tmpX + 2;
+            this._icon.y = this._tmpY + 2;
+         } catch(_e:Error) {
+            // 图标资源不存在时静默跳过
+         }
       }
       
       private function onClickHandler(param1:MouseEvent) : *
