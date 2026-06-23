@@ -48,6 +48,7 @@ package game
    import game.model.Type;
    import game.ui.AngleController;
    import game.ui.ConType;
+   import game.ui.EquipDropFX;
    import game.ui.FightUI;
    import game.ui.NumTips;
    import game.ui.SkinCode;
@@ -1232,7 +1233,17 @@ package game
          var _loc2_:String = null;
          var _loc3_:Number = NaN;
          var _loc4_:Number = NaN;
-         this.removeSoldier(param1.target as AbstractSoldier);
+         var _deadSoldier:AbstractSoldier = param1.target as AbstractSoldier;
+         // 装备掉落地面特效
+         if(_deadSoldier != null && _deadSoldier.armyInfo != null)
+         {
+            var _dropCode:String = _deadSoldier.armyInfo.dropEquipCode;
+            if(_dropCode != null && _dropCode != "" && _dropCode != "0")
+            {
+               EquipDropFX.show(this, _deadSoldier.x, _deadSoldier.y, _dropCode);
+            }
+         }
+         this.removeSoldier(_deadSoldier);
          if(this._isOver != true)
          {
             if(this._leftSoldiers.length == 0)
