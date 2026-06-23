@@ -3125,10 +3125,9 @@ package game
             }
             this.openFubenResultPanel();
             this._fubenResultPanel.initData(param1.data);
-            // 装备掉落提示
+            // 装备掉落提示 (副本装备仅通过翻牌获得)
             if(param1.data.equipDrop != null) {
                this.showMsg({type:0, text:"获得装备: " + param1.data.equipDrop.name + " (品质" + param1.data.equipDrop.quality + ")"});
-               RoleModel.getInstance().addBagItem(Math.floor(Math.random() * 100000), String(param1.data.equipDrop.code), 1);
             }
             RoleModel.getInstance().throttleSave();
          }

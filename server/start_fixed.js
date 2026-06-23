@@ -765,8 +765,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '4.0.8', title: '🔧 匈奴副本修复+进化卷+装备掉落修复',
-        body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 修复进化卷不消耗（服务端scroll code匹配错误）\n• 修复副本装备掉落不显示（equipDrop硬编码null）\n• 翻牌获得装备增加本地提示' },
+      { version: '4.0.8', title: '🔧 匈奴副本修复+进化卷消耗修复',
+        body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 进化卷不消耗：服务端缺少卷时未拦截，现已添加检查\n• 翻牌装备名称修复+本地提示' },
       { version: '4.0.7', title: '⚔️ 装备系统重构+全服回档',
         body: '【全服回档】\n• 非管理员账号装备清空、克制重置为1级\n• 关卡进度回退至洛阳兵变(第1-2章)\n\n【装备掉落】\n• 主线关卡通关概率掉落，品质随等级和章节提升\n• Q10彩色装备全关卡极低概率掉落，掉落全服广播\n• 副本翻牌全部装备，品质随机\n• 高品敌人装备属性削弱\n\n【批量售卖】\n• 装备栏右下角售字，品质筛选+全选跨页\n• 同名装备多副本可独立售卖\n• 背包装备统一显示\n\n【聊天系统】\n• 精简为世界频道，移除当前/私聊\n\n【其他修复】\n• 弹药持久化、进化卷消耗、饰品槽通用\n• 声音默认开启、品质边框细边微光' },
       { version: '4.0.5', title: '📊 掉率提升+低品质敌军后期增强',
@@ -1240,18 +1240,8 @@ function handleRequest(socket, req) {
     var aexploit = flv * Math.floor(mul/2);
     var areverence = flv * Math.floor(mul/2);
     p.money += amoney; p.exploit += aexploit; p.reverence += areverence;
-    // 读取战前预计算的装备掉落
-    var dropKey = data.stageID + '_' + fi;
-    var fubenEquipDrop = (p._pendingEquipDrop && p._pendingEquipDrop[dropKey]) || null;
-    // 清除已消费的预计算数据
-    if (p._pendingEquipDrop && p._pendingEquipDrop[dropKey]) {
-      delete p._pendingEquipDrop[dropKey];
-    }
-    // 装备掉落入包
-    if (fubenEquipDrop && fubenEquipDrop.code) {
-      if (!db.bagItems) db.bagItems = [];
-      db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: fubenEquipDrop.code, count: 1 });
-    }
+    // 副本装备仅通过第三关翻牌获得，不在此处掉落
+    var fubenEquipDrop = null;
     save();
     var resp = {
       success: true,
@@ -1547,6 +1537,8 @@ function handleRequest(socket, req) {
         else if (_bit.item_count !== undefined) _bit.item_count = (_bit.item_count||1) - 1;
         evoConsumedId = _bit.id;
         if ((_bit.count||_bit.item_count||0) <= 0) db.bagItems.splice(evoItemIdx, 1);
+      } else {
+        return jsonRawResponse(socket, { success: false, message: '缺少进化卷，无法进化' });
       }
       var evoSuccess = Math.random() < evoProb;
       if (evoSuccess) {
