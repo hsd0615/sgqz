@@ -669,19 +669,6 @@ function sendToPlayer(p, msg) {
   }
   return true;
 }
-  if (msg.plain && typeof msg.plain === 'string') {
-    msg = Object.assign({}, msg, { plain: msg.plain.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
-  }
-  if (!p._pollQueue) p._pollQueue = [];
-  p._pollQueue.push({ time: Date.now(), msg: msg });
-  // 同时尝试TCP直达 (AIR客户端) — 发给所有匹配session
-  var sessions = Array.from(tcpSessions.values());
-  for (var si = 0; si < sessions.length; si++) {
-    if (String(sessions[si].playerId) === String(p.id)) {
-      tcpSend(sessions[si], msg);
-    }
-  }
-  return true;
 function broadcastToAll(msg) {
   var now = Date.now();
   BROADCASTS.push({time:now,msg:msg});
