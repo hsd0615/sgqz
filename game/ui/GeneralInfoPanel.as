@@ -1390,22 +1390,31 @@ package game.ui
          var _s:String = "";
          if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0) {
             _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font><br/>";
-            var _row:int = 0;
             var _arr:Array = [];
             if(_ls > 0) _arr.push("<font color='#FF6600'>吸血+" + _ls + "%</font>");
             if(_db > 0) _arr.push("<font color='#FF6600'>增伤+" + _db + "%</font>");
             if(_dr > 0) _arr.push("<font color='#FF6600'>减伤+" + _dr + "%</font>");
             if(_cr > 0) _arr.push("<font color='#FF6600'>暴击+" + _cr + "%</font>");
             if(_cd > 0) _arr.push("<font color='#FF6600'>暴伤+" + _cd + "%</font>");
-            var _si:int = 0;
-            while(_si < _arr.length) {
-               _s += _arr[_si];
-               _row++;
-               _si++;
-               if(_si < _arr.length) {
-                  if(_row >= 4) { _s += "<br/>"; _row = 0; }
-                  else { _s += " "; }
+            // 竖排3列：先填满每纵3条，再换下一纵
+            var COLS:int = 3;
+            var _total:int = _arr.length;
+            var _rows:int = Math.ceil(_total / COLS);
+            var _r:int = 0;
+            while(_r < _rows) {
+               var _c:int = 0;
+               while(_c < COLS) {
+                  var _idx:int = _r + _c * _rows;
+                  if(_idx < _total) {
+                     _s += _arr[_idx];
+                     if(_c < COLS - 1 && _idx + _rows < _total) {
+                        _s += "    ";
+                     }
+                  }
+                  _c++;
                }
+               if(_r < _rows - 1) _s += "<br/>";
+               _r++;
             }
          }
          this.__specTF.htmlText = _s;
