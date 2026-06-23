@@ -10,6 +10,7 @@ package game.ui.fuben
    import flash.text.TextField;
    import game.Data;
    import game.events.UIEvent;
+   import game.model.EquipData;
    
    public class Paimian extends BaseUI
    {
@@ -71,7 +72,9 @@ package game.ui.fuben
          addChildAt(this.__body,0);
          if(_loc2_ == 1)
          {
-            this.__nameTF.text = Data.getInstance().getAttributes("proto",_loc1_[1],"name");
+            var _pname:String = Data.getInstance().getAttributes("proto",_loc1_[1],"name");
+            if(!_pname) _pname = EquipData.get(_loc1_[1],"name");
+            this.__nameTF.text = _pname || _loc1_[1];
             this.__countTF.text = "x " + _loc1_[2];
             this.createIcon(_loc1_[1]);
          }

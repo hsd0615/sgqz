@@ -1,6 +1,7 @@
 package game
 {
    import game.model.ArmyInfo;
+   import game.model.EquipData;
    
    public class TextFactory
    {
@@ -71,6 +72,8 @@ package game
       public static function makeFuben(param1:String, param2:String, param3:int) : String
       {
          var _loc4_:String = Data.getInstance().getAttributes("proto",param2,"name");
+         if(!_loc4_) _loc4_ = EquipData.get(param2,"name");
+         if(!_loc4_) _loc4_ = param2;
          var _loc5_:String = "<font color=\'#ff3300\'>【系统】</font><font color=\'#f8a3cd\'>";
          var _loc6_:Number;
          if((_loc6_ = Math.random()) < 0.3)
