@@ -1,19 +1,6 @@
 package game.model
 {
-   import com.i
-
-		public function addUnlockedRecruit(param1:String) : void
-		{
-			if(this._unlockedRecruits.indexOf(param1) < 0)
-			{
-				this._unlockedRecruits.push(param1);
-			}
-		}
-
-		public function getUnlockedRecruits() : Vector.<String>
-		{
-			return this._unlockedRecruits;
-		}flashigame.utils.AESTools;
+   import com.iflashigame.utils.AESTools;
    import flash.events.Event;
    import flash.events.EventDispatcher;
    import flash.events.TimerEvent;
