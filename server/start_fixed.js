@@ -2261,7 +2261,7 @@ function handleRequest(socket, req) {
 
   // 消息轮询：发送消息（含业务处理 - 认证/加房/聊天/对战）
   if (url === '/api/poll/send' && data.token) {
-    const p = findPlayerByToken(data.token);
+    let p = findPlayerByToken(data.token) || findPlayerByRequest(data);
     if (!p) {
       console.log('[Poll] send FAIL: invalid token ' + String(data.token).substring(0,10));
       return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
@@ -2482,11 +2482,15 @@ function processPollMessage(player, msg) {
 
   // 对战接受
   else if (msg.type === 'battle_accept') {
-    // 查找对战房间 (擂主接受攻擂)
+    // 查找对战房间 — 按player ID匹配(最可靠), 或按peerId匹配
     var battleRoom = null;
     for (var bri = 0; bri < db.leitaiRooms.length; bri++) {
       var br = db.leitaiRooms[bri];
-      if (br._battlePeers && br._battlePeers.master === session.peerId) {
+      if (!br._battlePeers) continue;
+      // 匹配: player ID (最可靠) 或 peerId
+      if (String(br._battlePlayers?.master) === String(player.id) ||
+          br._battlePeers.master === session.peerId ||
+          br._battlePeers.master === msg.from) {
         battleRoom = br; break;
       }
     }
