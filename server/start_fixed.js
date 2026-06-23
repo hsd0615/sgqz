@@ -1853,7 +1853,7 @@ function handleRequest(socket, req) {
       if (room._battleCoolDown && Date.now() < room._battleCoolDown) {
         return jsonRawResponse(socket, { success: false, message: '上局战斗刚结束，请稍后再试' });
       }
-      // 查找擂主 — 按playerId在tcpSessions和globalWebSessions中查找
+      // 查找擂主session — TCP优先, web poll其次. Flash P2P客户端无服务端session则直接放行
       const masterPID = room.mInfo.pID;
       const masterPlayerId = room.mInfo.id;
       const masterSession = Array.from(tcpSessions.values()).find(
@@ -1868,11 +1868,8 @@ function handleRequest(socket, req) {
           }
         }
       }
-      if (!masterSession && !masterWebSession) {
-        console.log('[Leitai] 擂主不在线: rID=' + rid + ' pid=' + masterPID + ' playerId=' + masterPlayerId);
-        return jsonRawResponse(socket, { success: false, message: '擂主不在线，请刷新列表' });
-      }
-      const masterIsWeb = !!masterWebSession;
+      // Flash NetGroup P2P客户端: 无服务端session, 客户端自行P2P连接, 服务端放行
+      const masterIsP2P = !masterSession && !masterWebSession;
       const attackerPid = data.pID || '';
       const atkSession = tcpSessions.get(attackerPid);
       let atkWebSession = null;
@@ -1880,40 +1877,36 @@ function handleRequest(socket, req) {
         atkWebSession = globalWebSessions[attackerPid];
       }
 
-      // 清理旧战斗状态
-      if (!masterIsWeb && masterSession.farPeerId) { masterSession.farPeerId = null; }
+      // 清理旧战斗状态 (仅对有session的客户端)
+      if (masterSession && masterSession.farPeerId) { masterSession.farPeerId = null; }
       if (masterWebSession && masterWebSession.farPeerId) { masterWebSession.farPeerId = null; }
       if (atkSession) {
         if (atkSession.farPeerId) { atkSession.farPeerId = null; }
-        atkSession.farPeerId = masterIsWeb ? (masterWebSession ? masterWebSession.peerId : masterPID) : masterSession.peerId;
+        atkSession.farPeerId = masterPID;
       }
       if (atkWebSession) {
         if (atkWebSession.farPeerId) { atkWebSession.farPeerId = null; }
-        atkWebSession.farPeerId = masterIsWeb ? masterWebSession.peerId : masterSession.peerId;
+        atkWebSession.farPeerId = masterPID;
       }
 
-      // 设置双方farPeerId
-      if (masterIsWeb) {
-        masterWebSession.farPeerId = attackerPid;
-      } else {
-        masterSession.farPeerId = attackerPid;
-      }
+      // 设置farPeerId
+      if (masterSession) { masterSession.farPeerId = attackerPid; }
+      if (masterWebSession) { masterWebSession.farPeerId = attackerPid; }
 
-      // 通知擂主
-      const masterPeerId = masterIsWeb ? masterWebSession.peerId : masterSession.peerId;
+      // 通知擂主 — TCP/web relay; P2P客户端由NetGroup自行处理
       const battleReq = { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true };
-      if (masterIsWeb) {
+      if (masterSession) {
+        tcpSend(masterSession, battleReq);
+      } else if (masterWebSession) {
         const mp = db.players.find(pl => String(pl.id) === String(masterPlayerId));
         if (mp) {
           if (!mp._pollQueue) mp._pollQueue = [];
           mp._pollQueue.push({ time: Date.now(), msg: battleReq });
         }
-      } else {
-        tcpSend(masterSession, battleReq);
       }
-      console.log('[Leitai] 转发 battle_request: ' + p.role_name + ' → ' + (masterIsWeb ? masterWebSession.roleName : masterSession.roleName) + ' web=' + masterIsWeb + ' masterPeer=' + masterPeerId + ' atkOnline=' + !!(atkSession||atkWebSession));
+      // masterIsP2P: 不放battle_request, Flash NetGroup自行处理P2P握手
+      console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' masterPID=' + masterPID + ' tcp=' + !!masterSession + ' web=' + !!masterWebSession + ' p2p=' + masterIsP2P);
       extra = { rID: rid, leitai: db.leitaiRooms };
-      console.log('[Leitai] ' + p.role_name + ' 攻擂 rID=' + rid + ' → pID=' + masterPID);
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
       const isLeizhu = (data.flag == 1);
       const isWin = (data.win == 1);
