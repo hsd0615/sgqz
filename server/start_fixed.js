@@ -1798,7 +1798,8 @@ function handleRequest(socket, req) {
   // ============ 擂台北/副本等 ============
   if (url.startsWith('/api/leitai/') || url.startsWith('/api/fuben/') || url.startsWith('/api/misc/')) {
     const p = findPlayerByRequest(data);
-    const res = p ? getResourceData(p) : { money: 0, dianka: 0, exploit: 0, reverence: 0, rongyu: 0 };
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    const res = getResourceData(p);
     const headCode = parseInt(data.head) || 0;
     let extra = {};
 

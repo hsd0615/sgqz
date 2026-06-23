@@ -11,6 +11,8 @@
 - 进化卷不消耗：服务端未检查背包中是否有进化卷就允许进化（scroll code按进化等级递增而非固定proto的问题也已修复）
 - 翻牌装备名称：高级装备code不在staticproto.xml中，改用EquipData fallback
 - 翻牌获得装备后添加本地提示
+- 擂台攻擂转圈：攻击者无TCP session时tcpSend(battle_request)被跳过，改为无论session是否存在都通知擂主
+- 擂台未登录崩溃：添加p为null检查
 
 ---
 
