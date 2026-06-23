@@ -647,15 +647,15 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
 }
 
 var BROADCASTS = [];
-// 统一消息发送: 尝试所有可用通道 (TCP + poll queue)
+// 统一消息发送: 双通道投递 (poll优先, TCP同步)
 function sendToPlayer(p, msg) {
   if (!p) return false;
-  // TCP session
-  var sess = Array.from(tcpSessions.values()).find(s => String(s.playerId) === String(p.id));
-  if (sess) { tcpSend(sess, msg); return true; }
-  // Poll queue (web客户端)
+  // 始终推入poll queue (web客户端通过/api/poll/recv接收)
   if (!p._pollQueue) p._pollQueue = [];
   p._pollQueue.push({ time: Date.now(), msg: msg });
+  // 同时尝试TCP直达 (AIR客户端)
+  var sess = Array.from(tcpSessions.values()).find(s => String(s.playerId) === String(p.id));
+  if (sess) { tcpSend(sess, msg); }
   return true;
 }
 function broadcastToAll(msg) {
