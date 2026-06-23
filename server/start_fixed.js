@@ -1813,6 +1813,15 @@ function handleRequest(socket, req) {
   if (url.startsWith('/api/leitai/') || url.startsWith('/api/fuben/') || url.startsWith('/api/misc/')) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    // 自动清理空房的残留battle数据
+    for (var _cri = 0; _cri < db.leitaiRooms.length; _cri++) {
+      var _cr = db.leitaiRooms[_cri];
+      if (_cr.rStatus === 0 && !_cr.mInfo) {
+        if (_cr._battlePeers) delete _cr._battlePeers;
+        if (_cr._battlePlayers) delete _cr._battlePlayers;
+        if (_cr._battleCoolDown) delete _cr._battleCoolDown;
+      }
+    }
     const res = getResourceData(p);
     const headCode = parseInt(data.head) || 0;
     let extra = {};
