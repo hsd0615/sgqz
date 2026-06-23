@@ -602,7 +602,7 @@ package game.fuben
          this._leftSoldiers = [];
          var _loc3_:int = int(this._leftArmy.length);
          var _loc4_:int = 0;
-         var _offset:int = (this._currentStageID == 2) ? 0 : 300;
+         var _offset:int = 300;
          while(_loc4_ < _loc3_)
          {
             try {
@@ -753,6 +753,7 @@ package game.fuben
          var _loc3_:int = 0;
          // 复制己方将领作为敌方镜像 (一对一复制)
          _loc3_ = 0;
+         var _enemyName:String = this._fubenID == StageID.DANG_PING_WO_KOU ? "倭寇武士" : "匈奴铁卫";
          while(_loc3_ < this._leftArmy.length)
          {
             var _playerGen:ArmyInfo = this._leftArmy[_loc3_];
@@ -763,9 +764,9 @@ package game.fuben
             var _enemyAI:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _enemyCode);
             var _aiVal:int = int(_enemyAI.ai) > 0 ? int(_enemyAI.ai) : 80;
             var _delayVal:int = int(_enemyAI.delay) > 0 ? int(_enemyAI.delay) : 3000;
-            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _playerGen.name, _delayVal, _aiVal);
+            var _evo:int = _playerGen.evolution;
+            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, _evo, 0, _enemyName, _delayVal, _aiVal);
             _enemy.isEnemy = true;
-            _enemy.evolution = _playerGen.evolution;
             _enemy.feature = _playerGen.feature;
             _enemy.tianfu = _playerGen.tianfu;
             _enemy.baseDefense = _playerGen.defense;
