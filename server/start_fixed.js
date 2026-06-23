@@ -75,6 +75,7 @@ function initLeitai() {
 // 全局克制类型映射 (从staticgeneral.xml加载, 服务端权威数据源)
 var KEZHI_MAP = {};
 var generalRecruitMap = {};
+var generalNameToCode = {}; // name → code 映射 (用于通关奖励在野武将)
 function loadKezhiMap() {
   if (!fs.existsSync('/opt/staticgeneral.xml')) return;
   var xml = fs.readFileSync('/opt/staticgeneral.xml','utf8');
@@ -82,6 +83,7 @@ function loadKezhiMap() {
   for (var i = 0; i < blocks.length; i++) {
     var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
     var km = blocks[i].match(/<kezhi>([^<]+)<\/kezhi>/);
+    var nm = blocks[i].match(/<name>([^<]+)<\/name>/);
     if (cm && km && km[1].length > 0) KEZHI_MAP[cm[1]] = km[1];
     // 同时加载招募概率
     if (cm) {
@@ -89,9 +91,11 @@ function loadKezhiMap() {
       var dm = blocks[i].match(/<dianka>(\d+)<\/dianka>/);
       if (mm && dm) generalRecruitMap[cm[1]] = { money: parseInt(mm[1]), dianka: parseInt(dm[1]) };
     }
+    // name → code 映射
+    if (cm && nm) generalNameToCode[nm[1]] = cm[1];
   }
   KEZHI_MAP['general_0_1'] = '3:1|8:1|9:1';
-  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length);
+  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length + ', names: ' + Object.keys(generalNameToCode).length);
 }
 
 // 全局关卡ID映射 (part_level → stage_id, 从stage.xml加载)
@@ -1028,6 +1032,15 @@ function handleRequest(socket, req) {
         }
         if (stageAward.recruit && stageAward.recruit.length > 0) {
           awardData.recruit = stageAward.recruit;
+          // 查找武将code，存入玩家列表 + 返回给客户端
+          var recruitCode = generalNameToCode[stageAward.recruit];
+          if (recruitCode) {
+            awardData.recruitCode = recruitCode;
+            if (!p._unlockedRecruits) p._unlockedRecruits = [];
+            if (p._unlockedRecruits.indexOf(recruitCode) < 0) {
+              p._unlockedRecruits.push(recruitCode);
+            }
+          }
         }
         // 奖励武将也加到玩家身上
         if (stageAward.soldier && stageAward.soldier.length > 0) {
@@ -1419,8 +1432,9 @@ function handleRequest(socket, req) {
     let generalData = null;
     const roll = Math.random();
     if (roll < successRate) {
-      // 招募成功 — 创建武将，等级=玩家等级-10，最低1最高30
-      var recruitLv = Math.max(1, Math.min(30, (p.level || 1) - 10));
+      // 招募成功 — 等级与客户端预览一致: Lv<50→max(1,level-20), Lv≥50→30
+      var plv = p.level || 1;
+      var recruitLv = plv >= 50 ? 30 : Math.max(1, plv - 20);
       const g = createGeneral(p.id, data.code, '', recruitLv, 0, 0, null,
         parseInt(String(data.kezhi1||0)), 1, parseInt(String(data.kezhi2||0)), 1, parseInt(String(data.kezhi3||0)), 1);
       generalData = { id: g.general_id, code: g.code, level: recruitLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), genius: null };

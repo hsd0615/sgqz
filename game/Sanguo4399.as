@@ -2020,6 +2020,11 @@ import game.ui.UpdateChecker;
                   }
                }
                _loc4_.addition.recruit = param1.data.award.recruit;
+               // 存储解锁武将code，用于招募面板优先展示
+               if(param1.data.award.recruitCode != null && param1.data.award.recruitCode != "")
+               {
+                  RoleModel.getInstance().addUnlockedRecruit(String(param1.data.award.recruitCode));
+               }
             }
             // 装备掉落提示
             if(param1.data.equipDrop != null) {
