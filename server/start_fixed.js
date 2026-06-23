@@ -1923,6 +1923,7 @@ function handleRequest(socket, req) {
         }
       }
       console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' master=' + masterPlayerId + ' tcp=' + !!masterSession + ' pollRelay=' + !(!!masterSession));
+      extra = { rID: rid, leitai: db.leitaiRooms };
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
       const isLeizhu = (data.flag == 1);
       const isWin = (data.win == 1);
