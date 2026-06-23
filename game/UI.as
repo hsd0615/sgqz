@@ -2125,53 +2125,33 @@ package game
          var _loc3_:int = 0;
          var _loc4_:ArmyInfo = null;
          var _loc5_:int = RoleModel.getInstance().level;
-         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevel(_loc5_);
+         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevel(_loc5_, RoleModel.getInstance().getUnlockedRecruits());
          var _loc7_:Vector.<String> = RoleModel.getInstance().getAllSoldierCode();
          var _loc8_:Array;
-         // 优先使用解锁列表中的武将 (关卡通关奖励的"在野"武将)
-         var _unlockedVec:Vector.<String> = RoleModel.getInstance().getUnlockedRecruits();
-         var _unlockedArr:Array = [];
-         if(_unlockedVec != null && _unlockedVec.length > 0)
-         {
-            var _ui:int = 0;
-            while(_ui < _unlockedVec.length)
-            {
-               if(_loc7_.indexOf(_unlockedVec[_ui]) < 0)
-               {
-                  _unlockedArr.push(_unlockedVec[_ui]);
-               }
-               _ui++;
-            }
-         }
-         if(_unlockedArr.length > 0)
-         {
-            _loc2_ = String(_unlockedArr[0]); // 取第一个解锁的武将
-         }
-         else if((_loc8_ = Tools.removeArrFromArr(_loc6_,_loc7_)).length == 0)
+         if((_loc8_ = Tools.removeArrFromArr(_loc6_,_loc7_)).length == 0)
          {
             this.closeZhaomuPanel();
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
                "type":0,
                "text":"未发现在野武将。"
             }));
-            return;
          }
          else
          {
             _loc2_ = Tools.randomFromArr(_loc8_);
+            if(RoleModel.getInstance().level < 50)
+            {
+               _loc3_ = RoleModel.getInstance().level - 20;
+               _loc3_ = _loc3_ < 1 ? 1 : _loc3_;
+            }
+            else
+            {
+               _loc3_ = 30;
+            }
+            _loc4_ = Data.getInstance().getArmyInfo(_loc2_,_loc3_);
+            this.openZhaomuPanel();
+            this._zhaomuPanel.initData(_loc4_);
          }
-         if(RoleModel.getInstance().level < 50)
-         {
-            _loc3_ = RoleModel.getInstance().level - 20;
-            _loc3_ = _loc3_ < 1 ? 1 : _loc3_;
-         }
-         else
-         {
-            _loc3_ = 30;
-         }
-         _loc4_ = Data.getInstance().getArmyInfo(_loc2_,_loc3_);
-         this.openZhaomuPanel();
-         this._zhaomuPanel.initData(_loc4_);
       }
       
       private function openBeibaoHandler(param1:UIEvent) : *

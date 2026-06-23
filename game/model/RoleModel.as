@@ -561,13 +561,23 @@ package game.model
 		public function getFinished() : Vector.<int>
 		{
 		   return this._finished.concat();
-/* inserted by script */
 		}
-/* inserted by script */
+
+		public function addUnlockedRecruit(param1:String) : void
+		{
+			if(this._unlockedRecruits.indexOf(param1) < 0)
+			{
+				this._unlockedRecruits.push(param1);
+			}
+		}
+
+		public function getUnlockedRecruits() : Vector.<String>
+		{
+			return this._unlockedRecruits;
+		}
+
 		
-/* inserted by script */
 		public function addFinished(param1:int) : Boolean
-/* inserted by script */
 		{
 		   if(this._finished.indexOf(param1) == -1)
 		   {

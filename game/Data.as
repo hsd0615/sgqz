@@ -490,7 +490,7 @@ package game
          }
       }
       
-      public function getZhaomuByLevel(param1:int) : Vector.<String>
+      public function getZhaomuByLevel(param1:int, param2:Vector.<String> = null) : Vector.<String>
       {
          var arr:Vector.<String> = null;
          var xmlList:XMLList = null;
@@ -505,6 +505,19 @@ package game
          for(i in xmlList)
          {
             arr.push(xmlList[i]);
+         }
+         // 合并关卡解锁的"在野"武将 (确保其在招募池中)
+         if(param2 != null && param2.length > 0)
+         {
+            var _ui:int = 0;
+            while(_ui < param2.length)
+            {
+               if(arr.indexOf(param2[_ui]) < 0)
+               {
+                  arr.push(param2[_ui]);
+               }
+               _ui++;
+            }
          }
          return arr;
       }

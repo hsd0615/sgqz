@@ -1378,22 +1378,35 @@ package game.ui
          var _cd:int = this._armyInfo.equipCritDmg;
          if(this.__specTF == null) {
             this.__specTF = new TextField();
-            this.__specTF.width = 110; this.__specTF.height = 130;
+            this.__specTF.width = 200; this.__specTF.height = 60;
             this.__specTF.multiline = true; this.__specTF.wordWrap = true;
             this.__specTF.selectable = false;
             this.__specTF.mouseEnabled = false;
+            this.__specTF.defaultTextFormat = new TextFormat("SimSun", 10, 0xFFFFFF);
             addChild(this.__specTF);
          }
-         this.__specTF.x = this.__xiaohaoTF.x + this.__xiaohaoTF.width + 15;
-         this.__specTF.y = this.__xiaohaoTF.y - 40;
+         this.__specTF.x = this.__xiaohaoTF.x + this.__xiaohaoTF.width + 10;
+         this.__specTF.y = this.__xiaohaoTF.y - 20;
          var _s:String = "";
          if(_ls > 0 || _db > 0 || _dr > 0 || _cr > 0 || _cd > 0) {
-            _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font>\n";
-            if(_ls > 0) _s += "<font color='#FF6600'>吸血 +" + _ls + "%</font>\n";
-            if(_db > 0) _s += "<font color='#FF6600'>增伤 +" + _db + "%</font>\n";
-            if(_dr > 0) _s += "<font color='#FF6600'>减伤 +" + _dr + "%</font>\n";
-            if(_cr > 0) _s += "<font color='#FF6600'>暴击 +" + _cr + "%</font>\n";
-            if(_cd > 0) _s += "<font color='#FF6600'>暴伤 +" + _cd + "%</font>\n";
+            _s += "<font color='#FFD700' size='11'><b>特殊属性</b></font><br/>";
+            var _row:int = 0;
+            var _arr:Array = [];
+            if(_ls > 0) _arr.push("<font color='#FF6600'>吸血+" + _ls + "%</font>");
+            if(_db > 0) _arr.push("<font color='#FF6600'>增伤+" + _db + "%</font>");
+            if(_dr > 0) _arr.push("<font color='#FF6600'>减伤+" + _dr + "%</font>");
+            if(_cr > 0) _arr.push("<font color='#FF6600'>暴击+" + _cr + "%</font>");
+            if(_cd > 0) _arr.push("<font color='#FF6600'>暴伤+" + _cd + "%</font>");
+            var _si:int = 0;
+            while(_si < _arr.length) {
+               _s += _arr[_si];
+               _row++;
+               _si++;
+               if(_si < _arr.length) {
+                  if(_row >= 4) { _s += "<br/>"; _row = 0; }
+                  else { _s += " "; }
+               }
+            }
          }
          this.__specTF.htmlText = _s;
       }
