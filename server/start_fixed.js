@@ -1893,20 +1893,22 @@ function handleRequest(socket, req) {
       if (masterSession) { masterSession.farPeerId = attackerPid; }
       if (masterWebSession) { masterWebSession.farPeerId = attackerPid; }
 
-      // 通知擂主 — TCP relay优先, 否则推入pollQueue(所有客户端都通过/api/poll/recv轮询)
+      // 存储对战双方的NetGroup peerID (用于battle_accept时查找和传递)
+      room._battlePeers = { attacker: attackerPid, master: masterPID };
+      room._battlePlayers = { attacker: p.id, master: masterPlayerId };
+
+      // 通知擂主 — TCP relay优先, 否则推入pollQueue(所有客户端通过/api/poll/recv轮询)
       const battleReq = { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true };
       if (masterSession) {
         tcpSend(masterSession, battleReq);
       } else {
-        // web session或纯P2P: 推入擂主的pollQueue, 客户端通过/api/poll/recv收到
         const mp = db.players.find(pl => String(pl.id) === String(masterPlayerId));
         if (mp) {
           if (!mp._pollQueue) mp._pollQueue = [];
           mp._pollQueue.push({ time: Date.now(), msg: battleReq });
         }
       }
-      console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' master=' + masterPlayerId + ' tcp=' + !!masterSession + ' pollRelay=' + !!(masterSession?false:!!db.players.find(pl=>String(pl.id)===String(masterPlayerId))));
-      extra = { rID: rid, leitai: db.leitaiRooms };
+      console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' master=' + masterPlayerId + ' tcp=' + !!masterSession + ' pollRelay=' + !(!!masterSession));
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
       const isLeizhu = (data.flag == 1);
       const isWin = (data.win == 1);
@@ -2480,20 +2482,69 @@ function processPollMessage(player, msg) {
 
   // 对战接受
   else if (msg.type === 'battle_accept') {
-    var fromPeer = msg.fromPeerId;
-    var fromPlayer = findPlayerByPollPeerId(fromPeer);
-    if (fromPlayer && fromPlayer._pollQueue) {
-      fromPlayer._pollQueue.push({ time: Date.now(), msg: {
-        type: 'battle_start', direct: 1, opponentPID: session.peerId,
-        leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
-        rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
-      }});
-      player._pollQueue.push({ time: Date.now(), msg: {
-        type: 'battle_start', direct: -1, opponentPID: fromPlayer._pollPeerId,
-        leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
-        rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
-      }});
+    // 查找对战房间 (擂主接受攻擂)
+    var battleRoom = null;
+    for (var bri = 0; bri < db.leitaiRooms.length; bri++) {
+      var br = db.leitaiRooms[bri];
+      if (br._battlePeers && br._battlePeers.master === session.peerId) {
+        battleRoom = br; break;
+      }
     }
+    if (!battleRoom) {
+      // fallback: 按fromPeerId在玩家中搜索
+      var fromPeer = msg.fromPeerId;
+      var fromPlayer = findPlayerByPollPeerId(fromPeer);
+      if (fromPlayer && fromPlayer._pollQueue) {
+        fromPlayer._pollQueue.push({ time: Date.now(), msg: {
+          type: 'battle_start', direct: 1, opponentPID: session.peerId,
+          leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
+          rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
+        }});
+        player._pollQueue.push({ time: Date.now(), msg: {
+          type: 'battle_start', direct: -1, opponentPID: fromPlayer._pollPeerId,
+          leftInfo: { name: fromPlayer.role_name, level: fromPlayer.level || 1, image: fromPlayer.image_id || 1 },
+          rightInfo: { name: session.roleName, level: player.level || 1, image: player.image_id || 1 }
+        }});
+      }
+      return;
+    }
+
+    // 使用房间存储的NetGroup peerID (用于客户端P2P通信)
+    var atkPeerId = battleRoom._battlePeers.attacker;
+    var masterPeerId = battleRoom._battlePeers.master;
+    var atkPlayerId = battleRoom._battlePlayers.attacker;
+    var masterPlayerId = battleRoom._battlePlayers.master;
+
+    var atkPlayer = db.players.find(pl => String(pl.id) === String(atkPlayerId));
+    var masterPlayer = db.players.find(pl => String(pl.id) === String(masterPlayerId));
+
+    var atkName = atkPlayer ? atkPlayer.role_name : 'Attacker';
+    var atkLevel = atkPlayer ? atkPlayer.level : 1;
+    var atkImage = atkPlayer ? atkPlayer.image_id : 1;
+    var masterName = masterPlayer ? masterPlayer.role_name : 'Master';
+    var masterLevel = masterPlayer ? masterPlayer.level : 1;
+    var masterImage = masterPlayer ? masterPlayer.image_id : 1;
+
+    // battle_start发给攻擂者
+    if (atkPlayer && !atkPlayer._pollQueue) atkPlayer._pollQueue = [];
+    if (atkPlayer) atkPlayer._pollQueue.push({ time: Date.now(), msg: {
+      type: 'battle_start', direct: 1, opponentPID: masterPeerId,
+      leftInfo: { name: atkName, level: atkLevel, image: atkImage },
+      rightInfo: { name: masterName, level: masterLevel, image: masterImage }
+    }});
+
+    // battle_start发给擂主
+    if (!player._pollQueue) player._pollQueue = [];
+    player._pollQueue.push({ time: Date.now(), msg: {
+      type: 'battle_start', direct: -1, opponentPID: atkPeerId,
+      leftInfo: { name: atkName, level: atkLevel, image: atkImage },
+      rightInfo: { name: masterName, level: masterLevel, image: masterImage }
+    }});
+
+    // 清理房间对战状态
+    delete battleRoom._battlePeers;
+    delete battleRoom._battlePlayers;
+    console.log('[Leitai] battle_start sent: atk=' + atkName + '(' + atkPeerId + ') master=' + masterName + '(' + masterPeerId + ')');
   }
 
   // 对战动作 & P2P消息 → 转发给对手
