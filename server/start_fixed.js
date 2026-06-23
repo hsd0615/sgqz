@@ -1893,19 +1893,19 @@ function handleRequest(socket, req) {
       if (masterSession) { masterSession.farPeerId = attackerPid; }
       if (masterWebSession) { masterWebSession.farPeerId = attackerPid; }
 
-      // 通知擂主 — TCP/web relay; P2P客户端由NetGroup自行处理
+      // 通知擂主 — TCP relay优先, 否则推入pollQueue(所有客户端都通过/api/poll/recv轮询)
       const battleReq = { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true };
       if (masterSession) {
         tcpSend(masterSession, battleReq);
-      } else if (masterWebSession) {
+      } else {
+        // web session或纯P2P: 推入擂主的pollQueue, 客户端通过/api/poll/recv收到
         const mp = db.players.find(pl => String(pl.id) === String(masterPlayerId));
         if (mp) {
           if (!mp._pollQueue) mp._pollQueue = [];
           mp._pollQueue.push({ time: Date.now(), msg: battleReq });
         }
       }
-      // masterIsP2P: 不放battle_request, Flash NetGroup自行处理P2P握手
-      console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' masterPID=' + masterPID + ' tcp=' + !!masterSession + ' web=' + !!masterWebSession + ' p2p=' + masterIsP2P);
+      console.log('[Leitai] 攻擂: ' + p.role_name + ' → rID=' + rid + ' master=' + masterPlayerId + ' tcp=' + !!masterSession + ' pollRelay=' + !!(masterSession?false:!!db.players.find(pl=>String(pl.id)===String(masterPlayerId))));
       extra = { rID: rid, leitai: db.leitaiRooms };
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
       const isLeizhu = (data.flag == 1);
