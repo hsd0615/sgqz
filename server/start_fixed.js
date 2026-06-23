@@ -765,8 +765,8 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '4.0.8', title: '🔧 匈奴副本修复+进化卷消耗修复',
-        body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 进化卷不消耗：服务端缺少卷时未拦截，现已添加检查\n• 翻牌装备名称修复+本地提示' },
+      { version: '4.0.8', title: '🔧 匈奴副本+进化卷+擂台攻擂修复',
+        body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 进化卷不消耗：服务端缺卷时未拦截\n• 擂台攻擂"擂主不在线"：be-slave按peerId+playerId双重匹配，支持Web客户端\n• 翻牌装备名称修复+本地提示' },
       { version: '4.0.7', title: '⚔️ 装备系统重构+全服回档',
         body: '【全服回档】\n• 非管理员账号装备清空、克制重置为1级\n• 关卡进度回退至洛阳兵变(第1-2章)\n\n【装备掉落】\n• 主线关卡通关概率掉落，品质随等级和章节提升\n• Q10彩色装备全关卡极低概率掉落，掉落全服广播\n• 副本翻牌全部装备，品质随机\n• 高品敌人装备属性削弱\n\n【批量售卖】\n• 装备栏右下角售字，品质筛选+全选跨页\n• 同名装备多副本可独立售卖\n• 背包装备统一显示\n\n【聊天系统】\n• 精简为世界频道，移除当前/私聊\n\n【其他修复】\n• 弹药持久化、进化卷消耗、饰品槽通用\n• 声音默认开启、品质边框细边微光' },
       { version: '4.0.5', title: '📊 掉率提升+低品质敌军后期增强',
@@ -1853,24 +1853,67 @@ function handleRequest(socket, req) {
       if (room._battleCoolDown && Date.now() < room._battleCoolDown) {
         return jsonRawResponse(socket, { success: false, message: '上局战斗刚结束，请稍后再试' });
       }
-      const masterSession = Array.from(tcpSessions.values()).find(s => s.peerId === room.mInfo.pID);
-      if (!masterSession) {
+      // 查找擂主 — 按playerId在tcpSessions和globalWebSessions中查找
+      const masterPID = room.mInfo.pID;
+      const masterPlayerId = room.mInfo.id;
+      const masterSession = Array.from(tcpSessions.values()).find(
+        s => s.peerId === masterPID || String(s.playerId) === String(masterPlayerId)
+      );
+      let masterWebSession = null;
+      if (!masterSession && globalWebSessions) {
+        for (const wid in globalWebSessions) {
+          const ws = globalWebSessions[wid];
+          if (ws.peerId === masterPID || String(ws.playerId) === String(masterPlayerId)) {
+            masterWebSession = ws; break;
+          }
+        }
+      }
+      if (!masterSession && !masterWebSession) {
+        console.log('[Leitai] 擂主不在线: rID=' + rid + ' pid=' + masterPID + ' playerId=' + masterPlayerId);
         return jsonRawResponse(socket, { success: false, message: '擂主不在线，请刷新列表' });
       }
-      // 清理双方旧战斗状态
-      if (masterSession.farPeerId) { masterSession.farPeerId = null; }
+      const masterIsWeb = !!masterWebSession;
       const attackerPid = data.pID || '';
       const atkSession = tcpSessions.get(attackerPid);
+      let atkWebSession = null;
+      if (!atkSession && globalWebSessions) {
+        atkWebSession = globalWebSessions[attackerPid];
+      }
+
+      // 清理旧战斗状态
+      if (!masterIsWeb && masterSession.farPeerId) { masterSession.farPeerId = null; }
+      if (masterWebSession && masterWebSession.farPeerId) { masterWebSession.farPeerId = null; }
       if (atkSession) {
         if (atkSession.farPeerId) { atkSession.farPeerId = null; }
-        atkSession.farPeerId = masterSession.peerId;
+        atkSession.farPeerId = masterIsWeb ? (masterWebSession ? masterWebSession.peerId : masterPID) : masterSession.peerId;
       }
-      // 无论攻击者是否有TCP session，都要通知擂主
-      masterSession.farPeerId = attackerPid;
-      tcpSend(masterSession, { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true });
-      console.log('[Leitai] 转发 battle_request: ' + p.role_name + ' → ' + masterSession.roleName + ' atkOnline=' + !!atkSession);
+      if (atkWebSession) {
+        if (atkWebSession.farPeerId) { atkWebSession.farPeerId = null; }
+        atkWebSession.farPeerId = masterIsWeb ? masterWebSession.peerId : masterSession.peerId;
+      }
+
+      // 设置双方farPeerId
+      if (masterIsWeb) {
+        masterWebSession.farPeerId = attackerPid;
+      } else {
+        masterSession.farPeerId = attackerPid;
+      }
+
+      // 通知擂主
+      const masterPeerId = masterIsWeb ? masterWebSession.peerId : masterSession.peerId;
+      const battleReq = { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true };
+      if (masterIsWeb) {
+        const mp = db.players.find(pl => String(pl.id) === String(masterPlayerId));
+        if (mp) {
+          if (!mp._pollQueue) mp._pollQueue = [];
+          mp._pollQueue.push({ time: Date.now(), msg: battleReq });
+        }
+      } else {
+        tcpSend(masterSession, battleReq);
+      }
+      console.log('[Leitai] 转发 battle_request: ' + p.role_name + ' → ' + (masterIsWeb ? masterWebSession.roleName : masterSession.roleName) + ' web=' + masterIsWeb + ' masterPeer=' + masterPeerId + ' atkOnline=' + !!(atkSession||atkWebSession));
       extra = { rID: rid, leitai: db.leitaiRooms };
-      console.log('[Leitai] ' + p.role_name + ' 攻擂 rID=' + rid + ' → pID=' + room.mInfo.pID);
+      console.log('[Leitai] ' + p.role_name + ' 攻擂 rID=' + rid + ' → pID=' + masterPID);
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
       const isLeizhu = (data.flag == 1);
       const isWin = (data.win == 1);
