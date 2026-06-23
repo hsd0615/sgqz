@@ -1851,6 +1851,9 @@ function handleRequest(socket, req) {
         exitRoom.rStatus = 0;
         exitRoom.mInfo = null;
         exitRoom.rCount = 0;
+        delete exitRoom._battlePeers;
+        delete exitRoom._battlePlayers;
+        delete exitRoom._battleCoolDown;
         save();
         console.log('[Leitai] ' + p.role_name + ' 退出擂台 rID=' + exitRid);
       }
