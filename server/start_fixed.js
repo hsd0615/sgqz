@@ -651,6 +651,7 @@ var BROADCASTS = [];
 function sendToPlayer(p, msg) {
   if (!p) return false;
   // 始终推入poll queue (web客户端通过/api/poll/recv接收)
+  // 存储格式与TCP一致: 裸消息对象
   if (!p._pollQueue) p._pollQueue = [];
   p._pollQueue.push({ time: Date.now(), msg: msg });
   // 同时尝试TCP直达 (AIR客户端)
@@ -2376,11 +2377,12 @@ function handleRequest(socket, req) {
     p.lastSeen = Date.now();
     if (!p._pollQueue) p._pollQueue = [];
     const since = data.since || 0;
-    const newMsgs = p._pollQueue.filter(m => m.time > since);
+    // 返回裸消息(不包裹time), 和TCP格式一致
+    const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since).map(m => m.msg || m);
     // 同时检查TCP relay消息
     if (p._tcpRelayQueue) {
       for (const rm of p._tcpRelayQueue) {
-        newMsgs.push(rm);
+        newMsgs.push(rm.msg || rm);
       }
       p._tcpRelayQueue = [];
     }
