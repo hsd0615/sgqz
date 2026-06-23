@@ -759,9 +759,15 @@ package game.fuben
             var _enemyCode:String = _playerGen.code;
             var _enemyLevel:int = _playerGen.level;
             if(_enemyLevel < 1) _enemyLevel = 1;
+            // AI参数: 玩家将领code不在fuben XML中, 使用默认值
             var _enemyAI:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _enemyCode);
-            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _playerGen.name, int(_enemyAI.delay), int(_enemyAI.ai));
+            var _aiVal:int = int(_enemyAI.ai) > 0 ? int(_enemyAI.ai) : 80;
+            var _delayVal:int = int(_enemyAI.delay) > 0 ? int(_enemyAI.delay) : 3000;
+            var _enemy:ArmyInfo = Data.getInstance().getArmyInfo(_enemyCode, _enemyLevel, 0, 0, _playerGen.name, _delayVal, _aiVal);
             _enemy.isEnemy = true;
+            _enemy.evolution = _playerGen.evolution;
+            _enemy.feature = _playerGen.feature;
+            _enemy.tianfu = _playerGen.tianfu;
             _enemy.baseDefense = _playerGen.defense;
             _enemy.baseAttack = _playerGen.attack;
             _enemy.hp = _playerGen.hp;

@@ -1224,6 +1224,8 @@ function handleRequest(socket, req) {
     dailyResetFuben(p);
     var fcKey = String(data.stageID||'0');
     p.fuben_counts[fcKey] = (p.fuben_counts[fcKey] || 0) + 1;
+    // 重置翻牌标记
+    p._fubenFlipped = false;
     save();
     console.log('[Fuben] Enter ' + p.role_name + ' stage=' + fcKey + ' totalUsed=' + p.fuben_counts[fcKey]);
     return jsonRawResponse(socket, { success: true, data: { stageID: data.stageID, proto: data.proto } });
@@ -1284,13 +1286,27 @@ function handleRequest(socket, req) {
       }
       resp.data.pai = pai;
     }
-    console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' money+=' + amoney);
+    // 副本通关持久化日志
+    if (!p._fubenLogs) p._fubenLogs = [];
+    p._fubenLogs.push({
+      time: new Date().toISOString(),
+      stageID: data.stageID,
+      stageName: data.stageID == 1 ? '袭杀匈奴' : '荡平倭寇',
+      index: fi,
+      level: flv,
+      result: data.result,
+      reward: { money: amoney, exploit: aexploit, reverence: areverence }
+    });
+    console.log('[Fuben] Award ' + p.role_name + ' stage=' + data.stageID + ' idx=' + fi + ' lv=' + flv + ' result=' + (data.result||'win') + ' money+=' + amoney);
     return jsonRawResponse(socket, resp);
   }
 
   // Fuben fanpai — 翻牌
   if (url === '/api/fuben/flip') {
     const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    // 每个副本只能翻牌一次
+    if (p._fubenFlipped) return jsonRawResponse(socket, { success: false, message: '已经翻过牌了' });
     var fpResult = String(data.result||'').split('|');
     var resp = { success: true, data: {} };
     if (fpResult[0] === '2') {
@@ -1315,6 +1331,7 @@ function handleRequest(socket, req) {
       }
       console.log('[Fuben] Fanpai ' + p.role_name + ' item=' + fpResult[1] + 'x' + fpResult[2]);
     }
+    p._fubenFlipped = true;
     save();
     return jsonRawResponse(socket, resp);
   }
