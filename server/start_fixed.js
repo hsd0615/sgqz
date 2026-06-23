@@ -650,13 +650,23 @@ var BROADCASTS = [];
 // 统一消息发送: 双通道投递 (poll优先, TCP同步)
 function sendToPlayer(p, msg) {
   if (!p) return false;
-  // 始终推入poll queue (web客户端通过/api/poll/recv接收)
-  // 存储格式与TCP一致: 裸消息对象
+  // 转义方括号为HTML实体 - HttpPollConnection用indexOf(']')截JSON数组,消息内]会截断
+  // &#91; &#93; 在Flash TextField中渲染为 [ ], 不影响显示
+  if (msg.text && typeof msg.text === 'string') {
+    msg = Object.assign({}, msg, { text: msg.text.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
+  }
+  if (msg.plain && typeof msg.plain === 'string') {
+    msg = Object.assign({}, msg, { plain: msg.plain.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
+  }
   if (!p._pollQueue) p._pollQueue = [];
   p._pollQueue.push({ time: Date.now(), msg: msg });
-  // 同时尝试TCP直达 (AIR客户端)
-  var sess = Array.from(tcpSessions.values()).find(s => String(s.playerId) === String(p.id));
-  if (sess) { tcpSend(sess, msg); }
+  // 同时尝试TCP直达 (AIR客户端) — 发给所有匹配session
+  var sessions = Array.from(tcpSessions.values());
+  for (var si = 0; si < sessions.length; si++) {
+    if (String(sessions[si].playerId) === String(p.id)) {
+      tcpSend(sessions[si], msg);
+    }
+  }
   return true;
 }
 function broadcastToAll(msg) {
@@ -2376,9 +2386,11 @@ function handleRequest(socket, req) {
     }
     p.lastSeen = Date.now();
     if (!p._pollQueue) p._pollQueue = [];
+    // 限制队列长度, 旧消息会被since过滤, 保留最近5条防止客户端重连后重复接收含括号的旧消息
     const since = data.since || 0;
-    // 保持 {msg: {...}} 包裹格式 — HttpPollConnection需要 _m.msg 提取
     const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since);
+    // 消费后只保留最近5条
+    p._pollQueue = p._pollQueue.slice(-5);
     // 同时检查TCP relay消息 — 必须包装为 {msg: ...} 格式
     if (p._tcpRelayQueue) {
       for (const rm of p._tcpRelayQueue) {
