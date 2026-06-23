@@ -2386,11 +2386,20 @@ function handleRequest(socket, req) {
     }
     p.lastSeen = Date.now();
     if (!p._pollQueue) p._pollQueue = [];
-    // 限制队列长度, 旧消息会被since过滤, 保留最近5条防止客户端重连后重复接收含括号的旧消息
+    if (p._pollQueue.length > 10) p._pollQueue = p._pollQueue.slice(-5);
     const since = data.since || 0;
     const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since);
-    // 消费后只保留最近5条
-    p._pollQueue = p._pollQueue.slice(-5);
+    // 转义消息中的方括号 — HttpPollConnection用indexOf(']')截JSON会因消息内]而截断
+    for (var nmi = 0; nmi < newMsgs.length; nmi++) {
+      var nm = newMsgs[nmi];
+      if (nm.msg) {
+        var raw = JSON.stringify(nm.msg);
+        if (raw.indexOf('[') >= 0 || raw.indexOf(']') >= 0) {
+          var cleaned = JSON.parse(raw.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;'));
+          nm.msg = cleaned;
+        }
+      }
+    }
     // 同时检查TCP relay消息 — 必须包装为 {msg: ...} 格式
     if (p._tcpRelayQueue) {
       for (const rm of p._tcpRelayQueue) {
