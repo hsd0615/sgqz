@@ -1863,10 +1863,11 @@ function handleRequest(socket, req) {
       if (atkSession) {
         if (atkSession.farPeerId) { atkSession.farPeerId = null; }
         atkSession.farPeerId = masterSession.peerId;
-        masterSession.farPeerId = attackerPid;
-        tcpSend(masterSession, { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true });
-        console.log('[Leitai] 服务端转发 battle_request: ' + p.role_name + ' → ' + masterSession.roleName);
       }
+      // 无论攻击者是否有TCP session，都要通知擂主
+      masterSession.farPeerId = attackerPid;
+      tcpSend(masterSession, { type: 'battle_request', from: attackerPid, fromName: p.role_name, server: false, leitai: true });
+      console.log('[Leitai] 转发 battle_request: ' + p.role_name + ' → ' + masterSession.roleName + ' atkOnline=' + !!atkSession);
       extra = { rID: rid, leitai: db.leitaiRooms };
       console.log('[Leitai] ' + p.role_name + ' 攻擂 rID=' + rid + ' → pID=' + room.mInfo.pID);
     } else if (headCode === 10036) { // leitai/fight-over — 战斗结束
