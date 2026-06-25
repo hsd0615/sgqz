@@ -1436,7 +1436,8 @@ package game.ui
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          param1.stopImmediatePropagation();
-         if(this._armyInfo.level < 200)
+         var _plyLv:int = RoleModel.getInstance().level;
+         if(this._armyInfo.level < _plyLv)
          {
             _loc2_ = Logic.getMoneyByLevel(this._armyInfo.level);
             _loc3_ = Logic.getExploitByLevel(this._armyInfo.level);
@@ -1456,7 +1457,7 @@ package game.ui
          {
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,
-               "text":"武将更高等级尚未开放，请关注官方最新消息。"
+               "text":"武将等级已达君主等级上限，请先提升君主等级。"
             }));
          }
       }
