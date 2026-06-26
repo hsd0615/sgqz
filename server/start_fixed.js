@@ -624,7 +624,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.9';
+  _cachedClientVersion = '4.0.10';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -795,7 +795,7 @@ function handleRequest(socket, req) {
   // 更新公告 - 返回最近版本更新内容（面向玩家）
   if (url === '/api/changelog') {
     return jsonRawResponse(socket, { success: true, entries: [
-      { version: '4.0.9', title: '🔧 匈奴副本+进化卷+擂台攻擂修复',
+      { version: '4.0.10', title: '🔧 翻牌界面图标缩放修复+天赋点卡漏洞修复',
         body: '【副本修复】• 匈奴/倭寇副本第二关改为复制己方武将（镜像对战）\n【Bug修复】• 进化卷不消耗：服务端缺卷时未拦截\n• 擂台攻擂"擂主不在线"：be-slave按peerId+playerId双重匹配，支持Web客户端\n• 翻牌装备名称修复+本地提示' },
       { version: '4.0.7', title: '⚔️ 装备系统重构+全服回档',
         body: '【全服回档】\n• 非管理员账号装备清空、克制重置为1级\n• 关卡进度回退至洛阳兵变(第1-2章)\n\n【装备掉落】\n• 主线关卡通关概率掉落，品质随等级和章节提升\n• Q10彩色装备全关卡极低概率掉落，掉落全服广播\n• 副本翻牌全部装备，品质随机\n• 高品敌人装备属性削弱\n\n【批量售卖】\n• 装备栏右下角售字，品质筛选+全选跨页\n• 同名装备多副本可独立售卖\n• 背包装备统一显示\n\n【聊天系统】\n• 精简为世界频道，移除当前/私聊\n\n【其他修复】\n• 弹药持久化、进化卷消耗、饰品槽通用\n• 声音默认开启、品质边框细边微光' },
@@ -1670,6 +1670,7 @@ function handleRequest(socket, req) {
       var g = findGeneralByGid(data.id);
       if (g) {
         var isReroll = !!(g.tianfu);  // 已有天赋→重洗(扣点卡)，无天赋→激活(免费)
+        if (isReroll && (p.dianka||0) < 100) return jsonRawResponse(socket, { success: false, message: '点卡不足，无法重洗天赋' });
         var tfPool = isReroll
           ? ['tf_1','tf_2','tf_3','tf_4','tf_5','tf_6','tf_7','tf_8','tf_9','tf_10','tf_11','tf_12','tf_13','tf_14','tf_15','tf_16','tf_17','tf_18','tf_19','tf_20','tf_21']
           : ['tf_1','tf_4','tf_7','tf_10','tf_13','tf_16','tf_19'];
