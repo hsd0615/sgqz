@@ -211,6 +211,8 @@ package game
          {
             this.initEvent();
          }
+         // 倒计时动画移除后stage可能失去键盘焦点，强制恢复
+         stage.focus = stage;
          this._date = new Date().getTime();
          this._timer = new Timer(Config.NORMAL);
          this._timer.addEventListener(TimerEvent.TIMER,this.speedCheckHandler);

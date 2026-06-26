@@ -1428,6 +1428,9 @@ package game
          {
             this.initEvent();
          }
+         // 倒计时动画移除后stage可能失去键盘焦点，强制恢复
+         // 否则必须先用鼠标点击一次战场，快捷键1-5才能生效
+         stage.focus = stage;
          this._ai.startAI();
          this._date = new Date().getTime();
          this._timer = new Timer(Config.NORMAL);

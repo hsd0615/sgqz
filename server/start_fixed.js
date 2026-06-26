@@ -624,7 +624,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.10';
+  _cachedClientVersion = '4.0.11';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
