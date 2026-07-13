@@ -147,6 +147,8 @@ package game.events
 
       public static const OPEN_EQUIP:String = "openEquip";
 
+      public static const QIUXIAN_CARD_CLICK:String = "qiuxianCardClick";
+
 
       public var data:Object;
       

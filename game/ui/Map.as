@@ -4,8 +4,17 @@ package game.ui
    import com.iflashigame.ui.BaseUI;
    import com.iflashigame.ui.Paomadeng;
    import com.iflashigame.utils.Tools;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.display.Loader;
    import flash.display.MovieClip;
+   import flash.display.Shape;
    import flash.display.SimpleButton;
+   import flash.display.Sprite;
+   import flash.events.Event;
+   import flash.net.URLRequest;
+   import flash.text.TextField;
+   import flash.text.TextFormat;
    import flash.events.MouseEvent;
    import flash.filters.GlowFilter;
    import flash.net.URLRequest;
@@ -45,7 +54,11 @@ package game.ui
       private var __stage9Btn:MovieClip;
       
       private var __stage10Btn:MovieClip;
-      
+
+      private var __stage11Btn:Sprite;
+
+      private var __stage12Btn:Sprite;
+
       private var __wujiangBtn:MovieClip;
       
       private var __buduiBtn:MovieClip;
@@ -141,6 +154,16 @@ package game.ui
          this.__lingdiankaBtn.visible = false;
          this.__xiongnuBtn.buttonMode = true;
          this.__wokouBtn.buttonMode = true;
+         // 程序化创建11-12章关卡按钮
+         this.__stage11Btn = createStageBtn("11",0xFF0044);
+         this.__stage11Btn = createStageBtn("11",0xFF0044,80);
+         this.__stage11Btn.x = this.__stage10Btn.x - 110;
+         this.__stage11Btn.y = this.__stage10Btn.y - 8;
+         addChild(this.__stage11Btn);
+         this.__stage12Btn = createStageBtn("12",0x44AAFF,130);
+         this.__stage12Btn.x = this.__stage10Btn.x + this.__stage10Btn.width - 70;
+         this.__stage12Btn.y = this.__stage11Btn.y + 90;
+         addChild(this.__stage12Btn);
          this.__soundMC.mouseChildren = false;
          this.__waveMC.mouseChildren = false;
          this.__soundMC.buttonMode = true;
@@ -206,6 +229,12 @@ package game.ui
          this.__stage10Btn.addEventListener(MouseEvent.CLICK,this.stage10BtnClickHandler);
          this.__stage10Btn.addEventListener(MouseEvent.MOUSE_OVER,this.btnOverHandler);
          this.__stage10Btn.addEventListener(MouseEvent.MOUSE_OUT,this.btnOutHandler);
+         this.__stage11Btn.addEventListener(MouseEvent.CLICK,this.stage11BtnClickHandler);
+         this.__stage11Btn.addEventListener(MouseEvent.MOUSE_OVER,this.btnOverHandler);
+         this.__stage11Btn.addEventListener(MouseEvent.MOUSE_OUT,this.btnOutHandler);
+         this.__stage12Btn.addEventListener(MouseEvent.CLICK,this.stage12BtnClickHandler);
+         this.__stage12Btn.addEventListener(MouseEvent.MOUSE_OVER,this.btnOverHandler);
+         this.__stage12Btn.addEventListener(MouseEvent.MOUSE_OUT,this.btnOutHandler);
          this.__luntanBtn.addEventListener(MouseEvent.CLICK,this.luntanBtnClickHandler);
          this.__luntanBtn.addEventListener(MouseEvent.MOUSE_OVER,this.mouseOverHandler);
          this.__luntanBtn.addEventListener(MouseEvent.MOUSE_OUT,this.mouseOutHandler);
@@ -378,7 +407,71 @@ package game.ui
          param1.stopImmediatePropagation();
          dispatchEvent(new UIEvent(UIEvent.OPEN_STAGE,true,{"part":10}));
       }
-      
+
+      private function stage11BtnClickHandler(param1:MouseEvent) : *
+      {
+         param1.stopImmediatePropagation();
+         dispatchEvent(new UIEvent(UIEvent.OPEN_STAGE,true,{"part":11}));
+      }
+
+      private function stage12BtnClickHandler(param1:MouseEvent) : *
+      {
+         param1.stopImmediatePropagation();
+         dispatchEvent(new UIEvent(UIEvent.OPEN_STAGE,true,{"part":12}));
+      }
+
+      private function createStageBtn(param1:String, param2:uint, param3:int = 0) : Sprite
+      {
+         var _s:Sprite = new Sprite();
+         var _w:int = 50;
+         var _h:int = 50;
+         // 加载图标PNG
+         var _loader:Loader = new Loader();
+         var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
+         var _levelNames:Array = ["","(1-10级)","(11-20级)","(21-30级)","(31-40级)","(41-50级)","(51-60级)","(61-70级)","(71-80级)","(81-90级)","(91-100级)","(131-140级)","(141-150级)"];
+         var _url:String = "http://47.96.41.243:3000/client/bg/" + _partNames[int(param1)] + ".png";
+         _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {
+            var _bmp:Bitmap = _e.target.content as Bitmap;
+            if(_bmp != null) {
+               _bmp.smoothing = true;
+               var _bd:BitmapData = _bmp.bitmapData.clone();
+               _bd.threshold(_bd,_bd.rect,_bd.rect.topLeft,">",0xFFD0D0D0,0x00000000,0x00FFFFFF,false);
+               _bmp.bitmapData = _bd;
+               _bmp.width = _w;
+               _bmp.scaleY = _bmp.scaleX;
+               _bmp.x = (_w - _bmp.width) / 2;
+               _bmp.y = 0;
+               _s.addChildAt(_bmp,0);
+            }
+         });
+         _loader.load(new URLRequest(encodeURI(_url)));
+         // 关卡名文字
+         var _nameTf:TextField = new TextField();
+         _nameTf.defaultTextFormat = new TextFormat("SimHei",10,0xFFCC00,true);
+         _nameTf.text = _partNames[int(param1)];
+         _nameTf.selectable = false;
+         _nameTf.mouseEnabled = false;
+         _nameTf.width = 70;
+         _nameTf.height = 16;
+         _nameTf.x = -10;
+         _nameTf.y = 52;
+         _s.addChild(_nameTf);
+         // 等级文字
+         var _lvTf:TextField = new TextField();
+         _lvTf.defaultTextFormat = new TextFormat("SimSun",9,0xCCCCCC,false);
+         _lvTf.text = _levelNames[int(param1)];
+         _lvTf.selectable = false;
+         _lvTf.mouseEnabled = false;
+         _lvTf.width = 70;
+         _lvTf.height = 14;
+         _lvTf.x = -10;
+         _lvTf.y = 68;
+         _s.addChild(_lvTf);
+         _s.buttonMode = true;
+         _s.mouseChildren = false;
+         return _s;
+      }
+
       private function wujiangBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();

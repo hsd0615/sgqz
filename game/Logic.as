@@ -515,25 +515,28 @@ package game
          return 0;
       }
       
+      // 品质乘数: 超级(0)=1.3, 一流(1)=1.0, 二流(2)=0.8, 三流(3)=0.65
+      private static const TITLE_MULTIPLIER:Array = [1.3,1.0,0.8,0.65];
+
       public static function getBaseHp(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"hp"));
          var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 50 * _loc5_ + _loc6_);
+         return int(((param2 - 1) * 50 * _loc5_ + _loc6_) * TITLE_MULTIPLIER[param4]);
       }
 
       public static function getBaseAttack(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"attack"));
          var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 30 * _loc5_ + _loc6_);
+         return int(((param2 - 1) * 30 * _loc5_ + _loc6_) * TITLE_MULTIPLIER[param4]);
       }
 
       public static function getBaseDefense(param1:int, param2:int, param3:int, param4:int) : int
       {
          var _loc5_:Number = Number(Data.getInstance().getAttributes("xishu",param1 + "_" + param4,"defence"));
          var _loc6_:Number = param3 * (1 + param2 * 0.03);
-         return int((param2 - 1) * 30 * _loc5_ + _loc6_);
+         return int(((param2 - 1) * 30 * _loc5_ + _loc6_) * TITLE_MULTIPLIER[param4]);
       }
    }
 }

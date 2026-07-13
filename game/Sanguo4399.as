@@ -16,6 +16,8 @@ package game
    import com.iflashigame.ui.TipsFrame;
    import com.iflashigame.utils.GlobalTimer;
    import com.iflashigame.utils.TextFilter;
+   import flash.display.Bitmap;
+   import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.display.SimpleButton;
@@ -25,6 +27,8 @@ package game
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.events.SecurityErrorEvent;
+   import flash.events.TimerEvent;
+   import flash.utils.Timer;
    import flash.filesystem.File;
    import flash.filesystem.FileMode;
    import flash.filesystem.FileStream;
@@ -1862,12 +1866,44 @@ import game.ui.UpdateChecker;
          var _data:Object = this._pendingGateData;
          if(_data == null) return;
          this._pendingGateData = null;
+         // 预加载关卡背景图
+         var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
+         var _pn:String = _partNames[int(_data.part)] || "";
+         var _bgUrl:String = "http://47.96.41.243:3000/client/bg/" + _pn + ".png";
+         var _loader:Loader = new Loader();
+         var _self:Sanguo4399 = this;
+         _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {
+            var _bmp:Bitmap = _e.target.content as Bitmap;
+            _self._pendingBgBmp = _bmp;
+            _self._doCreateFight(_data);
+         });
+         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(_e:IOErrorEvent):void {
+            _self._pendingBgBmp = null;
+            _self._doCreateFight(_data);
+         });
+         _loader.load(new URLRequest(encodeURI(_bgUrl)));
+         // 超时保护：2秒后无论如何创建战斗
+         var _timer:Timer = new Timer(2000,1);
+         _timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(_e:TimerEvent):void {
+            if(_self._pendingGateData == _data) return; // already created
+            _self._pendingBgBmp = null;
+            _self._doCreateFight(_data);
+         });
+         _timer.start();
+      }
+
+      private var _pendingBgBmp:Bitmap = null;
+
+      private function _doCreateFight(_data:Object) : void
+      {
+         if(this._fight != null) return;
          this._fight = new Fight(_data.chosen, _data.enemy);
          RoleModel.getInstance().status = RoleStatus.GUANKA;
          this._ui.addChild(this._fight);
          MySound.getInstance().startByName(SoundCode.FIGHT);
-         this._fight.setPartAndLevel(int(_data.part),int(_data.level));
+         this._fight.setPartAndLevel(int(_data.part),int(_data.level),this._pendingBgBmp);
          this._fight.startAI(5000,-1);
+         this._pendingBgBmp = null;
       }
 
       private function fightPrepareResponse(param1:Object) : void

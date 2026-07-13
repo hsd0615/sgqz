@@ -1,9 +1,12 @@
 package game.ui
 {
    import com.iflashigame.ui.BaseUI;
+   import flash.display.DisplayObject;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
    import flash.events.MouseEvent;
+   import flash.text.TextField;
+   import flash.text.TextFormat;
    import flash.geom.Point;
    import flash.system.ApplicationDomain;
    import game.Data;
@@ -20,7 +23,7 @@ package game.ui
       
       private var __closeBtn:SimpleButton;
       
-      private var _title:MovieClip;
+      private var _title:DisplayObject;
       
       private var _lastPoint:Point;
       
@@ -50,15 +53,42 @@ package game.ui
       
       override public function initData(param1:Object) : void
       {
+         if(param1 == null || (param1 is Array && (param1 as Array).length == 0))
+         {
+            var _errTF:TextField = new TextField();
+            _errTF.defaultTextFormat = new TextFormat("SimHei",16,0xFF4444,true);
+            _errTF.text = "暂无该章节数据\\n请重新登录后重试";
+            _errTF.selectable = false;
+            _errTF.width = 300;
+            _errTF.height = 60;
+            _errTF.x = -150;
+            _errTF.y = -30;
+            addChild(_errTF);
+            return;
+         }
          this.initTitle(param1[0].part);
-         trace("stagepamle:",JSON.stringify(param1));
          this._list.initData(param1);
       }
       
       private function initTitle(param1:int) : *
       {
-         var _loc2_:Class = ApplicationDomain.currentDomain.getDefinition("listTitle_" + param1) as Class;
-         this._title = new _loc2_() as MovieClip;
+         try
+         {
+            var _loc2_:Class = ApplicationDomain.currentDomain.getDefinition("listTitle_" + param1) as Class;
+            this._title = new _loc2_() as MovieClip;
+         }
+         catch(_e:Error)
+         {
+            var _tf:TextField = new TextField();
+            var _names:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
+            var _colors:Array = [0,0xFFCC00,0xCC3333,0x3399FF,0xFF6600,0xCC0000,0x33CC66,0x3366FF,0xFF9900,0x9966FF,0xFF3366,0xFF0044,0x44AAFF];
+            _tf.defaultTextFormat = new TextFormat("SimHei",20,_colors[param1]||0xFFCC00,true);
+            _tf.text = _names[param1] || "第" + param1 + "章";
+            _tf.selectable = false;
+            _tf.width = 200;
+            _tf.height = 40;
+            this._title = _tf;
+         }
          this._title.y = -186.5;
          addChild(this._title);
       }

@@ -174,7 +174,11 @@ package game.model
       public static const HTTP_NEW_UNEQUIP:int = 10051;
 
       public static const HTTP_NEW_SELL_EQUIP:int = 10052;
-      
+
+      public static const HTTP_NEW_RECRUIT_CARDS:int = 10053;
+
+      public static const HTTP_NEW_RECRUIT_FLIP:int = 10054;
+
       public static const HTTP_NEW_LEITAI_LIST:int = 10030;
       
       public static const HTTP_NEW_LEITAI_FLUSH:int = 10031;

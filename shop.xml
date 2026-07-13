@@ -449,4 +449,14 @@
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
+  <RECORD>
+    <name>求贤令</name>
+    <id>shop046</id>
+    <category>5</category>
+    <code>proto_3_3</code>
+    <count>1</count>
+    <payType>2</payType>
+    <oldPrice>200</oldPrice>
+    <newPrice>100</newPrice>
+  </RECORD>
 </RECORDS>

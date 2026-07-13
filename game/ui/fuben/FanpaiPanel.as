@@ -114,6 +114,7 @@ package game.ui.fuben
          this._pai4.disable = true;
          this._pai5.disable = true;
          this._pai6.disable = true;
+         Tools.setDisabled(this.__okBtn,false);
       }
       
       private function onTimerHandler(param1:TimerEvent) : *

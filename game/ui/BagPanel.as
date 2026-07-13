@@ -156,6 +156,7 @@ package game.ui
          this.__closeBtn.addEventListener(MouseEvent.CLICK,this.closeBtnClickHandler);
          this._gridContainer.addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOverHandler);
          this._gridContainer.addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOutHandler);
+         this._gridContainer.addEventListener(MouseEvent.CLICK,this.onGridClickHandler);
          this._prevBtn.addEventListener(MouseEvent.CLICK,this.onPrevPageHandler);
          this._nextBtn.addEventListener(MouseEvent.CLICK,this.onNextPageHandler);
       }
@@ -400,6 +401,19 @@ package game.ui
          {
             this._currentPage++;
             this.showPage();
+         }
+      }
+
+      private function onGridClickHandler(param1:MouseEvent) : *
+      {
+         param1.stopImmediatePropagation();
+         if(param1.target.flag == true)
+         {
+            var _code:String = String(param1.target.code);
+            if(_code == "proto_3_3" && RoleModel.getInstance().getBagItemCount("proto_3_3") > 0)
+            {
+               dispatchEvent(new UIEvent(UIEvent.QIUXIAN_CARD_CLICK,true,{"code":"proto_3_3"}));
+            }
          }
       }
 

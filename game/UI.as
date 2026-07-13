@@ -180,6 +180,7 @@ package game
          addEventListener(UIEvent.OPEN_STAGE,this.openStageHandler);
          addEventListener(UIEvent.OPEN_ZHAOMU,this.openZhaomuHandler);
          addEventListener(UIEvent.OPEN_BEIBAO,this.openBeibaoHandler);
+         addEventListener(UIEvent.QIUXIAN_CARD_CLICK,this.onQiuxianCardClick);
          addEventListener(UIEvent.OPEN_SHOP,this.openShopHandler);
          addEventListener(UIEvent.OPEN_BUCHANG,this.openBuchangHandler);
          addEventListener(UIEvent.LING_DIANKA,this.lingDiankaHandler);
@@ -2125,7 +2126,7 @@ package game
          var _loc3_:int = 0;
          var _loc4_:ArmyInfo = null;
          var _loc5_:int = RoleModel.getInstance().level;
-         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevel(_loc5_, RoleModel.getInstance().getUnlockedRecruits());
+         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevelExcludeSuper(_loc5_, RoleModel.getInstance().getUnlockedRecruits());
          var _loc7_:Vector.<String> = RoleModel.getInstance().getAllSoldierCode();
          var _loc8_:Array;
          if((_loc8_ = Tools.removeArrFromArr(_loc6_,_loc7_)).length == 0)
@@ -2159,7 +2160,92 @@ package game
          this.openBagPanel();
          this._bagPanel.initData(RoleModel.getInstance().getBagData());
       }
-      
+
+      private function onQiuxianCardClick(param1:UIEvent) : *
+      {
+         if(RoleModel.getInstance().getBagItemCount("proto_3_3") <= 0) return;
+         var _loc2_:Object = {};
+         _loc2_.head = Head.HTTP_NEW_RECRUIT_CARDS;
+         _loc2_.agent = Config.AGENT;
+         _loc2_.ver = Config.VER;
+         _loc2_.token = Config.token;
+         _loc2_.roleID = RoleModel.getInstance().roleID;
+         _loc2_.userID = RoleModel.getInstance().userID;
+         _loc2_.level = RoleModel.getInstance().level;
+         _loc2_.mask = true;
+         AESController.getInstance().sendJSON(_loc2_,this.onRecruitCardsResponse);
+      }
+
+      private function onRecruitCardsResponse(param1:Object) : *
+      {
+         if(param1.success == true && param1.data.pai != null)
+         {
+            this.closeBagPanel();
+            this.openFanpaiPanel();
+            this._fanpaiPanel.initData({
+               "pai":param1.data.pai,
+               "stageID":0
+            });
+         }
+         else
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+               "type":0,
+               "text":param1.message || "求贤令翻牌失败，请重试。"
+            }));
+         }
+      }
+
+      private function onRecruitFlipResponse(param1:Object) : *
+      {
+         if(param1.success == true)
+         {
+            if(param1.data.money != null)
+            {
+               RoleModel.getInstance().money = int(param1.data.money);
+            }
+            if(param1.data.item != null)
+            {
+               var _cnt:int = int(param1.data.item.count);
+               var _bt:int = RoleModel.getInstance().getBagItemCount(param1.data.item.code) + _cnt;
+               RoleModel.getInstance().modiBagItem(param1.data.item.id,param1.data.item.code,_bt);
+               var _eqn:String = EquipData.get(param1.data.item.code,"name") as String;
+               if(!_eqn) _eqn = Data.getInstance().getAttributes("proto",param1.data.item.code,"name");
+               this.showMsg({type:0, text:"获得装备: " + (_eqn || param1.data.item.code)});
+            }
+            if(param1.data.general != null)
+            {
+               var _gi:ArmyInfo = Data.getInstance().getArmyInfo(param1.data.general.code,param1.data.general.level);
+               if(_gi != null)
+               {
+                  _gi.forceHp = param1.data.general.forceHp || 0;
+                  RoleModel.getInstance().addSoldier(_gi);
+                  var _gn:String = Data.getInstance().getAttributes("general",param1.data.general.code,"name");
+                  this.showMsg({type:0, text:"获得武将: " + (_gn || param1.data.general.code)});
+                  if(int(param1.data.general.title) <= 1)
+                  {
+                     dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
+                        "type":NetInfoType.SYSTEM,
+                        "text":TextFactory.makeZhaomu(RoleModel.getInstance().roleName,_gi)
+                     }));
+                  }
+               }
+            }
+            this.closeFanpaiPanel();
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+               "type":0,
+               "text":"翻牌成功！"
+            }));
+         }
+         else
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+               "type":0,
+               "text":param1.message || "翻牌失败，请重试。"
+            }));
+         }
+      }
+
       private function openShopHandler(param1:UIEvent = null) : *
       {
          this.openShopPanel();
@@ -3203,7 +3289,17 @@ package game
       private function sendPaimianHandler(param1:UIEvent) : *
       {
          var _loc2_:Object = {};
-         _loc2_.head = Head.HTTP_NEW_FUBEN_FANPAI;
+         var _sid:int = int(param1.data.stageID);
+         if(_sid == 0)
+         {
+            _loc2_.head = Head.HTTP_NEW_RECRUIT_FLIP;
+            _loc2_.callback = this.onRecruitFlipResponse;
+         }
+         else
+         {
+            _loc2_.head = Head.HTTP_NEW_FUBEN_FANPAI;
+            _loc2_.callback = this.sendPaimianResponse;
+         }
          _loc2_.agent = Config.AGENT;
          _loc2_.ver = Config.VER;
          _loc2_.token = Config.token;
@@ -3211,7 +3307,7 @@ package game
          _loc2_.userID = RoleModel.getInstance().userID;
          _loc2_.result = param1.data.data;
          _loc2_.mask = true;
-         AESController.getInstance().sendJSON(_loc2_,this.sendPaimianResponse);
+         AESController.getInstance().sendJSON(_loc2_,_loc2_.callback);
       }
       
       private function sendPaimianResponse(param1:Object) : *

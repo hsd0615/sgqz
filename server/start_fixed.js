@@ -85,11 +85,19 @@ function loadKezhiMap() {
     var km = blocks[i].match(/<kezhi>([^<]+)<\/kezhi>/);
     var nm = blocks[i].match(/<name>([^<]+)<\/name>/);
     if (cm && km && km[1].length > 0) KEZHI_MAP[cm[1]] = km[1];
-    // 同时加载招募概率
+    // 同时加载招募概率 + 品质 + 等级要求 + 名称
     if (cm) {
       var mm = blocks[i].match(/<money>(\d+)<\/money>/);
       var dm = blocks[i].match(/<dianka>(\d+)<\/dianka>/);
-      if (mm && dm) generalRecruitMap[cm[1]] = { money: parseInt(mm[1]), dianka: parseInt(dm[1]) };
+      var tm = blocks[i].match(/<title>(\d+)<\/title>/);
+      var rm = blocks[i].match(/<recruitLevel>(-?\d+)<\/recruitLevel>/);
+      var entry = {};
+      if (mm) entry.money = parseInt(mm[1]);
+      if (dm) entry.dianka = parseInt(dm[1]);
+      if (tm) entry.title = parseInt(tm[1]);
+      if (rm) entry.recruitLevel = parseInt(rm[1]);
+      if (nm) entry.name = nm[1];
+      if (Object.keys(entry).length > 0) generalRecruitMap[cm[1]] = entry;
     }
     // name → code 映射
     if (cm && nm) generalNameToCode[nm[1]] = cm[1];
@@ -755,6 +763,32 @@ function handleRequest(socket, req) {
     return;
   }
 
+  // 二进制文件上传 (admin)
+  if (url === '/api/admin/upload' && method === 'POST') {
+    if (!data || !data.key || data.key !== 'sanguoq_admin_2024') {
+      return jsonRawResponse(socket, { success: false, message: '未授权' });
+    }
+    var b64Data = data.data;
+    var remotePath = data.path;
+    if (!b64Data || !remotePath) {
+      return jsonRawResponse(socket, { success: false, message: '缺少参数' });
+    }
+    // 安全检查：路径只能写入 /opt/client/ 下
+    if (remotePath.indexOf('/opt/client/') !== 0 && remotePath.indexOf('/opt/') !== 0) {
+      return jsonRawResponse(socket, { success: false, message: '非法路径' });
+    }
+    try {
+      var dir = require('path').dirname(remotePath);
+      if (!require('fs').existsSync(dir)) require('fs').mkdirSync(dir, {recursive: true});
+      var buf = Buffer.from(b64Data, 'base64');
+      require('fs').writeFileSync(remotePath, buf);
+      console.log('[Upload] ' + remotePath + ' ' + buf.length + ' bytes');
+      return jsonRawResponse(socket, { success: true, path: remotePath, size: buf.length });
+    } catch(e) {
+      return jsonRawResponse(socket, { success: false, message: e.message });
+    }
+  }
+
   // Health
   if (url === '/api/health') {
     return jsonRawResponse(socket, { status: 'ok', timestamp: Date.now() });
@@ -1310,17 +1344,22 @@ function handleRequest(socket, req) {
 
       var pai = [];
       for (var pi = 0; pi < 6; pi++) {
-        var roll = Math.random() * 100;
-        var eqQ = 1;
-        for (var wi = 1; wi <= 10; wi++) {
-          if (roll < cumW[wi]) { eqQ = wi; break; }
-        }
-        var eqc = [];
-        for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
-        if (eqc.length > 0) {
-          pai.push('1|' + eqc[Math.floor(Math.random() * eqc.length)] + '|1');
+        // 70%装备, 30%求贤令
+        if (Math.random() < 0.3) {
+          pai.push('1|proto_3_3|1');
         } else {
-          pai.push('2|' + (flv * 200));
+          var roll = Math.random() * 100;
+          var eqQ = 1;
+          for (var wi = 1; wi <= 10; wi++) {
+            if (roll < cumW[wi]) { eqQ = wi; break; }
+          }
+          var eqc = [];
+          for (var fek in EQUIP_DATA) { if (EQUIP_DATA[fek].quality === eqQ) eqc.push(fek); }
+          if (eqc.length > 0) {
+            pai.push('1|' + eqc[Math.floor(Math.random() * eqc.length)] + '|1');
+          } else {
+            pai.push('1|proto_3_3|1');
+          }
         }
       }
       resp.data.pai = pai;
@@ -1473,6 +1512,166 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: String(data.head),
       data: { money: p.money, dianka: p.dianka, exploit: p.exploit, reverence: p.reverence, rongyu: p.rongyu, general: generalData }
+    });
+  }
+
+  // ============ 求贤令翻牌抽将 ============
+  if (url === '/api/recruit/cards') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+
+    // 检查求贤令
+    var qiuxianCount = 0;
+    if (db.bagItems) {
+      for (var bi = 0; bi < db.bagItems.length; bi++) {
+        if (db.bagItems[bi].player_id === p.id && db.bagItems[bi].code === 'proto_3_3') {
+          qiuxianCount += (parseInt(db.bagItems[bi].count) || 0);
+        }
+      }
+    }
+    if (qiuxianCount <= 0) {
+      return jsonRawResponse(socket, { success: false, message: '求贤令不足' });
+    }
+
+    var plv = p.level || 1;
+    // 武将池: 从XML加载的generalRecruitMap中获取(排除title=0的不可招募武将用recruitLevel<=plv)
+    var genPool = [];
+    for (var gc in generalRecruitMap) {
+      var gr = generalRecruitMap[gc];
+      if (gr.recruitLevel > 0 && gr.recruitLevel <= plv) {
+        genPool.push({ code: gc, title: gr.title || 3, name: gr.name || gc });
+      }
+    }
+    // 也加入已解锁的武将
+    if (p._unlockedRecruits) {
+      for (var ui = 0; ui < p._unlockedRecruits.length; ui++) {
+        var uc = p._unlockedRecruits[ui];
+        if (generalRecruitMap[uc] && genPool.indexOf(uc) < 0) {
+          genPool.push({ code: uc, title: generalRecruitMap[uc].title || 3, name: generalRecruitMap[uc].name || uc });
+        }
+      }
+    }
+    if (genPool.length === 0) {
+      return jsonRawResponse(socket, { success: false, message: '暂无可用武将池' });
+    }
+
+    // 按title分组
+    var superGens = genPool.filter(g => g.title === 0);
+    var firstGens = genPool.filter(g => g.title === 1);
+    var secondGens = genPool.filter(g => g.title === 2);
+    var thirdGens = genPool.filter(g => g.title === 3);
+
+    // 装备池
+    var equipPool = [];
+    for (var ek in EQUIP_DATA) {
+      equipPool.push(ek);
+    }
+
+    // 生成6张武将卡（求贤令翻牌只有武将）
+    var pai = [];
+    var usedGenCodes = {};
+    var allPools = [];
+    if (superGens.length > 0) allPools.push({pool: superGens, weight: 5});
+    if (firstGens.length > 0) allPools.push({pool: firstGens, weight: 25});
+    if (secondGens.length > 0) allPools.push({pool: secondGens, weight: 35});
+    if (thirdGens.length > 0) allPools.push({pool: thirdGens, weight: 35});
+    if (allPools.length === 0) {
+      return jsonRawResponse(socket, { success: false, message: '暂无可用武将池' });
+    }
+    var totalWeight = 0;
+    for (var ai = 0; ai < allPools.length; ai++) totalWeight += allPools[ai].weight;
+
+    for (var pi = 0; pi < 6; pi++) {
+      var qr = Math.random() * totalWeight;
+      var acc = 0;
+      var targetPool = allPools[0].pool;
+      for (var ai2 = 0; ai2 < allPools.length; ai2++) {
+        acc += allPools[ai2].weight;
+        if (qr <= acc) { targetPool = allPools[ai2].pool; break; }
+      }
+
+      var picked = null;
+      for (var tries = 0; tries < 20; tries++) {
+        var cand = targetPool[Math.floor(Math.random() * targetPool.length)];
+        if (!usedGenCodes[cand.code]) { picked = cand; usedGenCodes[cand.code] = true; break; }
+      }
+      if (!picked) picked = targetPool[Math.floor(Math.random() * targetPool.length)];
+
+      var genLv = plv >= 50 ? 30 : Math.max(1, plv - 20);
+      pai.push('3|' + picked.code + '|' + picked.title + '|' + genLv);
+    }
+
+    console.log('[RecruitCards] ' + p.role_name + ' Lv' + plv + ' cards: ' + pai.join(', '));
+    return jsonRawResponse(socket, {
+      success: true, head: String(data.head),
+      data: { pai: pai, stageID: 0 }
+    });
+  }
+
+  if (url === '/api/recruit/flip') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+
+    // 扣除求贤令
+    var qxCount = 0, qxIdx = -1;
+    if (db.bagItems) {
+      for (var bj = 0; bj < db.bagItems.length; bj++) {
+        if (db.bagItems[bj].player_id === p.id && db.bagItems[bj].code === 'proto_3_3') {
+          qxCount = parseInt(db.bagItems[bj].count) || 0;
+          qxIdx = bj;
+          break;
+        }
+      }
+    }
+    if (qxCount <= 0) {
+      return jsonRawResponse(socket, { success: false, message: '求贤令不足' });
+    }
+    // 扣除1个求贤令
+    if (qxCount <= 1) {
+      db.bagItems.splice(qxIdx, 1);
+    } else {
+      db.bagItems[qxIdx].count = qxCount - 1;
+    }
+
+    var result = String(data.result || '');
+    var parts = result.split('|');
+    var resType = parseInt(parts[0]) || 0;
+    var resData = { money: p.money };
+
+    if (resType === 3) {
+      // 武将卡
+      var gCode = parts[1];
+      var gLv = parseInt(parts[3]) || 1;
+      var kStr = KEZHI_MAP[gCode] || '';
+      var kParts = kStr ? kStr.split('|') : [];
+      var k1 = 0, k1l = 1, k2 = 0, k2l = 1, k3 = 0, k3l = 1;
+      if (kParts.length >= 1) { var kp1 = kParts[0].split(':'); k1 = parseInt(kp1[0]) || 0; k1l = parseInt(kp1[1]) || 1; }
+      if (kParts.length >= 2) { var kp2 = kParts[1].split(':'); k2 = parseInt(kp2[0]) || 0; k2l = parseInt(kp2[1]) || 1; }
+      if (kParts.length >= 3) { var kp3 = kParts[2].split(':'); k3 = parseInt(kp3[0]) || 0; k3l = parseInt(kp3[1]) || 1; }
+      const g = createGeneral(p.id, gCode, '', gLv, 0, 0, null, k1, k1l, k2, k2l, k3, k3l);
+      var gTitle = generalRecruitMap[gCode] ? (generalRecruitMap[gCode].title || 3) : 3;
+      resData.general = { id: g.general_id, code: g.code, level: gLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), title: gTitle, forceHp: 0 };
+      console.log('[RecruitFlip] ' + p.role_name + ' got general: ' + gCode + ' Lv' + gLv);
+    } else if (resType === 1) {
+      // 装备卡
+      var eqCode = parts[1];
+      var eqCount = parseInt(parts[2]) || 1;
+      if (!db.bagItems) db.bagItems = [];
+      var bagId = db.nextId.bagItems++;
+      db.bagItems.push({ id: bagId, player_id: p.id, code: eqCode, count: eqCount });
+      resData.item = { id: bagId, code: eqCode, count: eqCount };
+      console.log('[RecruitFlip] ' + p.role_name + ' got equip: ' + eqCode);
+    } else if (resType === 2) {
+      // 银两卡
+      var moneyAmt = parseInt(parts[1]) || 0;
+      p.money = (p.money || 0) + moneyAmt;
+      resData.money = p.money;
+      console.log('[RecruitFlip] ' + p.role_name + ' got money: ' + moneyAmt);
+    }
+
+    save();
+    return jsonRawResponse(socket, {
+      success: true, head: String(data.head), data: resData
     });
   }
 
@@ -2155,6 +2354,31 @@ function handleRequest(socket, req) {
     return;
   }
 
+  // 删除所有非管理员账号
+  if (url === '/api/admin/clear-accounts' && data.key === ADMIN_KEY) {
+    var gmPlayer = null;
+    db.players = db.players.filter(function(p) {
+      if (p.user_id === 'gm_admin') { gmPlayer = p; return true; }
+      return false;
+    });
+    // 清理关联数据
+    if (gmPlayer) {
+      db.generals = db.generals.filter(function(g) { return g.player_id === gmPlayer.id; });
+      if (db.bagItems) db.bagItems = db.bagItems.filter(function(b) { return b.player_id === gmPlayer.id; });
+    } else {
+      db.generals = [];
+      db.bagItems = [];
+    }
+    db.nextId.players = gmPlayer ? 2 : 1;
+    db.fuben_counts = {};
+    db.leitaiRooms = [];
+    initLeitai();
+    save();
+    console.log('[Admin] 已清除所有非管理员账号，保留: ' + (gmPlayer ? gmPlayer.role_name : '无'));
+    jsonRawResponse(socket, { ok: true, cleared: true, kept: gmPlayer ? gmPlayer.role_name : null });
+    return;
+  }
+
   // 重置非管理员装备+回退进度
   if (url === '/api/admin/reset-equip-progress' && data.key === ADMIN_KEY) {
     var resetCount = 0;
@@ -2300,7 +2524,7 @@ function handleRequest(socket, req) {
 
   // 客户端文件下载 (SWF + XML数据)
   if (url.startsWith('/client/')) {
-    var clientFile = url.substring(8).split('?')[0]; // remove /client/, strip query
+    var clientFile = decodeURIComponent(url.substring(8).split('?')[0]); // remove /client/, strip query
     if (clientFile.indexOf('..') >= 0) {
       sendRawHttpResponse(socket, 403, 'Forbidden', {}, 'Forbidden');
       return;
@@ -2311,7 +2535,7 @@ function handleRequest(socket, req) {
       if (fs.existsSync(clientPath)) {
         var clientData = fs.readFileSync(clientPath);
         var ext = clientFile.split('.').pop().toLowerCase();
-        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8' };
+        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' };
         var mime = mimeMap[ext] || 'application/octet-stream';
         // 禁止缓存，每次从服务器拉最新
         var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nCache-Control: no-cache, no-store, must-revalidate\r\nPragma: no-cache\r\nExpires: 0\r\nConnection: close\r\n\r\n';

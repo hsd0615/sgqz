@@ -1,9 +1,12 @@
 package game
 {
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.filesystem.FileStream;
    import game.model.ArmyInfo;
    import game.model.EquipData;
    import game.model.Type;
-   
+
    public class Data
    {
       
@@ -457,7 +460,7 @@ package game
          var _s:int = 1;
          while(_s <= 6)
          {
-            if(Math.random() < Math.min(0.75, 0.25 + param2 * 0.004))
+            if(Math.random() < Math.min(0.45, 0.12 + param2 * 0.002))
             {
                var _slotCodes:Array = EquipData.getBySlot(_s);
                var _candidates:Array = [];
@@ -521,7 +524,25 @@ package game
          }
          return arr;
       }
-      
+
+      public function getZhaomuByLevelExcludeSuper(param1:int, param2:Vector.<String> = null) : Vector.<String>
+      {
+         var arr:Vector.<String> = getZhaomuByLevel(param1,param2);
+         if(arr == null) return null;
+         var filtered:Vector.<String> = new Vector.<String>();
+         var _i:int = 0;
+         while(_i < arr.length)
+         {
+            var _title:String = this.getAttributes("general",arr[_i],"title");
+            if(_title != "0")
+            {
+               filtered.push(arr[_i]);
+            }
+            _i++;
+         }
+         return filtered;
+      }
+
       public function getGateList(param1:int, param2:Vector.<int>) : Array
       {
          var arr:Array = null;
@@ -535,6 +556,16 @@ package game
          arr = [];
          list = this._xml.gate.(@part == part);
          length = int(list.length());
+         if(part >= 11)
+         {
+            try {
+               var _df:File = File.applicationStorageDirectory.resolvePath("debug_stage.txt");
+               var _ds:FileStream = new FileStream();
+               _ds.open(_df, FileMode.APPEND);
+               _ds.writeUTFBytes("[getGateList] part=" + part + " listLen=" + length + " xmlHasGates=" + (this._xml != null ? this._xml.gate.length() : -1) + "\n");
+               _ds.close();
+            } catch(_e:Error) {}
+         }
          i = 0;
          while(i < length)
          {

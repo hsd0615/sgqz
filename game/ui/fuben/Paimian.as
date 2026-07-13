@@ -8,6 +8,7 @@ package game.ui.fuben
    import flash.filters.GlowFilter;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
+   import flash.text.TextFormat;
    import game.Data;
    import game.events.UIEvent;
    import game.model.EquipData;
@@ -83,6 +84,53 @@ package game.ui.fuben
          {
             this.__nameTF.text = _loc1_[1];
             this.__countTF.text = "银子";
+         }
+         else if(_loc2_ == 3)
+         {
+            var _gname:String = Data.getInstance().getAttributes("general",_loc1_[1],"name");
+            this.__nameTF.text = _gname || _loc1_[1];
+            this.__countTF.text = "Lv." + _loc1_[3];
+            this.createGeneralIcon(_loc1_[1]);
+            this.addQualityBorder(int(_loc1_[2]));
+         }
+      }
+
+      private function createGeneralIcon(param1:String) : *
+      {
+         var _title:int = 3;
+         try { _title = int(Data.getInstance().getAttributes("general",param1,"title")); } catch(_e:Error) {}
+         // 品质颜色: 超级=橙金, 一流=蓝, 二流=绿, 三流=灰白
+         var _qualityColors:Array = [0xFF6600,0x3399FF,0x66CC33,0xCCCCCC];
+         var _qualityNames:Array = ["超级","一流","二流","三流"];
+         var _color:uint = _qualityColors[_title] || 0xCCCCCC;
+         // 画品质色块+边框
+         var _bd:BitmapData = new BitmapData(50,50,false,_color);
+         this._icon = new Bitmap(_bd);
+         this._icon.smoothing = true;
+         this.fitIconToCard();
+         addChild(this._icon);
+         // 品质标签
+         var _qTf:TextField = new TextField();
+         _qTf.defaultTextFormat = new TextFormat("SimHei",10,0xFFFFFF,true);
+         _qTf.text = _qualityNames[_title] || "";
+         _qTf.selectable = false;
+         _qTf.mouseEnabled = false;
+         _qTf.width = 36;
+         _qTf.height = 16;
+         _qTf.x = 7;
+         _qTf.y = 17;
+         addChild(_qTf);
+      }
+
+      private function addQualityBorder(param1:int) : *
+      {
+         var _colors:Array = [0xFF6600,0x33CCFF,0x99FF33,0xFFCC99];
+         var _glowColor:uint = _colors[param1] || 0xFFCC99;
+         var _size:int = param1 == 0 ? 6 : 3;
+         var _alpha:Number = param1 == 0 ? 0.9 : 0.6;
+         if(this.__body != null)
+         {
+            this.__body.filters = [new GlowFilter(_glowColor,_alpha,_size,_size,2)];
          }
       }
 

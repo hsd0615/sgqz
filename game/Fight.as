@@ -5,10 +5,13 @@ package game
    import com.iflashigame.utils.Tools;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   import flash.display.DisplayObject;
+   import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
    import flash.display.Shape;
    import flash.display.Sprite;
+   import flash.net.URLRequest;
    import flash.events.Event;
    import flash.events.KeyboardEvent;
    import flash.external.ExternalInterface;
@@ -96,7 +99,7 @@ package game
 
       private var _rightSoldiers:Array = [];
       
-      private var _bk:MovieClip;
+      private var _bk:DisplayObject;
       
       private var _yuanchengCon:AngleController;
       
@@ -112,8 +115,10 @@ package game
       
       private var _ammo:String = "";
       
-      private var _title:Bitmap;
-      
+      private var _title:DisplayObject;
+
+      private var _bgLoader:Loader;
+
       private var _gridContainer:Sprite;
       
       private var _currentGrid:MovieClip;
@@ -319,10 +324,12 @@ package game
       
       private function createBK() : *
       {
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(SkinCode.FIGHT_STAGE) as Class;
-         this._bk = new _loc1_() as MovieClip;
-         this._bk.x = stage.stageWidth / 2;
-         this._bk.y = stage.stageHeight / 2;
+         // 先用临时背景占位，setPartAndLevel会替换为关卡专属背景
+         var _tmpBg:Shape = new Shape();
+         _tmpBg.graphics.beginFill(0x1a0a08);
+         _tmpBg.graphics.drawRect(0,0,770,500);
+         _tmpBg.graphics.endFill();
+         this._bk = _tmpBg;
          addChild(this._bk);
       }
       
@@ -1505,16 +1512,68 @@ package game
          }
       }
       
-      public function setPartAndLevel(param1:int, param2:int) : *
+      public function setPartAndLevel(param1:int, param2:int, param3:Bitmap = null) : *
       {
          this._part = param1;
          this._level = param2;
+         var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
+         var _partName:String = _partNames[param1] || ("第"+param1+"章");
+         // 使用预加载的背景图，或异步加载
+         if(param3 != null)
+         {
+            param3.smoothing = true;
+            // 按比例缩放铺满770x500
+            var _scaleX:Number = 770 / param3.bitmapData.width;
+            var _scaleY:Number = 500 / param3.bitmapData.height;
+            var _scale:Number = Math.max(_scaleX,_scaleY);
+            param3.width = param3.bitmapData.width * _scale;
+            param3.height = param3.bitmapData.height * _scale;
+            param3.x = (770 - param3.width) / 2;
+            param3.y = (500 - param3.height) / 2;
+            if(this._bk != null && this._bk.parent != null)
+            {
+               this._bk.parent.removeChild(this._bk);
+            }
+            addChildAt(param3,0);
+         }
+         else
+         {
+            this._bgLoader = new Loader();
+            var _bgUrl:String = "http://47.96.41.243:3000/client/bg/" + _partName + ".png";
+            var _self:Fight = this;
+            this._bgLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {
+               var _bmp:Bitmap = _e.target.content as Bitmap;
+               if(_bmp != null)
+               {
+                  _bmp.smoothing = true;
+                  _bmp.width = 770;
+                  _bmp.scaleY = _bmp.scaleX;
+                  if(_self._bk != null && _self._bk.parent != null)
+                  {
+                     _self._bk.parent.removeChild(_self._bk);
+                  }
+                  _self.addChildAt(_bmp,0);
+               }
+            });
+            this._bgLoader.load(new URLRequest(encodeURI(_bgUrl)));
+         }
          var _loc3_:int = Data.getInstance().getStageID(this._part,this._level);
-         var _loc4_:Class = ApplicationDomain.currentDomain.getDefinition("title_" + _loc3_) as Class;
-         this._title = new Bitmap(new _loc4_() as BitmapData);
+         try {
+            var _loc4_:Class = ApplicationDomain.currentDomain.getDefinition("title_" + _loc3_) as Class;
+            this._title = new Bitmap(new _loc4_() as BitmapData);
+         } catch(_e:Error) {
+            var _titleTf:TextField = new TextField();
+            _titleTf.defaultTextFormat = new TextFormat("SimHei",18,0xFFCC00,true);
+            _titleTf.text = _partName + " - " + Data.getInstance().getStageName(this._part,this._level);
+            _titleTf.selectable = false;
+            _titleTf.autoSize = TextFieldAutoSize.CENTER;
+            _titleTf.width = 300;
+            _titleTf.height = 30;
+            this._title = _titleTf;
+         }
          addChild(this._title);
-         this._title.x = (stage.stageWidth - this._title.width) / 2;
-         this._title.y = 30;
+         this._title.x = (770 - this._title.width) / 2;
+         this._title.y = 20;
       }
       
       public function get level() : int
