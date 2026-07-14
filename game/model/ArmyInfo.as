@@ -128,9 +128,9 @@ package game.model
       
       public function set level(param1:int) : *
       {
-         if(param1 > 280)
+         if(param1 > 250)
          {
-            param1 = 280;
+            param1 = 250;
          }
          if(param1 < 1)
          {
@@ -522,6 +522,15 @@ package game.model
          var _t:int = 0;
          _t += getEquipBonus(this._equip1,"critDmg") + getEquipBonus(this._equip2,"critDmg") + getEquipBonus(this._equip3,"critDmg");
          _t += getEquipBonus(this._equip4,"critDmg") + getEquipBonus(this._equip5,"critDmg") + getEquipBonus(this._equip6,"critDmg");
+         return _t;
+      }
+      // 攻击间隔缩减% (负值=加速, 魔系列战靴专属)
+      public function get equipAtkInterval():int {
+         var _t:int = 0;
+         _t += getEquipBonus(this._equip1,"atkInterval") + getEquipBonus(this._equip2,"atkInterval") + getEquipBonus(this._equip3,"atkInterval");
+         _t += getEquipBonus(this._equip4,"atkInterval") + getEquipBonus(this._equip5,"atkInterval") + getEquipBonus(this._equip6,"atkInterval");
+         // 限制最多加速50%
+         if(_t < -50) _t = -50;
          return _t;
       }
 

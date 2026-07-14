@@ -182,8 +182,8 @@ package game.ui
          return _cell;
       }
 
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0xCCCCCC,0x4bea13,0x4bea13,0xe720f9,0xe720f9,0xFF8C00,0xFF8C00,0xFF0000,0xFF66FF];
-      private var _qualityNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色"];
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0xCCCCCC,0x4bea13,0x4bea13,0xe720f9,0xe720f9,0xFF8C00,0xFF8C00,0xFF0000,0xFF66FF,0xFF0040];
+      private var _qualityNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色","暗血"];
 
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
 

@@ -350,9 +350,12 @@ package game.ui
                var _q:int = int(EquipData.get(_eqCode,"quality"));
                var _qc:uint = getQualityBgColor(_q);
 
-               // 品质边框(彩色Q10用彩虹渐变)
+               // 品质边框(Q10彩虹渐变, Q11暗血魔器)
                var _bg:Shape = new Shape();
-               if(_q == 10) {
+               if(_q == 11) {
+                  drawDemonBorder(_bg, 34, 34, 0.95);
+                  _bg.filters = [new GlowFilter(0xFF0040, 0.8, 8, 8, 2, 1)];
+               } else if(_q == 10) {
                   drawRainbowBorder(_bg, 34, 34, 0.95);
                   _bg.filters = [new GlowFilter(0xFFFFCC, 0.7, 8, 8, 2, 1)];
                } else {
@@ -390,14 +393,17 @@ package game.ui
                      var _hp:int=int(EquipData.get(_ec,"hpPct"))||0; var _ls:int=int(EquipData.get(_ec,"lifesteal"))||0;
                      var _db:int=int(EquipData.get(_ec,"dmgBonus"))||0; var _dr:int=int(EquipData.get(_ec,"dmgReduce"))||0;
                      var _cr:int=int(EquipData.get(_ec,"critRate"))||0; var _cd:int=int(EquipData.get(_ec,"critDmg"))||0;
+                     var _ai:int=int(EquipData.get(_ec,"atkInterval"))||0;
                      var _t:String = "<font color='"+_qcStr+"'><b>"+_n+"</b> ["+_qn+"]</font>\n";
-                     if(_a||_ap) _t+="攻击:"+(_a>0?"+"+_a:_a)+(_ap>0?"+"+_ap+"%":"")+"\n";
-                     if(_d||_dp) _t+="防御:"+(_d>0?"+"+_d:_d)+(_dp>0?"+"+_dp+"%":"")+"\n";
-                     if(_h||_hp) _t+="气血:"+(_h>0?"+"+_h:_h)+(_hp>0?"+"+_hp+"%":"")+"\n";
-                     if(_ls>0) _t+="吸血:"+_ls+"%\n"; if(_db>0) _t+="增伤:"+_db+"%\n";
-                     if(_dr>0) _t+="减伤:"+_dr+"%\n"; if(_cr>0) _t+="暴击:"+_cr+"%\n";
-                     if(_cd>0) _t+="暴伤:"+_cd+"%\n";
-                     _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:140,height:130}));
+                     if(_a||_ap) _t+="攻击:"+(_a>=0?"+"+_a:_a)+(_ap>=0?"+"+_ap+"%":_ap+"%")+"\n";
+                     if(_d||_dp) _t+="防御:"+(_d>=0?"+"+_d:_d)+(_dp>=0?"+"+_dp+"%":_dp+"%")+"\n";
+                     if(_h||_hp) _t+="气血:"+(_h>=0?"+"+_h:_h)+(_hp>=0?"+"+_hp+"%":_hp+"%")+"\n";
+                     if(_ls!=0) _t+="<font color='" + (_ls>0?"#FFD700":"#FF4444") + "'>吸血:"+(_ls>0?"+":"")+_ls+"%</font>\n";
+                     if(_db!=0) _t+="<font color='" + (_db>0?"#FFD700":"#FF4444") + "'>增伤:"+(_db>0?"+":"")+_db+"%</font>\n";
+                     if(_dr!=0) _t+="<font color='" + (_dr>0?"#FFD700":"#FF4444") + "'>减伤:"+(_dr>0?"+":"")+_dr+"%</font>\n";
+                     if(_cr>0) _t+="暴击:"+_cr+"%\n"; if(_cd>0) _t+="暴伤:"+_cd+"%\n";
+                     if(_ai!=0) _t+="<font color='" + (_ai<0?"#FFD700":"#FF4444") + "'>攻速:"+(_ai<0?"+":"")+(-_ai)+"%</font>\n";
+                     _self.dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{htmlText:_t,type:3,width:140,height:145}));
                   };
                   var _outFn:Function = function(p:*):void { _self.dispatchEvent(new UIEvent(UIEvent.HIDE_TIPS,true)); };
                   _self._slotHoverFns[_slot] = [_hoverFn, _outFn];
@@ -436,10 +442,10 @@ package game.ui
          return null;
       }
 
-      // 品质6档: 白(Q1-2) 绿(Q3-4) 紫(Q5-6) 橙(Q7-8) 红(Q9) 彩(Q10)
-      private var _qualityColors:Array = [0x999999,0xCCCCCC,0xCCCCCC,0x4bea13,0x4bea13,0xe720f9,0xe720f9,0xFF8C00,0xFF8C00,0xFF0000,0xFF66FF];
-      private var _qualityBgColors:Array = [0x1a1a1a,0x2a2a2a,0x2a2a2a,0x0d1d05,0x0d1d05,0x150515,0x150515,0x1d0d00,0x1d0d00,0x1d0000,0x0d0d0d];
-      private var _qualityNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色"];
+      // 品质7档: 白(Q1-2) 绿(Q3-4) 紫(Q5-6) 橙(Q7-8) 红(Q9) 彩(Q10) 暗血(Q11)
+      private var _qualityColors:Array = [0x999999,0xCCCCCC,0xCCCCCC,0x4bea13,0x4bea13,0xe720f9,0xe720f9,0xFF8C00,0xFF8C00,0xFF0000,0xFF66FF,0xFF0040];
+      private var _qualityBgColors:Array = [0x1a1a1a,0x2a2a2a,0x2a2a2a,0x0d1d05,0x0d1d05,0x150515,0x150515,0x1d0d00,0x1d0d00,0x1d0000,0x0d0d0d,0x1A0008];
+      private var _qualityNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色","暗血"];
       private function getQualityColor(param1:int):uint { return _qualityColors[param1] || 0xCCCCCC; }
       private function getQualityBgColor(param1:int):uint { return _qualityBgColors[param1] || 0x333333; }
       private function getQualityName(param1:int):String { return _qualityNames[param1] || "普通"; }
@@ -455,6 +461,24 @@ package game.ui
          shape.graphics.beginFill(0x0d0804, 1);
          shape.graphics.drawRoundRect(borderW, borderW, w-borderW*2, h-borderW*2, 3, 3);
          shape.graphics.endFill();
+      }
+
+      // 暗血(Q11)魔器边框 — 暗红底色+血光边框+暗影内填
+      private static const DEMON_BORDER_COLORS:Array = [0xFF0040,0xCC0030,0x880020,0x660018,0xFF0040];
+      private static function drawDemonBorder(shape:Shape, w:Number, h:Number, borderW:Number=3):void {
+         var _m:Matrix = new Matrix();
+         _m.createGradientBox(w, h, Math.PI/3, 0, 0);
+         // 暗红渐变边框
+         shape.graphics.beginGradientFill(GradientType.LINEAR, DEMON_BORDER_COLORS, [1,0.8,0.6,0.5,1], [0,64,128,192,255], _m);
+         shape.graphics.drawRoundRect(0, 0, w, h, 4, 4);
+         shape.graphics.endFill();
+         // 深黑内填
+         shape.graphics.beginFill(0x0A0004, 0.92);
+         shape.graphics.drawRoundRect(borderW, borderW, w-borderW*2, h-borderW*2, 3, 3);
+         shape.graphics.endFill();
+         // 外发光效果 — 暗红半透明粗边
+         shape.graphics.lineStyle(1.5, 0xFF0040, 0.35);
+         shape.graphics.drawRoundRect(-1, -1, w+2, h+2, 5, 5);
       }
 
       private function onEquipSlotClick(param1:MouseEvent) : void

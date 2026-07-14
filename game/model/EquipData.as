@@ -118,6 +118,30 @@ package game.model {
          _data["proto_4_96"]={slot:3,name:"贪狼令",critRate:15,dmgBonus:15,lifesteal:12,levelReq:180,quality:8,iconIdx:26};
          _data["proto_4_97"]={slot:3,name:"星辰令",critRate:18,dmgBonus:18,lifesteal:15,levelReq:195,quality:9,iconIdx:25};
          _data["proto_4_98"]={slot:3,name:"轮回印",dmgBonus:15,dmgReduce:20,lifesteal:20,levelReq:200,quality:10,iconIdx:29};
+
+         // ====== 烈焰系列 Q9 (Lv185) ======
+         _data["proto_4_101"]={slot:1,name:"焚天刃",attack:3050,attackPct:28,critRate:10,critDmg:8,dmgBonus:5,levelReq:185,quality:9,iconIdx:31};
+         _data["proto_4_102"]={slot:2,name:"烈焰战甲",attack:800,attackPct:10,defense:2400,defensePct:22,dmgReduce:3,levelReq:185,quality:9,iconIdx:32};
+         _data["proto_4_103"]={slot:3,name:"烈焰之心",dmgBonus:25,critDmg:20,critRate:8,levelReq:185,quality:9,iconIdx:33};
+
+         // ====== 冰霜系列 Q9 (Lv185) ======
+         _data["proto_4_106"]={slot:1,name:"霜华剑",attack:2700,attackPct:24,lifesteal:8,dmgReduce:5,levelReq:185,quality:9,iconIdx:34};
+         _data["proto_4_107"]={slot:2,name:"冰霜壁垒",defense:3400,defensePct:30,hp:3000,dmgReduce:8,levelReq:185,quality:9,iconIdx:35};
+         _data["proto_4_108"]={slot:3,name:"冰晶之魂",dmgReduce:18,lifesteal:15,hpPct:10,levelReq:185,quality:9,iconIdx:36};
+
+         // ====== 雷霆系列 Q10 (Lv200) ======
+         _data["proto_4_111"]={slot:1,name:"雷霆战戟",attack:4200,attackPct:32,critRate:14,critDmg:18,levelReq:200,quality:10,iconIdx:37};
+         _data["proto_4_112"]={slot:2,name:"雷霆神甲",defense:4300,defensePct:33,dmgReduce:6,critRate:7,levelReq:200,quality:10,iconIdx:38};
+         _data["proto_4_113"]={slot:3,name:"雷霆之怒",critRate:28,critDmg:38,dmgBonus:18,levelReq:200,quality:10,iconIdx:39};
+         _data["proto_4_114"]={slot:4,name:"雷霆冠冕",hp:26500,hpPct:38,critRate:10,critDmg:12,levelReq:200,quality:10,iconIdx:40};
+         _data["proto_4_115"]={slot:5,name:"雷霆战靴",defense:6000,defensePct:36,critRate:7,critDmg:15,levelReq:200,quality:10,iconIdx:41};
+
+         // ====== 魔系列 Q11 ★魔器★ (Lv210) ======
+         _data["proto_4_121"]={slot:1,name:"魔渊·噬",attack:0,attackPct:0,hp:-5000,hpPct:-25,critRate:18,critDmg:25,dmgBonus:40,lifesteal:10,levelReq:210,quality:11,iconIdx:51};
+         _data["proto_4_122"]={slot:2,name:"魔渊·怨",attack:3500,attackPct:18,defense:-800,defensePct:-22,critRate:12,dmgReduce:-8,levelReq:210,quality:11,iconIdx:52};
+         _data["proto_4_123"]={slot:3,name:"魔渊·嗜",defense:-500,hpPct:-20,dmgBonus:20,critDmg:18,lifesteal:45,levelReq:210,quality:11,iconIdx:53};
+         _data["proto_4_124"]={slot:4,name:"魔渊·妄",defense:-600,hp:45000,hpPct:55,dmgBonus:12,critRate:10,dmgReduce:-8,levelReq:210,quality:11,iconIdx:54};
+         _data["proto_4_125"]={slot:5,name:"魔渊·疾",defense:3500,defensePct:20,hpPct:-15,critRate:12,critDmg:15,dmgReduce:-5,atkInterval:-28,levelReq:210,quality:11,iconIdx:55};
       }
       // 兼容旧装备码(proto_4_1~30) → 映射到新数据
       private static var _compat:Object = {

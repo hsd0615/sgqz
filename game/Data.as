@@ -449,12 +449,12 @@ package game
          if(param1.type == Type.TOUSHICHE) return;
          var _genQuality:int = param1.title; // 0=超级 1=一流 2=三流 3=杂兵
          var _gateLevel:int = param3; // 关卡层级
-         // 根据品质和关卡深度决定装备品质范围
+         // 根据品质和关卡深度决定装备品质范围 (支持Q11魔器)
          var _maxQ:int = 1;
-         if(_genQuality == 0) _maxQ = Math.min(6, 2 + int(_gateLevel / 15));
-         else if(_genQuality == 1) _maxQ = Math.min(5, 2 + int(_gateLevel / 15));
-         else if(_genQuality == 2) _maxQ = Math.min(5, 1 + int(_gateLevel / 15));
-         else _maxQ = Math.min(4, 1 + int(_gateLevel / 15));
+         if(_genQuality == 0) _maxQ = Math.min(11, 2 + int(_gateLevel / 20));
+         else if(_genQuality == 1) _maxQ = Math.min(9, 2 + int(_gateLevel / 25));
+         else if(_genQuality == 2) _maxQ = Math.min(7, 1 + int(_gateLevel / 30));
+         else _maxQ = Math.min(5, 1 + int(_gateLevel / 35));
          var _minQ:int = Math.max(1, _maxQ - 3);
          var _equipSlots:Array = [];
          var _s:int = 1;

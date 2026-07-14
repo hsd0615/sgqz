@@ -25,11 +25,11 @@ package game.ui
       // 品质外发光颜色
       private static const GLOW_COLORS:Array = [
          0x666666, 0x999999, 0x999999, 0x33CC33, 0x33CC33,
-         0xCC33CC, 0xCC33CC, 0xFF8800, 0xFF8800, 0xFF3333, 0xFF66FF
+         0xCC33CC, 0xCC33CC, 0xFF8800, 0xFF8800, 0xFF3333, 0xFF66FF, 0xFF0040
       ];
       // 品质名
       private static const Q_NAMES:Array = [
-         "", "普通", "精良", "稀有", "史诗", "传说", "神话", "远古", "至尊", "超凡", "入圣"
+         "", "普通", "精良", "稀有", "史诗", "传说", "神话", "远古", "至尊", "超凡", "入圣", "魔器"
       ];
 
       private var _container:Sprite;

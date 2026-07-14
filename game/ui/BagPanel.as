@@ -443,8 +443,8 @@ package game.ui
             else if(_loc4_ == 4)
             {
                var _eqQ:int = int(EquipData.get(_loc2_,"quality"))||1;
-               var _eqQColors:Array = ["#999","#CCC","#CCC","#4bea13","#4bea13","#e720f9","#e720f9","#FF8C00","#FF8C00","#FF0000","#FF66FF"];
-               var _eqQNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色"];
+               var _eqQColors:Array = ["#999","#CCC","#CCC","#4bea13","#4bea13","#e720f9","#e720f9","#FF8C00","#FF8C00","#FF0000","#FF66FF","#FF0040"];
+               var _eqQNames:Array = ["","白色","白色","绿色","绿色","紫色","紫色","橙色","橙色","红色","彩色","暗血"];
                var _qcHex:String = _eqQColors[_eqQ] || "#CCC";
                var _qnStr:String = _eqQNames[_eqQ] || "普通";
                _loc6_ += "<font color=\'" + _qcHex + "\'>类别：装备 [" + _qnStr + "]</font>\n";
