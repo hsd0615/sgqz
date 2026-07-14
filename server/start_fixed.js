@@ -21,6 +21,22 @@ function save() { fs.writeFileSync(DATA_FILE, JSON.stringify(db)); }
 function findPlayer(uid) { return db.players.find(p => String(p.user_id) === String(uid)); }
 function findPlayerByToken(token) { return db.players.find(p => p.token === token); }
 function findPlayerByPwd(uid, pwd) { return db.players.find(p => String(p.user_id) === String(uid) && p.password === pwd); }
+function findPlayerByName(roleName) { return db.players.find(p => p.role_name === roleName); }
+// 检查玩家是否有活跃会话（防止同一账号多开）
+function hasActiveSession(playerId) {
+  var pid = String(playerId);
+  for (var _vs = Array.from(tcpSessions.values()), _ii = 0; _ii < _vs.length; _ii++) {
+    if (String(_vs[_ii].playerId) === pid) return true;
+  }
+  if (typeof globalWebSessions !== 'undefined') {
+    var _wkeys = Object.keys(globalWebSessions);
+    for (var _jj = 0; _jj < _wkeys.length; _jj++) {
+      var ws = globalWebSessions[_wkeys[_jj]];
+      if (ws && String(ws.playerId) === pid) return true;
+    }
+  }
+  return false;
+}
 function createPlayer(uid, name, img, agent, pwd) {
   const p = { id: db.nextId.players++, user_id: String(uid), agent, password: pwd||'', role_name: name, image_id: img, level: 1, money: 5000, dianka: 0, exploit: 0, reverence: 0, rongyu: 0, win_count: 0, lost_count: 0, finished_stages: '', history: '', login_server: 0, token: uuidv4().replace(/-/g,'') };
   db.players.push(p);
@@ -869,6 +885,10 @@ function handleRequest(socket, req) {
   if (url === '/api/auth/login') {
     const p = findPlayerByPwd(data.userID, data.password);
     if (p) {
+      // 防止多开：检查是否已有活跃会话
+      if (hasActiveSession(p.id)) {
+        return jsonRawResponse(socket, { success: false, stamp: data.stamp||'', head: '9999', message: '账号已在别处登录，请先退出后再试' });
+      }
       p.token = uuidv4().replace(/-/g,'');
       p.lastSeen = Date.now();
       dedupeGenerals(p.id);  // 清理历史重复武将
@@ -898,6 +918,10 @@ function handleRequest(socket, req) {
     // 已存在账号→走登录流程, 返回已保存的武将(含装备)
     var existing = findPlayer(data.userID);
     if (existing) {
+      // 防止多开：检查是否已有活跃会话
+      if (hasActiveSession(existing.id)) {
+        return jsonRawResponse(socket, { success: false, stamp: data.stamp, head: '9999', message: '账号已在别处登录，请先退出后再试' });
+      }
       existing.token = uuidv4().replace(/-/g,'');
       existing.lastSeen = Date.now();
       save();
@@ -910,6 +934,10 @@ function handleRequest(socket, req) {
           roleModel: makeRoleModel(existing),
         }
       });
+    }
+    // 检查角色名是否已被占用
+    if (data.roleName && findPlayerByName(data.roleName)) {
+      return jsonRawResponse(socket, { success: false, stamp: data.stamp, head: '9999', message: '角色名已被使用，请换一个名字' });
     }
     // 新账号→创建
     const p = createPlayer(data.userID, data.roleName, data.imageID||1, data.agent||'4399', data.password||'');
