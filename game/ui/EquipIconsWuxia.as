@@ -53,13 +53,27 @@ package game.ui {
       [Embed(source="../../assets/icons/wuxia/饰品_魔渊·嗜.png")] private static var _i53:Class;
       [Embed(source="../../assets/icons/wuxia/头盔_魔渊·妄.png")] private static var _i54:Class;
       [Embed(source="../../assets/icons/wuxia/战靴_魔渊·疾.png")] private static var _i55:Class;
+      // ====== 旧装备独立图标 56-68 ======
+      [Embed(source="../../assets/icons/wuxia/武器_灭世.png")] private static var _i56:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_玄武战甲.png")] private static var _i57:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_荆棘反甲.png")] private static var _i58:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_麒麟铠.png")] private static var _i59:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_龙纹战甲.png")] private static var _i60:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_明光铠.png")] private static var _i61:Class;
+      [Embed(source="../../assets/icons/wuxia/护甲_锁子甲.png")] private static var _i62:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_紫微星.png")] private static var _i63:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_乾坤圈.png")] private static var _i64:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_天地令.png")] private static var _i65:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_护心镜.png")] private static var _i66:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_破军环.png")] private static var _i67:Class;
+      [Embed(source="../../assets/icons/wuxia/饰品_金戒指.png")] private static var _i68:Class;
 
       private static var _c:Array=[_i01,_i02,_i03,_i04,_i05,_i06,_i07,_i08,_i09,_i10,_i11,_i12,_i13,_i14,_i15,_i16,_i17,_i18,_i19,_i20,_i21,_i22,_i23,_i24,_i25,_i26,_i27,_i28,_i29,_i30];
 
       public static function getIcon(idx:int):Bitmap {
-         if(idx<1||idx>55) return null;
-         if(idx>=31 && idx<=55) {
-            var _ext:Array=[_i31,_i32,_i33,_i34,_i35,_i36,_i37,_i38,_i39,_i40,_i41,null,null,null,null,null,null,null,null,null,_i51,_i52,_i53,_i54,_i55];
+         if(idx<1||idx>68) return null;
+         if(idx>=31 && idx<=68) {
+            var _ext:Array=[_i31,_i32,_i33,_i34,_i35,_i36,_i37,_i38,_i39,_i40,_i41,null,null,null,null,null,null,null,null,null,_i51,_i52,_i53,_i54,_i55,_i56,_i57,_i58,_i59,_i60,_i61,_i62,_i63,_i64,_i65,_i66,_i67,_i68];
             var _e:Class=_ext[idx-31];
             if(_e==null) return null;
             var _b:Bitmap=new _e() as Bitmap;
