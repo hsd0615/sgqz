@@ -648,7 +648,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.0.11';
+  _cachedClientVersion = '4.3.0';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1773,8 +1773,6 @@ function handleRequest(socket, req) {
       const g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
       var lv=g.level||1;
-      // 武将等级不能超过君主等级
-      if (lv >= p.level) return jsonRawResponse(socket, { success: false, message: '武将等级已达君主等级上限' });
       var costMoney=2*lv*(lv-1)+100;
       var costExploit=lv*(lv-1)+100;
       if(p.money<costMoney)return jsonRawResponse(socket,{success:false,message:'银两不足'});

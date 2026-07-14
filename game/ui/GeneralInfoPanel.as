@@ -1436,28 +1436,17 @@ package game.ui
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          param1.stopImmediatePropagation();
-         var _plyLv:int = RoleModel.getInstance().level;
-         if(this._armyInfo.level < _plyLv)
+         _loc2_ = Logic.getMoneyByLevel(this._armyInfo.level);
+         _loc3_ = Logic.getExploitByLevel(this._armyInfo.level);
+         if(RoleModel.getInstance().money >= _loc2_ && RoleModel.getInstance().exploit >= _loc3_)
          {
-            _loc2_ = Logic.getMoneyByLevel(this._armyInfo.level);
-            _loc3_ = Logic.getExploitByLevel(this._armyInfo.level);
-            if(RoleModel.getInstance().money >= _loc2_ && RoleModel.getInstance().exploit >= _loc3_)
-            {
-               this.sendToHttpNew(Head.HTTP_NEW_GENERAL_SHENGJI);
-            }
-            else
-            {
-               dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
-                  "type":0,
-                  "text":"所需功勋或银子不足，无法提升等级。"
-               }));
-            }
+            this.sendToHttpNew(Head.HTTP_NEW_GENERAL_SHENGJI);
          }
          else
          {
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,
-               "text":"武将等级已达君主等级上限，请先提升君主等级。"
+               "text":"所需功勋或银子不足，无法提升等级。"
             }));
          }
       }
