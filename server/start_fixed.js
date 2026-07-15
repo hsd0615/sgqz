@@ -1614,9 +1614,10 @@ function handleRequest(socket, req) {
     var plv = p.level || 1;
     // 武将池: 从XML加载的generalRecruitMap中获取(排除title=0的不可招募武将用recruitLevel<=plv)
     var genPool = [];
-    for (var gc in generalRecruitMap) {
+    var _ownedCodes={};for(var oi=0;oi<db.generals.length;oi++){if(db.generals[oi].player_id===p.id)_ownedCodes[db.generals[oi].code]=true;}
+      for (var gc in generalRecruitMap) {
       var gr = generalRecruitMap[gc];
-      if (gr.recruitLevel > 0 && gr.recruitLevel <= plv) {
+      if (!_ownedCodes[gc] && gr.recruitLevel > 0 && gr.recruitLevel <= plv) {
         genPool.push({ code: gc, title: gr.title || 3, name: gr.name || gc });
       }
     }
@@ -1624,7 +1625,7 @@ function handleRequest(socket, req) {
     if (p._unlockedRecruits) {
       for (var ui = 0; ui < p._unlockedRecruits.length; ui++) {
         var uc = p._unlockedRecruits[ui];
-        if (generalRecruitMap[uc] && genPool.indexOf(uc) < 0) {
+        if (!_ownedCodes[uc] && generalRecruitMap[uc] && genPool.indexOf(uc) < 0) {
           genPool.push({ code: uc, title: generalRecruitMap[uc].title || 3, name: generalRecruitMap[uc].name || uc });
         }
       }
