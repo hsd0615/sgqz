@@ -16,7 +16,9 @@ package game
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.net.URLLoader;
    import flash.net.URLRequest;
+   import flash.net.URLRequestMethod;
    import flash.net.navigateToURL;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
@@ -55,6 +57,7 @@ package game
    import game.ui.LeitaiResultPanel;
    import game.ui.Map;
    import game.ui.NetStatusUI;
+   import game.ui.PaihangPanel;
    import game.ui.SelectServerPanel;
    import game.ui.ShangzhenPanel;
    import game.ui.ShopPanel;
@@ -63,6 +66,9 @@ package game
    import game.ui.YanzhengPanel;
    import game.ui.fuben.FanpaiPanel;
    import game.ui.fuben.FubenCheckPanel;
+   import com.greensock.TweenLite;
+   import flash.text.TextFormat;
+   import flash.text.TextField;
    import game.ui.fuben.FubenResultPanel;
    
    public class UI extends Sprite
@@ -132,7 +138,9 @@ package game
       private var _currentFubenStageID:int = 1;
       
       private var _fanpaiPanel:FanpaiPanel;
-      
+
+      private var _paihangPanel:PaihangPanel;
+
       private var _selectServerPanel:SelectServerPanel;
       
       private var _map:Map;
@@ -188,6 +196,7 @@ package game
          addEventListener(UIEvent.OPEN_DUIZHAN,this.onConnectServerBtnClickHandler);
          addEventListener(UIEvent.JINHUA_CLICK,this.jinhuaClickHandler);
          addEventListener(UIEvent.JINHUA,this.jinhuaHandler);
+         addEventListener(UIEvent.PAIHANG_CLICK,this.openPaihangHandler);
          addEventListener(UIEvent.CHONGZHI_CLICK,this.onChongzhiClickHandler);
          addEventListener(TalkEvent.NET_INFO,this.onTalkEventHandler);
          ChatManager.getInstance().addEventListener(TalkEvent.CHAT_PLAIN,this.onChatPlainHandler);
@@ -272,7 +281,7 @@ package game
             this._map.initData(_loc1_);
             RoleModel.getInstance().addEventListener(Event.CHANGE,this.roleModelChangeHandler);
             addChild(this._map);
-         }
+                     }
       }
       
       public function removeMap() : *
@@ -313,6 +322,8 @@ package game
          {
             this._generalListPanel.flush();
          }
+         // 所有数据变更自动检测战力变化
+         this.combatPowerCheck();
       }
       
       public function openNetStatusPanel(param1:Boolean = false) : *
@@ -486,9 +497,30 @@ package game
          {
             removeChild(this._shangzhenPanel);
             this._shangzhenPanel = null;
+			   this.combatPowerCheck();
          }
       }
       
+      public function openPaihangPanel() : *
+      {
+         if(this._paihangPanel == null)
+         {
+            this._paihangPanel = new PaihangPanel(SkinCode.PAIHANG_PANEL);
+            this._paihangPanel.x = stage.stageWidth / 2;
+            this._paihangPanel.y = stage.stageHeight / 2;
+            addChild(this._paihangPanel);
+         }
+      }
+
+      public function closePaihangPanel() : *
+      {
+         if(this._paihangPanel != null)
+         {
+            removeChild(this._paihangPanel);
+            this._paihangPanel = null;
+         }
+      }
+
       public function openZhaomuPanel() : *
       {
          if(this._zhaomuPanel == null)
@@ -528,6 +560,7 @@ package game
          {
             removeChild(this._bagPanel);
             this._bagPanel = null;
+			   this.combatPowerCheck();
          }
       }
       
@@ -871,7 +904,7 @@ package game
             this._gameCenter.y = stage.stageHeight / 2;
             addChild(this._gameCenter);
             this._gameCenter.addEventListener(UIEvent.CHANGE_STATUS,this.onDefusCheckBoxClickHandler);
-         }
+                     }
       }
       
       public function removeGameCenter() : *
@@ -1980,6 +2013,10 @@ package game
          {
             this.closeShangzhenPanel();
          }
+         else if(param1.target == this._paihangPanel)
+         {
+            this.closePaihangPanel();
+         }
          else if(param1.target == this._zhaomuPanel)
          {
             this.closeZhaomuPanel();
@@ -1996,6 +2033,7 @@ package game
          {
             this.closeFightResultPanel();
             MySound.getInstance().startByName(SoundCode.MAP);
+            this.combatPowerCheck();
          }
          else if(param1.target == this._gameInfo)
          {
@@ -2083,6 +2121,12 @@ package game
          this._generalInfoPanel.initData(param1.data.armyInfo);
       }
       
+      private function openPaihangHandler(param1:UIEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         this.openPaihangPanel();
+      }
+
       private function jinhuaClickHandler(param1:UIEvent) : void
       {
          this.openGeneralJinhuaPanel();
@@ -2102,6 +2146,7 @@ package game
          {
             this._generalInfoPanel.flush();
          }
+			   this.combatPowerCheck();
       }
       
       private function openBuduiHandler(param1:UIEvent) : *
@@ -2418,6 +2463,7 @@ package game
          this._gameCenter.setRole(RoleModel.getInstance());
          this._gameCenter.setList(ChatManager.getInstance().neighBors);
          RoleModel.getInstance().addEventListener(Event.CHANGE,this.roleModelChangeHandler);
+         this.combatPowerCheck();
       }
       
       private function exitGameCenterHandler(param1:UIEvent) : *
@@ -3761,6 +3807,108 @@ package game
          this.getGuoqingRequest(_loc2_);
          this.closeGuoqing1();
          this.closeGuoqing2();
+      }
+
+      /**
+       * 检查战力是否提升，如有提升则在屏幕中央显示浮动动画
+       */
+      private var _combatPowerSynced:Boolean = false;
+
+      public function combatPowerCheck() : void
+      {
+         var _delta:int = RoleModel.getInstance().checkCombatPowerChange();
+         var _power:int = RoleModel.getInstance().getCachedCombatPower();
+         // 刷新大地图上的战力显示
+         if(this._map != null)
+         {
+            this._map.refreshCombatPower();
+         }
+         if(_delta != 0)
+         {
+            this.showCombatPowerChange(_delta);
+            this.syncCombatPowerToServer(_power);
+            this._combatPowerSynced = true;
+         }
+         // 首次加载时也上报，确保排行榜有数据
+         if(!this._combatPowerSynced && _power > 0)
+         {
+            this.syncCombatPowerToServer(_power);
+            this._combatPowerSynced = true;
+         }
+      }
+
+      private function syncCombatPowerToServer(power:int) : void
+      {
+         try {
+            if (!Config.token || Config.token.length == 0) return;
+            var _req:URLRequest = new URLRequest(Config.SERVER_URL + "/api/sync-combat-power");
+            _req.method = URLRequestMethod.POST;
+            _req.contentType = "application/json";
+            _req.data = "{\"token\":\"" + Config.token + "\",\"power\":" + power + "}";
+            var _loader:URLLoader = new URLLoader();
+            _loader.load(_req);
+         } catch(_e:Error) {}
+      }
+
+      /**
+       * 屏幕中央显示战力变化动画（置顶层）
+       * 正值=金色上升，负值=红色下降
+       */
+      private function showCombatPowerChange(delta:int) : void
+      {
+         showCombatPowerUp(delta);
+      }
+
+      /**
+       * 在屏幕中央显示战力变化的浮动文字动画，置于最高层(stage)
+       * 正值金色上浮，负值红色下浮
+       */
+      private function showCombatPowerUp(delta:int) : void
+      {
+         if(stage == null) return;
+         var _tf:TextField = new TextField();
+         _tf.selectable = false;
+         _tf.mouseEnabled = false;
+         _tf.width = 400;
+         _tf.height = 60;
+         _tf.x = (stage.stageWidth - _tf.width) / 2;
+         _tf.y = stage.stageHeight / 2 - 35;
+         _tf.alpha = 1;
+         // 必须先设置defaultTextFormat再设置text，否则颜色不生效
+         var _fmt:TextFormat = new TextFormat();
+         _fmt.size = 38;
+         _fmt.bold = true;
+         _fmt.align = "center";
+         _fmt.font = "_sans";
+         if(delta > 0)
+         {
+            _fmt.color = 0xFFD700;
+            _tf.defaultTextFormat = _fmt;
+            _tf.text = "战力 +" + delta;
+         }
+         else
+         {
+            _fmt.color = 0xFF4444;
+            _tf.defaultTextFormat = _fmt;
+            _tf.text = "战力 " + delta;
+         }
+         _tf.setTextFormat(_fmt);
+         // 直接加到stage确保在所有面板之上
+         stage.addChild(_tf);
+         TweenLite.to(_tf,1.8,{
+            "y":_tf.y - 100,
+            "alpha":0,
+            "onComplete":this.onCombatPowerTweenComplete,
+            "onCompleteParams":[_tf]
+         });
+      }
+
+      private function onCombatPowerTweenComplete(param1:TextField) : void
+      {
+         if(param1 != null && param1.parent != null)
+         {
+            param1.parent.removeChild(param1);
+         }
       }
    }
 }

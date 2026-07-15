@@ -23,16 +23,22 @@ function findPlayerByToken(token) { return db.players.find(p => p.token === toke
 function findPlayerByPwd(uid, pwd) { return db.players.find(p => String(p.user_id) === String(uid) && p.password === pwd); }
 function findPlayerByName(roleName) { return db.players.find(p => p.role_name === roleName); }
 // 检查玩家是否有活跃会话（防止同一账号多开）
+// 客户端150ms轮询一次，3秒无活动即可判定离线，支持闪退后立即重登
+var ACTIVE_SESSION_TIMEOUT = 3 * 1000; // 3秒
 function hasActiveSession(playerId) {
   var pid = String(playerId);
+  var now = Date.now();
+  // TCP会话：超过3秒无数据活动视为僵死
   for (var _vs = Array.from(tcpSessions.values()), _ii = 0; _ii < _vs.length; _ii++) {
-    if (String(_vs[_ii].playerId) === pid) return true;
+    var ts = _vs[_ii];
+    if (String(ts.playerId) === pid && (now - (ts.lastActivity||0)) < ACTIVE_SESSION_TIMEOUT) return true;
   }
+  // Web轮询会话：超过3秒无活动视为离线
   if (typeof globalWebSessions !== 'undefined') {
     var _wkeys = Object.keys(globalWebSessions);
     for (var _jj = 0; _jj < _wkeys.length; _jj++) {
       var ws = globalWebSessions[_wkeys[_jj]];
-      if (ws && String(ws.playerId) === pid) return true;
+      if (ws && String(ws.playerId) === pid && (now - (ws.lastActivity||0)) < ACTIVE_SESSION_TIMEOUT) return true;
     }
   }
   return false;
@@ -92,6 +98,7 @@ function initLeitai() {
 var KEZHI_MAP = {};
 var generalRecruitMap = {};
 var generalNameToCode = {}; // name → code 映射 (用于通关奖励在野武将)
+var GENERAL_BASE_STATS = {}; // code → {hp, attack, defense, type, title} (用于战斗力估算)
 function loadKezhiMap() {
   if (!fs.existsSync('/opt/staticgeneral.xml')) return;
   var xml = fs.readFileSync('/opt/staticgeneral.xml','utf8');
@@ -101,12 +108,16 @@ function loadKezhiMap() {
     var km = blocks[i].match(/<kezhi>([^<]+)<\/kezhi>/);
     var nm = blocks[i].match(/<name>([^<]+)<\/name>/);
     if (cm && km && km[1].length > 0) KEZHI_MAP[cm[1]] = km[1];
-    // 同时加载招募概率 + 品质 + 等级要求 + 名称
+    // 同时加载招募概率 + 品质 + 等级要求 + 名称 + 基础属性
     if (cm) {
       var mm = blocks[i].match(/<money>(\d+)<\/money>/);
       var dm = blocks[i].match(/<dianka>(\d+)<\/dianka>/);
       var tm = blocks[i].match(/<title>(\d+)<\/title>/);
       var rm = blocks[i].match(/<recruitLevel>(-?\d+)<\/recruitLevel>/);
+      var _hpm = blocks[i].match(/<hp>(\d+)<\/hp>/);
+      var _atkm = blocks[i].match(/<attack>(\d+)<\/attack>/);
+      var _defm = blocks[i].match(/<defense>(\d+)<\/defense>/);
+      var _typem = blocks[i].match(/<type>(\d+)<\/type>/);
       var entry = {};
       if (mm) entry.money = parseInt(mm[1]);
       if (dm) entry.dianka = parseInt(dm[1]);
@@ -114,12 +125,44 @@ function loadKezhiMap() {
       if (rm) entry.recruitLevel = parseInt(rm[1]);
       if (nm) entry.name = nm[1];
       if (Object.keys(entry).length > 0) generalRecruitMap[cm[1]] = entry;
+      // 基础属性（用于战斗力估算）
+      if (_hpm || _atkm || _defm) {
+        GENERAL_BASE_STATS[cm[1]] = {
+          hp: parseInt(_hpm ? _hpm[1] : '200'),
+          attack: parseInt(_atkm ? _atkm[1] : '200'),
+          defense: parseInt(_defm ? _defm[1] : '100'),
+          type: parseInt(_typem ? _typem[1] : '1'),
+          title: parseInt(tm ? tm[1] : '2')
+        };
+      }
     }
     // name → code 映射
     if (cm && nm) generalNameToCode[nm[1]] = cm[1];
   }
   KEZHI_MAP['general_0_1'] = '3:1|8:1|9:1';
-  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length + ', names: ' + Object.keys(generalNameToCode).length);
+  console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length + ', names: ' + Object.keys(generalNameToCode).length + ', baseStats: ' + Object.keys(GENERAL_BASE_STATS).length);
+}
+
+// 全局系数映射 (从staticxishu.xml加载, type_title → {hp, attack, defence})
+var XISHU_MAP = {};
+function loadXishuMap() {
+  if (!fs.existsSync('/opt/staticxishu.xml')) return;
+  var xml = fs.readFileSync('/opt/staticxishu.xml','utf8');
+  var blocks = xml.split('<RECORD>');
+  for (var i = 1; i < blocks.length; i++) {
+    var cm = blocks[i].match(/<code>([^<]+)<\/code>/);
+    var hm = blocks[i].match(/<hp>([\d.]+)<\/hp>/);
+    var am = blocks[i].match(/<attack>([\d.]+)<\/attack>/);
+    var dm = blocks[i].match(/<defence>([\d.]+)<\/defence>/);
+    if (cm) {
+      XISHU_MAP[cm[1]] = {
+        hp: hm ? parseFloat(hm[1]) : 2.0,
+        attack: am ? parseFloat(am[1]) : 2.0,
+        defence: dm ? parseFloat(dm[1]) : 1.5
+      };
+    }
+  }
+  console.log('[XishuMap] Loaded ' + Object.keys(XISHU_MAP).length + ' entries');
 }
 
 // 全局关卡ID映射 (part_level → stage_id, 从stage.xml加载)
@@ -523,6 +566,7 @@ function createTestAccounts() {
 
 if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 loadKezhiMap();     // 1. 加载XML克制类型映射
+	loadXishuMap();     // 1a. 加载xishu系数表(用于战斗力估算)
 buildGeneralQualityMap(); // 1a. 构建武将品质映射(超级/一流/二流...)
 loadStageMap();     // 1b. 加载关卡ID映射
 loadStageEnemyData(); // 1b2. 加载敌将数据
@@ -648,7 +692,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.4.2';
+  _cachedClientVersion = '4.4.3';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -2622,6 +2666,7 @@ function handleRequest(socket, req) {
       return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
     }
     p.lastSeen = Date.now();
+    if (p._pollSession) p._pollSession.lastActivity = Date.now();
     const msg = typeof data.msg === 'string' ? JSON.parse(data.msg) : data.msg;
     console.log('[Poll] ' + p.role_name + ' send type=' + (msg ? msg.type : 'null') + ' peerId=' + (p._pollPeerId||'(new)'));
     if (msg) {
@@ -2638,6 +2683,7 @@ function handleRequest(socket, req) {
       return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
     }
     p.lastSeen = Date.now();
+    if (p._pollSession) p._pollSession.lastActivity = Date.now();
     if (!p._pollQueue) p._pollQueue = [];
     if (p._pollQueue.length > 10) p._pollQueue = p._pollQueue.slice(-5);
     const since = data.since || 0;
@@ -2671,6 +2717,87 @@ function handleRequest(socket, req) {
     var _ra = 0; for (var _rek in EQUIP_DATA) { if (EQUIP_DATA[_rek].slot === 3 || EQUIP_DATA[_rek].slot === 6) _ra++; }
     console.log('[Reload] EQUIP_DATA reloaded: ' + _rc + ' items, 饰品: ' + _ra);
     return jsonRawResponse(socket, { success: true, data: { equipCount: _rc, accessoryCount: _ra } });
+  }
+
+  // ============ 战力排行榜 ============
+  // 客户端上报当前战力
+  if (url === '/api/sync-combat-power' && data.token) {
+    const p = findPlayerByToken(data.token);
+    if (!p) return jsonRawResponse(socket, { success: false, message: 'Token invalid' });
+    var _pw = parseInt(data.power);
+    if (_pw > 0) {
+      p.combat_power = _pw;
+      p.combat_power_time = Date.now();
+    }
+    return jsonRawResponse(socket, { success: true });
+  }
+
+  // 获取战力排行
+  if (url === '/api/combat-ranking') {
+    // 辅助：从武将数据估算战力（未同步时做fallback）
+    function estimatePower(pid, playerChoose) {
+      var _chooseCodes = (playerChoose||'').split('|').filter(function(c){return c&&c.length>0;});
+      if(_chooseCodes.length===0) return 0;
+
+      var TITLE_MULT=[1.3,1.0,0.8,0.65];
+      var EVO_ADD=[0,0.05,0.08,0.11,0.15,0.22,0.26,0.32,0.38,0.42,0.50];
+
+      function calcBase(baseVal, lvl, xishuVal, title, mult){
+        var tm=TITLE_MULT[title]||1.0, xh=xishuVal||2, lv=lvl||1;
+        var s=baseVal*(1+lv*0.03);
+        return Math.floor(((lv-1)*mult*xh+s)*tm);
+      }
+
+      function calcEquipBonus(eqSlots){
+        var a=0,d=0,h=0;
+        for(var i=0;i<eqSlots.length;i++){
+          var ed=EQUIP_DATA[eqSlots[i]];
+          if(!ed) continue;
+          a+=ed.attack||0; d+=ed.defense||0; h+=ed.hp||0;
+        }
+        return {a:a,d:d,h:h};
+      }
+
+      var _p=0;
+      for(var _ci=0;_ci<_chooseCodes.length;_ci++){
+        var _g=db.generals.find(function(g){return g.player_id===pid&&g.code===_chooseCodes[_ci];});
+        if(!_g) continue;
+
+        var lvl=_g.level||1, evo=_g.evolution||0;
+        var evAdd=evo<=10?EVO_ADD[evo]:0.5;
+        var bs=GENERAL_BASE_STATS[_g.code]||{hp:200,attack:200,defense:100,type:1,title:2};
+        var xKey=bs.type+'_'+bs.title;
+        var xishu=XISHU_MAP[xKey]||{hp:2.0,attack:2.0,defence:1.5};
+
+        var bHp=calcBase(bs.hp,lvl,xishu.hp,bs.title,50);
+        var bAtk=calcBase(bs.attack,lvl,xishu.attack,bs.title,30);
+        var bDef=calcBase(bs.defense,lvl,xishu.defence,bs.title,30);
+
+        var eq=calcEquipBonus([_g.equip1,_g.equip2,_g.equip3,_g.equip4,_g.equip5,_g.equip6]);
+
+        var atk=bAtk+Math.floor(bAtk*evAdd)+eq.a;
+        var def=bDef+Math.floor(bDef*evAdd)+eq.d;
+        var hp=bHp+Math.floor(bHp*evAdd)+eq.h;
+
+        _p+=atk*5+def*3+hp*2;
+      }
+      return Math.floor(_p);
+    }   var rankings = db.players
+      .filter(function(pl) {
+        // 排除gm_admin管理员
+        return pl.user_id !== 'gm_admin';
+      })
+      .map(function(pl) {
+        var _pw = pl.combat_power || estimatePower(pl.id, pl.choose);
+        return { name: pl.role_name, level: pl.level, power: _pw, image: pl.image_id };
+      })
+      .filter(function(r) { return r.power > 0; })
+      .sort(function(a, b) { return b.power - a.power; })
+      .slice(0, 100);
+    for (var ri = 0; ri < rankings.length; ri++) {
+      rankings[ri].rank = ri + 1;
+    }
+    return jsonRawResponse(socket, { success: true, rankings: rankings });
   }
 
   // Other API endpoints — 返回当前玩家资源（防止覆盖归零）
@@ -2768,7 +2895,8 @@ function processPollMessage(player, msg) {
         peerId: player._pollPeerId,
         playerId: player.id,
         roleName: player.role_name,
-        rooms: []
+        rooms: [],
+        lastActivity: Date.now()
       };
       // 加入全局web会话列表
       if (!globalWebSessions) globalWebSessions = {};
@@ -3091,9 +3219,27 @@ function tcpHandleMessage(session, msg) {
   }
 }
 
+function cleanupSession(session) {
+  if (!session.peerId) return;
+  console.log('[TCP] cleanup ' + (session.roleName||'?') + ' peerId=' + session.peerId + ' playerId=' + session.playerId);
+  for (const room of session.rooms) { const r = tcpRooms.get(room); if (r) { r.delete(session.peerId); if (r.size === 0) tcpRooms.delete(room); } }
+  if (session.farPeerId) { const o = tcpSessions.get(session.farPeerId); if (o) { o.farPeerId = null; tcpSend(o, { type: 'battle_opponent_disconnected', peerId: session.peerId }); } }
+  // 释放该玩家占用的擂台
+  for (const room of db.leitaiRooms) {
+    if (room.mInfo && String(room.mInfo.id) === String(session.playerId)) {
+      room.rStatus = 0; room.mInfo = null; room.rCount = 0;
+      delete room._battlePeers; delete room._battlePlayers; delete room._battleCoolDown;
+      console.log('[Leitai] TCP断开释放擂台 rID=' + room.rID + ' player=' + session.roleName);
+    }
+  }
+  tcpSessions.delete(session.peerId);
+  if (session._timedOut) { try { session.socket.destroy(); } catch(e) {} }
+}
+
 const tcpServer = net.createServer((socket) => {
-  const session = { socket, peerId: '', playerId: 0, roleName: '', rooms: new Set(), farPeerId: null, buffer: Buffer.alloc(0), expectedLen: -1 };
+  const session = { socket, peerId: '', playerId: 0, roleName: '', rooms: new Set(), farPeerId: null, buffer: Buffer.alloc(0), expectedLen: -1, lastActivity: Date.now() };
   socket.on('data', (data) => {
+    session.lastActivity = Date.now();
     session.buffer = Buffer.concat([session.buffer, data]);
     while (true) {
       if (session.expectedLen < 0) { if (session.buffer.length < 4) break; session.expectedLen = session.buffer.readInt32BE(0); session.buffer = session.buffer.slice(4); }
@@ -3108,36 +3254,47 @@ const tcpServer = net.createServer((socket) => {
       } catch(e) { console.log('[TCP] parse error:', e.message); }
     }
   });
-  socket.on('close', () => {
-    if (session.peerId) {
-      for (const room of session.rooms) { const r = tcpRooms.get(room); if (r) { r.delete(session.peerId); if (r.size === 0) tcpRooms.delete(room); } }
-      if (session.farPeerId) { const o = tcpSessions.get(session.farPeerId); if (o) { o.farPeerId = null; tcpSend(o, { type: 'battle_opponent_disconnected', peerId: session.peerId }); } }
-      // 释放该玩家占用的擂台
-      for (const room of db.leitaiRooms) {
-        if (room.mInfo && String(room.mInfo.id) === String(session.playerId)) {
-          room.rStatus = 0; room.mInfo = null; room.rCount = 0;
-          delete room._battlePeers; delete room._battlePlayers; delete room._battleCoolDown;
-          console.log('[Leitai] TCP断开释放擂台 rID=' + room.rID + ' player=' + session.roleName);
-        }
-      }
-      tcpSessions.delete(session.peerId);
-    }
-  });
-  socket.on('error', () => {});
+  socket.on('close', () => { cleanupSession(session); });
+  socket.on('error', (err) => { console.log('[TCP] socket error: ' + (err ? err.message : 'unknown') + ' role=' + session.roleName); cleanupSession(session); });
 });
 tcpServer.listen(TCP_PORT, '0.0.0.0', () => console.log('TCP server on ' + TCP_PORT));
 
-// ============ 心跳：定期更新在线玩家 lastSeen ============
-// 修复：已关闭游戏的玩家仍显示在在线人数中的bug
-// 每60秒遍历所有活跃TCP连接，更新对应玩家的lastSeen时间戳
+// ============ 心跳：定期更新在线玩家 + 清理僵死连接 ============
+// 每60秒遍历所有活跃TCP连接，更新lastSeen；同时清理超过2分钟无活动的僵死连接
 setInterval(() => {
   const now = Date.now();
+  const STALE_TIMEOUT = 2 * 60 * 1000; // 2分钟无活动视为僵死
+  const staleSessions = [];
   for (const [peerId, session] of tcpSessions) {
     if (session.playerId) {
       const p = db.players.find(pl => pl.id === session.playerId);
       if (p) {
-        p.lastSeen = now;
+        // 检查是否僵死：超过2分钟无活动，且socket不可写
+        if (now - (session.lastActivity||0) > STALE_TIMEOUT && session.socket && !session.socket.destroyed && !session.socket.writable) {
+          staleSessions.push(session);
+          console.log('[Heartbeat] 清理僵死连接: ' + session.roleName + ' (playerId=' + session.playerId + ')');
+        } else {
+          p.lastSeen = now;
+        }
       }
+    }
+  }
+  for (const s of staleSessions) {
+    s._timedOut = true;
+    cleanupSession(s);
+  }
+  // 清理超过2分钟无活动的web轮询会话
+  if (typeof globalWebSessions !== 'undefined') {
+    var staleWebPeers = [];
+    for (var _wp in globalWebSessions) {
+      var _ws2 = globalWebSessions[_wp];
+      if (_ws2 && (now - (_ws2.lastActivity||0)) > STALE_TIMEOUT) {
+        staleWebPeers.push(_wp);
+        console.log('[Heartbeat] 清理web会话: ' + (_ws2.roleName||'?') + ' peer=' + _wp);
+      }
+    }
+    for (var _si2 = 0; _si2 < staleWebPeers.length; _si2++) {
+      delete globalWebSessions[staleWebPeers[_si2]];
     }
   }
   // 每5分钟保存一次（避免过于频繁的磁盘IO）
