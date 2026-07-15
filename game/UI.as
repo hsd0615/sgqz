@@ -710,6 +710,7 @@ package game
             removeChild(this._fanpaiPanel);
             this._fanpaiPanel = null;
          }
+         this._isMultiFlip = false;
       }
       
       public function openConnectWait() : *
@@ -2206,9 +2207,18 @@ package game
          this._bagPanel.initData(RoleModel.getInstance().getBagData());
       }
 
+      private var _recruitSendCount:int = 0; // 已发送翻牌计数(多求贤令模式)
+      private var _isMultiFlip:Boolean = false; // 是否多翻模式
+
       private function onQiuxianCardClick(param1:UIEvent) : *
       {
-         if(RoleModel.getInstance().getBagItemCount("proto_3_3") <= 0) return;
+         var _tokenCount:int = RoleModel.getInstance().getBagItemCount("proto_3_3");
+         if(_tokenCount <= 0) return;
+         // 最多使用 min(令牌数, 6) 个
+         var _maxUse:int = _tokenCount > 6 ? 6 : _tokenCount;
+         this._recruitSendCount = 0;
+         this._isMultiFlip = _maxUse > 1;
+
          var _loc2_:Object = {};
          _loc2_.head = Head.HTTP_NEW_RECRUIT_CARDS;
          _loc2_.agent = Config.AGENT;
@@ -2217,6 +2227,7 @@ package game
          _loc2_.roleID = RoleModel.getInstance().roleID;
          _loc2_.userID = RoleModel.getInstance().userID;
          _loc2_.level = RoleModel.getInstance().level;
+         _loc2_.maxFlips = _maxUse;
          _loc2_.mask = true;
          AESController.getInstance().sendJSON(_loc2_,this.onRecruitCardsResponse);
       }
@@ -2229,7 +2240,8 @@ package game
             this.openFanpaiPanel();
             this._fanpaiPanel.initData({
                "pai":param1.data.pai,
-               "stageID":0
+               "stageID":0,
+               "maxFlips":param1.data.maxFlips || 1
             });
          }
          else
@@ -2276,11 +2288,15 @@ package game
                   }
                }
             }
-            this.closeFanpaiPanel();
-            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
-               "type":0,
-               "text":"翻牌成功！"
-            }));
+            this._recruitSendCount++;
+            if(!this._isMultiFlip)
+            {
+               this.closeFanpaiPanel();
+               dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+                  "type":0,
+                  "text":"翻牌成功！"
+               }));
+            }
          }
          else
          {

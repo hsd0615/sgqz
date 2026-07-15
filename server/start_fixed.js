@@ -692,7 +692,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.4.4';
+  _cachedClientVersion = '4.5.0';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1682,7 +1682,7 @@ function handleRequest(socket, req) {
 
     console.log('[RecruitCards] ' + p.role_name + ' Lv' + plv + ' cards: ' + pai.join(', '));
     return jsonRawResponse(socket, {
-      success: true, head: String(data.head),
+      success: true, head: String(data.head), maxFlips: data.maxFlips || 1,
       data: { pai: pai, stageID: 0 }
     });
   }
