@@ -40,17 +40,18 @@ package game.ui
          } catch(_e:Error) {}
 
          // 列表容器（带滚动蒙版 + 鼠标滚轮）
-         this._container = new RankingContainer(520, 345);
-         this._container.x = -258;
-         this._container.y = -178;
+         // 皮肤背景: 579x362, 居中于(0,0), 内容区约在y:-130~130
+         this._container = new RankingContainer(520, 260);
+         this._container.x = -260;
+         this._container.y = -130;
          this._container.enableMouseWheel();
          addChild(this._container);
 
          // 滚动条
          try {
             this._scrollBar = new ScrollBar(SkinCode.PAIHANG_SCROLL_BAR);
-            this._scrollBar.x = 275;
-            this._scrollBar.y = -178;
+            this._scrollBar.x = 272;
+            this._scrollBar.y = -130;
             addChild(this._scrollBar);
             this._scrollBar.target = this._container;
          } catch(_e:Error) {}
@@ -67,7 +68,7 @@ package game.ui
 
          // 我的排名（页脚）
          this.__myRankTF = new TextField();
-         this.__myRankTF.x = -150; this.__myRankTF.y = 205;
+         this.__myRankTF.x = -150; this.__myRankTF.y = 155;
          this.__myRankTF.width = 300; this.__myRankTF.height = 24;
          this.__myRankTF.selectable = false;
          this.__myRankTF.mouseEnabled = false;

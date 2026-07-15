@@ -105,6 +105,26 @@ package game.model
 		   this.initProcess(param1.process);
 		}
 		
+			/**
+			 * 同步装备变更到原始数据并通知战力刷新
+			 * clone 是面板中修改后的副本
+			 */
+			public function syncSoldierEquip(param1:ArmyInfo) : void
+			{
+			   var _i:int = 0;
+			   while(_i < this._armys.length)
+			   {
+			      if(this._armys[_i].id == param1.id)
+			      {
+			         this._armys[_i].setEquipmentStr(param1.getEquipmentStr());
+			         this._armys[_i].hp = param1.hp;
+			         dispatchEvent(new Event(Event.CHANGE));
+			         return;
+			      }
+			      _i++;
+			   }
+			}
+
 		public function addSoldier(param1:ArmyInfo) : *
 		{
 		   if(this._armys == null)
@@ -243,7 +263,10 @@ package game.model
 		   var _loc2_:int = 0;
 		   while(_loc2_ < this._chooseSoldiers.length)
 		   {
-		      _loc1_.push(this.getSoldierByCode(this._chooseSoldiers[_loc2_]));
+		      var _soldier:ArmyInfo = this.getSoldierByCode(this._chooseSoldiers[_loc2_]);
+		      if(_soldier != null) {
+		         _loc1_.push(_soldier);
+		      }
 		      _loc2_++;
 		   }
 		   return _loc1_;
@@ -277,6 +300,49 @@ package game.model
 		   return _loc2_;
 		}
 		
+		/**
+		 * 计算上阵武将总战力
+		 * 公式: 每名武将的 攻击x5 + 防御x3 + 最大生命x2
+		 */
+		public function getCombatPower() : int
+		{
+		   var _power:int = 0;
+		   var _soldiers:Vector.<ArmyInfo> = this.getChooseSoldiers();
+		   var _i:int = 0;
+		   while(_i < _soldiers.length)
+		   {
+		      _power += _soldiers[_i].attack * 5 + _soldiers[_i].defense * 3 + _soldiers[_i].maxHp * 2;
+		      _i++;
+		   }
+		   return _power;
+		}
+
+		private var _combatPower:int = 0;
+
+		/**
+		 * 检查战力变化
+		 */
+		public function checkCombatPowerChange() : int
+		{
+		   var _newPower:int = this.getCombatPower();
+		   var _delta:int = _newPower - this._combatPower;
+		   this._combatPower = _newPower;
+		   return _delta;
+		}
+
+		/**
+		 * 从存档恢复战力缓存
+		 */
+		public function initCombatPowerCache() : void
+		{
+		   this._combatPower = this.getCombatPower();
+		}
+
+		public function getCachedCombatPower() : int
+		{
+		   return this._combatPower;
+		}
+
 		public function addChooseSoldier(param1:String) : *
 		{
 		   var _loc2_:Vector.<String> = this.getAllSoldierCode();
@@ -766,6 +832,7 @@ package game.model
 		   this.importBag(_loc6_);
 		   this.importFinished(_loc7_);
 		   this.importHistory(_loc8_);
+		   this.initCombatPowerCache();
 		}
 		
 		private function importInfo(param1:String) : *
@@ -1068,9 +1135,9 @@ package game.model
 		
 		public function set level(param1:int) : void
 		{
-		   if(param1 > 130)
+		   if(param1 > 150)
 		   {
-		      param1 = 130;
+		      param1 = 150;
 		   }
 		   else if(param1 < 0)
 		   {

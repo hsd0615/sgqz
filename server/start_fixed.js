@@ -692,7 +692,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.4.3';
+  _cachedClientVersion = '4.4.4';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1556,6 +1556,12 @@ function handleRequest(socket, req) {
     } else if (headCode === 10003) { // 点卡招募 — 同样使用dianka概率
       costDianka = 20; costReverence = 1000;
       successRate = genRecruitDianka / 100;
+    }
+
+    // 检查是否已拥有该武将（防重复招募）
+    var _alreadyOwned = db.generals.find(function(g) { return g.player_id === p.id && g.code === data.code; });
+    if (_alreadyOwned) {
+      return jsonRawResponse(socket, { success: false, stamp: data.stamp, head: String(data.head), message: '已拥有该武将，无法重复招募' });
     }
 
     // 检查资源
