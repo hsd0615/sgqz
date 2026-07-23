@@ -1,0 +1,17 @@
+{
+  "frameCount": 65,
+  "cellWidth": 256,
+  "cellHeight": 160,
+  "columns": 13,
+  "originX": 128,
+  "originY": 130,
+  "labels": {
+    "stand": 1,
+    "moveBegin": 3,
+    "moveEnd": 12,
+    "attackBegin": 13,
+    "attackEnd": 17,
+    "deadBegin": 31,
+    "deadEnd": 65
+  }
+}
