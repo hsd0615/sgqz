@@ -231,6 +231,7 @@ package game
          addEventListener(UIEvent.CLOSE_FUBEN,this.closeFubenHandler);
          addEventListener(UIEvent.OPEN_FANPAI,this.openFanpaiHandler);
          addEventListener(UIEvent.SEND_PAIMIAN,this.sendPaimianHandler);
+         addEventListener(UIEvent.SUPER_RECRUIT,this.onSuperRecruitHandler);
          addEventListener(UIEvent.FUBEN_SPEED_CHECKOUT,this.fubenSpeedCheckOutHandler);
          addEventListener(UIEvent.OPEN_LEITAI,this.leitaiListRequest);
          addEventListener(UIEvent.OPEN_LEITAI_GUIZE,this.openLeitaiGuize);
@@ -3251,6 +3252,7 @@ package game
          _loc2_.index = int(param1.data.index);
          _loc2_.result = int(param1.data.result);
          _loc2_.level = int(param1.data.level);
+         _loc2_.superGeneralCode = param1.data.superGeneralCode || "";
          _loc2_.mask = true;
          AESController.getInstance().sendJSON(_loc2_,this.xiongnuResultResponse);
       }
@@ -3407,7 +3409,63 @@ package game
             }));
          }
       }
-      
+
+      private function onSuperRecruitHandler(param1:UIEvent) : *
+      {
+         var _code:String = param1.data.superGeneralCode;
+         if(_code == null || _code == "")
+         {
+            this.showMsg({type:0, text:"数据异常，无法招募"});
+            return;
+         }
+         var _qlCount:int = RoleModel.getInstance().getBagItemCount("proto_3_3");
+         if(_qlCount <= 0)
+         {
+            this.showMsg({type:0, text:"求贤令不足，无法招募超级武将"});
+            return;
+         }
+         var _loc2_:Object = {};
+         _loc2_.head = Head.HTTP_NEW_RECRUIT_SUPER;
+         _loc2_.agent = Config.AGENT;
+         _loc2_.ver = Config.VER;
+         _loc2_.token = Config.token;
+         _loc2_.roleID = RoleModel.getInstance().roleID;
+         _loc2_.userID = RoleModel.getInstance().userID;
+         _loc2_.generalCode = _code;
+         _loc2_.mask = true;
+         AESController.getInstance().sendJSON(_loc2_,this.onRecruitSuperResponse);
+      }
+
+      private function onRecruitSuperResponse(param1:Object) : *
+      {
+         if(param1.success == true && param1.data != null)
+         {
+            var _gData:Object = param1.data.general;
+            if(_gData != null)
+            {
+               var _gi:ArmyInfo = Data.getInstance().getArmyInfo(_gData.code, int(_gData.level), int(_gData.evolution || 0), int(_gData.feature || 0));
+               if(_gi != null)
+               {
+                  if(_gData.forceHp) _gi.forceHp = int(_gData.forceHp);
+                  RoleModel.getInstance().addSoldier(_gi);
+                  var _gn:String = Data.getInstance().getAttributes("general", _gData.code, "name");
+                  this.showMsg({type:0, text:"获得武将: " + (_gn || _gData.code)});
+               }
+            }
+            if(param1.data.money != null)
+            {
+               RoleModel.getInstance().money = int(param1.data.money);
+            }
+            RoleModel.getInstance().throttleSave();
+            // 刷新FubenResultPanel按钮状态
+            this._fubenResultPanel.refreshRecruitBtn();
+         }
+         else
+         {
+            this.showMsg({type:0, text:param1.message || "招募失败"});
+         }
+      }
+
       private function shuangkaiPost(param1:UIEvent) : *
       {
          var _loc2_:ByteArray = new ByteArray();

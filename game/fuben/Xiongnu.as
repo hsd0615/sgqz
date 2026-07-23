@@ -43,6 +43,7 @@ package game.fuben
    import game.display.StoneWeapon;
    import game.display.WandaoSoldier;
    import game.display.FrameSoldier;
+   import game.display.PartSoldier;
    import game.display.Weapon;
    import game.events.ConEvent;
    import game.events.FightEvent;
@@ -157,6 +158,36 @@ package game.fuben
       private var _ammoTips:MovieClip;
       
       private var _fubenID:int = 1;
+
+      private var _superGeneralCode:String = "";
+
+      // 第三关可能出现的魔化超级武将候选池(所有title=0的超级武将)
+      private static const SUPER_BOSS_POOL:Array = [
+         {code:"general_1_15", name:"魔化黄忠"},
+         {code:"general_1_22", name:"魔化邓艾"},
+         {code:"general_2_11", name:"魔化貂蝉"},
+         {code:"general_3_13", name:"魔化关羽"},
+         {code:"general_4_14", name:"魔化许褚"},
+         {code:"general_4_19", name:"魔化夏侯霸"},
+         {code:"general_5_14", name:"魔化典韦"},
+         {code:"general_5_18", name:"魔化孙策"},
+         {code:"general_5_19", name:"魔化董卓"},
+         {code:"general_6_15", name:"魔化魏延"},
+         {code:"general_6_18", name:"魔化文鸯"},
+         {code:"general_7_14", name:"魔化张飞"},
+         {code:"general_7_19", name:"魔化赵云"},
+         {code:"general_8_13", name:"魔化兀突骨"},
+         {code:"general_9_16", name:"魔化夏侯惇"},
+         {code:"general_9_17", name:"魔化太史慈"},
+         {code:"general_9_18", name:"魔化吕布"},
+         {code:"general_9_20", name:"魔化马超"},
+         {code:"general_9_32", name:"魔化孙权"},
+         {code:"general_9_33", name:"魔化刘备"},
+         {code:"general_9_34", name:"魔化曹操"},
+         {code:"general_20_1", name:"魔化孙权"},
+         {code:"general_20_2", name:"魔化刘备"},
+         {code:"general_20_3", name:"魔化曹操"}
+      ];
 
       public function Xiongnu(param1:Vector.<ArmyInfo>, param2:int = 1, param3:int = 1, param4:int = 1)
       {
@@ -645,6 +676,8 @@ package game.fuben
                   return new WandaoSoldier(param1.clone(),param2,param3);
                case Type.BOSS:
                   return new Boss(param1.clone(),param2,param3);
+               case Type.PART_SOLDIER:
+                  return new PartSoldier(param1.clone(),param2,param3,this);
                case Type.JUNZHU:
                   return new Junzhu(param1.clone(),param2,param3,this);
                case 14:
@@ -814,6 +847,8 @@ package game.fuben
          this.createTitle();
          this._rightArmy = new Vector.<ArmyInfo>();
          this._rightSoldiers = [];
+         this._superGeneralCode = "";
+         // 始终保留原有匈奴头目Boss
          this._rightArmy.push(this._config.getBossData(this._leftArmy));
          this._rightArmy[0].forceHp = true;
          var _loc1_:AbstractSoldier = this.armyFactory(this._rightArmy[0],-1,false);
@@ -830,6 +865,28 @@ package game.fuben
          _loc1_.x = 550;
          _loc1_.y = Xiongnu.POS2.y;
          addChild(_loc1_);
+         // 10%概率额外出现魔化超级武将
+         if(Math.random() < 0.1)
+         {
+            var _superEntry:Object = SUPER_BOSS_POOL[int(Math.random() * SUPER_BOSS_POOL.length)];
+            var _superCode:String = _superEntry.code;
+            var _superName:String = _superEntry.name;
+            var _locObj:Object = Data.getInstance().getFubenAIDelay(this._fubenID, _superCode);
+            var _superAI:int = int(_locObj.ai) > 0 ? int(_locObj.ai) : 80;
+            var _superDelay:int = int(_locObj.delay) > 0 ? int(_locObj.delay) : 3000;
+            var _superArmy:ArmyInfo = Data.getInstance().getArmyInfo(_superCode, 1, 0, 0, _superName, _superDelay, _superAI);
+            _superArmy.isEnemy = true;
+            _superArmy.forceHp = true;
+            _superArmy.hp = _totalPlayerHP * 10;
+            this._superGeneralCode = _superCode;
+            this._rightArmy.push(_superArmy);
+            var _superSoldier:AbstractSoldier = this.armyFactory(_superArmy, -1, false);
+            _superSoldier.armyInfo.hp = _superArmy.hp;
+            _superSoldier.x = 630;
+            _superSoldier.y = Xiongnu.POS1.y;
+            addChildAt(_superSoldier, getChildIndex(_loc1_));
+            this._rightSoldiers.push(_superSoldier);
+         }
       }
       
       private function initEvent() : *
@@ -841,6 +898,7 @@ package game.fuben
          addEventListener(ConEvent.SELECT_SOLDIER,this.onSelectSoldierHandler);
          addEventListener(ConEvent.CREATE_MIAOZHUNJING,this.createMiaozhunjingHandler);
          addEventListener(ConEvent.FIRE,this.conFireHandler);
+         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler);
          this.initUnInteractiveEvent();
       }
       
@@ -1528,7 +1586,8 @@ package game.fuben
                   "result":_loc2_,
                   "stageID":this._fubenID,
                   "index":this._currentStageID,
-                  "level":this.getGeneralLevel()
+                  "level":this.getGeneralLevel(),
+                  "superGeneralCode":this._superGeneralCode
                }));
             }
             else if(this._leftSoldiers.length == 0)
@@ -1547,7 +1606,8 @@ package game.fuben
                   "result":_loc2_,
                   "stageID":this._fubenID,
                   "index":this._currentStageID,
-                  "level":this.getGeneralLevel()
+                  "level":this.getGeneralLevel(),
+                  "superGeneralCode":this._superGeneralCode
                }));
             }
             else if(this._rightSoldiers.length == 0)
@@ -1566,7 +1626,8 @@ package game.fuben
                   "result":_loc2_,
                   "stageID":this._fubenID,
                   "index":this._currentStageID,
-                  "level":this.getGeneralLevel()
+                  "level":this.getGeneralLevel(),
+                  "superGeneralCode":this._superGeneralCode
                }));
             }
          }
@@ -2266,7 +2327,7 @@ package game.fuben
          }
          return null;
       }
-      
+
       private function onKeydownHandler(param1:KeyboardEvent) : *
       {
          switch(param1.keyCode)
@@ -2287,7 +2348,7 @@ package game.fuben
                this._fightUI.setSelect(5);
          }
       }
-      
+
       private function hideAmmoTipsHandler(param1:MouseEvent) : *
       {
          stage.removeEventListener(MouseEvent.MOUSE_DOWN,this.hideAmmoTipsHandler,true);

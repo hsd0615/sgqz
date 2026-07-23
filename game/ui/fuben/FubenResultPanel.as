@@ -4,7 +4,12 @@ package game.ui.fuben
    import com.iflashigame.ui.BaseUI;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
+   import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.filters.GlowFilter;
+   import flash.text.TextFormat;
+   import flash.text.TextFieldAutoSize;
+   import game.model.RoleModel;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import game.SoundCode;
@@ -27,7 +32,15 @@ package game.ui.fuben
       private var __exitBtn:SimpleButton;
       
       private var __okBtn:SimpleButton;
-      
+
+      private var _recruitBtn:Sprite;
+
+      private var _recruitBtnTF:TextField;
+
+      private var _superRecruitCode:String = "";
+
+      private var _superRecruitName:String = "";
+
       private var _stageID:int;
       
       private var _index:int;
@@ -48,6 +61,7 @@ package game.ui.fuben
          this.__nextBtn = _skin.getChildByName("_nextBtn") as SimpleButton;
          this.__exitBtn = _skin.getChildByName("_exitBtn") as SimpleButton;
          this.__okBtn = _skin.getChildByName("_okBtn") as SimpleButton;
+         this.createRecruitBtn();
          this.hideAll();
       }
       
@@ -59,6 +73,7 @@ package game.ui.fuben
          this.__nextBtn.visible = false;
          this.__exitBtn.visible = false;
          this.__okBtn.visible = false;
+         if(this._recruitBtn != null) this._recruitBtn.visible = false;
       }
       
       override protected function initEvent() : void
@@ -76,6 +91,16 @@ package game.ui.fuben
          if(param1.pai != null)
          {
             this._paiArr = param1.pai;
+         }
+         if(param1.superRecruit != null)
+         {
+            this._superRecruitCode = param1.superRecruit.code;
+            this._superRecruitName = param1.superRecruit.name;
+         }
+         else
+         {
+            this._superRecruitCode = "";
+            this._superRecruitName = "";
          }
          if(int(param1.result) == 0)
          {
@@ -144,8 +169,18 @@ package game.ui.fuben
             _loc2_ += "<font color='#FFD700'>【装备掉落】" + param2.name + " (品质" + param2.quality + ")</font>\n";
          }
          _loc2_ += "请进入翻牌界面抽取特殊奖励！";
+         if(this._superRecruitCode != "")
+         {
+            _loc2_ += "\n\n<font color='#FF6600' size='16'>击败了" + this._superRecruitName + "！</font>\n";
+            _loc2_ += "<font color='#FFD700'>可以使用1个求贤令直接招募该超级武将</font>";
+         }
          this.__tf.htmlText = _loc2_;
          this.__okBtn.visible = true;
+         if(this._superRecruitCode != "")
+         {
+            this.updateRecruitBtnState();
+            this._recruitBtn.visible = true;
+         }
       }
       
       private function restartBtnClickHandler(param1:MouseEvent) : *
@@ -175,6 +210,70 @@ package game.ui.fuben
          dispatchEvent(new UIEvent(UIEvent.OPEN_FANPAI,true,{
             "pai":this._paiArr,
             "stageID":this._stageID
+         }));
+      }
+
+      private function createRecruitBtn() : void
+      {
+         this._recruitBtn = new Sprite();
+         this._recruitBtn.buttonMode = true;
+         this._recruitBtn.mouseChildren = false;
+         // 绘制按钮背景
+         this._recruitBtn.graphics.beginFill(0xCC4400);
+         this._recruitBtn.graphics.drawRoundRect(0, 0, 200, 35, 6, 6);
+         this._recruitBtn.graphics.endFill();
+         this._recruitBtn.filters = [new GlowFilter(0xFF6600, 0.8, 8, 8, 2)];
+         // 按钮文字
+         this._recruitBtnTF = new TextField();
+         this._recruitBtnTF.defaultTextFormat = new TextFormat("SimHei", 14, 0xFFD700, true);
+         this._recruitBtnTF.autoSize = TextFieldAutoSize.CENTER;
+         this._recruitBtnTF.selectable = false;
+         this._recruitBtnTF.mouseEnabled = false;
+         this._recruitBtnTF.text = "使用求贤令招募";
+         this._recruitBtnTF.x = (200 - this._recruitBtnTF.width) / 2;
+         this._recruitBtnTF.y = 8;
+         this._recruitBtn.addChild(this._recruitBtnTF);
+         // 定位在确认按钮上方
+         this._recruitBtn.x = (770 - 200) / 2;
+         this._recruitBtn.y = 380;
+         this._recruitBtn.addEventListener(MouseEvent.CLICK, this.recruitBtnClickHandler);
+         addChild(this._recruitBtn);
+      }
+
+      private function updateRecruitBtnState() : void
+      {
+         var _count:int = RoleModel.getInstance().getBagItemCount("proto_3_3");
+         if(_count <= 0)
+         {
+            this._recruitBtn.alpha = 0.5;
+            this._recruitBtnTF.text = "求贤令不足 (剩余:" + _count + ")";
+         }
+         else
+         {
+            this._recruitBtn.alpha = 1.0;
+            this._recruitBtnTF.text = "使用求贤令招募 " + this._superRecruitName + " (剩余:" + _count + ")";
+         }
+         this._recruitBtnTF.x = (200 - this._recruitBtnTF.width) / 2;
+      }
+
+      public function refreshRecruitBtn() : void
+      {
+         if(this._recruitBtn != null && this._superRecruitCode != "")
+         {
+            this.updateRecruitBtnState();
+         }
+      }
+
+      private function recruitBtnClickHandler(param1:MouseEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         var _count:int = RoleModel.getInstance().getBagItemCount("proto_3_3");
+         if(_count <= 0)
+         {
+            return;
+         }
+         dispatchEvent(new UIEvent(UIEvent.SUPER_RECRUIT, true, {
+            "superGeneralCode": this._superRecruitCode
          }));
       }
    }

@@ -149,6 +149,8 @@ package game.events
 
       public static const QIUXIAN_CARD_CLICK:String = "qiuxianCardClick";
 
+      public static const SUPER_RECRUIT:String = "superRecruit";
+
 
       public var data:Object;
       

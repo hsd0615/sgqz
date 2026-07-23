@@ -143,6 +143,25 @@ function loadKezhiMap() {
   console.log('[KezhiMap] Loaded ' + Object.keys(KEZHI_MAP).length + ' entries, recruit: ' + Object.keys(generalRecruitMap).length + ', names: ' + Object.keys(generalNameToCode).length + ', baseStats: ' + Object.keys(GENERAL_BASE_STATS).length);
 }
 
+// 超级武将招募池(匈奴副本第三关可用)
+var XIONGNU_SUPER_GENERALS = [];
+var XIONGNU_SUPER_BOSS_RATE = 0.1; // 10%概率
+function buildSuperGeneralPool() {
+  var codes = Object.keys(generalRecruitMap);
+  for (var i = 0; i < codes.length; i++) {
+    var code = codes[i];
+    var info = generalRecruitMap[code];
+    if (info.title === 0 && GENERAL_BASE_STATS[code]) {
+      var bt = GENERAL_BASE_STATS[code].type;
+      // 排除投石车(type=0)、NPC头目(type=13/15)、君主(type=20)
+      if (bt !== 0 && bt !== 13 && bt !== 15 && bt !== 20) {
+        XIONGNU_SUPER_GENERALS.push(code);
+      }
+    }
+  }
+  console.log('[SuperGeneral] Xiongnu pool: ' + XIONGNU_SUPER_GENERALS.length + ' generals');
+}
+
 // 全局系数映射 (从staticxishu.xml加载, type_title → {hp, attack, defence})
 var XISHU_MAP = {};
 function loadXishuMap() {
@@ -516,6 +535,7 @@ function ensureGenerals(pid, list, level, evo, feat, tf) {
 }
 const ALL_SUPERS = [
   ['general_9_18','吕布','6:1|1:1|8:1'],['general_9_20','马超','6:1|1:1|8:1'],['general_9_16','夏侯惇','6:1|1:1|8:1'],
+  ['general_18_1','长矛战士','7:1|9:1|3:1'],
   ['general_7_19','赵云','5:1|4:1|7:1'],['general_7_14','张飞','5:1|4:1|7:1'],['general_3_13','关羽','2:1|1:1|6:1'],
   ['general_1_15','黄忠','5:1|7:1|9:1'],['general_2_11','貂蝉','5:1|4:1|7:1'],
   ['general_6_15','魏延','6:1|1:1|8:1'],['general_0_1','投石车','3:1|8:1|9:1'],
@@ -568,6 +588,7 @@ if (!fs.existsSync(path.dirname(DATA_FILE))) fs.mkdirSync(path.dirname(DATA_FILE
 loadKezhiMap();     // 1. 加载XML克制类型映射
 	loadXishuMap();     // 1a. 加载xishu系数表(用于战斗力估算)
 buildGeneralQualityMap(); // 1a. 构建武将品质映射(超级/一流/二流...)
+buildSuperGeneralPool(); // 1a2. 构建匈奴副本超级武将池
 loadStageMap();     // 1b. 加载关卡ID映射
 loadStageEnemyData(); // 1b2. 加载敌将数据
 loadAwardMap();     // 1c. 加载关卡奖励数据
@@ -692,7 +713,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.5.0';
+  _cachedClientVersion = '4.6.0';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1398,6 +1419,25 @@ function handleRequest(socket, req) {
         equipDrop: fubenEquipDrop
       }
     };
+    // 超级武将招募机会(仅第三关且胜利)
+    if (fi === 3 && parseInt(data.result) === 1 && data.superGeneralCode) {
+      var clientSC = String(data.superGeneralCode);
+      // 验证是否为合法超级武将
+      var isValidSuper = false;
+      for (var sgi = 0; sgi < XIONGNU_SUPER_GENERALS.length; sgi++) {
+        if (XIONGNU_SUPER_GENERALS[sgi] === clientSC) { isValidSuper = true; break; }
+      }
+      // 服务端独立概率验证(防作弊)
+      if (isValidSuper && Math.random() < XIONGNU_SUPER_BOSS_RATE) {
+        p._xiongnuSuperBoss = clientSC;
+        var sName = generalRecruitMap[clientSC] ? (generalRecruitMap[clientSC].name || '') : '';
+        resp.data.superRecruit = { code: clientSC, name: '魔化' + sName };
+        console.log('[Fuben] Super boss validated: ' + clientSC + ' for ' + p.role_name);
+      } else {
+        // 客户端声称遇到超级武将但服务端验证不通过
+        delete p._xiongnuSuperBoss;
+      }
+    }
     if (fi === 3) {
       // 翻牌: 6格全装备, 品质与等级挂钩但Q9/Q10有上限
       // centerQ随等级上移: Lv1→Q1, Lv30→Q3, Lv60→Q5, Lv90→Q6, Lv120+→Q7
@@ -1484,6 +1524,73 @@ function handleRequest(socket, req) {
     p._fubenFlipped = true;
     save();
     return jsonRawResponse(socket, resp);
+  }
+
+  // Fuben recruit super general — 副本超级武将招募
+  if (url === '/api/fuben/recruit-super') {
+    const p = findPlayerByRequest(data);
+    if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
+    var superCode = p._xiongnuSuperBoss;
+    if (!superCode) {
+      return jsonRawResponse(socket, { success: false, message: '没有可招募的超级武将' });
+    }
+    if (String(data.generalCode) !== superCode) {
+      return jsonRawResponse(socket, { success: false, message: '数据异常' });
+    }
+    // 查重
+    var alreadyOwned = false;
+    for (var soi = 0; soi < db.generals.length; soi++) {
+      if (db.generals[soi].player_id === p.id && db.generals[soi].code === superCode) {
+        alreadyOwned = true; break;
+      }
+    }
+    if (alreadyOwned) {
+      delete p._xiongnuSuperBoss; save();
+      return jsonRawResponse(socket, { success: false, message: '已拥有该武将' });
+    }
+    // 扣除1个求贤令
+    var qxFound = false;
+    if (db.bagItems) {
+      for (var sbi = 0; sbi < db.bagItems.length; sbi++) {
+        if (db.bagItems[sbi].player_id === p.id && db.bagItems[sbi].code === 'proto_3_3') {
+          var qxCount = parseInt(db.bagItems[sbi].count) || 0;
+          if (qxCount > 0) {
+            if (qxCount <= 1) { db.bagItems.splice(sbi, 1); }
+            else { db.bagItems[sbi].count = qxCount - 1; }
+            qxFound = true;
+          }
+          break;
+        }
+      }
+    }
+    if (!qxFound) {
+      return jsonRawResponse(socket, { success: false, message: '求贤令不足' });
+    }
+    // 清除一次性标记
+    delete p._xiongnuSuperBoss;
+    // 创建武将
+    var sPlv = p.level || 1;
+    var sGLv = sPlv >= 50 ? 30 : Math.max(1, sPlv - 20);
+    var sKStr = KEZHI_MAP[superCode] || '';
+    var sKParts = sKStr ? sKStr.split('|') : [];
+    var sk1 = 0, sk1l = 1, sk2 = 0, sk2l = 1, sk3 = 0, sk3l = 1;
+    if (sKParts.length >= 1) { var skp1 = sKParts[0].split(':'); sk1 = parseInt(skp1[0])||0; sk1l = parseInt(skp1[1])||1; }
+    if (sKParts.length >= 2) { var skp2 = sKParts[1].split(':'); sk2 = parseInt(skp2[0])||0; sk2l = parseInt(skp2[1])||1; }
+    if (sKParts.length >= 3) { var skp3 = sKParts[2].split(':'); sk3 = parseInt(skp3[0])||0; sk3l = parseInt(skp3[1])||1; }
+    var sg = createGeneral(p.id, superCode, '', sGLv, 0, 0, null, sk1, sk1l, sk2, sk2l, sk3, sk3l);
+    save();
+    console.log('[FubenRecruitSuper] ' + p.role_name + ' recruited ' + superCode + ' Lv' + sGLv);
+    var sGTitle = generalRecruitMap[superCode] ? (generalRecruitMap[superCode].title || 3) : 3;
+    return jsonRawResponse(socket, {
+      success: true,
+      data: {
+        general: {
+          id: sg.general_id, code: sg.code, level: sGLv,
+          evolution: 0, feature: 0, kezhi: getKezhiStr(sg),
+          title: sGTitle, forceHp: 0
+        }
+      }
+    });
   }
 
   // Save history

@@ -179,6 +179,8 @@ package game.model
 
       public static const HTTP_NEW_RECRUIT_FLIP:int = 10054;
 
+      public static const HTTP_NEW_RECRUIT_SUPER:int = 10055;
+
       public static const HTTP_NEW_LEITAI_LIST:int = 10030;
       
       public static const HTTP_NEW_LEITAI_FLUSH:int = 10031;

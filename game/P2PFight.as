@@ -31,6 +31,7 @@ package game
    import game.display.Gunner;
    import game.display.IWorld;
    import game.display.Junzhu;
+   import game.display.PartSoldier;
    import game.display.Saber;
    import game.display.Shooter;
    import game.display.StoneWeapon;
@@ -626,6 +627,8 @@ package game
                return new Gunner(param1,param2,param3,this);
             case Type.QIBING:
                return new Saber(param1,param2,param3,this);
+            case Type.PART_SOLDIER:
+               return new PartSoldier(param1,param2,param3,this);
             case Type.JUNZHU:
                return new Junzhu(param1,param2,param3,this);
             default:

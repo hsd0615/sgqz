@@ -327,6 +327,7 @@ package com.iflashigame.controller
             case 10052: path = "/api/general/sell"; break;
             case 10053: path = "/api/recruit/cards"; break;
             case 10054: path = "/api/recruit/flip"; break;
+            case 10055: path = "/api/fuben/recruit-super"; break;
 
             // Fuben
             case 10016: path = "/api/fuben/count"; break;

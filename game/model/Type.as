@@ -3,7 +3,7 @@ package game.model
    public class Type
    {
       
-      public static const LONG:Array = [80,60,60,60,60,60,60,60,60,80,60,195,60,110];
+      public static const LONG:Array = [80,60,60,60,60,60,60,60,60,80,60,195,60,110,0,0,0,0,60];
       
       public static const TYPE_NAME:Array = ["投石车","弓兵","飞刀兵","朴刀兵","斧兵","锤兵","武斗兵","长枪兵","藤甲兵","骑兵"];
       
@@ -34,7 +34,9 @@ package game.model
       public static const QIANGGONGBING:int = 12;
       
       public static const BOSS:int = 13;
-      
+
+      public static const PART_SOLDIER:int = 18;
+
       public static const JUNZHU:int = 20;
        
       
@@ -78,6 +80,9 @@ package game.model
             case WUDOUBING:
                _loc2_ = "武斗兵";
                break;
+            case PART_SOLDIER:
+               _loc2_ = "长矛兵";
+               break;
             case JUNZHU:
                _loc2_ = "君主";
          }
@@ -118,6 +123,9 @@ package game.model
                break;
             case WUDOUBING:
                _loc2_ = "克武斗兵";
+               break;
+            case PART_SOLDIER:
+               _loc2_ = "克长矛兵";
          }
          return _loc2_;
       }
