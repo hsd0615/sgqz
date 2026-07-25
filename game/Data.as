@@ -504,7 +504,7 @@ package game
             return null;
          }
          arr = new Vector.<String>();
-         xmlList = this._generalXML.RECORD.(recruitLevel > 0 && recruitLevel <= maxLevel).code;
+         xmlList = this._generalXML.RECORD.(recruitLevel > 0).code;
          for(i in xmlList)
          {
             arr.push(xmlList[i]);

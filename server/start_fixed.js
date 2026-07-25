@@ -713,7 +713,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.7.2';
+  _cachedClientVersion = '4.7.3';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1724,7 +1724,7 @@ function handleRequest(socket, req) {
     var _ownedCodes={};for(var oi=0;oi<db.generals.length;oi++){if(db.generals[oi].player_id===p.id)_ownedCodes[db.generals[oi].code]=true;}
       for (var gc in generalRecruitMap) {
       var gr = generalRecruitMap[gc];
-      if (!_ownedCodes[gc] && gr.recruitLevel > 0 && gr.recruitLevel <= plv) {
+      if (!_ownedCodes[gc] && gr.recruitLevel > 0) {
         genPool.push({ code: gc, title: gr.title || 3, name: gr.name || gc });
       }
     }

@@ -2173,7 +2173,7 @@ package game
          var _loc3_:int = 0;
          var _loc4_:ArmyInfo = null;
          var _loc5_:int = RoleModel.getInstance().level;
-         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevelExcludeSuper(_loc5_, RoleModel.getInstance().getUnlockedRecruits());
+         var _loc6_:Vector.<String> = Data.getInstance().getZhaomuByLevel(_loc5_, RoleModel.getInstance().getUnlockedRecruits());
          var _loc7_:Vector.<String> = RoleModel.getInstance().getAllSoldierCode();
          var _loc8_:Array;
          if((_loc8_ = Tools.removeArrFromArr(_loc6_,_loc7_)).length == 0)
