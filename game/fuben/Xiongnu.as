@@ -161,6 +161,8 @@ package game.fuben
 
       private var _superGeneralCode:String = "";
 
+      private var _superGeneralAlive:Boolean;
+
       // 第三关可能出现的魔化超级武将候选池(所有title=0的超级武将)
       private static const SUPER_BOSS_POOL:Array = [
          {code:"general_1_15", name:"魔化黄忠"},
@@ -680,6 +682,12 @@ package game.fuben
                   return new PartSoldier(param1.clone(),param2,param3,this);
                case Type.JUNZHU:
                   return new Junzhu(param1.clone(),param2,param3,this);
+               case Type.PUDAOBING:
+               case Type.FUBING:
+               case Type.CHUIBING:
+               case Type.WUDOUBING:
+               case Type.CHANGQIANGBING:
+               case Type.TENGJIABING:
                case 14:
                case 15:
                case 16:
@@ -848,6 +856,7 @@ package game.fuben
          this._rightArmy = new Vector.<ArmyInfo>();
          this._rightSoldiers = [];
          this._superGeneralCode = "";
+         this._superGeneralAlive = false;
          // 始终保留原有匈奴头目Boss
          this._rightArmy.push(this._config.getBossData(this._leftArmy));
          this._rightArmy[0].forceHp = true;
@@ -865,8 +874,8 @@ package game.fuben
          _loc1_.x = 550;
          _loc1_.y = Xiongnu.POS2.y;
          addChild(_loc1_);
-         // 10%概率额外出现魔化超级武将
-         if(Math.random() < 0.1)
+         // 15%概率额外出现魔化超级武将
+         if(Math.random() < 0.15)
          {
             var _superEntry:Object = SUPER_BOSS_POOL[int(Math.random() * SUPER_BOSS_POOL.length)];
             var _superCode:String = _superEntry.code;
@@ -879,6 +888,7 @@ package game.fuben
             _superArmy.forceHp = true;
             _superArmy.hp = _totalPlayerHP * 10;
             this._superGeneralCode = _superCode;
+            this._superGeneralAlive = true;
             this._rightArmy.push(_superArmy);
             var _superSoldier:AbstractSoldier = this.armyFactory(_superArmy, -1, false);
             _superSoldier.armyInfo.hp = _superArmy.hp;
@@ -1575,20 +1585,33 @@ package game.fuben
             ++this._soldierCount;
             this.setKilled(this._soldierCount);
          }
+         // 检测魔化超级武将是否死亡
+         if(this._superGeneralAlive && this._superGeneralCode != "")
+         {
+            var _deadSoldier:AbstractSoldier = param1.target as AbstractSoldier;
+            if(_deadSoldier.armyInfo.code == this._superGeneralCode)
+            {
+               this._superGeneralAlive = false;
+            }
+         }
          if(this._isOver != true)
          {
             if(param1.target is Boss)
             {
-               this.clear();
-               this._isOver = true;
-               _loc2_ = 1;
-               dispatchEvent(new FightEvent(FightEvent.XIONGNU_FIGHT_COMPLETE,true,{
-                  "result":_loc2_,
-                  "stageID":this._fubenID,
-                  "index":this._currentStageID,
-                  "level":this.getGeneralLevel(),
-                  "superGeneralCode":this._superGeneralCode
-               }));
+               // 如果魔化超级武将还活着,不结束战斗
+               if(!this._superGeneralAlive)
+               {
+                  this.clear();
+                  this._isOver = true;
+                  _loc2_ = 1;
+                  dispatchEvent(new FightEvent(FightEvent.XIONGNU_FIGHT_COMPLETE,true,{
+                     "result":_loc2_,
+                     "stageID":this._fubenID,
+                     "index":this._currentStageID,
+                     "level":this.getGeneralLevel(),
+                     "superGeneralCode":this._superGeneralCode
+                  }));
+               }
             }
             else if(this._leftSoldiers.length == 0)
             {
