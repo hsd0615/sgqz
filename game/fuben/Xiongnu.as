@@ -682,18 +682,11 @@ package game.fuben
                   return new PartSoldier(param1.clone(),param2,param3,this);
                case Type.JUNZHU:
                   return new Junzhu(param1.clone(),param2,param3,this);
-               case Type.PUDAOBING:
-               case Type.FUBING:
-               case Type.CHUIBING:
-               case Type.WUDOUBING:
-               case Type.TENGJIABING:
                case 14:
                case 15:
                case 16:
                case 17:
                   return new Saber(param1.clone(),param2,param3,this);
-               case Type.CHANGQIANGBING:
-                  return new PartSoldier(param1.clone(),param2,param3,this);
                default:
                   return new Shooter(param1.clone(),param2,param3,this);
             }
