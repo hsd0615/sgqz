@@ -2243,29 +2243,39 @@ package game
       private function useCrystalOnSuperGeneral(param1:String) : *
       {
          var _code:String = param1;
+         // 从结晶code解析目标武将code: proto_3_5_9_18 → general_9_18
+         var _parts:Array = _code.split("_");
+         if(_parts.length < 4)
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{"type":0,"text":"无效的结晶"}));
+            return;
+         }
+         var _targetCode:String = "general_" + _parts[2] + "_" + _parts[3];
+         // 查找玩家是否拥有该武将
          var _allArmys:Vector.<ArmyInfo> = RoleModel.getInstance().armys;
-         var _superList:Array = [];
+         var _target:ArmyInfo = null;
          var _ii:int = 0;
          while(_ii < _allArmys.length)
          {
-            var _gi:ArmyInfo = _allArmys[_ii];
-            if(_gi.title == 0 && _gi.evolution < 11)
+            if(_allArmys[_ii].code == _targetCode && _allArmys[_ii].title == 0)
             {
-               _superList.push({code:_gi.code, name:_gi.name, evolution:_gi.evolution});
+               _target = _allArmys[_ii];
+               break;
             }
             _ii++;
          }
-         if(_superList.length == 0)
+         if(_target == null)
          {
-            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{"type":0,"text":"没有可用的超级武将（需要 title=0 且未魔化/神化）"}));
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{"type":0,"text":"需要拥有对应超级武将才能使用此结晶"}));
             return;
          }
-         // 取第一个符合条件的超级武将直接使用（简化逻辑）
-         var _target:Object = _superList[0];
-         var _crystalName:String = _code == "proto_3_5" ? "魔化结晶" : "神化结晶";
-         var _confirmMsg:String = "对 " + _target.name + " 使用" + _crystalName + "？\\n（进化等级将从 " + _target.evolution + " 提升到 " + (_code == "proto_3_5" ? "11(魔化)" : "12(神化)") + "）";
-
-         // 简化实现：直接使用第一个超级武将
+         if(_target.evolution >= 11)
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{"type":0,"text":"该武将已经魔化或神化"}));
+            return;
+         }
+         var _isMo:Boolean = _parts[1] == "5";
+         var _crystalName:String = _isMo ? "魔化结晶" : "神化结晶";
          var _req:Object = {};
          _req.head = Head.HTTP_NEW_CRYSTAL_USE;
          _req.agent = Config.AGENT;
@@ -2274,7 +2284,8 @@ package game
          _req.roleID = RoleModel.getInstance().roleID;
          _req.userID = RoleModel.getInstance().userID;
          _req.crystalCode = _code;
-         _req.targetCode = _target.code;
+         _req.targetCode = _targetCode;
+         _req.mo = _isMo;
          AESController.getInstance().sendJSON(_req,this.onCrystalUseResponse);
       }
 

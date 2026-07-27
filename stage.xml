@@ -884,198 +884,198 @@
   </fuben>
   <!-- ====== 第十一章：邪魔入侵 ====== -->
   <gate id="101" part="11" partName="邪魔入侵" level="131" name="暗影初现" group="邪魔" ai="105" delay="1550">
-    <award soldier="" recruit="" proto="proto_1_6:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_6:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="238" name="邪魔战车" feature="4" evolution="10"/>
     <general code="general_6_18" level="238" name="邪魔斗士" feature="4" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
     <general code="general_6_15" level="240" name="邪魔先锋" feature="4" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_9"/>
     <general code="general_1_22" level="238" name="邪魔弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_12"/>
     <general code="general_7_14" level="238" name="邪魔枪兵" feature="4" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_18"/>
-    <general code="general_9_18" level="238" name="魔化吕布" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_3_13" level="238" name="魔化关羽" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="102" part="11" partName="邪魔入侵" level="132" name="瘴气弥漫" group="邪魔" ai="105" delay="1500">
-    <award soldier="" recruit="" proto="proto_1_2:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_2:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="240" name="邪魔战车" feature="1" evolution="10"/>
     <general code="general_8_16" level="240" name="邪魔藤甲" feature="1" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_2_11" level="242" name="暗影飞刀" feature="1" evolution="10" kezhi="5:10|6:10|1:10" tianfu="tf_12"/>
     <general code="general_5_19" level="240" name="邪魔锤卫" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_3"/>
     <general code="general_5_18" level="240" name="邪魔斧卫" feature="1" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_18"/>
-    <general code="general_3_13" level="240" name="魔化关羽" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_7_14" level="240" name="魔化张飞" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="103" part="11" partName="邪魔入侵" level="133" name="血月当空" group="邪魔" ai="105" delay="1500">
-    <award soldier="" recruit="" proto="proto_1_3:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_3:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="242" name="邪魔战车" feature="2" evolution="10"/>
     <general code="general_9_16" level="242" name="暗影铁骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="245" name="暗影铁骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
     <general code="general_4_19" level="242" name="邪魔刀斧" feature="2" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_18"/>
     <general code="general_7_14" level="242" name="邪魔枪兵" feature="2" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_18"/>
     <general code="general_3_13" level="245" name="暗影将军" feature="2" evolution="10" kezhi="7:10|4:10|6:10" tianfu="tf_21"/>
-    <general code="general_9_34" level="242" name="魔化曹操" feature="3" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_7_19" level="242" name="魔化赵云" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="104" part="11" partName="邪魔入侵" level="134" name="万箭齐发" group="邪魔" ai="108" delay="1450">
-    <award soldier="" recruit="" proto="proto_1_1:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_1:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="245" name="邪魔战车" feature="3" evolution="10"/>
     <general code="general_1_15" level="245" name="暗影弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_1_22" level="245" name="暗影弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_12"/>
     <general code="general_1_15" level="248" name="暗影弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_1_22" level="245" name="暗影弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_12"/>
     <general code="general_1_15" level="245" name="暗影弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
-    <general code="general_7_19" level="245" name="魔化赵云" feature="4" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_9_20" level="245" name="魔化马超" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="105" part="11" partName="邪魔入侵" level="135" name="铜墙铁壁" group="邪魔" ai="108" delay="1450">
-    <award soldier="" recruit="" proto="proto_1_5:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_5:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="247" name="邪魔战车" feature="4" evolution="10"/>
     <general code="general_8_16" level="247" name="邪魔藤甲" feature="4" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_5_14" level="250" name="邪魔锤将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_5_14" level="247" name="邪魔锤将" feature="4" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_4_14" level="247" name="邪魔刀斧" feature="4" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_3"/>
     <general code="general_4_14" level="247" name="邪魔刀斧" feature="4" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_9"/>
-    <general code="general_5_14" level="250" name="魔化典韦" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_1_15" level="250" name="魔化黄忠" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="106" part="11" partName="邪魔入侵" level="136" name="铁蹄荡荡" group="邪魔" ai="110" delay="1400">
-    <award soldier="" recruit="" proto="proto_1_9:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_9:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="250" name="邪魔战车" feature="1" evolution="10"/>
     <general code="general_9_16" level="250" name="暗影重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="252" name="暗影重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
     <general code="general_9_16" level="250" name="暗影重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="250" name="暗影重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="250" name="暗影重骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
-    <general code="general_4_14" level="252" name="魔化许褚" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_5_14" level="252" name="魔化典韦" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="107" part="11" partName="邪魔入侵" level="137" name="魔焰滔天" group="邪魔" ai="110" delay="1400">
-    <award soldier="" recruit="" proto="proto_1_7:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_7:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="252" name="邪魔战车" feature="2" evolution="10"/>
     <general code="general_8_16" level="252" name="邪魔藤甲" feature="2" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_7_14" level="255" name="邪魔大戟" feature="2" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_18"/>
     <general code="general_2_11" level="252" name="暗影飞刀" feature="2" evolution="10" kezhi="5:10|6:10|1:10" tianfu="tf_12"/>
     <general code="general_6_15" level="255" name="邪魔斗将" feature="2" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_9"/>
     <general code="general_6_18" level="252" name="邪魔斗将" feature="2" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
-    <general code="general_7_14" level="255" name="魔化张飞" feature="3" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_4_14" level="255" name="魔化许褚" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="108" part="11" partName="邪魔入侵" level="138" name="暗影突袭" group="邪魔" ai="110" delay="1350">
-    <award soldier="" recruit="" proto="proto_1_8:2|proto_3_4:1|proto_3_5:1" money="120000" reverence="12000" exploit="120000"/>
+    <award soldier="" recruit="" proto="proto_1_8:2|proto_3_4:1" money="120000" reverence="12000" exploit="120000"/>
     <general code="general_0_1" level="255" name="邪魔战车" feature="3" evolution="10"/>
     <general code="general_5_19" level="255" name="邪魔锤卫" feature="3" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_5_18" level="258" name="邪魔斧将" feature="3" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_3"/>
     <general code="general_4_19" level="255" name="邪魔刀斧" feature="3" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_9"/>
     <general code="general_4_14" level="255" name="邪魔刀斧" feature="3" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_18"/>
-    <general code="general_1_15" level="257" name="魔化黄忠" feature="4" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_9_16" level="257" name="魔化夏侯惇" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="109" part="11" partName="邪魔入侵" level="139" name="群魔乱舞" group="邪魔" ai="110" delay="1350">
-    <award soldier="" recruit="" proto="proto_1_6:3|proto_3_4:1|proto_3_5:1" money="150000" reverence="15000" exploit="150000"/>
+    <award soldier="" recruit="" proto="proto_1_6:3|proto_3_4:1" money="150000" reverence="15000" exploit="150000"/>
     <general code="general_0_1" level="258" name="邪魔战车" feature="4" evolution="10"/>
     <general code="general_6_18" level="258" name="邪魔斗将" feature="4" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
     <general code="general_8_16" level="258" name="邪魔藤甲" feature="4" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_1_22" level="258" name="暗影弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_9_16" level="260" name="暗影铁骑" feature="4" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_3_13" level="258" name="暗影将军" feature="4" evolution="10" kezhi="7:10|4:10|6:10" tianfu="tf_21"/>
-    <general code="general_9_16" level="260" name="魔化夏侯惇" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_9_17" level="260" name="魔化太史慈" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="110" part="11" partName="邪魔入侵" level="140" name="魔王降临" group="邪魔" ai="115" delay="1300">
-    <award soldier="" recruit="吕布" proto="proto_1_9:3|proto_3_4:2|proto_3_5:1" money="200000" reverence="20000" exploit="200000"/>
+    <award soldier="" recruit="吕布" proto="proto_1_9:3|proto_3_4:2" money="200000" reverence="20000" exploit="200000"/>
     <general code="general_0_1" level="260" name="邪魔战车" feature="1" evolution="10"/>
     <general code="general_9_16" level="260" name="魔王铁骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_6_18" level="262" name="魔王近卫" feature="1" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_21"/>
     <general code="general_5_18" level="262" name="魔王近卫" feature="1" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_18"/>
     <general code="general_3_13" level="260" name="暗影统帅" feature="1" evolution="10" kezhi="7:10|4:10|6:10" tianfu="tf_9"/>
     <general code="general_9_30" level="265" name="邪魔王" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_21"/>
-    <general code="general_9_17" level="265" name="魔化太史慈" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_9_18" level="265" name="魔化吕布" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <!-- ====== 第十二章：时空漩涡 ====== -->
   <gate id="111" part="12" partName="时空漩涡" level="141" name="时空裂隙" group="时空" ai="110" delay="1400">
-    <award soldier="" recruit="" proto="proto_1_3:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_3:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="262" name="时空战车" feature="2" evolution="10"/>
     <general code="general_10_1" level="262" name="时空流寇" feature="2" evolution="10" kezhi="1:10|3:10|5:10" tianfu="tf_12"/>
     <general code="general_12_1" level="265" name="时空射手" feature="2" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_14_0" level="262" name="时空精兵" feature="2" evolution="10" kezhi="1:10|4:10|7:10" tianfu="tf_18"/>
     <general code="general_4_14" level="262" name="时空刀斧" feature="2" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_3"/>
-    <general code="general_3_13" level="270" name="神化关羽" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_9_34" level="270" name="神化曹操" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="112" part="12" partName="时空漩涡" level="142" name="时间扭曲" group="时空" ai="110" delay="1350">
-    <award soldier="" recruit="" proto="proto_1_4:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_4:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="265" name="时空战车" feature="3" evolution="10"/>
     <general code="general_1_15" level="265" name="时空弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_5_14" level="268" name="时空锤卫" feature="3" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_7_14" level="265" name="时空枪兵" feature="3" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_18"/>
     <general code="general_9_16" level="268" name="时空铁骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
-    <general code="general_9_18" level="272" name="神化吕布" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_4_19" level="272" name="神化夏侯霸" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="113" part="12" partName="时空漩涡" level="143" name="回廊迷踪" group="时空" ai="112" delay="1350">
-    <award soldier="" recruit="" proto="proto_1_1:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_1:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="268" name="时空战车" feature="4" evolution="10"/>
     <general code="general_6_15" level="268" name="时光斗士" feature="4" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
     <general code="general_8_16" level="270" name="时光藤甲" feature="4" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_2_11" level="268" name="时光飞刀" feature="4" evolution="10" kezhi="5:10|6:10|1:10" tianfu="tf_12"/>
     <general code="general_4_19" level="270" name="时空刀斧" feature="4" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_3"/>
     <general code="general_3_13" level="270" name="时空将军" feature="4" evolution="10" kezhi="7:10|4:10|6:10" tianfu="tf_18"/>
-    <general code="general_7_19" level="275" name="神化赵云" feature="3" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_5_18" level="275" name="神化孙策" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="114" part="12" partName="时空漩涡" level="144" name="未来幻影" group="时空" ai="112" delay="1300">
-    <award soldier="" recruit="" proto="proto_1_6:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_6:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="270" name="时空战车" feature="1" evolution="10"/>
     <general code="general_9_16" level="270" name="未来铁骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="272" name="未来铁骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
     <general code="general_9_16" level="270" name="未来铁骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="270" name="未来铁骑" feature="1" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
-    <general code="general_9_34" level="277" name="神化曹操" feature="4" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_5_19" level="277" name="神化董卓" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="115" part="12" partName="时空漩涡" level="145" name="远古遗迹" group="时空" ai="112" delay="1300">
-    <award soldier="" recruit="" proto="proto_1_7:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_7:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="272" name="时空战车" feature="2" evolution="10"/>
     <general code="general_8_16" level="272" name="远古藤甲" feature="2" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_5_14" level="275" name="远古锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_5_14" level="272" name="远古锤将" feature="2" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_7_18" level="275" name="远古枪将" feature="2" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
     <general code="general_4_14" level="272" name="远古刀斧" feature="2" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_18"/>
-    <general code="general_7_14" level="280" name="神化张飞" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_6_15" level="280" name="神化魏延" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="116" part="12" partName="时空漩涡" level="146" name="诸神战场" group="时空" ai="115" delay="1250">
-    <award soldier="" recruit="" proto="proto_1_8:2|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_8:2|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="275" name="时空战车" feature="3" evolution="10"/>
     <general code="general_6_18" level="275" name="神域斗士" feature="3" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_21"/>
     <general code="general_1_22" level="275" name="神域弓手" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_5_18" level="278" name="神域斧将" feature="3" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_18"/>
     <general code="general_9_16" level="275" name="神域铁骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_18"/>
     <general code="general_9_16" level="275" name="神域铁骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
-    <general code="general_5_14" level="282" name="神化典韦" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_6_18" level="282" name="神化文鸯" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="117" part="12" partName="时空漩涡" level="147" name="万钧雷霆" group="时空" ai="115" delay="1250">
-    <award soldier="" recruit="" proto="proto_1_6:3|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_6:3|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="278" name="时空战车" feature="4" evolution="10"/>
     <general code="general_2_11" level="278" name="雷光飞刀" feature="4" evolution="10" kezhi="5:10|6:10|1:10" tianfu="tf_12"/>
     <general code="general_1_15" level="278" name="雷光弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_1_22" level="280" name="雷光弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_1_15" level="278" name="雷光弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_12"/>
     <general code="general_1_22" level="280" name="雷光弓手" feature="4" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_12"/>
-    <general code="general_9_20" level="285" name="神化马超" feature="3" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_1_22" level="285" name="神化邓艾" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="118" part="12" partName="时空漩涡" level="148" name="暴风之眼" group="时空" ai="115" delay="1200">
-    <award soldier="" recruit="" proto="proto_1_7:3|proto_3_4:1|proto_3_6:1" money="140000" reverence="14000" exploit="140000"/>
+    <award soldier="" recruit="" proto="proto_1_7:3|proto_3_4:1" money="140000" reverence="14000" exploit="140000"/>
     <general code="general_0_1" level="280" name="时空战车" feature="1" evolution="10"/>
     <general code="general_5_19" level="280" name="风暴锤将" feature="1" evolution="10" kezhi="3:10|8:10|9:10" tianfu="tf_18"/>
     <general code="general_7_14" level="282" name="风暴枪将" feature="1" evolution="10" kezhi="9:10|4:10|6:10" tianfu="tf_9"/>
     <general code="general_6_15" level="282" name="风暴斗将" feature="1" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
     <general code="general_4_19" level="280" name="风暴刀斧" feature="1" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_3"/>
     <general code="general_4_14" level="280" name="风暴刀斧" feature="1" evolution="10" kezhi="6:10|1:10|8:10" tianfu="tf_9"/>
-    <general code="general_1_15" level="288" name="神化黄忠" feature="4" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_8_13" level="288" name="神化兀突骨" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="119" part="12" partName="时空漩涡" level="149" name="元素洪流" group="时空" ai="118" delay="1200">
-    <award soldier="" recruit="" proto="proto_1_8:3|proto_3_4:1|proto_3_6:1" money="180000" reverence="18000" exploit="180000"/>
+    <award soldier="" recruit="" proto="proto_1_8:3|proto_3_4:1" money="180000" reverence="18000" exploit="180000"/>
     <general code="general_0_1" level="282" name="时空战车" feature="2" evolution="10"/>
     <general code="general_8_16" level="282" name="元素藤甲" feature="2" evolution="10" kezhi="1:10|2:10|4:10" tianfu="tf_21"/>
     <general code="general_6_18" level="285" name="元素斗将" feature="2" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_18"/>
     <general code="general_9_16" level="282" name="元素铁骑" feature="2" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_9"/>
     <general code="general_5_18" level="285" name="元素斧将" feature="2" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_18"/>
     <general code="general_3_13" level="282" name="元素将军" feature="2" evolution="10" kezhi="7:10|4:10|6:10" tianfu="tf_21"/>
-    <general code="general_9_17" level="290" name="神化太史慈" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_2_11" level="290" name="神化貂蝉" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
   <gate id="120" part="12" partName="时空漩涡" level="150" name="时空之主" group="时空" ai="120" delay="1150">
-    <award soldier="" recruit="张角" proto="proto_1_9:3|proto_3_4:2|proto_3_6:1" money="250000" reverence="25000" exploit="250000"/>
+    <award soldier="" recruit="张角" proto="proto_1_9:3|proto_3_4:2" money="250000" reverence="25000" exploit="250000"/>
     <general code="general_0_1" level="285" name="时空战车" feature="3" evolution="10"/>
     <general code="general_9_16" level="285" name="时空重骑" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_21"/>
     <general code="general_6_18" level="288" name="时空近卫" feature="3" evolution="10" kezhi="7:10|3:10|9:10" tianfu="tf_21"/>
     <general code="general_5_18" level="288" name="时空近卫" feature="3" evolution="10" kezhi="1:10|6:10|7:10" tianfu="tf_18"/>
     <general code="general_1_22" level="285" name="时空神弓" feature="3" evolution="10" kezhi="5:10|7:10|9:10" tianfu="tf_9"/>
     <general code="general_9_30" level="290" name="时空之主" feature="3" evolution="10" kezhi="3:10|4:10|8:10" tianfu="tf_21"/>
-    <general code="general_9_16" level="295" name="神化夏侯惇" feature="2" evolution="10" kezhi="" tianfu="tf_21"/>
+    <general code="general_7_19" level="295" name="神化赵云" feature="1" evolution="10" kezhi="" tianfu="tf_21"/>
   </gate>
 </data>

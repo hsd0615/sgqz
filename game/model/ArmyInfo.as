@@ -298,18 +298,18 @@ package game.model
          {
             _loc1_ = 0;
          }
-         else if(_loc1_ > 10)
-         {
-            _loc1_ = 10;
+         else if(_loc1_ > 11)
+        {
+           _loc1_ = 11;
          }
          return _loc1_;
       }
       
       public function set evolution(param1:int) : *
       {
-         if(param1 > 10)
+         if(param1 > 11)
          {
-            param1 = 10;
+            param1 = 11;
          }
          if(param1 < 0)
          {

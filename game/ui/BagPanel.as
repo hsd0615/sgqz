@@ -414,7 +414,7 @@ package game.ui
             {
                dispatchEvent(new UIEvent(UIEvent.QIUXIAN_CARD_CLICK,true,{"code":"proto_3_3"}));
             }
-            else if((_code == "proto_3_5" || _code == "proto_3_6") && RoleModel.getInstance().getBagItemCount(_code) > 0)
+            else if((_code.indexOf("proto_3_5_") == 0 || _code.indexOf("proto_3_6_") == 0) && RoleModel.getInstance().getBagItemCount(_code) > 0)
             {
                dispatchEvent(new UIEvent(UIEvent.QIUXIAN_CARD_CLICK,true,{"code":_code}));
             }

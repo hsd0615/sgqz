@@ -225,6 +225,13 @@ package game.display
          this._skin.mouseChildren = false;
          this._skin.buttonMode = true;
          addChild(this._skin);
+         // 魔化/神化视觉效果
+         if(this._armyInfo.evolution == 11 && this._armyInfo.name != null)
+         {
+            var _isMo:Boolean = this._armyInfo.name.indexOf("魔化") == 0;
+            var _glowColor:uint = _isMo ? 0x000000 : 0xFF00FF;
+            this._skin.filters = [new GlowFilter(_glowColor, 1, 6, 6, 2)];
+         }
       }
       
       protected function drawShadow() : *

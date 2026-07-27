@@ -230,6 +230,27 @@ function loadAwardMap() {
   }
   console.log('[AwardMap] Loaded ' + Object.keys(AWARD_MAP).length + ' awards');
 }
+// 魔化/神化结晶掉落映射 (stage_level → crystal_code)
+var CRYSTAL_MAP = {};
+function loadCrystalMap() {
+  if (!fs.existsSync('/opt/stage.xml')) return;
+  var xml = fs.readFileSync('/opt/stage.xml','utf8');
+  var gates = xml.split('<gate');
+  for (var i=1; i<gates.length; i++) {
+    var pm = gates[i].match(/part="(\d+)"/);
+    var lm = gates[i].match(/level="(\d+)"/);
+    if (!pm || !lm) continue;
+    var part = parseInt(pm[1]); var level = parseInt(lm[1]);
+    if (part !== 11 && part !== 12) continue;
+    var gcm = gates[i].match(/code="(general_\d+_\d+)"[^>]*name="(魔化|神化)[^"]+"/);
+    if (!gcm) continue;
+    var gcode = gcm[1]; var isMo = gcm[2] === '魔化';
+    var gparts = gcode.split('_');
+    var cryCode = 'proto_3_' + (isMo ? '5' : '6') + '_' + gparts[1] + '_' + gparts[2];
+    CRYSTAL_MAP[level] = cryCode;
+  }
+  console.log('[CrystalMap] Loaded ' + Object.keys(CRYSTAL_MAP).length + ' crystal drops');
+}
 // 加载商城数据 (shop.xml)
 var SHOP_DATA = {};
 function loadShopData() {
@@ -592,6 +613,7 @@ buildSuperGeneralPool(); // 1a2. 构建匈奴副本超级武将池
 loadStageMap();     // 1b. 加载关卡ID映射
 loadStageEnemyData(); // 1b2. 加载敌将数据
 loadAwardMap();     // 1c. 加载关卡奖励数据
+loadCrystalMap();   // 1c2. 加载结晶掉落数据
 loadShopData();     // 1d. 加载商城数据
 loadProtoData();    // 1e. 加载道具数据
 loadEquipData();    // 1f. 加载装备数据
@@ -1215,6 +1237,26 @@ function handleRequest(socket, req) {
       if(flevel % 10 == 0 && flevel >= 10) {
         awardData.dianka = 100;
         p.dianka = (p.dianka||0) + 100;
+      }
+    }
+    // 魔化/神化结晶概率掉落 (30%，parts 11-12 所有胜利)
+    if (isWin && (fpart === 11 || fpart === 12)) {
+      var cryCode = CRYSTAL_MAP[flevel];
+      if (cryCode && Math.random() < 0.3) {
+        if (!awardData) awardData = { money: 0, exploit: 0, reverence: 0, soldier: [], item: [] };
+        if (!awardData.item) awardData.item = [];
+        var cryCount = 1;
+        awardData.item.push({ id: Math.floor(Math.random()*10000), code: cryCode, count: cryCount });
+        if (!db.bagItems) db.bagItems = [];
+        var cryFound = false;
+        for (var cyi = 0; cyi < db.bagItems.length; cyi++) {
+          if (db.bagItems[cyi].player_id === p.id && db.bagItems[cyi].code === cryCode) {
+            db.bagItems[cyi].count = (db.bagItems[cyi].count || 0) + cryCount;
+            cryFound = true; break;
+          }
+        }
+        if (!cryFound) db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: cryCode, count: cryCount });
+        console.log('[CrystalDrop] ' + p.role_name + ' got ' + cryCode + ' from stage ' + fpart + '-' + flevel);
       }
     }
     p.finished_stages = fin.join('|');
@@ -2013,6 +2055,7 @@ function handleRequest(socket, req) {
       // === 魔化/神化结晶使用 ===
       var crystalCode = data.crystalCode;
       var targetCode = data.targetCode;
+      var isMo = data.mo === true || data.mo === 'true' || String(crystalCode).indexOf('proto_3_5_') === 0;
       if (!crystalCode || !targetCode) return jsonRawResponse(socket, { success: false, message: '参数错误' });
       // 查找结晶
       var cryIdx = -1;
@@ -2027,26 +2070,23 @@ function handleRequest(socket, req) {
       // 查找目标武将
       var tg = db.generals.find(function(g) { return g.player_id === p.id && g.code === targetCode; });
       if (!tg) return jsonRawResponse(socket, { success: false, message: '未找到该武将' });
-      var genTitle = parseInt(tg._title_ || 0);
-      if (genTitle !== 0) return jsonRawResponse(socket, { success: false, message: '只有超级武将可以使用结晶' });
       if ((tg.evolution||0) >= 11) return jsonRawResponse(socket, { success: false, message: '该武将已经魔化或神化' });
-      // 确定目标进化等级
-      var targetEvo = (crystalCode === 'proto_3_5') ? 11 : 12;
       // 扣除结晶
       db.bagItems[cryIdx].count = (db.bagItems[cryIdx].count||1) - 1;
       if (db.bagItems[cryIdx].count <= 0) db.bagItems.splice(cryIdx, 1);
-      // 设置进化等级和随机属性
-      tg.evolution = targetEvo;
+      // 设置进化等级11 + 随机属性 + 修改名称
+      tg.evolution = 11;
       tg.feature = Math.floor(Math.random() * 4) + 1;
+      var prefix = isMo ? '魔化' : '神化';
+      if (tg.name && tg.name.indexOf(prefix) !== 0) tg.name = prefix + tg.name;
       // 返回更新数据
-      respData.general = { code: tg.code, name: tg.name, level: tg.level||1, evolution: tg.evolution, feature: tg.feature };
       respData.code = tg.code;
       respData.name = tg.name;
       respData.level = tg.level||1;
       respData.evolution = tg.evolution;
       respData.feature = tg.feature;
       respData.crystalCode = crystalCode;
-      console.log('[Crystal] ' + p.role_name + ' uses ' + crystalCode + ' on ' + tg.name + ' → evo=' + targetEvo);
+      console.log('[Crystal] ' + p.role_name + ' uses ' + crystalCode + ' on ' + tg.name + ' → evo=11 ' + prefix);
     } else if (headCode === 10006) {
       // === 克制升级 ===
       var g = findGeneralByGid(data.id);
