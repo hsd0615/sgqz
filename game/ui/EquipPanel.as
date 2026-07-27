@@ -304,6 +304,7 @@ package game.ui
                   _self._armyInfo.setEquipSlot(param1, "");
                   _self._armyInfo.hp = _self._armyInfo.maxHp;
                }
+               RoleModel.getInstance().syncSoldierEquip(_self._armyInfo);
                if(param2.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param2.data.bagModel);
@@ -440,6 +441,7 @@ package game.ui
                   }
                }
                _self._armyInfo.hp = _self._armyInfo.maxHp; // 钳制到新maxHp
+               RoleModel.getInstance().syncSoldierEquip(_self._armyInfo);
                if(param3.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param3.data.bagModel);

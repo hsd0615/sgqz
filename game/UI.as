@@ -2213,6 +2213,13 @@ package game
 
       private function onQiuxianCardClick(param1:UIEvent) : *
       {
+         var _code:String = String(param1.data.code);
+         // 魔化/神化结晶使用
+         if(_code == "proto_3_5" || _code == "proto_3_6")
+         {
+            this.useCrystalOnSuperGeneral(_code);
+            return;
+         }
          var _tokenCount:int = RoleModel.getInstance().getBagItemCount("proto_3_3");
          if(_tokenCount <= 0) return;
          // 最多使用 min(令牌数, 6) 个
@@ -2231,6 +2238,73 @@ package game
          _loc2_.maxFlips = _maxUse;
          _loc2_.mask = true;
          AESController.getInstance().sendJSON(_loc2_,this.onRecruitCardsResponse);
+      }
+
+      private function useCrystalOnSuperGeneral(param1:String) : *
+      {
+         var _code:String = param1;
+         var _allArmys:Vector.<ArmyInfo> = RoleModel.getInstance().armys;
+         var _superList:Array = [];
+         var _ii:int = 0;
+         while(_ii < _allArmys.length)
+         {
+            var _gi:ArmyInfo = _allArmys[_ii];
+            if(_gi.title == 0 && _gi.evolution < 11)
+            {
+               _superList.push({code:_gi.code, name:_gi.name, evolution:_gi.evolution});
+            }
+            _ii++;
+         }
+         if(_superList.length == 0)
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{"type":0,"text":"没有可用的超级武将（需要 title=0 且未魔化/神化）"}));
+            return;
+         }
+         // 取第一个符合条件的超级武将直接使用（简化逻辑）
+         var _target:Object = _superList[0];
+         var _crystalName:String = _code == "proto_3_5" ? "魔化结晶" : "神化结晶";
+         var _confirmMsg:String = "对 " + _target.name + " 使用" + _crystalName + "？\\n（进化等级将从 " + _target.evolution + " 提升到 " + (_code == "proto_3_5" ? "11(魔化)" : "12(神化)") + "）";
+
+         // 简化实现：直接使用第一个超级武将
+         var _req:Object = {};
+         _req.head = Head.HTTP_NEW_CRYSTAL_USE;
+         _req.agent = Config.AGENT;
+         _req.ver = Config.VER;
+         _req.token = Config.token;
+         _req.roleID = RoleModel.getInstance().roleID;
+         _req.userID = RoleModel.getInstance().userID;
+         _req.crystalCode = _code;
+         _req.targetCode = _target.code;
+         AESController.getInstance().sendJSON(_req,this.onCrystalUseResponse);
+      }
+
+      private function onCrystalUseResponse(param1:Object) : *
+      {
+         if(param1.success == true && param1.data != null)
+         {
+            // 更新本地武将数据
+            RoleModel.getInstance().modifySoldier(
+               param1.data.code,
+               param1.data.level,
+               param1.data.evolution,
+               param1.data.feature
+            );
+            // 移除结晶
+            RoleModel.getInstance().delBagItem(param1.data.crystalCode, 1);
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+               "type":0,
+               "text":"使用成功！" + param1.data.name + "已" + (param1.data.evolution == 11 ? "魔化" : "神化") + "！"
+            }));
+            // 刷新面板
+            this.closeBagPanel();
+         }
+         else
+         {
+            dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
+               "type":0,
+               "text":param1.message || "结晶使用失败"
+            }));
+         }
       }
 
       private function onRecruitCardsResponse(param1:Object) : *

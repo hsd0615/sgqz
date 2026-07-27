@@ -23,6 +23,7 @@ package game.ui
    import flash.text.TextField;
    import game.Config;
    import game.Data;
+   import game.model.RoleModel;
    import game.SoundCode;
    import game.events.UIEvent;
    
@@ -90,6 +91,10 @@ package game.ui
       private var __nameTF:TextField;
       
       private var __infoTF:TextField;
+
+      private var __combatPowerTF:TextField;
+
+      private var __paihangBtn:Sprite;
       
       private var _posX:Number = -378;
       
@@ -170,6 +175,44 @@ package game.ui
          this.__waveMC.buttonMode = true;
          this.__nameTF = _skin.getChildByName("_nameTF") as TextField;
          this.__infoTF = _skin.getChildByName("_infoTF") as TextField;
+         // 战力独立显示（不依赖SWF皮肤的infoTF高度）
+         this.__combatPowerTF = new TextField();
+         this.__combatPowerTF.selectable = false;
+         this.__combatPowerTF.mouseEnabled = false;
+         this.__combatPowerTF.width = 120;
+         this.__combatPowerTF.height = 24;
+         this.__combatPowerTF.x = this.__infoTF.x;
+         this.__combatPowerTF.y = this.__infoTF.y + this.__infoTF.height + 2;
+         var _fmt2:TextFormat = new TextFormat();
+         _fmt2.size = 14;
+         _fmt2.bold = true;
+         _fmt2.color = 0xFFD700;
+         _fmt2.font = "_sans";
+         this.__combatPowerTF.defaultTextFormat = _fmt2;
+         addChild(this.__combatPowerTF);
+         // 战力排行按钮（加载图标）
+         this.__paihangBtn = new Sprite();
+         this.__paihangBtn.buttonMode = true;
+         this.__paihangBtn.useHandCursor = true;
+         this.__paihangBtn.mouseChildren = true;
+         this.__paihangBtn.addEventListener(MouseEvent.CLICK,this.paihangBtnClickHandler);
+         var _iconLoader:Loader = new Loader();
+         _iconLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(_e:Event):void {
+            var _bmp:Bitmap = _e.target.content as Bitmap;
+            if(_bmp != null) {
+               _bmp.smoothing = true;
+               _bmp.width = 50; _bmp.height = 50;
+            }
+         });
+         _iconLoader.load(new URLRequest(Config.SERVER_URL + "/client/icons/ranking_btn.png"));
+         this.__paihangBtn.addChild(_iconLoader);
+         addChild(this.__paihangBtn);
+         // 放在擂台按钮旁边
+         if(this.__leitaiBtn != null)
+         {
+            this.__paihangBtn.x = this.__leitaiBtn.x + this.__leitaiBtn.width + 8;
+            this.__paihangBtn.y = this.__leitaiBtn.y;
+         }
          this._talkArea = new TalkArea(SkinCode.TALK_INPUT);
          this._talkArea.x = -width / 2;
          this._talkArea.y = height / 2;
@@ -303,7 +346,18 @@ package game.ui
          _loc2_ += param1.exploit + "\n";
          _loc2_ += param1.dianka;
          this.__infoTF.text = _loc2_;
+         // 战力独立显示
+         var _power:int = RoleModel.getInstance().getCombatPower();
+         this.__combatPowerTF.text = "战力: " + _power;
          this.checkPart(param1.history);
+      }
+
+      public function refreshCombatPower() : void
+      {
+         if(this.__combatPowerTF != null)
+         {
+            this.__combatPowerTF.text = "战力: " + RoleModel.getInstance().getCombatPower();
+         }
       }
       
       private function setImage(param1:int) : *
@@ -519,6 +573,13 @@ package game.ui
          param1.stopImmediatePropagation();
          dispatchEvent(new UIEvent(UIEvent.OPEN_LEITAI,true));
       }
+
+		private function paihangBtnClickHandler(param1:MouseEvent) : *
+		{
+			param1.stopImmediatePropagation();
+			dispatchEvent(new UIEvent(UIEvent.PAIHANG_CLICK,true));
+		}
+
       
       private function soundMCClickHandler(param1:MouseEvent) : *
       {

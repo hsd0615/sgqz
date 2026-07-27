@@ -160,10 +160,12 @@ package game.model
       public static const HTTP_NEW_FUBEN_FANPAI:int = 10019;
       
       public static const HTTP_NEW_SHUXINGCHONGXI:int = 10020;
-      
+
       public static const HTTP_NEW_GETAWARD:int = 10021;
-      
+
       public static const HTTP_NEW_BUCHANG:int = 10022;
+
+      public static const HTTP_NEW_CRYSTAL_USE:int = 10023; // 魔化/神化结晶使用
 
       public static const HTTP_NEW_FIGHT_PREPARE:int = 10023;
 

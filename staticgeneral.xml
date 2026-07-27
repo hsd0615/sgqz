@@ -3174,6 +3174,29 @@
     <proto>proto_1_8</proto>
   </RECORD>
   <RECORD>
+    <code>general_8_16</code>
+    <name>邪魔藤甲</name>
+    <type>8</type>
+    <title>0</title>
+    <kezhi>2:1|7:1|3:1</kezhi>
+    <skin>generalSkin_8</skin>
+    <hp>1750</hp>
+    <attack>400</attack>
+    <defense>500</defense>
+    <cd>4.5</cd>
+    <mcd>4.5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>4</attackDistance>
+    <moveDistance>4</moveDistance>
+    <recruitLevel>-1</recruitLevel>
+    <money>0</money>
+    <jinbi/>
+    <dianka>0</dianka>
+    <coint/>
+    <price>12</price>
+    <proto>proto_1_8</proto>
+  </RECORD>
+  <RECORD>
     <code>general_9_0</code>
     <name>趜义</name>
     <type>9</type>

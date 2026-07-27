@@ -206,6 +206,24 @@
     <icon>proto_3_4</icon>
     <skin/>
   </RECORD>
+  <RECORD>
+    <code>proto_3_5</code>
+    <type>3</type>
+    <name>魔化结晶</name>
+    <desc>对超级武将使用，使其魔化，全属性大幅提升</desc>
+    <value>11</value>
+    <icon>proto_3_5</icon>
+    <skin/>
+  </RECORD>
+  <RECORD>
+    <code>proto_3_6</code>
+    <type>3</type>
+    <name>神化结晶</name>
+    <desc>对超级武将使用，使其神化，全属性大幅提升</desc>
+    <value>12</value>
+    <icon>proto_3_6</icon>
+    <skin/>
+  </RECORD>
   <RECORD><code>proto_4_1</code><type>4</type><name>铁剑</name><desc>攻击+50 [普通]</desc><value/><icon>proto_4_1</icon><skin/></RECORD>
   <RECORD><code>proto_4_2</code><type>4</type><name>精钢剑</name><desc>攻击+120 [精良]</desc><value/><icon>proto_4_2</icon><skin/></RECORD>
   <RECORD><code>proto_4_3</code><type>4</type><name>青釭剑</name><desc>攻击+200 [稀有]</desc><value/><icon>proto_4_3</icon><skin/></RECORD>

@@ -517,6 +517,7 @@ package game.ui
             {
                _self._armyInfo.setEquipSlot(param1, "");
                _self._armyInfo.hp = _self._armyInfo.maxHp;
+               RoleModel.getInstance().syncSoldierEquip(_self._armyInfo);
                if(param2.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param2.data.bagModel);
@@ -728,8 +729,8 @@ package game.ui
                return s;
             }
             var _btns:Array = [
-               mkPgBtn("◀◀",this._equipListPage>0,function(){_self._equipListPage=0;_self.renderEquipList();}),
-               mkPgBtn("◀",this._equipListPage>0,function(){_self._equipListPage--;_self.renderEquipList();}),
+               mkPgBtn("◀◀",this._equipListPage>0,function():void{_self._equipListPage=0;_self.renderEquipList();}),
+               mkPgBtn("◀",this._equipListPage>0,function():void{_self._equipListPage--;_self.renderEquipList();}),
                null, // 页码
                mkPgBtn("▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage++;_self.renderEquipList();}),
                mkPgBtn("▶▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage=_totalPages-1;_self.renderEquipList();})
@@ -905,8 +906,8 @@ package game.ui
                return s;
             };
             var _pgs:Array = [
-               _mkPg2("◀◀",_self._batchPage2>0,function(){_self._batchPage2=0;_self.showBatchSellView();}),
-               _mkPg2("◀",_self._batchPage2>0,function(){_self._batchPage2--;_self.showBatchSellView();})
+               _mkPg2("◀◀",_self._batchPage2>0,function():void{_self._batchPage2=0;_self.showBatchSellView();}),
+               _mkPg2("◀",_self._batchPage2>0,function():void{_self._batchPage2--;_self.showBatchSellView();})
             ];
             var _pgTF2:TextField = new TextField();
             _pgTF2.defaultTextFormat = new TextFormat("SimHei",10,0xD4C8A0,true);
@@ -914,8 +915,8 @@ package game.ui
             _pgTF2.selectable = false; _pgTF2.autoSize = TextFieldAutoSize.CENTER;
             _pgTF2.width = 40; _pgTF2.height = 14;
             _pgs.push(_pgTF2);
-            _pgs.push(_mkPg2("▶",_self._batchPage2<_totalPages-1,function(){_self._batchPage2++;_self.showBatchSellView();}));
-            _pgs.push(_mkPg2("▶▶",_self._batchPage2<_totalPages-1,function(){_self._batchPage2=_totalPages-1;_self.showBatchSellView();}));
+            _pgs.push(_mkPg2("▶",_self._batchPage2<_totalPages-1,function():void{_self._batchPage2++;_self.showBatchSellView();}));
+            _pgs.push(_mkPg2("▶▶",_self._batchPage2<_totalPages-1,function():void{_self._batchPage2=_totalPages-1;_self.showBatchSellView();}));
             var _ptw:int = 28*4+40+16;
             var _psx:int = int((_w-_ptw)/2);
             var _px:int = _psx;
@@ -1052,6 +1053,8 @@ package game.ui
                }
                // 强制属性重算
                _self._armyInfo.hp = _self._armyInfo.maxHp;
+               // 同步装备到原始数据，触发战力刷新
+               RoleModel.getInstance().syncSoldierEquip(_self._armyInfo);
                if(param3.data.bagModel)
                {
                   RoleModel.getInstance().initBagModel(param3.data.bagModel);
@@ -1349,6 +1352,16 @@ package game.ui
             }
             Tools.setDisabled(this.__sxcxBtn,true);
          }
+         else if(this._armyInfo.evolution == 11)
+         {
+            _loc1_ += "    <font color=\'#ff3333\'>【魔化】</font> 全属性增加" + this._armyInfo.getAddtion() * 100 + "%\n";
+            Tools.setDisabled(this.__sxcxBtn,false);
+         }
+         else if(this._armyInfo.evolution == 12)
+         {
+            _loc1_ += "    <font color=\'#ffaa00\'>【神化】</font> 全属性增加" + this._armyInfo.getAddtion() * 100 + "%\n";
+            Tools.setDisabled(this.__sxcxBtn,false);
+         }
          else
          {
             _loc1_ += "    " + this._armyInfo.evolution + "级 <font color=\'#4bea13\'>全属性增加" + this._armyInfo.getAddtion() * 100 + "%</font>\n";
@@ -1478,7 +1491,7 @@ package game.ui
       private function jinhuaBtnClickHandler(param1:MouseEvent) : *
       {
          param1.stopImmediatePropagation();
-         if(this._armyInfo.evolution >= 10)
+         if(this._armyInfo.evolution >= 12)
          {
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,

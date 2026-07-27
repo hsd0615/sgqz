@@ -512,6 +512,14 @@ package game
          {
             return Number(_loc2_[0] + _loc2_[10] + _loc2_[5] + _loc2_[0]);
          }
+         if(param1 == 11)
+         {
+            return Number(_loc2_[0] + _loc2_[10] + _loc2_[5] + _loc2_[5]);
+         }
+         if(param1 == 12)
+         {
+            return Number(_loc2_[0] + _loc2_[10] + _loc2_[6] + _loc2_[0]);
+         }
          return 0;
       }
       

@@ -145,7 +145,7 @@ package game
       private var _fightUI:FightUI;
       
       private var _ammoTips:MovieClip;
-      
+
       public function Fight(param1:Vector.<ArmyInfo>, param2:Vector.<ArmyInfo>, param3:int = 1, param4:Boolean = false)
       {
          super();

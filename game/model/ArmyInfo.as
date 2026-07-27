@@ -1,5 +1,6 @@
 package game.model
 {
+   import flash.events.Event;
    import game.Config;
    import game.Data;
    import game.Logic;

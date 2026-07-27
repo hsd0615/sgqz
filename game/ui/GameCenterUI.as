@@ -233,7 +233,8 @@ package game.ui
          _loc2_ += "等级:" + this._roleModel.level + "\n";
          _loc2_ += "战斗场次:" + this._roleModel.fightCount + "\n";
          _loc2_ += "获胜场次:" + this._roleModel.winCount + "\n";
-         _loc2_ += "积分:" + this._roleModel.score;
+         _loc2_ += "积分:" + this._roleModel.score + "\n";
+         _loc2_ += "战力:" + this._roleModel.getCombatPower();
          this.__roleInfoTF.text = _loc2_;
          this.setImage(this._roleModel.imageID);
       }
