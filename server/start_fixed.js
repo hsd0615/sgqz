@@ -735,7 +735,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.8.0';
+  _cachedClientVersion = '4.8.1';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1968,7 +1968,28 @@ function handleRequest(socket, req) {
     const headCode = parseInt(data.head) || 0;
     let respData = getResourceData(p);
 
-    if (headCode === 10004) {
+    if (headCode === 10025) {
+      // === 魔化/神化结晶使用 ===
+      var crystalCode = data.crystalCode;
+      var targetCode = data.targetCode;
+      var isMo = data.mo === true || data.mo === 'true' || String(crystalCode).indexOf('proto_3_5_') === 0;
+      if (!crystalCode || !targetCode) return jsonRawResponse(socket, { success: false, message: '参数错误' });
+      var cryIdx = -1;
+      if (db.bagItems) { for (var ci = 0; ci < db.bagItems.length; ci++) { if (db.bagItems[ci].player_id == p.id && db.bagItems[ci].code === crystalCode && (db.bagItems[ci].count||1) > 0) { cryIdx = ci; break; } } }
+      if (cryIdx === -1) return jsonRawResponse(socket, { success: false, message: '背包中没有该结晶' });
+      var tg = db.generals.find(function(g) { return g.player_id === p.id && g.code === targetCode; });
+      if (!tg) return jsonRawResponse(socket, { success: false, message: '未找到该武将' });
+      if ((tg.evolution||0) >= 11) return jsonRawResponse(socket, { success: false, message: '该武将已经魔化或神化' });
+      db.bagItems[cryIdx].count = (db.bagItems[cryIdx].count||1) - 1;
+      if (db.bagItems[cryIdx].count <= 0) db.bagItems.splice(cryIdx, 1);
+      tg.evolution = 11;
+      tg.feature = Math.floor(Math.random() * 4) + 1;
+      var prefix = isMo ? '魔化' : '神化';
+      if (tg.name && tg.name.indexOf(prefix) !== 0) tg.name = prefix + tg.name;
+      respData.code = tg.code; respData.name = tg.name; respData.level = tg.level||1;
+      respData.evolution = tg.evolution; respData.feature = tg.feature; respData.crystalCode = crystalCode;
+      console.log('[Crystal] ' + p.role_name + ' uses ' + crystalCode + ' on ' + tg.name + ' → evo=11 ' + prefix);
+    } else if (headCode === 10004) {
       // === 升级 ===
       const g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
@@ -2051,42 +2072,6 @@ function handleRequest(socket, req) {
       respData.dianka = p.dianka;
       respData.feature = g.feature;
       console.log('[Reforge] ' + p.role_name + ' ' + g.name + ' feature→' + g.feature + ' dianka:' + p.dianka);
-    } else if (headCode === 10023) {
-      // === 魔化/神化结晶使用 ===
-      var crystalCode = data.crystalCode;
-      var targetCode = data.targetCode;
-      var isMo = data.mo === true || data.mo === 'true' || String(crystalCode).indexOf('proto_3_5_') === 0;
-      if (!crystalCode || !targetCode) return jsonRawResponse(socket, { success: false, message: '参数错误' });
-      // 查找结晶
-      var cryIdx = -1;
-      if (db.bagItems) {
-        for (var ci = 0; ci < db.bagItems.length; ci++) {
-          if (db.bagItems[ci].player_id == p.id && db.bagItems[ci].code === crystalCode && (db.bagItems[ci].count||1) > 0) {
-            cryIdx = ci; break;
-          }
-        }
-      }
-      if (cryIdx === -1) return jsonRawResponse(socket, { success: false, message: '背包中没有该结晶' });
-      // 查找目标武将
-      var tg = db.generals.find(function(g) { return g.player_id === p.id && g.code === targetCode; });
-      if (!tg) return jsonRawResponse(socket, { success: false, message: '未找到该武将' });
-      if ((tg.evolution||0) >= 11) return jsonRawResponse(socket, { success: false, message: '该武将已经魔化或神化' });
-      // 扣除结晶
-      db.bagItems[cryIdx].count = (db.bagItems[cryIdx].count||1) - 1;
-      if (db.bagItems[cryIdx].count <= 0) db.bagItems.splice(cryIdx, 1);
-      // 设置进化等级11 + 随机属性 + 修改名称
-      tg.evolution = 11;
-      tg.feature = Math.floor(Math.random() * 4) + 1;
-      var prefix = isMo ? '魔化' : '神化';
-      if (tg.name && tg.name.indexOf(prefix) !== 0) tg.name = prefix + tg.name;
-      // 返回更新数据
-      respData.code = tg.code;
-      respData.name = tg.name;
-      respData.level = tg.level||1;
-      respData.evolution = tg.evolution;
-      respData.feature = tg.feature;
-      respData.crystalCode = crystalCode;
-      console.log('[Crystal] ' + p.role_name + ' uses ' + crystalCode + ' on ' + tg.name + ' → evo=11 ' + prefix);
     } else if (headCode === 10006) {
       // === 克制升级 ===
       var g = findGeneralByGid(data.id);

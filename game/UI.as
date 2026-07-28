@@ -2215,7 +2215,7 @@ package game
       {
          var _code:String = String(param1.data.code);
          // 魔化/神化结晶使用
-         if(_code == "proto_3_5" || _code == "proto_3_6")
+         if(_code.indexOf("proto_3_5_") == 0 || _code.indexOf("proto_3_6_") == 0)
          {
             this.useCrystalOnSuperGeneral(_code);
             return;
@@ -3531,6 +3531,7 @@ package game
                var _gi:ArmyInfo = Data.getInstance().getArmyInfo(_gData.code, int(_gData.level), int(_gData.evolution || 0), int(_gData.feature || 0));
                if(_gi != null)
                {
+                  _gi.id = Number(_gData.id);
                   if(_gData.forceHp) _gi.forceHp = int(_gData.forceHp);
                   RoleModel.getInstance().addSoldier(_gi);
                   var _gn:String = Data.getInstance().getAttributes("general", _gData.code, "name");
