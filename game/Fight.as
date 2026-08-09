@@ -244,11 +244,11 @@
       private function createTF() : *
       {
          this._advanceBtn = this.createOriginalArmyButton(false);
-         this._advanceBtn.x = 590; this._advanceBtn.y = 2;
+         this._advanceBtn.x = 570; this._advanceBtn.y = 0;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
          this._armyRetreatBtn = this.createOriginalArmyButton(true);
-         this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
+         this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 0;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
          // 鎾ら€€鎸夐挳 鈥?鍙ら摐椋庢牸鍖归厤娓告垙UI
@@ -257,7 +257,7 @@
          drum.width = 50; drum.height = 50;
          this._retreatBtn.addChild(drum);
          this._retreatBtn.buttonMode = true;
-         this._retreatBtn.x = 710; this._retreatBtn.y = 2;
+         this._retreatBtn.x = 730; this._retreatBtn.y = 0;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn);
          /*
@@ -306,12 +306,12 @@
       {
          var result:Sprite = new Sprite();
          var icon:Bitmap = new _retreatIcon() as Bitmap;
-         icon.width = 42; icon.height = 50;
+         icon.width = 52; icon.height = 62;
          result.addChild(icon);
          result.buttonMode = true;
          if(mirror) {
             result.scaleX = -1;
-            result.x = 42;
+            result.x = 52;
          }
          return result;
       }
@@ -337,7 +337,13 @@
          return result;
       }
 
-      private function advanceArmyClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(true); }
+      private function advanceArmyClickHandler(param1:MouseEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         if(this._isOver) return;
+         var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
+         for(var i:int = 0; i < own.length; i++) if(own[i] && !own[i].isDead) SmartAttack.makeAI(own[i], this);
+      }
       private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
       private function moveArmy(param1:Boolean) : void
       {
