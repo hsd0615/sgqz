@@ -234,6 +234,7 @@
       {
          addEventListener(SoldierEvent.FILL_COMPLETE,this.onSoldierFillCompleteHandler);
          addEventListener(SoldierEvent.FIRE_COMPLETE,this.onSoldierFireCompleteHandler);
+         addEventListener(SoldierEvent.MOVE_COMPLETE,this.onArmyMoveCompleteHandler);
          addEventListener(SoldierEvent.BEHURT,this.onSoldierBehurtHandler);
          addEventListener(SoldierEvent.SHANBI,this.onSoldierShanbiHandler);
          addEventListener(SoldierEvent.HUIFU,this.onSoldierHuifuHandler);
@@ -1076,6 +1077,12 @@
       {
          this.onMouseClickHandler(null);
          SmartAttack.makeAI(param1.target as AbstractSoldier,this);
+      }
+
+      private function onArmyMoveCompleteHandler(param1:SoldierEvent) : void
+      {
+         var soldier:AbstractSoldier = param1.target as AbstractSoldier;
+         if(soldier != null && !soldier.isDead && soldier.canAI) SmartAttack.makeAI(soldier, this);
       }
       
       private function conFireHandler(param1:ConEvent) : void
