@@ -1,4 +1,4 @@
-package game
+﻿package game
 {
    import com.greensock.TweenLite;
    import com.greensock.easing.Elastic;
@@ -145,6 +145,9 @@ package game
       private var _advanceBtn:Sprite;
       private var _armyRetreatBtn:Sprite;
 
+      [Embed(source="drum.png")]
+      private static var _drumIcon:Class;
+
       private var _fightUI:FightUI;
       
       private var _ammoTips:MovieClip;
@@ -220,7 +223,7 @@ package game
          addEventListener(ConEvent.FIRE,this.conFireHandler);
          stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeydownHandler);
          this.initUnInteractiveEvent();
-         // Web键盘轮询: Flash通过ExternalInterface.call获取JS按键
+         // Web閿洏杞: Flash閫氳繃ExternalInterface.call鑾峰彇JS鎸夐敭
          addEventListener(Event.ENTER_FRAME,this.pollWebKeys);
 
       }
@@ -246,8 +249,12 @@ package game
          this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
-         // 撤退按钮 — 古铜风格匹配游戏UI
-         this._retreatBtn = this.createEmbeddedButton("_RetreatBtn", "_RetreatBtn");
+         // 鎾ら€€鎸夐挳 鈥?鍙ら摐椋庢牸鍖归厤娓告垙UI
+         this._retreatBtn = new Sprite();
+         var drum:Bitmap = new _drumIcon() as Bitmap;
+         drum.width = 50; drum.height = 50;
+         this._retreatBtn.addChild(drum);
+         this._retreatBtn.buttonMode = true;
          this._retreatBtn.x = 710; this._retreatBtn.y = 2;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn);
@@ -262,7 +269,7 @@ package game
          this._retreatBtn.addChild(_bg);
          var _rtTF:TextField = new TextField();
          _rtTF.defaultTextFormat = new TextFormat("SimSun", 11, 0xC8A84E, true);
-         _rtTF.text = "撤退";
+         _rtTF.text = "鎾ら€€";
          _rtTF.selectable = false; _rtTF.mouseEnabled = false;
          _rtTF.autoSize = TextFieldAutoSize.CENTER;
          _rtTF.x = 8; _rtTF.y = 3;
@@ -357,7 +364,7 @@ package game
             this._equipNotifyTF.filters = [_glow];
             addChild(this._equipNotifyTF);
          }
-         this._equipNotifyTF.htmlText = "<font color='#FF6600' size='14'>⚠ " + param1 + "</font>";
+         this._equipNotifyTF.htmlText = "<font color='#FF6600' size='14'>鈿?" + param1 + "</font>";
          this._equipNotifyTF.x = 200;
          this._equipNotifyTF.y = 10;
       }
@@ -410,7 +417,7 @@ package game
       
       private function createBK() : *
       {
-         // 先用临时背景占位，setPartAndLevel会替换为关卡专属背景
+         // 鍏堢敤涓存椂鑳屾櫙鍗犱綅锛宻etPartAndLevel浼氭浛鎹负鍏冲崱涓撳睘鑳屾櫙
          var _tmpBg:Shape = new Shape();
          _tmpBg.graphics.beginFill(0x1a0a08);
          _tmpBg.graphics.drawRect(0,0,770,500);
@@ -486,7 +493,7 @@ package game
          var _loc5_:String = Data.getInstance().getAttributes("proto",_loc4_,"name");
          var _loc6_:int = Data.getInstance().getAttributes("proto",_loc4_,"type");
          var _loc7_:String = Data.getInstance().getAttributes("proto",_loc4_,"desc");
-         var _loc8_:String = (_loc8_ = (_loc8_ = (_loc8_ = "") + ("<font color=\'#e5ce10\'>名称：</font>" + _loc5_ + "\n")) + ("<font color=\'#e5ce10\'>类别：</font>" + (_loc6_ == 1 ? "进化道具" : "战车弹药") + "\n")) + ("<font color=\'#e5ce10\'>说明：</font>" + _loc7_ + "\n");
+         var _loc8_:String = (_loc8_ = (_loc8_ = (_loc8_ = "") + ("<font color=\'#e5ce10\'>鍚嶇О锛?/font>" + _loc5_ + "\n")) + ("<font color=\'#e5ce10\'>绫诲埆锛?/font>" + (_loc6_ == 1 ? "杩涘寲閬撳叿" : "鎴樿溅寮硅嵂") + "\n")) + ("<font color=\'#e5ce10\'>璇存槑锛?/font>" + _loc7_ + "\n");
          dispatchEvent(new UIEvent(UIEvent.SHOW_TIPS,true,{
             "htmlText":_loc8_,
             "type":3,
@@ -555,7 +562,7 @@ package game
             try {
                _loc2_ = this.armyFactory(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false);
             } catch(_err:Error) {
-               // 皮肤缺失等异常时回退为Shooter
+               // 鐨偆缂哄け绛夊紓甯告椂鍥為€€涓篠hooter
                this._leftArmy[_loc4_].type = Type.GONGBING;
                _loc2_ = new Shooter(this._leftArmy[_loc4_],1,this._direct == 1 ? true : false,this);
             }
@@ -590,7 +597,7 @@ package game
             try {
                _loc2_ = this.armyFactory(this._rightArmy[_loc5_],-1,this._direct == -1 ? true : false);
             } catch(_err:Error) {
-               // 皮肤缺失等异常时回退为Shooter
+               // 鐨偆缂哄け绛夊紓甯告椂鍥為€€涓篠hooter
                this._rightArmy[_loc5_].type = Type.GONGBING;
                _loc2_ = new Shooter(this._rightArmy[_loc5_],-1,this._direct == -1 ? true : false,this);
             }
@@ -652,8 +659,7 @@ package game
             case Type.QIBING:
                return new Saber(param1,param2,param3,this);
             case Type.WUDOUBING:
-               // 外部版本的魏延属于近战武斗兵，沿用原版 Saber 动作接口。
-               return new Saber(param1,param2,param3,this);
+               // 澶栭儴鐗堟湰鐨勯瓘寤跺睘浜庤繎鎴樻鏂楀叺锛屾部鐢ㄥ師鐗?Saber 鍔ㄤ綔鎺ュ彛銆?               return new Saber(param1,param2,param3,this);
             case Type.PART_SOLDIER:
                return new PartSoldier(param1,param2,param3,this);
             case Type.JUNZHU:
@@ -855,8 +861,8 @@ package game
          this._yuanchengCon.setEnabled(true);
          this._miaozhunjing.removeEventListener(Event.ENTER_FRAME,this.onMiaozhunjingEnterFrameHandler);
          this._miaozhunjing.gotoAndStop(1);
-         // 不移除ENEMY_LOCKED/UNLOCKED监听器、不清除_lockedEnemy，
-         // 否则切换武将后鼠标停在敌人上不会重新触发MOUSE_OVER导致瞄准镜锁死
+         // 涓嶇Щ闄NEMY_LOCKED/UNLOCKED鐩戝惉鍣ㄣ€佷笉娓呴櫎_lockedEnemy锛?
+         // 鍚﹀垯鍒囨崲姝﹀皢鍚庨紶鏍囧仠鍦ㄦ晫浜轰笂涓嶄細閲嶆柊瑙﹀彂MOUSE_OVER瀵艰嚧鐬勫噯闀滈攣姝?
       }
       
       private function clearCurrentSoldier() : *
@@ -949,7 +955,7 @@ package game
       private function onSoldierSelectedHandler(param1:SoldierEvent) : *
       {
          var _newSoldier:AbstractSoldier = param1.target as AbstractSoldier;
-         // 禁止在武将攻击动画中或已死亡时切换，防止UI卡住（瞄准镜被清但未重建）
+         // 绂佹鍦ㄦ灏嗘敾鍑诲姩鐢讳腑鎴栧凡姝讳骸鏃跺垏鎹紝闃叉UI鍗′綇锛堢瀯鍑嗛暅琚竻浣嗘湭閲嶅缓锛?
          if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
          {
             return;
@@ -973,7 +979,7 @@ package game
       private function onSelectSoldierHandler(param1:ConEvent) : *
       {
          var _newSoldier:AbstractSoldier = this.selectSoldier(param1.data.id,param1.data.code);
-         // 禁止在武将攻击动画中或已死亡时切换，防止UI卡住（瞄准镜被清但未重建）
+         // 绂佹鍦ㄦ灏嗘敾鍑诲姩鐢讳腑鎴栧凡姝讳骸鏃跺垏鎹紝闃叉UI鍗′綇锛堢瀯鍑嗛暅琚竻浣嗘湭閲嶅缓锛?
          if(_newSoldier != null && (_newSoldier.fireing || _newSoldier.isDead))
          {
             return;
@@ -996,7 +1002,7 @@ package game
       
       private function onEnemySelectedHandler(param1:SoldierEvent) : *
       {
-         trace("敌人被点击了");
+         trace("鏁屼汉琚偣鍑讳簡");
          if(this._miaozhunjing.visible == true)
          {
             Mouse.show();
@@ -1025,7 +1031,7 @@ package game
          this._miaozhunjing.visible = true;
          Mouse.prototype.isHide = true;
          Mouse.hide();
-         trace("瞄准镜显示：",this._miaozhunjing.visible);
+         trace("鐬勫噯闀滄樉绀猴細",this._miaozhunjing.visible);
       }
       
       private function onMiaozhunjingEnterFrameHandler(param1:Event) : *
@@ -1115,10 +1121,10 @@ package game
          switch(_loc2_.type)
          {
             case Type.TOUSHICHE:
-               trace("发射角度:",param1.data.angle,"发射力度:",param1.data.power);
+               trace("鍙戝皠瑙掑害:",param1.data.angle,"鍙戝皠鍔涘害:",param1.data.power);
                if(_loc2_.isPlayer == true)
                {
-                  trace("攻击弹药",this._ammo);
+                  trace("鏀诲嚮寮硅嵂",this._ammo);
                   _loc3_ = new StoneWeapon(_loc2_,param1.data.angle,param1.data.power,this._ammo);
                }
                else
@@ -1126,7 +1132,7 @@ package game
                   _loc3_ = new StoneWeapon(_loc2_,param1.data.angle,param1.data.power,_loc2_.feature > 0 ? "proto_2_" + (_loc2_.feature + 4) : "proto_2_3");
                }
                _loc4_ = _loc2_.getHurPoint(this);
-               trace("起始坐标:",_loc4_);
+               trace("璧峰鍧愭爣:",_loc4_);
                _loc3_.x = _loc4_.x;
                _loc3_.y = _loc4_.y;
                addChild(_loc3_);
@@ -1332,7 +1338,7 @@ package game
          var _loc3_:Number = NaN;
          var _loc4_:Number = NaN;
          var _deadSoldier:AbstractSoldier = param1.target as AbstractSoldier;
-         // 装备掉落地面特效
+         // 瑁呭鎺夎惤鍦伴潰鐗规晥
          if(_deadSoldier != null && _deadSoldier.armyInfo != null)
          {
             var _dropCode:String = _deadSoldier.armyInfo.dropEquipCode;
@@ -1528,8 +1534,8 @@ package game
          {
             this.initEvent();
          }
-         // 倒计时动画移除后stage可能失去键盘焦点，强制恢复
-         // 否则必须先用鼠标点击一次战场，快捷键1-5才能生效
+         // 鍊掕鏃跺姩鐢荤Щ闄ゅ悗stage鍙兘澶卞幓閿洏鐒︾偣锛屽己鍒舵仮澶?
+         // 鍚﹀垯蹇呴』鍏堢敤榧犳爣鐐瑰嚮涓€娆℃垬鍦猴紝蹇嵎閿?-5鎵嶈兘鐢熸晥
          stage.focus = stage;
          this._ai.startAI();
          this._date = new Date().getTime();
@@ -1596,7 +1602,7 @@ package game
          this._yuanchengCon.stopBar();
          this._yuanchengCon.visible = false;
          this._miaozhunjing.visible = false;
-         // 清理撤退按钮
+         // 娓呯悊鎾ら€€鎸夐挳
          if(this._retreatBtn != null)
          {
             this._retreatBtn.removeEventListener(MouseEvent.CLICK, this.retreatClickHandler);
@@ -1609,13 +1615,13 @@ package game
       {
          this._part = param1;
          this._level = param2;
-         var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
-         var _partName:String = _partNames[param1] || ("第"+param1+"章");
-         // 使用预加载的背景图，或异步加载
+         var _partNames:Array = ["","Stage 1","Stage 2","Stage 3","Stage 4","Stage 5","Stage 6","Stage 7","Stage 8","Stage 9","Stage 10","Stage 11","Stage 12"];
+         var _partName:String = _partNames[param1] || ("Stage " + param1);
+         // 浣跨敤棰勫姞杞界殑鑳屾櫙鍥撅紝鎴栧紓姝ュ姞杞?
          if(param3 != null)
          {
             param3.smoothing = true;
-            // 按比例缩放铺满770x500
+            // 鎸夋瘮渚嬬缉鏀鹃摵婊?70x500
             var _scaleX:Number = 770 / param3.bitmapData.width;
             var _scaleY:Number = 500 / param3.bitmapData.height;
             var _scale:Number = Math.max(_scaleX,_scaleY);
@@ -1738,9 +1744,9 @@ package game
          }
       }
 
-      // Web键盘轮询: 每帧通过ExternalInterface向JS查询当前按键
-      // 浏览器Flash插件中stage KEY_DOWN不可靠(PPAPI沙箱),
-      // 改用主动轮询JS侧的按键队列。边缘检测防止持续触发setSelect
+      // Web閿洏杞: 姣忓抚閫氳繃ExternalInterface鍚慗S鏌ヨ褰撳墠鎸夐敭
+      // 娴忚鍣‵lash鎻掍欢涓璼tage KEY_DOWN涓嶅彲闈?PPAPI娌欑),
+      // 鏀圭敤涓诲姩杞JS渚х殑鎸夐敭闃熷垪銆傝竟缂樻娴嬮槻姝㈡寔缁Е鍙憇etSelect
       private var _webKeyLastPoll:int = 0;
       private var _webKeyPrev:int = 0;
       private function pollWebKeys(param1:Event) : void
@@ -1763,3 +1769,6 @@ package game
       }
    }
 }
+
+
+
