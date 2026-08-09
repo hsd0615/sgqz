@@ -1,10 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
 <RECORDS>
   <RECORD>
     <code>general_0_1</code>
     <name>投石车</name>
     <type>0</type>
     <title>0</title>
-    <kezhi/>
+    <kezhi />
     <skin>generalSkin_0</skin>
     <hp>850</hp>
     <attack>450</attack>
@@ -16,9 +17,9 @@
     <moveDistance>0</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_0</proto>
   </RECORD>
@@ -39,9 +40,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -62,9 +63,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -366,6 +367,29 @@
     <coint>10</coint>
     <price>-1</price>
     <proto>proto_1_1</proto>
+</RECORD>
+  <RECORD>
+    <code>general_22_0</code>
+    <name>陆逊</name>
+    <type>1</type>
+    <title>0</title>
+    <kezhi>5:1|7:1|9:1</kezhi>
+    <skin>generalSkin_22_0</skin>
+    <hp>1250</hp>
+    <attack>720</attack>
+    <defense>480</defense>
+    <cd>6</cd>
+    <mcd>6</mcd>
+    <baoji>5</baoji>
+    <attackDistance>8.5</attackDistance>
+    <moveDistance>2.5</moveDistance>
+    <recruitLevel>1</recruitLevel>
+    <money>10</money>
+    <jinbi>5</jinbi>
+    <dianka>20</dianka>
+    <coint>10</coint>
+    <price>-1</price>
+    <proto>proto_1_1</proto>
   </RECORD>
   <RECORD>
     <code>general_1_15</code>
@@ -407,9 +431,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -430,9 +454,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -453,9 +477,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -476,9 +500,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -499,9 +523,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -522,9 +546,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
   </RECORD>
@@ -545,9 +569,9 @@
     <moveDistance>2.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_1</proto>
 </RECORD>
@@ -568,9 +592,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_2</proto>
   </RECORD>
@@ -798,9 +822,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>12</price>
     <proto>proto_1_2</proto>
   </RECORD>
@@ -821,9 +845,9 @@
     <moveDistance>4</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_3</proto>
   </RECORD>
@@ -844,9 +868,9 @@
     <moveDistance>4</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_3</proto>
   </RECORD>
@@ -1143,9 +1167,9 @@
     <moveDistance>4</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_3</proto>
   </RECORD>
@@ -1166,9 +1190,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1488,9 +1512,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1511,9 +1535,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1534,9 +1558,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1557,9 +1581,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1580,9 +1604,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_4</proto>
   </RECORD>
@@ -1603,9 +1627,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -1925,9 +1949,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -1948,9 +1972,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -1971,9 +1995,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -1994,9 +2018,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -2017,9 +2041,9 @@
     <moveDistance>3.5</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_5</proto>
   </RECORD>
@@ -2040,9 +2064,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_6</proto>
   </RECORD>
@@ -2060,6 +2084,52 @@
     <mcd>5.5</mcd>
     <baoji>5</baoji>
     <attackDistance>4</attackDistance>
+    <moveDistance>3</moveDistance>
+    <recruitLevel>1</recruitLevel>
+    <money>30</money>
+    <jinbi>30</jinbi>
+    <dianka>45</dianka>
+    <coint>45</coint>
+    <price>-1</price>
+    <proto>proto_1_6</proto>
+</RECORD>
+  <RECORD>
+    <code>general_18_0</code>
+    <name>魏延</name>
+    <type>6</type>
+    <title>0</title>
+    <kezhi>2:1|5:1|1:1</kezhi>
+    <skin>generalSkin_18_0</skin>
+    <hp>1050</hp>
+    <attack>470</attack>
+    <defense>330</defense>
+    <cd>5.5</cd>
+    <mcd>5.5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>7</attackDistance>
+    <moveDistance>3</moveDistance>
+    <recruitLevel>1</recruitLevel>
+    <money>30</money>
+    <jinbi>30</jinbi>
+    <dianka>45</dianka>
+    <coint>45</coint>
+    <price>-1</price>
+    <proto>proto_1_6</proto>
+</RECORD>
+  <RECORD>
+    <code>general_24_0</code>
+    <name>曹彰</name>
+    <type>6</type>
+    <title>0</title>
+    <kezhi>2:1|5:1|1:1</kezhi>
+    <skin>generalSkin_24_0</skin>
+    <hp>1120</hp>
+    <attack>450</attack>
+    <defense>370</defense>
+    <cd>5.5</cd>
+    <mcd>5.5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>7</attackDistance>
     <moveDistance>3</moveDistance>
     <recruitLevel>1</recruitLevel>
     <money>30</money>
@@ -2385,9 +2455,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_6</proto>
   </RECORD>
@@ -2408,9 +2478,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_6</proto>
   </RECORD>
@@ -2454,9 +2524,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_7</proto>
   </RECORD>
@@ -2621,7 +2691,53 @@
     <price>-1</price>
     <proto>proto_1_7</proto>
 </RECORD>
-    <RECORD>
+  <RECORD>
+    <code>general_19_0</code>
+    <name>夏侯渊</name>
+    <type>7</type>
+    <title>0</title>
+    <kezhi>9:1|4:1|6:1</kezhi>
+    <skin>generalSkin_19_0</skin>
+    <hp>1050</hp>
+    <attack>510</attack>
+    <defense>430</defense>
+    <cd>5.5</cd>
+    <mcd>5.5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>6</attackDistance>
+    <moveDistance>3</moveDistance>
+    <recruitLevel>1</recruitLevel>
+    <money>20</money>
+    <jinbi>20</jinbi>
+    <dianka>30</dianka>
+    <coint>30</coint>
+    <price>-1</price>
+    <proto>proto_1_7</proto>
+</RECORD>
+  <RECORD>
+    <code>general_23_0</code>
+    <name>吕蒙</name>
+    <type>7</type>
+    <title>0</title>
+    <kezhi>9:1|4:1|6:1</kezhi>
+    <skin>generalSkin_23_0</skin>
+    <hp>1050</hp>
+    <attack>510</attack>
+    <defense>430</defense>
+    <cd>5.5</cd>
+    <mcd>5.5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>6</attackDistance>
+    <moveDistance>3</moveDistance>
+    <recruitLevel>1</recruitLevel>
+    <money>20</money>
+    <jinbi>20</jinbi>
+    <dianka>30</dianka>
+    <coint>30</coint>
+    <price>-1</price>
+    <proto>proto_1_7</proto>
+</RECORD>
+  <RECORD>
     <code>general_7_9</code>
     <name>谭雄</name>
     <type>7</type>
@@ -2776,9 +2892,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>8</price>
     <proto>proto_1_7</proto>
   </RECORD>
@@ -2799,9 +2915,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_7</proto>
   </RECORD>
@@ -2822,9 +2938,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_7</proto>
   </RECORD>
@@ -2845,9 +2961,9 @@
     <moveDistance>3</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_7</proto>
   </RECORD>
@@ -2891,9 +3007,9 @@
     <moveDistance>4</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_8</proto>
   </RECORD>
@@ -3167,32 +3283,9 @@
     <moveDistance>4</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
-    <price>12</price>
-    <proto>proto_1_8</proto>
-  </RECORD>
-  <RECORD>
-    <code>general_8_16</code>
-    <name>邪魔藤甲</name>
-    <type>8</type>
-    <title>0</title>
-    <kezhi>2:1|7:1|3:1</kezhi>
-    <skin>generalSkin_8</skin>
-    <hp>1750</hp>
-    <attack>400</attack>
-    <defense>500</defense>
-    <cd>4.5</cd>
-    <mcd>4.5</mcd>
-    <baoji>5</baoji>
-    <attackDistance>4</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>-1</recruitLevel>
-    <money>0</money>
-    <jinbi/>
-    <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>12</price>
     <proto>proto_1_8</proto>
   </RECORD>
@@ -3213,9 +3306,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3236,9 +3329,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>1000</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3348,6 +3441,29 @@
     <mcd>5</mcd>
     <baoji>5</baoji>
     <attackDistance>1</attackDistance>
+    <moveDistance>6</moveDistance>
+    <recruitLevel>18</recruitLevel>
+    <money>20</money>
+    <jinbi>20</jinbi>
+    <dianka>30</dianka>
+    <coint>30</coint>
+    <price>-1</price>
+    <proto>proto_1_9</proto>
+</RECORD>
+  <RECORD>
+    <code>general_21_0</code>
+    <name>姜维</name>
+    <type>9</type>
+    <title>0</title>
+    <kezhi>3:1|4:1|8:1</kezhi>
+    <skin>generalSkin_21_0</skin>
+    <hp>1900</hp>
+    <attack>430</attack>
+    <defense>460</defense>
+    <cd>5</cd>
+    <mcd>5</mcd>
+    <baoji>5</baoji>
+    <attackDistance>3</attackDistance>
     <moveDistance>6</moveDistance>
     <recruitLevel>18</recruitLevel>
     <money>20</money>
@@ -3542,29 +3658,6 @@
     <proto>proto_1_9</proto>
   </RECORD>
   <RECORD>
-    <code>general_9_35</code>
-    <name>张子曦</name>
-    <type>9</type>
-    <title>1</title>
-    <kezhi>3:1|4:1|8:1</kezhi>
-    <skin>generalSkin_9</skin>
-    <hp>3900</hp>
-    <attack>780</attack>
-    <defense>560</defense>
-    <cd>5</cd>
-    <mcd>5</mcd>
-    <baoji>5</baoji>
-    <attackDistance>1</attackDistance>
-    <moveDistance>6</moveDistance>
-    <recruitLevel>102</recruitLevel>
-    <money>10</money>
-    <jinbi>5</jinbi>
-    <dianka>20</dianka>
-    <coint>10</coint>
-    <price>-1</price>
-    <proto>proto_1_9</proto>
-  </RECORD>
-  <RECORD>
     <code>general_9_15</code>
     <name>张辽</name>
     <type>9</type>
@@ -3673,9 +3766,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>12</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3696,9 +3789,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3719,9 +3812,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3742,9 +3835,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3765,9 +3858,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3788,9 +3881,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3811,9 +3904,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3834,9 +3927,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3857,9 +3950,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3880,9 +3973,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3903,9 +3996,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3924,11 +4017,11 @@
     <baoji>5</baoji>
     <attackDistance>1</attackDistance>
     <moveDistance>6</moveDistance>
-    <recruitLevel>-1</recruitLevel>
+    <recruitLevel>1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3949,9 +4042,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3972,9 +4065,9 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
   </RECORD>
@@ -3995,103 +4088,11 @@
     <moveDistance>6</moveDistance>
     <recruitLevel>-1</recruitLevel>
     <money>0</money>
-    <jinbi/>
+    <jinbi />
     <dianka>0</dianka>
-    <coint/>
+    <coint />
     <price>-1</price>
     <proto>proto_1_9</proto>
-  </RECORD>
-  <RECORD>
-    <code>general_10_1</code>
-    <name>匈奴弯刀兵</name>
-    <type>10</type>
-    <title>1</title>
-    <kezhi/>
-    <skin>generalSkin_10</skin>
-    <hp>1000</hp>
-    <attack>300</attack>
-    <defense>300</defense>
-    <cd>4</cd>
-    <mcd>4</mcd>
-    <baoji>5</baoji>
-    <attackDistance>3</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>-1</recruitLevel>
-    <money>0</money>
-    <jinbi>0</jinbi>
-    <dianka>0</dianka>
-    <coint>0</coint>
-    <price>-1</price>
-    <proto/>
-  </RECORD>
-  <RECORD>
-    <code>general_11_1</code>
-    <name>匈奴箭塔兵</name>
-    <type>11</type>
-    <title>1</title>
-    <kezhi/>
-    <skin>generalSkin_11</skin>
-    <hp>1000</hp>
-    <attack>300</attack>
-    <defense>300</defense>
-    <cd>4</cd>
-    <mcd>4</mcd>
-    <baoji>5</baoji>
-    <attackDistance>100</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>-1</recruitLevel>
-    <money>0</money>
-    <jinbi>0</jinbi>
-    <dianka>0</dianka>
-    <coint>0</coint>
-    <price>-1</price>
-    <proto/>
-  </RECORD>
-  <RECORD>
-    <code>general_12_1</code>
-    <name>匈奴强弓兵</name>
-    <type>12</type>
-    <title>1</title>
-    <kezhi/>
-    <skin>generalSkin_12</skin>
-    <hp>1000</hp>
-    <attack>300</attack>
-    <defense>300</defense>
-    <cd>4</cd>
-    <mcd>4</mcd>
-    <baoji>5</baoji>
-    <attackDistance>100</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>-1</recruitLevel>
-    <money>0</money>
-    <jinbi>0</jinbi>
-    <dianka>0</dianka>
-    <coint>0</coint>
-    <price>-1</price>
-    <proto/>
-  </RECORD>
-  <RECORD>
-    <code>general_13_1</code>
-    <name>匈奴头目</name>
-    <type>13</type>
-    <title>0</title>
-    <kezhi/>
-    <skin>generalSkin_13</skin>
-    <hp>1000</hp>
-    <attack>300</attack>
-    <defense>300</defense>
-    <cd>4</cd>
-    <mcd>4</mcd>
-    <baoji>5</baoji>
-    <attackDistance>1</attackDistance>
-    <moveDistance>4</moveDistance>
-    <recruitLevel>-1</recruitLevel>
-    <money>0</money>
-    <jinbi>0</jinbi>
-    <dianka>0</dianka>
-    <coint>0</coint>
-    <price>-1</price>
-    <proto/>
   </RECORD>
   <RECORD>
     <code>general_20_1</code>
@@ -4108,7 +4109,7 @@
     <baoji>5</baoji>
     <attackDistance>5</attackDistance>
     <moveDistance>5</moveDistance>
-    <recruitLevel>-1</recruitLevel>
+    <recruitLevel>1</recruitLevel>
     <money>0</money>
     <jinbi>0</jinbi>
     <dianka>0</dianka>
@@ -4131,7 +4132,7 @@
     <baoji>5</baoji>
     <attackDistance>5</attackDistance>
     <moveDistance>5</moveDistance>
-    <recruitLevel>-1</recruitLevel>
+    <recruitLevel>1</recruitLevel>
     <money>0</money>
     <jinbi>0</jinbi>
     <dianka>0</dianka>
@@ -4154,7 +4155,7 @@
     <baoji>5</baoji>
     <attackDistance>5</attackDistance>
     <moveDistance>5</moveDistance>
-    <recruitLevel>-1</recruitLevel>
+    <recruitLevel>1</recruitLevel>
     <money>0</money>
     <jinbi>0</jinbi>
     <dianka>0</dianka>
@@ -4162,12 +4163,12 @@
     <price>-1</price>
     <proto>proto_1_20</proto>
 </RECORD>
-<RECORD>
+  <RECORD>
     <code>general_14_0</code>
     <name>倭寇杂兵</name>
     <type>14</type>
     <title>1</title>
-    <kezhi/>
+    <kezhi />
     <skin>generalSkin_14</skin>
     <hp>1000</hp>
     <attack>300</attack>
@@ -4183,14 +4184,14 @@
     <dianka>0</dianka>
     <coint>0</coint>
     <price>-1</price>
-    <proto/>
-</RECORD>
+    <proto />
+    </RECORD>
   <RECORD>
 <code>general_15_1</code>
     <name>倭寇头目</name>
     <type>15</type>
     <title>0</title>
-    <kezhi/>
+    <kezhi />
     <skin>generalSkin_203</skin>
     <hp>1000</hp>
     <attack>300</attack>
@@ -4206,14 +4207,14 @@
     <dianka>0</dianka>
     <coint>0</coint>
     <price>-1</price>
-    <proto/>
+    <proto />
 </RECORD>
-<RECORD>
+  <RECORD>
     <code>general_16_0</code>
     <name>倭寇的攻城武器</name>
     <type>16</type>
     <title>1</title>
-    <kezhi/>
+    <kezhi />
     <skin>generalSkin_16</skin>
     <hp>2000</hp>
     <attack>300</attack>
@@ -4229,14 +4230,14 @@
     <dianka>0</dianka>
     <coint>0</coint>
     <price>-1</price>
-    <proto/>
+    <proto />
 </RECORD>
-<RECORD>
+  <RECORD>
     <code>general_17_0</code>
     <name>倭寇守卫</name>
     <type>17</type>
     <title>1</title>
-    <kezhi/>
+    <kezhi />
     <skin>generalSkin_17</skin>
     <hp>1000</hp>
     <attack>300</attack>
@@ -4252,29 +4253,6 @@
     <dianka>0</dianka>
     <coint>0</coint>
     <price>-1</price>
-    <proto/>
-  </RECORD>
-  <RECORD>
-    <code>general_18_1</code>
-    <name>长矛战士</name>
-    <type>18</type>
-    <title>1</title>
-    <kezhi>7:1|9:1|3:1</kezhi>
-    <skin>generalSkin_18_0</skin>
-    <hp>900</hp>
-    <attack>400</attack>
-    <defense>300</defense>
-    <cd>4</cd>
-    <mcd>4</mcd>
-    <baoji>5</baoji>
-    <attackDistance>2</attackDistance>
-    <moveDistance>3</moveDistance>
-    <recruitLevel>20</recruitLevel>
-    <money>3</money>
-    <jinbi>0</jinbi>
-    <dianka>12</dianka>
-    <coint>5</coint>
-    <price>-1</price>
-    <proto>proto_1_7</proto>
+    <proto />
   </RECORD>
 </RECORDS>

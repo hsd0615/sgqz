@@ -184,6 +184,7 @@ package game.display
       protected function initSkin() : *
       {
          var _skinName:String = this._armyInfo.skin;
+         if(this._armyInfo.code == "general_6_15") _skinName = "generalSkin_18_0";
          var _loc1_:Class;
          try {
             _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
@@ -226,11 +227,15 @@ package game.display
          this._skin.buttonMode = true;
          addChild(this._skin);
          // 魔化/神化视觉效果
-         if(this._armyInfo.evolution == 11 && this._armyInfo.name != null)
+         if(this._armyInfo.name != null)
          {
-            var _isMo:Boolean = this._armyInfo.name.indexOf("魔化") == 0;
-            var _glowColor:uint = _isMo ? 0x000000 : 0xFF00FF;
-            this._skin.filters = [new GlowFilter(_glowColor, 1, 6, 6, 2)];
+            var _isMo3:Boolean = this._armyInfo.name.indexOf("魔化") == 0;
+            var _isShen3:Boolean = this._armyInfo.name.indexOf("神化") == 0;
+            if(_isMo3 || _isShen3)
+            {
+               var _glowColor3:uint = _isMo3 ? 0x000000 : 0xFF00FF;
+               this._skin.filters = [new GlowFilter(_glowColor3, 1, 6, 6, 2)];
+            }
          }
       }
       

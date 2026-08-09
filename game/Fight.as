@@ -6,6 +6,7 @@ package game
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.display.SimpleButton;
@@ -141,6 +142,8 @@ package game
       private var _biansu:int = 0;
 
       private var _retreatBtn:Sprite;
+      private var _advanceBtn:Sprite;
+      private var _armyRetreatBtn:Sprite;
 
       private var _fightUI:FightUI;
       
@@ -235,8 +238,20 @@ package game
       
       private function createTF() : *
       {
+         this._advanceBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_rightBtn");
+         this._advanceBtn.x = 590; this._advanceBtn.y = 2;
+         this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
+         addChild(this._advanceBtn);
+         this._armyRetreatBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_leftBtn");
+         this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
+         this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
+         addChild(this._armyRetreatBtn);
          // 撤退按钮 — 古铜风格匹配游戏UI
-         this._retreatBtn = new Sprite();
+         this._retreatBtn = this.createEmbeddedButton("uiSkin_ConnectStatus", "_returnBtn");
+         this._retreatBtn.x = 710; this._retreatBtn.y = 2;
+         this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
+         addChild(this._retreatBtn);
+         /*
          var _bg:Shape = new Shape();
          _bg.graphics.lineStyle(1.5, 0x8B6914, 0.9);
          _bg.graphics.beginFill(0x1a1008, 0.88);
@@ -255,7 +270,64 @@ package game
          this._retreatBtn.buttonMode = true;
          this._retreatBtn.x = 710; this._retreatBtn.y = 2;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
-         addChild(this._retreatBtn);
+         addChild(this._retreatBtn); */
+      }
+
+      private function createEmbeddedButton(param1:String, param2:String) : Sprite
+      {
+         var result:Sprite = new Sprite();
+         try {
+            var hostClass:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+            var host:DisplayObjectContainer = new hostClass() as DisplayObjectContainer;
+            var icon:DisplayObject = host.getChildByName(param2);
+            if(icon != null) {
+               icon.x = 0; icon.y = 0;
+               result.addChild(icon);
+               result.buttonMode = true;
+               return result;
+            }
+         } catch(e:Error) {}
+         return result;
+      }
+
+      private function createCommandButton(param1:String, param2:String) : Sprite
+      {
+         var result:Sprite = new Sprite();
+         try {
+            var iconClass:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+            var icon:DisplayObject = new iconClass();
+            icon.x = 28; icon.y = 11; icon.scaleX = 0.7; icon.scaleY = 0.7;
+            result.addChild(icon);
+            result.buttonMode = true;
+            return result;
+         } catch(e:Error) {}
+         var bg:Shape = new Shape();
+         bg.graphics.beginFill(0x1a1008, 0.88); bg.graphics.drawRoundRect(0, 0, 56, 22, 4, 4); bg.graphics.endFill();
+         result.addChild(bg);
+         var tf:TextField = new TextField();
+         tf.defaultTextFormat = new TextFormat("SimSun", 11, 0xC8A84E, true); tf.text = param2;
+         tf.selectable = false; tf.mouseEnabled = false; tf.autoSize = TextFieldAutoSize.CENTER; tf.x = 8; tf.y = 3;
+         result.addChild(tf); result.buttonMode = true;
+         return result;
+      }
+
+      private function advanceArmyClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(true); }
+      private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
+      private function moveArmy(param1:Boolean) : void
+      {
+         if(this._isOver) return;
+         var all:Vector.<AbstractSoldier> = new Vector.<AbstractSoldier>();
+         var i:int;
+         var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
+         for(i = 0; i < own.length; i++) if(own[i]) all.push(own[i]);
+         for(i = 0; i < all.length; i++)
+         {
+            var soldier:AbstractSoldier = all[i];
+            var forward:Boolean = param1;
+            if(soldier.direct == -1) forward = !forward;
+            if(forward) soldier.goRight(soldier.moveDistance * Config.MERIC);
+            else soldier.goLeft(soldier.moveDistance * Config.MERIC);
+         }
       }
 
       public function showEquipNotify(param1:String) : void
@@ -565,6 +637,9 @@ package game
             case Type.TOUSHICHE:
                return new Gunner(param1,param2,param3,this);
             case Type.QIBING:
+               return new Saber(param1,param2,param3,this);
+            case Type.WUDOUBING:
+               // 外部版本的魏延属于近战武斗兵，沿用原版 Saber 动作接口。
                return new Saber(param1,param2,param3,this);
             case Type.PART_SOLDIER:
                return new PartSoldier(param1,param2,param3,this);
@@ -1305,6 +1380,8 @@ package game
       
       private function removeAllEvent() : *
       {
+         if(this._advanceBtn != null) this._advanceBtn.removeEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
+         if(this._armyRetreatBtn != null) this._armyRetreatBtn.removeEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          removeEventListener(SoldierEvent.SELECTED,this.onSoldierSelectedHandler);
          removeEventListener(SoldierEvent.ENEMY_SELECTED,this.onEnemySelectedHandler);
          removeEventListener(SoldierEvent.SMART_ATTACK,this.smartAttackHandler);
