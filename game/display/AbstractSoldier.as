@@ -184,18 +184,6 @@ package game.display
       protected function initSkin() : *
       {
          var _skinName:String = this._armyInfo.skin;
-         // The six new generals use the exported custom timelines in general.swf.
-         // staticgeneral.xml keeps their original general codes, so redirect them
-         // here before resolving the skin class.
-         switch(this._armyInfo.code)
-         {
-            case "general_6_15": _skinName = "generalSkin_18_0"; break; // Wei Yan
-            case "general_1_13": _skinName = "generalSkin_23_0"; break; // Lu Meng
-            case "general_9_14": _skinName = "generalSkin_21_0"; break; // Jiang Wei
-            case "general_1_14": _skinName = "generalSkin_22_0"; break; // Lu Xun
-            case "general_6_13": _skinName = "generalSkin_24_0"; break; // Cao Zhang
-            case "general_9_7": _skinName = "generalSkin_19_0"; break; // Xiahou Yuan
-         }
          var _loc1_:Class;
          try {
             _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;

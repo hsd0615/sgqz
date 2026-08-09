@@ -147,6 +147,8 @@
 
       [Embed(source="drum.png")]
       private static var _drumIcon:Class;
+      [Embed(source="retreat_icon.png")]
+      private static var _retreatIcon:Class;
 
       private var _fightUI:FightUI;
       
@@ -302,10 +304,14 @@
 
       private function createOriginalArmyButton(mirror:Boolean) : Sprite
       {
-         var result:Sprite = this.createEmbeddedButton("_RetreatBtn", "_RetreatBtn");
+         var result:Sprite = new Sprite();
+         var icon:Bitmap = new _retreatIcon() as Bitmap;
+         icon.width = 42; icon.height = 50;
+         result.addChild(icon);
+         result.buttonMode = true;
          if(mirror) {
             result.scaleX = -1;
-            result.x = 64;
+            result.x = 42;
          }
          return result;
       }
