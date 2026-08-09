@@ -238,11 +238,11 @@ package game
       
       private function createTF() : *
       {
-         this._advanceBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_rightBtn");
+         this._advanceBtn = this.createArmyMoveButton(false);
          this._advanceBtn.x = 590; this._advanceBtn.y = 2;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
-         this._armyRetreatBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_leftBtn");
+         this._armyRetreatBtn = this.createArmyMoveButton(true);
          this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
@@ -271,6 +271,19 @@ package game
          this._retreatBtn.x = 710; this._retreatBtn.y = 2;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn); */
+      }
+
+      private function createArmyMoveButton(mirror:Boolean) : Sprite
+      {
+         var result:Sprite = new Sprite();
+         var g:Shape = new Shape();
+         g.graphics.beginFill(0xE8B84A, 1);
+         g.graphics.moveTo(0, 10); g.graphics.lineTo(18, 0); g.graphics.lineTo(18, 7);
+         g.graphics.lineTo(34, 7); g.graphics.lineTo(34, 13); g.graphics.lineTo(18, 13);
+         g.graphics.lineTo(18, 20); g.graphics.lineTo(0, 10); g.graphics.endFill();
+         result.addChild(g); result.buttonMode = true; result.mouseChildren = false;
+         if(mirror) { result.scaleX = -1; result.x = 34; }
+         return result;
       }
 
       private function createEmbeddedButton(param1:String, param2:String) : Sprite
