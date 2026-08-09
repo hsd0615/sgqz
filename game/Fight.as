@@ -238,11 +238,11 @@ package game
       
       private function createTF() : *
       {
-         this._advanceBtn = this.createEmbeddedButton("_advanceUI", "_advanceBtn");
+         this._advanceBtn = this.createEmbeddedButton("RetreatUI", "_advanceUI");
          this._advanceBtn.x = 590; this._advanceBtn.y = 2;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
-         this._armyRetreatBtn = this.createEmbeddedButton("_advanceUI", "_retreatBtn");
+         this._armyRetreatBtn = this.createEmbeddedButton("RetreatUI", "_retreatUI");
          this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
@@ -280,6 +280,9 @@ package game
             var hostClass:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
             var host:DisplayObjectContainer = new hostClass() as DisplayObjectContainer;
             var icon:DisplayObject = host.getChildByName(param2);
+            if(icon == null) icon = host.getChildByName("_retreatBtn");
+            if(icon == null) icon = host.getChildByName("_advanceBtn");
+            if(icon == null && host.numChildren > 0) icon = host.getChildAt(0);
             if(icon != null) {
                icon.x = 0; icon.y = 0;
                result.addChild(icon);
