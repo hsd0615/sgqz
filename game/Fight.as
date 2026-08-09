@@ -238,16 +238,16 @@ package game
       
       private function createTF() : *
       {
-         this._advanceBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_rightBtn");
+         this._advanceBtn = this.createEmbeddedButton("_advanceUI", "_advanceBtn");
          this._advanceBtn.x = 590; this._advanceBtn.y = 2;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
-         this._armyRetreatBtn = this.createEmbeddedButton("uiSkin_SoldierController", "_leftBtn");
+         this._armyRetreatBtn = this.createEmbeddedButton("_advanceUI", "_retreatBtn");
          this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 2;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
          // 撤退按钮 — 古铜风格匹配游戏UI
-         this._retreatBtn = this.createEmbeddedButton("uiSkin_ConnectStatus", "_returnBtn");
+         this._retreatBtn = this.createEmbeddedButton("uiSkin_retreat", "_uiSkin_retreat_btn");
          this._retreatBtn.x = 710; this._retreatBtn.y = 2;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn);

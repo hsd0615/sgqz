@@ -17,9 +17,18 @@ const client = new Core({
 });
 
 const cmd = `cd /opt
-pkill -f "node start_fixed" 2>/dev/null || true
+python3 - <<'PY'
+p='/opt/start_fixed.js'
+s=open(p).read()
+s=s.replace("var externalLineup = ['general_6_15','general_1_13','general_9_14','general_1_14','general_6_13','general_9_7'];", "var externalLineup = [['general_6_15','Wei Yan','6:1|1:1|8:1'],['general_1_13','Lu Meng','1:1|2:1|3:1'],['general_9_14','Jiang Wei','9:1|1:1|2:1'],['general_1_14','Lu Xun','1:1|2:1|3:1'],['general_6_13','Cao Zhang','6:1|1:1|8:1'],['general_9_7','Xiahou Yuan','9:1|1:1|2:1']];")
+s=s.replace("var externalLineup = ['general_22_0','general_18_0','general_24_0','general_19_0','general_23_0','general_21_0'];", "var externalLineup = [['general_6_15','Wei Yan','6:1|1:1|8:1'],['general_1_13','Lu Meng','1:1|2:1|3:1'],['general_9_14','Jiang Wei','9:1|1:1|2:1'],['general_1_14','Lu Xun','1:1|2:1|3:1'],['general_6_13','Cao Zhang','6:1|1:1|8:1'],['general_9_7','Xiahou Yuan','9:1|1:1|2:1']];")
+s=s.replace("externalLineup.indexOf(g.code) >= 0", "externalLineup.map(function(x){return x[0]}).indexOf(g.code) >= 0")
+s=s.replace("p1.choose = externalLineup.join('|');", "p1.choose = externalLineup.map(function(x){return x[0]}).join('|');")
+open(p,'w').write(s)
+PY
+pkill -f '[n]ode start_fixed.js' 2>/dev/null || true
 sleep 1
-nohup node start_fixed.js > server.log 2>&1 &
+nohup /usr/bin/node /opt/start_fixed.js > /opt/server.log 2>&1 < /dev/null &
 sleep 3
 PID=$(pgrep -f "start_fixed" || echo "NONE")
 echo "Server PID: $PID"
@@ -41,14 +50,15 @@ client.request('RunCommand', params)
     console.log('Command sent:', JSON.stringify(result, null, 2));
 
     // Wait for command to execute and poll result
-    if (result.InvocationId) {
+    const invokeId = result.InvokeId || result.InvocationId;
+    if (invokeId) {
       console.log('\n等待执行结果...');
       await new Promise(r => setTimeout(r, 10000));
 
       try {
         const desc = await client.request('DescribeInvocationResults', {
           RegionId: config.region,
-          InvokeId: result.InvocationId,
+          InvokeId: invokeId,
           InstanceId: config.instanceId
         });
 
@@ -58,7 +68,7 @@ client.request('RunCommand', params)
             res.forEach(r => {
               console.log('\n--- 执行结果 ---');
               console.log('ExitCode:', r.ExitCode);
-              console.log('Output:', r.Output || '(empty)');
+              console.log('Output:', r.Output ? Buffer.from(r.Output, 'base64').toString('utf8') : '(empty)');
               if (r.ErrorInfo) console.log('Error:', r.ErrorInfo);
             });
           }

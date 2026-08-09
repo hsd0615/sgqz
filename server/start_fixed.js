@@ -579,10 +579,16 @@ function createTestAccounts() {
   p1.level = 220; p1.money = 99999999; p1.dianka = 999999; p1.exploit = 99999999; p1.reverence = 99999999; p1.rongyu = 99999;
   ensureGenerals(p1.id, ALL_SUPERS, 220, 10, 1, 'tf_20');
   // External model lineup for gm_admin. Keep this authoritative on every startup.
-  var externalLineup = ['general_22_0','general_18_0','general_24_0','general_19_0','general_23_0','general_21_0'];
+  // Use the real general codes from staticgeneral.xml. The previous skin codes
+  // were never owned by gm_admin, so the client discarded the lineup on login.
+  var externalCodes = ['general_6_15','general_1_13','general_9_14','general_1_14','general_6_13','general_9_7'];
+  var externalLineup = externalCodes.map(function(code) {
+    var info = generalRecruitMap[code] || {};
+    return [code, info.name || code, KEZHI_MAP[code] || '1:1|2:1|3:1'];
+  });
   ensureGenerals(p1.id, externalLineup, 220, 10, 1, 'tf_20');
-  findGenerals(p1.id).forEach(function(g) { g.is_deployed = externalLineup.indexOf(g.code) >= 0 ? 1 : 0; });
-  p1.choose = externalLineup.join('|');
+  findGenerals(p1.id).forEach(function(g) { g.is_deployed = externalCodes.indexOf(g.code) >= 0 ? 1 : 0; });
+  p1.choose = externalCodes.join('|');
   // 给GM测试号发放全部76件装备
   ensureAllEquip(p1.id);
   // 发放弹药和消耗品(每样99个)
