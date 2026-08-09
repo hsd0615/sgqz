@@ -1,5 +1,7 @@
 package game.display
 {
+   import com.greensock.loading.LoaderMax;
+   import com.greensock.loading.SWFLoader;
    import com.iflashigame.ui.ProgressBar;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
@@ -195,7 +197,9 @@ package game.display
          }
          var _loc1_:Class;
          try {
-            _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
+            var _generalLoader:SWFLoader = LoaderMax.getLoader("game01.skin.general") as SWFLoader;
+            if(_generalLoader != null) _loc1_ = _generalLoader.getClass(_skinName);
+            if(_loc1_ == null) _loc1_ = ApplicationDomain.currentDomain.getDefinition(_skinName) as Class;
          } catch(_e:Error) {
             try {
                // 进化皮肤_1不存在,回退到_0
