@@ -1,6 +1,8 @@
 package game.ui
 {
    import com.iflashigame.ui.BaseUI;
+   import com.greensock.loading.LoaderMax;
+   import com.greensock.loading.SWFLoader;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.filters.BlurFilter;
@@ -62,7 +64,13 @@ package game.ui
       
       private function createGeneral(param1:String) : *
       {
-         var _loc2_:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+         var _loc2_:Class = null;
+         try {
+            var _loader:SWFLoader = LoaderMax.getLoader("game01.skin.general") as SWFLoader;
+            if(_loader != null) _loc2_ = _loader.getClass(param1);
+            if(_loc2_ == null) _loc2_ = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+         } catch(_e:Error) {}
+         if(_loc2_ == null) return;
          if(this._general != null)
          {
             removeChild(this._general);

@@ -2,6 +2,13 @@
 
 ---
 
+## v4.8.5 (2026-08-13)
+
+- Fixed general list, details, and lineup previews to load skins from the external general SWF domain.
+- Removed the remaining legacy skin substitution path without deleting the shared original `generalSkin_6` asset.
+
+---
+
 ## v4.8.4 (2026-08-13)
 
 - Fixed the GM startup initialization that had been accidentally commented out.

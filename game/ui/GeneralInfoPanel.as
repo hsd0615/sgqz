@@ -1,6 +1,8 @@
 package game.ui
 {
    import com.iflashigame.controller.AESController;
+   import com.greensock.loading.LoaderMax;
+   import com.greensock.loading.SWFLoader;
    import com.iflashigame.talk.NetInfoType;
    import com.iflashigame.talk.TalkEvent;
    import com.iflashigame.ui.BaseUI;
@@ -732,8 +734,8 @@ package game.ui
                mkPgBtn("◀◀",this._equipListPage>0,function():void{_self._equipListPage=0;_self.renderEquipList();}),
                mkPgBtn("◀",this._equipListPage>0,function():void{_self._equipListPage--;_self.renderEquipList();}),
                null, // 页码
-               mkPgBtn("▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage++;_self.renderEquipList();}),
-               mkPgBtn("▶▶",this._equipListPage<_totalPages-1,function(){_self._equipListPage=_totalPages-1;_self.renderEquipList();})
+               mkPgBtn("▶",this._equipListPage<_totalPages-1,function():void{_self._equipListPage++;_self.renderEquipList();}),
+               mkPgBtn("▶▶",this._equipListPage<_totalPages-1,function():void{_self._equipListPage=_totalPages-1;_self.renderEquipList();})
             ];
             var _pgTF:TextField = new TextField();
             _pgTF.defaultTextFormat = new TextFormat("SimHei",10,0xD4C8A0,true);
@@ -1153,7 +1155,13 @@ package game.ui
             removeChild(this._general);
             this._general = null;
          }
-         var _loc2_:Class = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+         var _loc2_:Class = null;
+         try {
+            var _loader:SWFLoader = LoaderMax.getLoader("game01.skin.general") as SWFLoader;
+            if(_loader != null) _loc2_ = _loader.getClass(param1);
+            if(_loc2_ == null) _loc2_ = ApplicationDomain.currentDomain.getDefinition(param1) as Class;
+         } catch(_e:Error) {}
+         if(_loc2_ == null) return;
          this._general = new _loc2_() as MovieClip;
          this._general.mouseChildren = false;
          this._general.mouseEnabled = false;
