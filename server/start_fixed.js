@@ -124,6 +124,8 @@ function loadKezhiMap() {
       if (tm) entry.title = parseInt(tm[1]);
       if (rm) entry.recruitLevel = parseInt(rm[1]);
       if (nm) entry.name = nm[1];
+      var sm = blocks[i].match(/<skin>([^<]+)<\/skin>/);
+      if (sm) entry.skin = sm[1];
       if (Object.keys(entry).length > 0) generalRecruitMap[cm[1]] = entry;
       // 基础属性（用于战斗力估算）
       if (_hpm || _atkm || _defm) {
@@ -695,6 +697,9 @@ function makeArmyModel(playerId) {
   return findGenerals(playerId).map(g => ({
     id: g.general_id, code: g.code, genius: g.tianfu||null, level: g.level,
     feature: g.feature, evolution: g.evolution,
+    skin: (generalRecruitMap[g.code] && generalRecruitMap[g.code].skin)
+      ? generalRecruitMap[g.code].skin + '_' + (g.evolution > 1 ? 1 : 0)
+      : null,
     kezhi: getKezhiStr(g),
     equipment: (g.equip1||'0') + ',' + (g.equip2||'0') + ',' + (g.equip3||'0') + ',' + (g.equip4||'0') + ',' + (g.equip5||'0') + ',' + (g.equip6||'0'),
   }));
@@ -757,7 +762,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.8.8';
+  _cachedClientVersion = '4.8.9';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }

@@ -1351,6 +1351,10 @@ package game.model
 		      {
 		         _loc8_.setEquipmentStr(String(param1[_loc9_].equipment));
 		      }
+		      if(param1[_loc9_].skin != null && String(param1[_loc9_].skin) != "" && String(param1[_loc9_].skin) != "null")
+		      {
+		         _loc8_.skin = String(param1[_loc9_].skin);
+		      }
 		      this.addSoldier(_loc8_);
 		      _loc9_++;
 		   }
