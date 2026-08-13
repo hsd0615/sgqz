@@ -234,7 +234,6 @@
       {
          addEventListener(SoldierEvent.FILL_COMPLETE,this.onSoldierFillCompleteHandler);
          addEventListener(SoldierEvent.FIRE_COMPLETE,this.onSoldierFireCompleteHandler);
-         addEventListener(SoldierEvent.MOVE_COMPLETE,this.onArmyMoveCompleteHandler);
          addEventListener(SoldierEvent.BEHURT,this.onSoldierBehurtHandler);
          addEventListener(SoldierEvent.SHANBI,this.onSoldierShanbiHandler);
          addEventListener(SoldierEvent.HUIFU,this.onSoldierHuifuHandler);
@@ -343,7 +342,9 @@
          param1.stopImmediatePropagation();
          if(this._isOver) return;
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         for(var i:int = 0; i < own.length; i++) if(own[i] && !own[i].isDead) SmartAttack.makeAI(own[i], this);
+         var target:AbstractSoldier = this.findSoldier(-this._direct);
+         if(target == null) return;
+         for(var i:int = 0; i < own.length; i++) if(own[i] && !own[i].isDead) own[i].fire2({"target":target});
       }
       private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
       private function moveArmy(param1:Boolean) : void
@@ -1079,12 +1080,6 @@
          SmartAttack.makeAI(param1.target as AbstractSoldier,this);
       }
 
-      private function onArmyMoveCompleteHandler(param1:SoldierEvent) : void
-      {
-         var soldier:AbstractSoldier = param1.target as AbstractSoldier;
-         if(soldier != null && !soldier.isDead && soldier.canAI) SmartAttack.makeAI(soldier, this);
-      }
-      
       private function conFireHandler(param1:ConEvent) : void
       {
          if(this._currentSoldier == null)

@@ -188,6 +188,8 @@ package game.display
          var _skinName:String = this._armyInfo.skin;
          switch(this._armyInfo.code)
          {
+            case "general_6_15": _skinName = "generalSkin_18_0"; break;
+            case "general_6_13": _skinName = "generalSkin_24_0"; break;
             case "general_1_13": _skinName = "generalSkin_23_0"; break;
             case "general_9_14": _skinName = "generalSkin_21_0"; break;
             case "general_1_14": _skinName = "generalSkin_22_0"; break;

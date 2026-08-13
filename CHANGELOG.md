@@ -2,6 +2,12 @@
 
 ---
 
+## v4.8.2 (2026-08-13)
+
+- Restored external general skin resolution and corrected battle command actions.
+
+---
+
 ## v4.8.1 (2026-07-28) — Bug修复
 
 ### 修复
