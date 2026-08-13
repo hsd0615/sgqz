@@ -186,6 +186,29 @@ async function compileAndUploadSWF(host, port) {
   if (r && r.stdout && r.stdout.includes('SWF_OK')) {
     console.log('  ✓ SWF已部署');
 
+    // general.swf is loaded separately by game.xml and must be deployed with
+    // the client SWF; otherwise clients can keep using an old cached model.
+    const generalPath = path.join(BASE, 'general.swf');
+    if (!fs.existsSync(generalPath)) {
+      console.log('  ✗ general.swf不存在，无法同步外部武将资源');
+      return false;
+    }
+    const generalB64 = fs.readFileSync(generalPath).toString('base64');
+    const generalChunks = [];
+    for (let i = 0; i < generalB64.length; i += 40000) generalChunks.push(generalB64.substring(i, i + 40000));
+    await execRemote(host, port, '> /tmp/general_swf.b64', 'General init');
+    for (let i = 0; i < generalChunks.length; i++) {
+      const chunkResult = await execRemote(host, port, `echo '${generalChunks[i]}' >> /tmp/general_swf.b64`, `General ${i + 1}/${generalChunks.length}`);
+      if (!chunkResult) return false;
+    }
+    const generalResult = await execRemote(host, port,
+      'base64 -d /tmp/general_swf.b64 > /opt/client/general.swf && sha256sum /opt/client/general.swf && rm /tmp/general_swf.b64 && echo GENERAL_SWF_OK', 'General decode');
+    if (!generalResult || !generalResult.stdout || !generalResult.stdout.includes('GENERAL_SWF_OK')) {
+      console.log('  ✗ general.swf部署失败');
+      return false;
+    }
+    console.log('  ✓ general.swf已同步');
+
     // 同步版本文件：从 Config.as 提取 CLIENT_VER 写入 /opt/client/version
     // 确保服务端 /api/version 与已部署 SWF 的版本号始终一致，防止更新死循环
     try {
