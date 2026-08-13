@@ -2,6 +2,19 @@
 
 ---
 
+## v4.8.4 (2026-08-13)
+
+- Fixed the GM startup initialization that had been accidentally commented out.
+- Replaced the GM's legacy substitute generals with the six independent imported general records.
+
+---
+
+## v4.8.3 (2026-08-13)
+
+- Restored the original independent general codes and skins for the GM lineup.
+
+---
+
 ## v4.8.2 (2026-08-13)
 
 - Restored external general skin resolution and corrected battle command actions.

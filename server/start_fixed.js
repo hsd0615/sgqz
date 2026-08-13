@@ -569,6 +569,27 @@ const NEWBIE_GENERALS = [
   ['general_0_1','投石车','3:1|8:1|9:1'],['general_1_0','王平','5:1|7:1|9:1'],['general_3_0','吕翔','2:1|1:1|6:1'],
 ];
 
+// Imported generals use independent records in staticgeneral.xml.  Do not bind
+// their display names to legacy codes that share a generic type skin.
+const GM_EXTERNAL_CODES = ['general_18_0','general_23_0','general_21_0','general_22_0','general_24_0','general_19_0'];
+const GM_REPLACED_LEGACY_CODES = ['general_6_15','general_1_13','general_9_14','general_1_14','general_6_13','general_9_7'];
+
+function enforceGmExternalLineup(player) {
+  if (!player || player.user_id !== 'gm_admin') return;
+  var lineup = GM_EXTERNAL_CODES.map(function(code) {
+    var info = generalRecruitMap[code] || {};
+    return [code, info.name || code, KEZHI_MAP[code] || '1:1|2:1|3:1'];
+  });
+  ensureGenerals(player.id, lineup, 220, 10, 1, 'tf_20');
+  db.generals = db.generals.filter(function(g) {
+    return g.player_id !== player.id || GM_REPLACED_LEGACY_CODES.indexOf(g.code) < 0;
+  });
+  findGenerals(player.id).forEach(function(g) {
+    g.is_deployed = GM_EXTERNAL_CODES.indexOf(g.code) >= 0 ? 1 : 0;
+  });
+  player.choose = GM_EXTERNAL_CODES.join('|');
+}
+
 function createTestAccounts() {
   let p1 = findPlayer('gm_admin');
   if (!p1) {
@@ -578,17 +599,7 @@ function createTestAccounts() {
   }
   p1.level = 220; p1.money = 99999999; p1.dianka = 999999; p1.exploit = 99999999; p1.reverence = 99999999; p1.rongyu = 99999;
   ensureGenerals(p1.id, ALL_SUPERS, 220, 10, 1, 'tf_20');
-  // External model lineup for gm_admin. Keep this authoritative on every startup.
-  // Use the real general codes from staticgeneral.xml. The previous skin codes
-  // were never owned by gm_admin, so the client discarded the lineup on login.
-  var externalCodes = ['general_6_15','general_1_13','general_9_14','general_1_14','general_6_13','general_9_7'];
-  var externalLineup = externalCodes.map(function(code) {
-    var info = generalRecruitMap[code] || {};
-    return [code, info.name || code, KEZHI_MAP[code] || '1:1|2:1|3:1'];
-  });
-  ensureGenerals(p1.id, externalLineup, 220, 10, 1, 'tf_20');
-  findGenerals(p1.id).forEach(function(g) { g.is_deployed = externalCodes.indexOf(g.code) >= 0 ? 1 : 0; });
-  p1.choose = externalCodes.join('|');
+  enforceGmExternalLineup(p1);
   // 给GM测试号发放全部76件装备
   ensureAllEquip(p1.id);
   // 发放弹药和消耗品(每样99个)
@@ -630,7 +641,7 @@ loadProtoData();    // 1e. 加载道具数据
 loadEquipData();    // 1f. 加载装备数据
 buildGameDataCache(); // 1g. 构建游戏数据缓存(供/api/game-data)
 initLeitai();       // 2. 初始化擂台
-createTestAccounts();// 3. 创建测试账号
+createTestAccounts(); // 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
 migrateEquipment();
 	migrateBagItems();  // 统一背包旧格式
@@ -746,7 +757,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.8.2';
+  _cachedClientVersion = '4.8.4';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1660,7 +1671,8 @@ function handleRequest(socket, req) {
   if (url === '/api/game/deploy') {
     const p = findPlayerByRequest(data);
     if (p && data.choose !== undefined) {
-      p.choose = data.choose;
+      if (p.user_id === 'gm_admin') enforceGmExternalLineup(p);
+      else p.choose = data.choose;
       save();
     }
     return jsonRawResponse(socket, { success: true, data: { choose: p.choose || '' } });
@@ -2070,7 +2082,8 @@ function handleRequest(socket, req) {
       console.log('[Evolve] ' + p.role_name + ' ' + g.name + ' Evo.' + (g.evolution||0) + ' success=' + evoSuccess + ' prob=' + evoProb.toFixed(1) + ' scroll=' + evoItemCode + ' consumed=' + (evoConsumedId>0));
     } else if (headCode === 10008) {
       // === 上阵部署 — 保存武将选择 ===
-      p.choose = data.choose || '';
+      if (p.user_id === 'gm_admin') enforceGmExternalLineup(p);
+      else p.choose = data.choose || '';
       respData.choose = p.choose;
       console.log('[Deploy] ' + p.role_name + ' choose=' + (p.choose||'').substring(0,50));
     } else if (headCode === 10020) {

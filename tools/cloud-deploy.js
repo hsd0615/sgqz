@@ -113,10 +113,12 @@ async function restart(host, port) {
   const restartScript = `#!/bin/bash
 sleep 2
 cd /opt
-pkill -f "node start_fixed" 2>/dev/null
+# The live command is usually "node /opt/start_fixed.js", so matching only
+# "node start_fixed" leaves the old process alive and the new one cannot bind.
+pkill -f '/opt/start_fixed\\.js' 2>/dev/null || true
 sleep 2
-nohup node start_fixed.js > server.log 2>&1 &
-echo "Server PID: $(pgrep -f 'node start_fixed')"`;
+nohup node /opt/start_fixed.js > /opt/server.log 2>&1 &
+echo "Server PID: $(pgrep -f '/opt/start_fixed\\.js')"`;
 
   const scriptB64 = Buffer.from(restartScript, 'utf-8').toString('base64');
   const cmd = `echo '${scriptB64}' | base64 -d > /tmp/restart.sh && chmod +x /tmp/restart.sh && nohup bash /tmp/restart.sh > /tmp/restart.log 2>&1 & echo "Restart triggered"`;
@@ -131,7 +133,7 @@ async function checkStatus(host, port) {
     const h = await apiPost(host, port, '/api/health', {});
     console.log('  状态: ' + (h.status || '?'));
     const oc = await apiPost(host, port, '/api/online-count', {});
-    console.log('  在线: ' + (oc.count || '?') + ' 人');
+    console.log('  在线: ' + (oc.count != null ? oc.count : '?') + ' 人');
   } catch(e) {
     console.log('  离线: ' + e.message);
   }
