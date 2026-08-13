@@ -41,7 +41,8 @@ package game.display
       
       override protected function initSkin() : *
       {
-         var _loc1_:Class = ApplicationDomain.currentDomain.getDefinition(_armyInfo.skin) as Class;
+         var _loc1_:Class = resolveSkinClass(_armyInfo.skin);
+         if(_loc1_ == null) { _skin = new MovieClip(); addChild(_skin); return; }
          _skin = new _loc1_() as MovieClip;
          if(_armyInfo.evolution > 1)
          {

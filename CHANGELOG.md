@@ -2,6 +2,13 @@
 
 ---
 
+## v4.8.6 (2026-08-13)
+
+- Unified external SWF skin resolution for all special battle soldier classes.
+- Fixed enemy and non-GM units falling back to incorrect legacy models.
+
+---
+
 ## v4.8.5 (2026-08-13)
 
 - Fixed general list, details, and lineup previews to load skins from the external general SWF domain.

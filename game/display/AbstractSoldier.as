@@ -244,6 +244,26 @@ package game.display
             }
          }
       }
+
+      protected function resolveSkinClass(skinName:String) : Class
+      {
+         var candidates:Array = [skinName];
+         var li:int = skinName.lastIndexOf("_");
+         if(li > 0) candidates.push(skinName.substr(0, li) + "_0");
+         li = skinName.lastIndexOf("_");
+         if(li > 0) candidates.push(skinName.substr(0, li));
+         for each(var candidate:String in candidates)
+         {
+            try {
+               var loader:SWFLoader = LoaderMax.getLoader("game01.skin.general") as SWFLoader;
+               var cls:Class = loader == null ? null : loader.getClass(candidate);
+               if(cls != null) return cls;
+            } catch(e1:Error) {}
+            try { return ApplicationDomain.currentDomain.getDefinition(candidate) as Class; }
+            catch(e2:Error) {}
+         }
+         return null;
+      }
       
       protected function drawShadow() : *
       {
