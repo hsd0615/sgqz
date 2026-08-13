@@ -797,3 +797,5 @@ Web 端 `pollWebKeys` 每帧持续调用 `setSelect` 进一步放大了此问题
 - AES 解密跳过纯 JSON 响应
 - 登录响应 <1000 字节限制突破
 - 本地纯 Node TCP 服务器替代 Express
+## v4.8.7 (2026-08-13)
+- 修复旧编号魏延、曹彰回退到错误 `generalSkin_6` 的映射问题，统一使用独立武将模型。

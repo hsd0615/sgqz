@@ -2375,7 +2375,7 @@
     <type>6</type>
     <title>1</title>
     <kezhi>2:1|5:1|1:1</kezhi>
-    <skin>generalSkin_6</skin>
+    <skin>generalSkin_24_0</skin>
     <hp>830</hp>
     <attack>350</attack>
     <defense>340</defense>
@@ -2421,7 +2421,7 @@
     <type>6</type>
     <title>0</title>
     <kezhi>2:1|5:1|1:1</kezhi>
-    <skin>generalSkin_6</skin>
+    <skin>generalSkin_18_0</skin>
     <hp>900</hp>
     <attack>400</attack>
     <defense>380</defense>

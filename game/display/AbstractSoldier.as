@@ -186,6 +186,18 @@ package game.display
       protected function initSkin() : *
       {
          var _skinName:String = this._armyInfo.skin;
+         // Legacy records for imported generals still carry their old generic
+         // skin in staticgeneral.xml. Resolve them to the independent assets
+         // used by the GM lineup and external records.
+         switch(this._armyInfo.code)
+         {
+            case "general_6_15": _skinName = "generalSkin_18_0"; break;
+            case "general_6_13": _skinName = "generalSkin_24_0"; break;
+            case "general_1_13": _skinName = "generalSkin_23_0"; break;
+            case "general_9_14": _skinName = "generalSkin_21_0"; break;
+            case "general_1_14": _skinName = "generalSkin_22_0"; break;
+            case "general_9_7": _skinName = "generalSkin_19_0"; break;
+         }
          switch(this._armyInfo.code)
          {
          }
