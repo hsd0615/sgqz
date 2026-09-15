@@ -1,0 +1,10 @@
+[DB] Test accounts ready (gm_admin:28g, test_pro:7g, new_player:4g)
+Ready: HTTP 3000 + TCP 3001 (raw TCP)
+Raw TCP HTTP server on 3000
+TCP server on 3001
+[HTTP:57199] POST /api/health body={}
+  -> 41B success=undefined
+[HTTP:57207] POST /api/health body={}
+  -> 41B success=undefined
+[HTTP:57223] POST /api/health body={}
+  -> 41B success=undefined

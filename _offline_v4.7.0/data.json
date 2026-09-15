@@ -1,0 +1,57 @@
+{
+  "armyModel": [
+    {
+      "id": 1,
+      "code": "general_1_0",
+      "genius": null,
+      "level": 1,
+      "feature": 0,
+      "evolution": 0,
+      "kezhi": "5:1|7:1|9:1"
+    },
+    {
+      "id": 2,
+      "code": "general_3_0",
+      "genius": null,
+      "level": 1,
+      "feature": 0,
+      "evolution": 0,
+      "kezhi": "2:1|1:1|6:1"
+    },
+    
+    {
+      "id": 7,
+      "code": "general_0_1",
+      "genius": null,
+      "level": 1,
+      "feature": 0,
+      "evolution": 0,
+      "kezhi": "3:1|8:1|9:1"
+    }
+  ],
+  "token": null,
+  "bagModel": [],
+  "roleModel": {
+    "score": "0",
+    "lostCount": "0",
+    "level": "1",
+    "winCount": "10",
+    "ranking": 1,
+    "reverence": "110",
+    "roleID": 20010901,
+    "exploit": "550",
+    "choose": "general_1_0|general_3_0|general_5_19|general_20_2|general_20_3",
+    "agent": "4399",
+    "money": "2200",
+    "userID": "20010907",
+    "userName": "wantmany",
+    "exp": "0",
+    "roleName": "洪三大",
+    "imageID": 1
+  },
+  "process": {
+    "finished": "",
+    "history": ""
+  },
+  "dianka": 99999999
+}

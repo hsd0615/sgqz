@@ -1,0 +1,26 @@
+# Compiled SWF
+*.swf
+!main.swf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+/tmp/
+/server/data/
+/server/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+node_modules/
+tools/cloud-config.json
+sgqzv3.zip
+*.swf
+game/Sanguo4399.swf
+main.swf
+client/sanguo_web.swf
+tools/cloud-config.json

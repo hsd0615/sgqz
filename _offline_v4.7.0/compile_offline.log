@@ -1,0 +1,47 @@
+���ڼ��������ļ���D:\BaiduNetdiskDownload\flex_home\frameworks\flex-config.xml��
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(731): ��: 59 ����: return value for function��anonymous��û������������
+
+               mkPgBtn("??",this._equipListPage>0,function(){_self._equipListPage=0;_self.renderEquipList();}),
+                                                          ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(732): ��: 58 ����: return value for function��anonymous��û������������
+
+               mkPgBtn("?",this._equipListPage>0,function(){_self._equipListPage--;_self.renderEquipList();}),
+                                                         ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(734): ��: 70 ����: return value for function��anonymous��û������������
+
+               mkPgBtn("?",this._equipListPage<_totalPages-1,function(){_self._equipListPage++;_self.renderEquipList();}),
+                                                                     ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(735): ��: 71 ����: return value for function��anonymous��û������������
+
+               mkPgBtn("??",this._equipListPage<_totalPages-1,function(){_self._equipListPage=_totalPages-1;_self.renderEquipList();})
+                                                                      ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(908): ��: 56 ����: return value for function��anonymous��û������������
+
+               _mkPg2("??",_self._batchPage2>0,function(){_self._batchPage2=0;_self.showBatchSellView();}),
+                                                       ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(909): ��: 55 ����: return value for function��anonymous��û������������
+
+               _mkPg2("?",_self._batchPage2>0,function(){_self._batchPage2--;_self.showBatchSellView();})
+                                                      ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(917): ��: 74 ����: return value for function��anonymous��û������������
+
+            _pgs.push(_mkPg2("?",_self._batchPage2<_totalPages-1,function(){_self._batchPage2++;_self.showBatchSellView();}));
+                                                                         ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\ui\GeneralInfoPanel.as(918): ��: 75 ����: return value for function��anonymous��û������������
+
+            _pgs.push(_mkPg2("??",_self._batchPage2<_totalPages-1,function(){_self._batchPage2=_totalPages-1;_self.showBatchSellView();}));
+                                                                          ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\UI.as(3449): ��: 52 ����: ����Ҫ Boolean ֵ�ĵط�ʹ���� int������ʽ�ᱻǿ��ת��Ϊ Boolean ���͡�
+
+                  if(_gData.forceHp) _gi.forceHp = int(_gData.forceHp);
+                                                   ^
+
+D:\BaiduNetdiskDownload\����qս�ͻ����ļ�\_offline_v4.7.0\game\Sanguo4399.swf��1864830 �ֽڣ�
