@@ -1506,21 +1506,48 @@ package game.model
 		      return;
 		   }
 
-		   // 桌面版：写入本地文件
+		   // 桌面版：先写临时文件，再替换正式存档，避免中途退出留下半个 JSON。
 		   var file:File = null;
+		   var tempFile:File = null;
+		   var backupFile:File = null;
 		   var fs:FileStream = null;
 		   try
 		   {
 		      file = File.applicationStorageDirectory.resolvePath("data.json");
+		      tempFile = File.applicationStorageDirectory.resolvePath("data.json.tmp");
+		      backupFile = File.applicationStorageDirectory.resolvePath("data.json.bak");
 		      trace("将尝试写入路径：" + file.nativePath);
 		      fs = new FileStream();
-		      fs.open(file,FileMode.WRITE);
+		      fs.open(tempFile,FileMode.WRITE);
 		      fs.writeUTFBytes(_saveData);
+		      fs.close();
+		      // 编译时使用的 AIR stub 不暴露 File.copyTo/moveTo，因此用流复制；
+		      // 备份在覆盖正式文件前完成，下一次启动可安全回退。
+		      try
+		      {
+		         var oldFs:FileStream = new FileStream();
+		         oldFs.open(file,FileMode.READ);
+		         var oldData:String = oldFs.readUTFBytes(oldFs.bytesAvailable);
+		         oldFs.close();
+		         var backupFs:FileStream = new FileStream();
+		         backupFs.open(backupFile,FileMode.WRITE);
+		         backupFs.writeUTFBytes(oldData);
+		         backupFs.close();
+		      }
+		      catch(noOldSave:Error) {}
+		      var tempFs:FileStream = new FileStream();
+		      tempFs.open(tempFile,FileMode.READ);
+		      var tempData:String = tempFs.readUTFBytes(tempFs.bytesAvailable);
+		      tempFs.close();
+		      fs = new FileStream();
+		      fs.open(file,FileMode.WRITE);
+		      fs.writeUTFBytes(tempData);
 		      fs.close();
 		      trace("保存成功：" + file.nativePath);
 		   }
 		   catch(e:Error)
 		   {
+		      try { if(fs != null) fs.close(); } catch(closeError:Error) {}
 		      trace("保存失败：" + e.message);
 		      trace("错误堆栈：" + e.getStackTrace());
 		   }

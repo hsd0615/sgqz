@@ -1298,6 +1298,13 @@ import game.ui.UpdateChecker;
             if(_mainPanel != null) { removeChild(_mainPanel); _mainPanel = null; }
             Config.token = param1.data.token;
             Config.ServerTime = param1.data.currentTime;
+            // 单机登录没有联网版的 flag，也不应继续打开服务器连接面板。
+            if(Config.OFFLINE_MODE)
+            {
+               RoleModel.getInstance().initData(param1.data);
+               this.enterGame();
+               return;
+            }
             if(int(param1.data.flag == 1))
             {
                RoleModel.getInstance().initData(param1.data);
@@ -1442,6 +1449,11 @@ import game.ui.UpdateChecker;
             this._ui.closeCreateRolePanel();
             Config.token = param1.data.token;
             RoleModel.getInstance().initData(param1.data);
+            if(Config.OFFLINE_MODE)
+            {
+               this.enterGame();
+               return;
+            }
             this._ui.openSelectServerPanel(true);
          }
          else

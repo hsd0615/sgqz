@@ -1517,6 +1517,15 @@ package game
       
       public function setPartAndLevel(param1:int, param2:int, param3:Bitmap = null) : *
       {
+         if(Config.OFFLINE_MODE && param3 == null)
+         {
+            var fallback:Bitmap = LocalAssets.background();
+            fallback.width = 770;
+            fallback.height = 500;
+            if(this._bk != null && this._bk.parent != null) this._bk.parent.removeChild(this._bk);
+            this._bk = fallback;
+            addChildAt(fallback,0);
+         }
          this._part = param1;
          this._level = param2;
          var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
@@ -1558,7 +1567,10 @@ package game
                   _self.addChildAt(_bmp,0);
                }
             });
-            this._bgLoader.load(new URLRequest(encodeURI(_bgUrl)));
+            this._bgLoader.contentLoaderInfo.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e:flash.events.IOErrorEvent):void {
+               trace("背景加载失败，保留备用背景: " + _bgUrl);
+            });
+            this._bgLoader.load(new URLRequest(LocalAssets.url(_bgUrl)));
          }
          var _loc3_:int = Data.getInstance().getStageID(this._part,this._level);
          try {

@@ -445,7 +445,10 @@ package game.ui
                _s.addChildAt(_bmp,0);
             }
          });
-         _loader.load(new URLRequest(encodeURI(_url)));
+         _loader.contentLoaderInfo.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e:flash.events.IOErrorEvent):void {
+            trace("章节图标加载失败: " + _url);
+         });
+         _loader.load(new URLRequest(game.LocalAssets.url(_url)));
          // 关卡名文字
          var _nameTf:TextField = new TextField();
          _nameTf.defaultTextFormat = new TextFormat("SimHei",10,0xFFCC00,true);

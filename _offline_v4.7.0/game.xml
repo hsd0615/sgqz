@@ -19,6 +19,7 @@
 	<DataLoader url="staticgeneral.xml" name="game01.data.general" load="true" />
 	<DataLoader url="staticxishu.xml" name="game01.data.xishu" load="true" />
 	<DataLoader url="staticproto.xml" name="game01.data.proto" load="true" />
+	<DataLoader url="staticequip.xml" name="game01.data.equip" load="true" />
 	<DataLoader url="shop.xml" name="game01.data.shop" load="true" />
 	<DataLoader url="stage.xml" name="game01.data.stage" load="true" />
 	<DataLoader url="staticpaoma.xml" name="game01.data.paoma" load="true" />

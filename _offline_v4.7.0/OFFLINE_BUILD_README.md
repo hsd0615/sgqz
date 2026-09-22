@@ -1,4 +1,8 @@
-# 三国Q战 v4.7.0 单机版
+# 三国Q战 v4.7.2 单机版
+
+发行包用 `tools/package-offline.ps1` 生成，包含所有章节背景和地图图标，并核对每个压缩条目的 SHA256。
+解压整个目录后运行 main.exe；需要已安装 Adobe AIR。存档沿用原目录，发行包不含玩家存档。
+未实现的单机请求明确提示暂不支持，避免原先通用成功响应造成假成功或异常。
 
 该目录以 GitHub 提交 `6e62a6b`（v4.7.0，长枪兵模型加入前一个版本）为基线。
 
@@ -21,4 +25,3 @@ java -jar "D:/BaiduNetdiskDownload/flex_home/lib/mxmlc.jar" `
   -- game/Sanguo4399.as
 Copy-Item game/Sanguo4399.swf main.swf -Force
 ```
-

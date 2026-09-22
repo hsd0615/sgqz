@@ -107,7 +107,7 @@ package com.iflashigame.controller
             case Head.HTTP_NEW_LEITAI_EXIT:
                return this.leitaiExit(param1);
             default:
-               return this.localNoop(param1);
+               return {"success":false, "message":"此功能尚未支持单机模式（" + param1.head + "）"};
          }
       }
 
@@ -1374,19 +1374,38 @@ package com.iflashigame.controller
       
       public function getLoginData() : String
       {
-         var data:String = null;
-         var file:File = File.applicationStorageDirectory.resolvePath("data.json");
+         var data:String = this.readSaveFile("data.json");
+         if(data != "")
+         {
+            try
+            {
+               // 读之前先验证 JSON，避免损坏的半写入文件阻塞进入游戏。
+               com.adobe.serialization.json.JSON.decode(data);
+               return data;
+            }
+            catch(error:Error)
+            {
+               trace("存档损坏，尝试读取备份: " + error.message);
+            }
+         }
+         return this.readSaveFile("data.json.bak");
+      }
+
+      private function readSaveFile(fileName:String) : String
+      {
+         var file:File = File.applicationStorageDirectory.resolvePath(fileName);
          var fileStream:FileStream = new FileStream();
          try
          {
             fileStream.open(file,FileMode.READ);
-            data = String(fileStream.readUTFBytes(fileStream.bytesAvailable));
+            var data:String = String(fileStream.readUTFBytes(fileStream.bytesAvailable));
             fileStream.close();
             return data;
          }
          catch(error:Error)
          {
-            trace("读取文件失败: " + error.message);
+            try { fileStream.close(); } catch(closeError:Error) {}
+            trace("读取存档失败(" + fileName + "): " + error.message);
          }
          return "";
       }
@@ -1447,13 +1466,31 @@ package com.iflashigame.controller
       private function generalShengji(param1:Object) : Object
       {
          var _loc2_:ArmyInfo = RoleModel.getInstance().findSoldier(param1.id);
-         var _loc3_:int = RoleModel.getInstance().money - 100;
-         var _loc4_:int = RoleModel.getInstance().exploit - 100;
+         if(_loc2_ == null)
+         {
+            return {"success":false, "message":"武将不存在"};
+         }
+         if(_loc2_.level >= 220)
+         {
+            return {"success":false, "message":"武将已经顶级，无法继续升级"};
+         }
+         // 必须与 Logic.getMoneyByLevel / getExploitByLevel 及界面显示一致。
+         var _loc3_:int = 2 * _loc2_.level * (_loc2_.level - 1) + 100;
+         var _loc4_:int = _loc2_.level * (_loc2_.level - 1) + 100;
+         if(RoleModel.getInstance().money < _loc3_)
+         {
+            return {"success":false, "message":"银两不足"};
+         }
+         if(RoleModel.getInstance().exploit < _loc4_)
+         {
+            return {"success":false, "message":"功勋不足"};
+         }
          var _loc5_:Object;
          (_loc5_ = {}).success = true;
          _loc5_.data = {
-            "money":_loc3_,
-            "exploit":_loc4_,
+            // 返回扣费后的余额，不能返回本次消耗金额，否则客户端会把余额重置为100。
+            "money":RoleModel.getInstance().money - _loc3_,
+            "exploit":RoleModel.getInstance().exploit - _loc4_,
             "id":param1.id,
             "level":_loc2_.level + 1
          };

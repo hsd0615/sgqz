@@ -1,3 +1,3 @@
 @echo off
-echo gm_admin:admin123 > "%APPDATA%\Main\Local Store\user_config.txt"
+cd /d "%~dp0"
 start "" "%~dp0main.exe"
