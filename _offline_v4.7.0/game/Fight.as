@@ -1534,7 +1534,7 @@ package game
          if(param3 != null)
          {
             param3.smoothing = true;
-            // 按比例缩放铺满770x500
+            // 战斗区必须被完全覆盖：按较大比例等比缩放，再从中心裁切多余部分。
             var _scaleX:Number = 770 / param3.bitmapData.width;
             var _scaleY:Number = 500 / param3.bitmapData.height;
             var _scale:Number = Math.max(_scaleX,_scaleY);
@@ -1558,8 +1558,13 @@ package game
                if(_bmp != null)
                {
                   _bmp.smoothing = true;
-                  _bmp.width = 770;
-                  _bmp.scaleY = _bmp.scaleX;
+                  var _scaleX:Number = 770 / _bmp.bitmapData.width;
+                  var _scaleY:Number = 500 / _bmp.bitmapData.height;
+                  var _scale:Number = Math.max(_scaleX,_scaleY);
+                  _bmp.width = _bmp.bitmapData.width * _scale;
+                  _bmp.height = _bmp.bitmapData.height * _scale;
+                  _bmp.x = (770 - _bmp.width) / 2;
+                  _bmp.y = (500 - _bmp.height) / 2;
                   if(_self._bk != null && _self._bk.parent != null)
                   {
                      _self._bk.parent.removeChild(_self._bk);
