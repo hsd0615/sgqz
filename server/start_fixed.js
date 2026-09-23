@@ -762,7 +762,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.0';
+  _cachedClientVersion = '4.9.1';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -877,7 +877,8 @@ function parseHttpRequest(raw) {
 
 // 路由处理
 function handleRequest(socket, req) {
-  const { method, url, jsonData: data } = req;
+  const { method, jsonData: data } = req;
+  const url = ['/', '/index.html', '/client/'].includes(req.url) ? '/client/index.html' : req.url;
   const clientPort = socket.remotePort || '?';
   console.log('[HTTP:' + clientPort + '] ' + method + ' ' + url + ' body=' + req.body.substring(0, 120));
 
@@ -2811,7 +2812,7 @@ function handleRequest(socket, req) {
       if (fs.existsSync(clientPath)) {
         var clientData = fs.readFileSync(clientPath);
         var ext = clientFile.split('.').pop().toLowerCase();
-        var mimeMap = { zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' };
+        var mimeMap = { js: 'application/javascript; charset=utf-8', wasm: 'application/wasm', json: 'application/json', zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' };
         var mime = mimeMap[ext] || 'application/octet-stream';
         // 禁止缓存，每次从服务器拉最新
         var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nCache-Control: no-cache, no-store, must-revalidate\r\nPragma: no-cache\r\nExpires: 0\r\nConnection: close\r\n\r\n';

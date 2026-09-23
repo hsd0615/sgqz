@@ -1,5 +1,10 @@
 # 三国Q战 更新公告
 
+## v4.9.1 (2026-09-23)
+
+- Opened the browser client with self-hosted Ruffle 0.6.0 and HTTP polling multiplayer.
+- Added web entry routing and JavaScript/WebAssembly content types.
+
 ## v4.9.0 (2026-09-23)
 
 - Migrated online API, TCP, background assets and update downloads to 47.114.59.65.

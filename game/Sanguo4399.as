@@ -1068,6 +1068,7 @@ import game.ui.UpdateChecker;
       
       private function onProgressHandler(param1:LoaderEvent) : *
       {
+         if(this._bar == null || this._bar.tf == null || this._bar.bar == null || this._bar.soldier == null) return;
          var _loc2_:int = int(param1.target.progress * 100);
          this._bar.tf.text = _loc2_ + "%";
          this._bar.bar.scaleX = param1.target.progress;
