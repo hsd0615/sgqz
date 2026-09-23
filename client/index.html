@@ -5,8 +5,10 @@
 <script>window.RufflePlayer={config:{publicPath:'/client/ruffle/',autoplay:'on',unmuteOverlay:'visible',allowScriptAccess:true,backgroundColor:'#17120e',letterbox:'on',warnOnUnsupportedContent:false}};</script>
 <script src="/client/ruffle/ruffle.js"></script>
 <script>
-(async function(){const status=document.getElementById('status');try{const player=window.RufflePlayer.newest().createPlayer();document.getElementById('game').appendChild(player);await player.ruffle().load({url:'/client/sanguo_web.swf?v=legacy-web-20260923',parameters:{isWeb:'1'},base:'/client/'});status.textContent='使用游戏内账号登录或注册，与桌面版共用服务器。';document.getElementById('fullscreen').onclick=()=>document.getElementById('game').requestFullscreen().catch(()=>{});}catch(e){status.textContent='游戏加载失败，请刷新页面重试。';console.error(e)}})();
+(async function(){const status=document.getElementById('status');try{const player=window.RufflePlayer.newest().createPlayer();document.getElementById('game').appendChild(player);await player.ruffle().load({url:'/client/sanguo_web.swf?v=web-fixed-20260923',parameters:{isWeb:'1'},base:'/client/'});status.textContent='使用游戏内账号登录或注册，与桌面版共用服务器。';document.getElementById('fullscreen').onclick=()=>document.getElementById('game').requestFullscreen().catch(()=>{});}catch(e){status.textContent='游戏加载失败，请刷新页面重试。';console.error(e)}})();
 async function online(){try{const r=await fetch('/api/online-count',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});const data=await r.json();document.getElementById('online').textContent=data.count??'—'}catch{document.getElementById('online').textContent='—'}}online();setInterval(online,30000);
 window._sgqzOnLogin=function(){};
 </script></body></html>
+
+
 
