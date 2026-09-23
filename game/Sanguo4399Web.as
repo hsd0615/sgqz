@@ -11,7 +11,7 @@ package game
       public function Sanguo4399Web()
       {
          super();
-         Security.loadPolicyFile("http://47.96.41.243:3000/crossdomain.xml");
+         Security.loadPolicyFile("http://47.114.59.65:3000/crossdomain.xml");
          addEventListener(Event.ADDED_TO_STAGE, onAdded);
       }
 

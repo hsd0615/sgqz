@@ -762,7 +762,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.8.9';
+  _cachedClientVersion = '4.9.0';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -895,7 +895,7 @@ function handleRequest(socket, req) {
 
   // 二进制文件上传 (admin)
   if (url === '/api/admin/upload' && method === 'POST') {
-    if (!data || !data.key || data.key !== 'sanguoq_admin_2024') {
+    if (!data || !data.key || data.key !== process.env.SGQZ_ADMIN_KEY) {
       return jsonRawResponse(socket, { success: false, message: '未授权' });
     }
     var b64Data = data.data;
@@ -953,7 +953,7 @@ function handleRequest(socket, req) {
   // 客户端版本号 - 动态读取 /opt/client/version，确保与已部署 SWF 同步
   if (url === '/api/version') {
     var _ts = Date.now();
-    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.96.41.243:3000/client/main.swf?v=' + _ts });
+    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.114.59.65:3000/client/main.swf?v=' + _ts });
   }
 
   // 更新公告 - 返回最近版本更新内容（面向玩家）
@@ -2561,7 +2561,7 @@ function handleRequest(socket, req) {
   }
 
   // ============ 远程管理 ============
-  const ADMIN_KEY = 'sanguoq_admin_2024';
+  const ADMIN_KEY = process.env.SGQZ_ADMIN_KEY || require('crypto').randomBytes(32).toString('hex');
 
   if (url === '/api/admin/broadcast' && data.key === ADMIN_KEY && data.msg) {
     broadcastToAll(data.msg);

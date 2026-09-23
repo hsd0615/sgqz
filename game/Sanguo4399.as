@@ -954,7 +954,7 @@ import game.ui.UpdateChecker;
 
          // HTTP 测试
          // HTTP POST test
-         var testReq:URLRequest = new URLRequest("http://47.96.41.243:3000/api/health");
+         var testReq:URLRequest = new URLRequest("http://47.114.59.65:3000/api/health");
          testReq.method = URLRequestMethod.POST;
          testReq.contentType = "application/json";
          testReq.data = "{}";
@@ -1869,7 +1869,7 @@ import game.ui.UpdateChecker;
          // 预加载关卡背景图
          var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
          var _pn:String = _partNames[int(_data.part)] || "";
-         var _bgUrl:String = "http://47.96.41.243:3000/client/bg/" + _pn + ".png";
+         var _bgUrl:String = "http://47.114.59.65:3000/client/bg/" + _pn + ".png";
          var _loader:Loader = new Loader();
          var _self:Sanguo4399 = this;
          _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {

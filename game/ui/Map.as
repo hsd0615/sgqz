@@ -483,7 +483,7 @@ package game.ui
          var _loader:Loader = new Loader();
          var _partNames:Array = ["","黄巾之乱","洛阳兵变","群雄逐鹿","赤壁之战","鏖战三国","奇袭蜀中","进军东吴","马踏中原","试炼之地","外敌入侵","邪魔入侵","时空漩涡"];
          var _levelNames:Array = ["","(1-10级)","(11-20级)","(21-30级)","(31-40级)","(41-50级)","(51-60级)","(61-70级)","(71-80级)","(81-90级)","(91-100级)","(131-140级)","(141-150级)"];
-         var _url:String = "http://47.96.41.243:3000/client/bg/" + _partNames[int(param1)] + ".png";
+         var _url:String = "http://47.114.59.65:3000/client/bg/" + _partNames[int(param1)] + ".png";
          _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {
             var _bmp:Bitmap = _e.target.content as Bitmap;
             if(_bmp != null) {

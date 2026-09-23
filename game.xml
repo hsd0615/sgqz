@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
 	<!-- 网络连接地址 -->
-	<servera url="http://47.96.41.243:3000" />
-	<server url="http://47.96.41.243:3000" />
+	<servera url="http://47.114.59.65:3000" />
+	<server url="http://47.114.59.65:3000" />
 
 	<requestCode>gbk</requestCode>
 	<responseCode>utf-8</responseCode>
@@ -16,12 +16,12 @@
 	<SWFLoader url="fubenui.swf" name="game01.skin.fubenui" load="true" autoPlay="false" context="own"/>
 
 	<!-- 游戏数据 (服务端加载，玩家无法修改) -->
-	<DataLoader url="http://47.96.41.243:3000/client/staticgeneral.xml" name="game01.data.general" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/staticxishu.xml" name="game01.data.xishu" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/staticproto.xml" name="game01.data.proto" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/shop.xml" name="game01.data.shop" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/stage.xml" name="game01.data.stage" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/staticpaoma.xml" name="game01.data.paoma" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/statictf.xml" name="game01.data.tianfu" load="true" />
-	<DataLoader url="http://47.96.41.243:3000/client/talkFilter.xml" name="game01.data.talkFilter" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/staticgeneral.xml" name="game01.data.general" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/staticxishu.xml" name="game01.data.xishu" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/staticproto.xml" name="game01.data.proto" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/shop.xml" name="game01.data.shop" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/stage.xml" name="game01.data.stage" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/staticpaoma.xml" name="game01.data.paoma" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/statictf.xml" name="game01.data.tianfu" load="true" />
+	<DataLoader url="http://47.114.59.65:3000/client/talkFilter.xml" name="game01.data.talkFilter" load="true" />
 </data>

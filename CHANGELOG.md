@@ -1,5 +1,11 @@
 # 三国Q战 更新公告
 
+## v4.9.0 (2026-09-23)
+
+- Migrated online API, TCP, background assets and update downloads to 47.114.59.65.
+- Deployed the GitHub online edition on Windows Server with automatic startup.
+- Require a private environment key for remote administration.
+
 ---
 
 ## v4.8.6 (2026-08-13)

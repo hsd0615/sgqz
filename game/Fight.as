@@ -1652,7 +1652,7 @@
          else
          {
             this._bgLoader = new Loader();
-            var _bgUrl:String = "http://47.96.41.243:3000/client/bg/" + _partName + ".png";
+            var _bgUrl:String = "http://47.114.59.65:3000/client/bg/" + _partName + ".png";
             var _self:Fight = this;
             this._bgLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(_e:Event):void {
                var _bmp:Bitmap = _e.target.content as Bitmap;
