@@ -139,6 +139,12 @@ import game.ui.UpdateChecker;
          if(this.stage.loaderInfo.parameters.isWeb == "1")
          {
                         Config.IS_WEB = true;
+            // Shared desktop/web build: use the page's server, as the old Web wrapper did.
+            var webParts:Array = this.loaderInfo.url.split("/");
+            if(webParts.length > 2 && this.loaderInfo.url.indexOf("://") > 0) {
+               Config.SERVER_HOST = String(webParts[2]).split(":")[0];
+               AESController.getInstance().serverURL = webParts[0] + "//" + webParts[2];
+            }
             trace("[Web] 网页版模式已激活");
             if(ExternalInterface.available)
             {

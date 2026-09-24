@@ -762,7 +762,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.1';
+  _cachedClientVersion = '4.9.2';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -878,7 +878,8 @@ function parseHttpRequest(raw) {
 // 路由处理
 function handleRequest(socket, req) {
   const { method, jsonData: data } = req;
-  const url = ['/', '/index.html', '/client/'].includes(req.url) ? '/client/index.html' : req.url;
+  const requestPath = req.url.split('?')[0];
+  const url = ['/', '/index.html', '/client/'].includes(requestPath) ? '/client/index.html' : req.url;
   const clientPort = socket.remotePort || '?';
   console.log('[HTTP:' + clientPort + '] ' + method + ' ' + url + ' body=' + req.body.substring(0, 120));
 
@@ -2814,8 +2815,9 @@ function handleRequest(socket, req) {
         var ext = clientFile.split('.').pop().toLowerCase();
         var mimeMap = { js: 'application/javascript; charset=utf-8', wasm: 'application/wasm', json: 'application/json', zip: 'application/zip', swf: 'application/x-shockwave-flash', exe: 'application/octet-stream', txt: 'text/plain', pdf: 'application/pdf', xml: 'application/xml; charset=utf-8', html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' };
         var mime = mimeMap[ext] || 'application/octet-stream';
-        // 禁止缓存，每次从服务器拉最新
-        var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nCache-Control: no-cache, no-store, must-revalidate\r\nPragma: no-cache\r\nExpires: 0\r\nConnection: close\r\n\r\n';
+        // Cache large binary assets; revalidate mutable entry/config files.
+        var clientCache = /^(swf|png|jpg|jpeg|gif)$/.test(ext) ? 'public, max-age=86400' : 'no-cache';
+        var headStr = 'HTTP/1.0 200 OK\r\nContent-Type: ' + mime + '\r\nContent-Length: ' + clientData.length + '\r\nCache-Control: ' + clientCache + '\r\nConnection: close\r\n\r\n';
         var headBuf = Buffer.from(headStr, 'utf-8');
         var fullBuf = Buffer.concat([headBuf, clientData]);
         socket.write(fullBuf, function() { try { socket.end(); } catch(e) {} });

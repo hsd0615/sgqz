@@ -1,3 +1,11 @@
+## v4.9.2 (2026-09-24)
+
+- Restore the original native Flash object/embed page and Chinese client.
+- Use the historical shared desktop/web SWF build with isWeb=1 and HTTP polling.
+- Restore online players and the _sgqzPollKey keyboard bridge.
+- Fix query-string entry routing and actual binary asset cache headers.
+- Keep current extended general assets to preserve existing models.
+
 # 三国Q战 更新公告
 
 ## v4.9.1 (2026-09-23)
