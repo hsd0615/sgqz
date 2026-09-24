@@ -673,7 +673,8 @@
             case Type.QIBING:
                return new Saber(param1,param2,param3,this);
             case Type.WUDOUBING:
-               // 澶栭儴鐗堟湰鐨勯瓘寤跺睘浜庤繎鎴樻鏂楀叺锛屾部鐢ㄥ師鐗?Saber 鍔ㄤ綔鎺ュ彛銆?               return new Saber(param1,param2,param3,this);
+               // Keep the return separate: falling through selects the long-spear atlas.
+               return new Saber(param1,param2,param3,this);
             case Type.PART_SOLDIER:
                return new PartSoldier(param1,param2,param3,this);
             case Type.JUNZHU:

@@ -1,3 +1,9 @@
+## v4.9.4 (2026-09-24)
+
+- 修复武斗兵分支的 return 被并入注释导致贯穿到 PartSoldier 的错误，恢复管亥等20条武斗兵配置的正确战斗模型。
+- 增加战斗工厂回归检查，覆盖全部武斗兵配置并确认长矛兵分支仍有效。
+- 明确每次修复必须部署当前联网服务器并验证线上版本和SWF哈希。
+
 ## v4.9.3 (2026-09-24)
 
 - Losslessly re-encode 72 general bitmap tags as PNG, reducing general.swf from 113,612,274 to 83,744,823 bytes (26.29%).

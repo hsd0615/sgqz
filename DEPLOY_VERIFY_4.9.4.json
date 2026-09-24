@@ -1,0 +1,22 @@
+{
+  "version": {
+    "success": true,
+    "version": "4.9.4",
+    "downloadUrl": "http://47.114.59.65:3000/client/main.swf?v=1790238031609"
+  },
+  "files": [
+    {
+      "file": "main.swf",
+      "bytes": 1114067,
+      "sha256": "2f6392aeea7f11cc738adf061082c25f32864de9ffbb16ef8e5d1c62969f42c4",
+      "versionString": true
+    },
+    {
+      "file": "sanguo_web.swf",
+      "bytes": 1114067,
+      "sha256": "2f6392aeea7f11cc738adf061082c25f32864de9ffbb16ef8e5d1c62969f42c4",
+      "versionString": true
+    }
+  ],
+  "entryVersion": true
+}
