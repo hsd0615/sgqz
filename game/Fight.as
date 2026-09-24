@@ -337,31 +337,69 @@
          return result;
       }
 
+      private var _armyOrders:Array = [];
+
       private function advanceArmyClickHandler(param1:MouseEvent) : void
       {
          param1.stopImmediatePropagation();
-         if(this._isOver) return;
-         var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         var target:AbstractSoldier = this.findSoldier(-this._direct);
-         if(target == null) return;
-         for(var i:int = 0; i < own.length; i++) if(own[i] && !own[i].isDead) own[i].fire2({"target":target});
+         this.moveArmy(true);
       }
-      private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
-      private function moveArmy(param1:Boolean) : void
+
+      private function armyRetreatClickHandler(param1:MouseEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         this.moveArmy(false);
+      }
+
+      private function moveArmy(forward:Boolean) : void
       {
          if(this._isOver) return;
-         var all:Vector.<AbstractSoldier> = new Vector.<AbstractSoldier>();
-         var i:int;
+         if(this._autoAI != null) this._autoAI.pause = true;
+         this._armyOrders = [];
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         for(i = 0; i < own.length; i++) if(own[i]) all.push(own[i]);
-         for(i = 0; i < all.length; i++)
+         for each(var soldier:AbstractSoldier in own)
          {
-            var soldier:AbstractSoldier = all[i];
-            var forward:Boolean = param1;
-            if(soldier.direct == -1) forward = !forward;
-            if(forward) soldier.goRight(soldier.moveDistance * Config.MERIC);
-            else soldier.goLeft(soldier.moveDistance * Config.MERIC);
+            if(soldier != null && !soldier.isDead)
+               this._armyOrders.push({soldier:soldier, forward:forward, started:false, target:null});
          }
+         addEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
+         this.updateArmyOrders(null);
+      }
+
+      private function updateArmyOrders(event:Event) : void
+      {
+         if(this._isOver)
+         {
+            this._armyOrders = [];
+            removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
+            return;
+         }
+         var target:AbstractSoldier = this.findSoldier(-this._direct);
+         for(var i:int = this._armyOrders.length - 1; i >= 0; i--)
+         {
+            var order:Object = this._armyOrders[i];
+            var soldier:AbstractSoldier = order.soldier as AbstractSoldier;
+            if(soldier == null || soldier.isDead) { this._armyOrders.splice(i,1); continue; }
+            // Finish the current attack before changing its animation or cooldown.
+            if(soldier.fireing) continue;
+            if(!order.forward)
+            {
+               soldier.stand(); // Cancels the previous chase and refill callbacks.
+               if(soldier.direct == 1) soldier.goLeft(soldier.moveDistance * Config.MERIC);
+               else soldier.goRight(soldier.moveDistance * Config.MERIC);
+               this._armyOrders.splice(i,1);
+               continue;
+            }
+            if(target == null) { soldier.stand(); this._armyOrders.splice(i,1); continue; }
+            if(!order.started || order.target != target)
+            {
+               if(!(soldier is Gunner) || !soldier.cooling || soldier.walking) soldier.stand();
+               order.started = true;
+               order.target = target;
+            }
+            if(soldier.canAI) soldier.fire2({target:target});
+         }
+         if(this._armyOrders.length == 0) removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
       }
 
       public function showEquipNotify(param1:String) : void
@@ -713,52 +751,16 @@
       
       public function findSoldier(param1:int) : AbstractSoldier
       {
-         var _loc2_:AbstractSoldier = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(param1 == 1)
+         var result:AbstractSoldier = null;
+         var soldiers:Array = param1 == 1 ? this._leftSoldiers : this._rightSoldiers;
+         for each(var soldier:AbstractSoldier in soldiers)
          {
-            if(this._leftSoldiers.length == 0)
-            {
-               return null;
-            }
-            if(this._leftSoldiers.length == 1)
-            {
-               return this._leftSoldiers[0] as AbstractSoldier;
-            }
-            _loc2_ = this._leftSoldiers[0] as AbstractSoldier;
-            _loc3_ = 1;
-            while(_loc3_ < this._leftSoldiers.length)
-            {
-               if(_loc2_.x < this._leftSoldiers[_loc3_].x)
-               {
-                  _loc2_ = this._leftSoldiers[_loc3_] as AbstractSoldier;
-               }
-               _loc3_++;
-            }
-            return _loc2_;
+            if(soldier == null || soldier.isDead) continue;
+            if(result == null || (param1 == 1 ? soldier.x > result.x : soldier.x < result.x)) result = soldier;
          }
-         if(this._rightSoldiers.length == 0)
-         {
-            return null;
-         }
-         if(this._rightSoldiers.length == 1)
-         {
-            return this._rightSoldiers[0] as AbstractSoldier;
-         }
-         _loc2_ = this._rightSoldiers[0] as AbstractSoldier;
-         _loc4_ = 1;
-         while(_loc4_ < this._rightSoldiers.length)
-         {
-            if(_loc2_.x > this._rightSoldiers[_loc4_].x)
-            {
-               _loc2_ = this._rightSoldiers[_loc4_] as AbstractSoldier;
-            }
-            _loc4_++;
-         }
-         return _loc2_;
+         return result;
       }
-      
+
       public function getAllDistance(param1:AbstractSoldier, param2:AbstractSoldier) : Number
       {
          var _loc3_:Number = NaN;
@@ -1175,6 +1177,8 @@
                   }
                }
                break;
+            case Type.WUDOUBING:
+            case Type.PART_SOLDIER:
             case Type.QIBING:
                if(_loc2_.direct == 1)
                {
@@ -1184,7 +1188,7 @@
                {
                   _loc5_ = this.findSoldier(1);
                }
-               if(_loc5_ != null)
+               if(_loc5_ != null && this.getAllDistance(_loc2_,_loc5_) <= _loc2_.attckDistance * Config.MERIC + 1)
                {
                   if(Tools.getJilv(_loc5_.shanbi) == true)
                   {
@@ -1414,6 +1418,8 @@
       
       private function removeAllEvent() : *
       {
+         removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
+         this._armyOrders = [];
          if(this._advanceBtn != null) this._advanceBtn.removeEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          if(this._armyRetreatBtn != null) this._armyRetreatBtn.removeEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          removeEventListener(SoldierEvent.SELECTED,this.onSoldierSelectedHandler);

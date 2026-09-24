@@ -97,18 +97,11 @@ package game.display
       private function afterTempMoveHandler(param1:SoldierEvent) : *
       {
          removeEventListener(SoldierEvent.MOVE_COMPLETE,this.afterTempMoveHandler);
-         var _loc2_:Number = _world.getAllDistance(this,_locked);
-         var _loc3_:Number = _armyInfo.attackDistance * Config.MERIC;
-         if(_loc2_ > _loc3_)
-         {
-            this.fire({"target":_world.findSoldier(-_direct)});
-         }
-         else
-         {
-            this.fire2({"target":_locked});
-         }
+         if(_locked == null || _locked.isDead) _locked = _world.findSoldier(-_direct);
+         if(_locked == null) { this.stand(); return; }
+         this.fire2({target:_locked});
       }
-      
+
       override public function fire(param1:Object = null) : void
       {
          if(param1.p2p == null && Tools.getJilv(this._baoji) == true)

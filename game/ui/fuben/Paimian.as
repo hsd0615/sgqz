@@ -36,6 +36,8 @@ package game.ui.fuben
 
       public var disable:Boolean;
 
+      public var deferReveal:Boolean = false;
+
       public function Paimian(param1:String, param2:ApplicationDomain = null)
       {
          super(param1,param2);
@@ -56,6 +58,13 @@ package game.ui.fuben
       override public function initData(param1:Object) : void
       {
          this._data = param1 as String;
+         this.disable = false;
+         this._isShow = false;
+         this.filters = [];
+         this.__nameTF.text = "";
+         this.__countTF.text = "";
+         if(this._icon != null && this._icon.parent == this) removeChild(this._icon);
+         this._icon = null;
          addEventListener(MouseEvent.CLICK,this.onClickHandler);
       }
 
@@ -69,6 +78,7 @@ package game.ui.fuben
          {
             return;
          }
+         this._isShow = true;
          var _loc1_:Array = this._data.split("|");
          var _loc2_:int = int(_loc1_[0]);
          addChildAt(this.__body,0);
@@ -198,7 +208,7 @@ package game.ui.fuben
             return;
          }
          filters = [new GlowFilter(16763904,1,10,10)];
-         this.show();
+         if(!this.deferReveal) this.show();
          dispatchEvent(new UIEvent(UIEvent.CHOOSE_PAIMIAN,true));
       }
 

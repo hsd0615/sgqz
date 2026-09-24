@@ -2208,6 +2208,7 @@ package game
          this._bagPanel.initData(RoleModel.getInstance().getBagData());
       }
 
+      private var _appliedRecruitResults:Object = {};
       private var _recruitSendCount:int = 0; // 已发送翻牌计数(多求贤令模式)
       private var _isMultiFlip:Boolean = false; // 是否多翻模式
 
@@ -2327,7 +2328,8 @@ package game
             this._fanpaiPanel.initData({
                "pai":param1.data.pai,
                "stageID":0,
-               "maxFlips":param1.data.maxFlips || 1
+               "maxFlips":param1.data.maxFlips || param1.maxFlips || 1,
+               "deckId":param1.data.deckId
             });
          }
          else
@@ -2343,6 +2345,11 @@ package game
       {
          if(param1.success == true)
          {
+            var resultKey:String = String(param1.data.deckId) + ":" + String(param1.data.cardIndex);
+            if(this._appliedRecruitResults[resultKey]) return;
+            this._appliedRecruitResults[resultKey] = true;
+            if(this._fanpaiPanel != null) this._fanpaiPanel.resolveRecruit(true,param1.data);
+            RoleModel.getInstance().delBagItem("proto_3_3",1);
             if(param1.data.money != null)
             {
                RoleModel.getInstance().money = int(param1.data.money);
@@ -2361,6 +2368,8 @@ package game
                var _gi:ArmyInfo = Data.getInstance().getArmyInfo(param1.data.general.code,param1.data.general.level);
                if(_gi != null)
                {
+                  _gi.id = Number(param1.data.general.id);
+                  if(param1.data.general.kezhi != null) _gi.setKezhiStr(String(param1.data.general.kezhi));
                   _gi.forceHp = param1.data.general.forceHp || 0;
                   RoleModel.getInstance().addSoldier(_gi);
                   var _gn:String = Data.getInstance().getAttributes("general",param1.data.general.code,"name");
@@ -2375,17 +2384,10 @@ package game
                }
             }
             this._recruitSendCount++;
-            if(!this._isMultiFlip)
-            {
-               this.closeFanpaiPanel();
-               dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
-                  "type":0,
-                  "text":"翻牌成功！"
-               }));
-            }
          }
          else
          {
+            if(this._fanpaiPanel != null) this._fanpaiPanel.resolveRecruit(false);
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,false,{
                "type":0,
                "text":param1.message || "翻牌失败，请重试。"
@@ -3443,6 +3445,8 @@ package game
          {
             _loc2_.head = Head.HTTP_NEW_RECRUIT_FLIP;
             _loc2_.callback = this.onRecruitFlipResponse;
+            _loc2_.deckId = param1.data.deckId;
+            _loc2_.cardIndex = param1.data.cardIndex;
          }
          else
          {

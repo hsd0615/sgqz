@@ -4,6 +4,7 @@ package game.ui.fuben
    import com.iflashigame.utils.Tools;
    import flash.display.SimpleButton;
    import flash.events.MouseEvent;
+   import flash.events.Event;
    import flash.events.TimerEvent;
    import flash.filters.GlowFilter;
    import flash.system.ApplicationDomain;
@@ -33,6 +34,10 @@ package game.ui.fuben
       private var _pai6:Paimian;
 
       private var _stageID:int;
+      private var _cards:Array;
+      private var _deckId:String;
+      private var _pendingIndex:int = -1;
+      private var _requestTimer:Timer;
 
       private var _choosed:Boolean = false;
 
@@ -69,16 +74,21 @@ package game.ui.fuben
          this._pai5.buttonMode = true; this._pai6.buttonMode = true;
          Tools.setDisabled(this.__okBtn,true);
          this._flippedCards = [];
+         this._cards = [this._pai1,this._pai2,this._pai3,this._pai4,this._pai5,this._pai6];
       }
 
       override protected function initEvent() : void
       {
          this.__okBtn.addEventListener(MouseEvent.CLICK,this.okBtnClickHandler);
+         addEventListener(Event.REMOVED_FROM_STAGE,this.onRemoved);
       }
 
       override public function initData(param1:Object) : void
       {
          this._stageID = int(param1.stageID);
+         this._deckId = param1.deckId == null ? "" : String(param1.deckId);
+         this._pendingIndex = -1;
+         for each(var card:Paimian in this._cards) card.deferReveal = this._stageID == 0;
          this._maxFlips = int(param1.maxFlips) || 1;
          this._flipsRemaining = this._maxFlips;
          this._choosed = false;
@@ -93,6 +103,7 @@ package game.ui.fuben
          this._pai6.initData(_loc2_[5]);
 
          this.updateFlipsText();
+         Tools.setDisabled(this.__okBtn,this._stageID != 0);
 
          // 非求贤令模式(stageID!=0)保持原有10秒倒计时逻辑
          if(this._stageID != 0)
@@ -106,14 +117,14 @@ package game.ui.fuben
          else if(this._maxFlips > 1)
          {
             // 求贤令多翻模式：无倒计时，显示翻牌次数
-            this.__tf.text = "剩余翻牌：" + this._maxFlips + " 次（可使用多个求贤令）";
+            this.__tf.text = "剩余翻牌：" + this._maxFlips + " 次；5%已解锁超级武将，其余普通装备";
          }
          addEventListener(UIEvent.CHOOSE_PAIMIAN,this.choosPaiHandler);
       }
 
       private function updateFlipsText() : void
       {
-         if(this._stageID == 0 && this._maxFlips > 1)
+         if(this._stageID == 0)
          {
             var _left:int = this._flipsRemaining;
             if(_left > 0)
@@ -132,60 +143,70 @@ package game.ui.fuben
          param1.stopImmediatePropagation();
          var _target:Paimian = param1.target as Paimian;
          var _cardData:String = _target.data;
-
-         if(this._stageID == 0 && this._maxFlips > 1)
+         if(this._stageID == 0)
          {
-            // ===== 求贤令多翻模式 =====
-            // 检查是否已翻过这张牌
-            for(var _fi:int = 0; _fi < this._flippedCards.length; _fi++)
-            {
-               if(this._flippedCards[_fi].data == _cardData) return;
-            }
+            this.requestRecruitCard(_target);
+            return;
+         }
 
-            // 记录翻牌
-            this._flippedCards.push({data: _cardData, target: _target});
+         removeEventListener(UIEvent.CHOOSE_PAIMIAN,this.choosPaiHandler);
+         this._flippedCards.push({data:_cardData, target:_target});
+         for each(var card:Paimian in this._cards) card.disable = true;
+         Tools.setDisabled(this.__okBtn,false);
+      }
+
+      private function requestRecruitCard(card:Paimian) : void
+      {
+         var index:int = this._cards.indexOf(card);
+         if(index < 0 || this._flipsRemaining <= 0) return;
+         if(this._pendingIndex >= 0 && this._pendingIndex != index) return;
+         this._pendingIndex = index;
+         for each(var other:Paimian in this._cards) other.disable = true;
+         Tools.setDisabled(this.__okBtn,true);
+         this.__tf.text = "正在翻牌，请稍候…";
+         if(this._requestTimer != null) this._requestTimer.stop();
+         this._requestTimer = new Timer(35000,1);
+         this._requestTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onRequestTimeout);
+         this._requestTimer.start();
+         dispatchEvent(new UIEvent(UIEvent.SEND_PAIMIAN,true,{
+            stageID:0, deckId:this._deckId, cardIndex:index
+         }));
+      }
+
+      private function onRequestTimeout(event:TimerEvent) : void
+      {
+         if(this._pendingIndex < 0) return;
+         Paimian(this._cards[this._pendingIndex]).disable = false;
+         Tools.setDisabled(this.__okBtn,false);
+         this.__tf.text = "请求未确认，点击原卡重试（不会重复扣令），或点击确定关闭";
+      }
+
+      public function resolveRecruit(success:Boolean, data:Object = null) : void
+      {
+         if(this._pendingIndex < 0) return;
+         if(success && (data == null || data.deckId != this._deckId || int(data.cardIndex) != this._pendingIndex)) return;
+         if(this._requestTimer != null) this._requestTimer.stop();
+         if(success)
+         {
+            var card:Paimian = this._cards[this._pendingIndex] as Paimian;
+            card.initData(String(data.result));
+            card.show();
+            this._flippedCards.push({target:card});
             this._flipsRemaining--;
-
-            // 翻转卡牌
-            _target.show();
-            _target.filters = [new GlowFilter(16763904,1,10,10)];
-            _target.disable = true;
-
-            this.updateFlipsText();
-
-            // 发送翻牌请求到服务端
-            dispatchEvent(new UIEvent(UIEvent.SEND_PAIMIAN,true,{
-               "data":_cardData,
-               "stageID":this._stageID
-            }));
-
-            // 翻牌次数用完，启用确定按钮并自动翻面剩余卡牌
-            if(this._flipsRemaining <= 0)
-            {
-               this._pai1.disable = true;
-               this._pai2.disable = true;
-               this._pai3.disable = true;
-               this._pai4.disable = true;
-               this._pai5.disable = true;
-               this._pai6.disable = true;
-               this.showAllCards();
-               Tools.setDisabled(this.__okBtn,false);
-               this.__tf.text = "翻牌完成，点击确定";
-            }
          }
-         else
+         this._pendingIndex = -1;
+         for each(var other:Paimian in this._cards)
          {
-            // ===== 原版单翻模式（副本翻牌 / 1个求贤令） =====
-            removeEventListener(UIEvent.CHOOSE_PAIMIAN,this.choosPaiHandler);
-            this._flippedCards.push({data: _cardData, target: _target});
-            this._pai1.disable = true;
-            this._pai2.disable = true;
-            this._pai3.disable = true;
-            this._pai4.disable = true;
-            this._pai5.disable = true;
-            this._pai6.disable = true;
-            Tools.setDisabled(this.__okBtn,false);
+            other.disable = this._flipsRemaining <= 0;
+            for each(var chosen:Object in this._flippedCards) if(chosen.target == other) other.disable = true;
          }
+         this.updateFlipsText();
+         Tools.setDisabled(this.__okBtn,false);
+      }
+
+      private function onRemoved(event:Event) : void
+      {
+         if(this._requestTimer != null) this._requestTimer.stop();
       }
 
       private function showAllCards() : void
@@ -228,7 +249,7 @@ package game.ui.fuben
          {
             this._choosed = true;
 
-            if(this._stageID == 0 && this._maxFlips > 1)
+            if(this._stageID == 0)
             {
                // 多翻模式：所有翻牌已通过choosPaiHandler逐个发送
                // 只需关闭面板

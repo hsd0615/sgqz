@@ -5,6 +5,7 @@ package game.display
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
+   import flash.geom.Point;
    import flash.system.ApplicationDomain;
    import flash.utils.Timer;
    import game.events.SoldierEvent;
@@ -59,6 +60,20 @@ package game.display
          addChild(_skin);
       }
       
+      override public function fire2(param1:Object = null) : void
+      {
+         if(!this.canAI || param1 == null || param1.target == null) return;
+         var target:AbstractSoldier = param1.target as AbstractSoldier;
+         if(target == null || target.isDead || parent == null) return;
+         // Solve the same parabola used by StoneWeapon, aimed at the front enemy.
+         var origin:Point = this.getHurPoint(parent);
+         var distance:Number = Math.max(1, Math.abs(target.x - origin.x));
+         var drop:Number = 350 - origin.y;
+         var speed:Number = Math.sqrt((0.0098 / 200) * distance * distance / Math.max(1,distance + drop));
+         var power:Number = Math.max(0, Math.min(100,(speed - 0.025) / 0.145 * 100));
+         this.fire({angle:-45 * _direct, power:power, ammo:""});
+      }
+
       override public function fire(param1:Object = null) : void
       {
          if(_isDead)
@@ -142,6 +157,8 @@ package game.display
       
       override public function stand() : void
       {
+         removeEventListener(Event.ENTER_FRAME,this.goLeftHandler);
+         removeEventListener(Event.ENTER_FRAME,this.goRightHandler);
          _skin.gotoAndStop("_stand");
          _walking = false;
          _fireing = false;

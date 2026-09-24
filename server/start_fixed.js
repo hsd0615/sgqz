@@ -200,6 +200,40 @@ function loadStageMap() {
   }
   console.log('[StageMap] Loaded ' + Object.keys(STAGE_MAP).length + ' stage IDs');
 }
+// BEGIN RECRUIT_POLICY
+function recruitSuperPool(player) {
+  const unlockedNames = new Set();
+  for (const code of player._unlockedRecruits || []) {
+    if (generalRecruitMap[code]) unlockedNames.add(generalRecruitMap[code].name);
+  }
+  const cleared = new Set(String(player.finished_stages || '').split('|'));
+  for (const stageKey of Object.keys(AWARD_MAP)) {
+    if (!cleared.has(String(STAGE_MAP[stageKey]))) continue;
+    const award = AWARD_MAP[stageKey];
+    for (const name of String(award.recruit || '').split(/[、,，]/)) if (name.trim()) unlockedNames.add(name.trim());
+    if (award.soldier && generalRecruitMap[award.soldier]) unlockedNames.add(generalRecruitMap[award.soldier].name);
+  }
+  const ownedNames = new Set(db.generals.filter(g => g.player_id === player.id).map(g => (generalRecruitMap[g.code] || {}).name));
+  const byName = new Map();
+  for (const [code, info] of Object.entries(generalRecruitMap)) {
+    if (info.title !== 0 || !unlockedNames.has(info.name) || ownedNames.has(info.name)) continue;
+    if (!byName.has(info.name) || generalNameToCode[info.name] === code) byName.set(info.name, {code, title:0, name:info.name});
+  }
+  return Array.from(byName.values());
+}
+function recruitReward(player, random = Math.random) {
+  const superPool = recruitSuperPool(player);
+  const equipment = Object.keys(EQUIP_DATA).filter(code => Number(EQUIP_DATA[code].quality) === 1);
+  if (!equipment.length) throw new Error('普通装备奖池为空');
+  if (random() < 0.05 && superPool.length) {
+    const picked = superPool[Math.floor(random() * superPool.length)];
+    const level = player.level >= 50 ? 30 : Math.max(1, (player.level || 1) - 20);
+    return '3|' + picked.code + '|0|' + level;
+  }
+  return '1|' + equipment[Math.floor(random() * equipment.length)] + '|1';
+}
+// END RECRUIT_POLICY
+
 // 加载关卡奖励数据 (soldier/proto/money等)
 var AWARD_MAP = {};
 function loadAwardMap() {
@@ -762,7 +796,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.4';
+  _cachedClientVersion = '4.9.5';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1790,79 +1824,13 @@ function handleRequest(socket, req) {
       return jsonRawResponse(socket, { success: false, message: '求贤令不足' });
     }
 
-    var plv = p.level || 1;
-    // 武将池: 从XML加载的generalRecruitMap中获取(排除title=0的不可招募武将用recruitLevel<=plv)
-    var genPool = [];
-    var _ownedCodes={};for(var oi=0;oi<db.generals.length;oi++){if(db.generals[oi].player_id===p.id)_ownedCodes[db.generals[oi].code]=true;}
-      for (var gc in generalRecruitMap) {
-      var gr = generalRecruitMap[gc];
-      if (!_ownedCodes[gc] && gr.recruitLevel > 0) {
-        genPool.push({ code: gc, title: gr.title || 3, name: gr.name || gc });
-      }
-    }
-    // 也加入已解锁的武将
-    if (p._unlockedRecruits) {
-      for (var ui = 0; ui < p._unlockedRecruits.length; ui++) {
-        var uc = p._unlockedRecruits[ui];
-        if (!_ownedCodes[uc] && generalRecruitMap[uc] && genPool.indexOf(uc) < 0) {
-          genPool.push({ code: uc, title: generalRecruitMap[uc].title || 3, name: generalRecruitMap[uc].name || uc });
-        }
-      }
-    }
-    if (genPool.length === 0) {
-      return jsonRawResponse(socket, { success: false, message: '暂无可用武将池' });
-    }
-
-    // 按title分组
-    var superGens = genPool.filter(g => g.title === 0);
-    var firstGens = genPool.filter(g => g.title === 1);
-    var secondGens = genPool.filter(g => g.title === 2);
-    var thirdGens = genPool.filter(g => g.title === 3);
-
-    // 装备池
-    var equipPool = [];
-    for (var ek in EQUIP_DATA) {
-      equipPool.push(ek);
-    }
-
-    // 生成6张武将卡（求贤令翻牌只有武将）
-    var pai = [];
-    var usedGenCodes = {};
-    var allPools = [];
-    if (superGens.length > 0) allPools.push({pool: superGens, weight: 5});
-    if (firstGens.length > 0) allPools.push({pool: firstGens, weight: 25});
-    if (secondGens.length > 0) allPools.push({pool: secondGens, weight: 35});
-    if (thirdGens.length > 0) allPools.push({pool: thirdGens, weight: 35});
-    if (allPools.length === 0) {
-      return jsonRawResponse(socket, { success: false, message: '暂无可用武将池' });
-    }
-    var totalWeight = 0;
-    for (var ai = 0; ai < allPools.length; ai++) totalWeight += allPools[ai].weight;
-
-    for (var pi = 0; pi < 6; pi++) {
-      var qr = Math.random() * totalWeight;
-      var acc = 0;
-      var targetPool = allPools[0].pool;
-      for (var ai2 = 0; ai2 < allPools.length; ai2++) {
-        acc += allPools[ai2].weight;
-        if (qr <= acc) { targetPool = allPools[ai2].pool; break; }
-      }
-
-      var picked = null;
-      for (var tries = 0; tries < 20; tries++) {
-        var cand = targetPool[Math.floor(Math.random() * targetPool.length)];
-        if (!usedGenCodes[cand.code]) { picked = cand; usedGenCodes[cand.code] = true; break; }
-      }
-      if (!picked) picked = targetPool[Math.floor(Math.random() * targetPool.length)];
-
-      var genLv = plv >= 50 ? 30 : Math.max(1, plv - 20);
-      pai.push('3|' + picked.code + '|' + picked.title + '|' + genLv);
-    }
-
-    console.log('[RecruitCards] ' + p.role_name + ' Lv' + plv + ' cards: ' + pai.join(', '));
+    // Rewards are rolled only on a paid flip, never accepted from the client.
+    const maxFlips = Math.min(6, qiuxianCount);
+    p._recruitDeck = { id: require('crypto').randomBytes(16).toString('hex'), maxFlips, results:{} };
+    save();
     return jsonRawResponse(socket, {
-      success: true, head: String(data.head), maxFlips: data.maxFlips || 1,
-      data: { pai: pai, stageID: 0 }
+      success: true, head: String(data.head), maxFlips,
+      data: { pai: ['','','','','',''], stageID:0, maxFlips, deckId:p._recruitDeck.id }
     });
   }
 
@@ -1870,11 +1838,25 @@ function handleRequest(socket, req) {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
 
+    const deck = p._recruitDeck;
+    const cardIndex = Number(data.cardIndex);
+    if (!deck || data.deckId !== deck.id || !Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex > 5) {
+      return jsonRawResponse(socket, {success:false, message:'牌局已失效，请重新打开抽卡界面'});
+    }
+    if (deck.results[cardIndex]) {
+      return jsonRawResponse(socket, {success:true, head:String(data.head), data:deck.results[cardIndex]});
+    }
+    if (Object.keys(deck.results).length >= deck.maxFlips) {
+      return jsonRawResponse(socket, {success:false, message:'本轮翻牌次数已用完'});
+    }
+    let result;
+    try { result = recruitReward(p); }
+    catch (error) { return jsonRawResponse(socket, {success:false, message:error.message}); }
     // 扣除求贤令
     var qxCount = 0, qxIdx = -1;
     if (db.bagItems) {
       for (var bj = 0; bj < db.bagItems.length; bj++) {
-        if (db.bagItems[bj].player_id === p.id && db.bagItems[bj].code === 'proto_3_3') {
+        if (db.bagItems[bj].player_id === p.id && db.bagItems[bj].code === 'proto_3_3' && Number(db.bagItems[bj].count) > 0) {
           qxCount = parseInt(db.bagItems[bj].count) || 0;
           qxIdx = bj;
           break;
@@ -1891,10 +1873,9 @@ function handleRequest(socket, req) {
       db.bagItems[qxIdx].count = qxCount - 1;
     }
 
-    var result = String(data.result || '');
     var parts = result.split('|');
     var resType = parseInt(parts[0]) || 0;
-    var resData = { money: p.money };
+    var resData = { money: p.money, result, deckId:deck.id, cardIndex, tokenCount:qxCount - 1 };
 
     if (resType === 3) {
       // 武将卡
@@ -1907,7 +1888,7 @@ function handleRequest(socket, req) {
       if (kParts.length >= 2) { var kp2 = kParts[1].split(':'); k2 = parseInt(kp2[0]) || 0; k2l = parseInt(kp2[1]) || 1; }
       if (kParts.length >= 3) { var kp3 = kParts[2].split(':'); k3 = parseInt(kp3[0]) || 0; k3l = parseInt(kp3[1]) || 1; }
       const g = createGeneral(p.id, gCode, '', gLv, 0, 0, null, k1, k1l, k2, k2l, k3, k3l);
-      var gTitle = generalRecruitMap[gCode] ? (generalRecruitMap[gCode].title || 3) : 3;
+      var gTitle = generalRecruitMap[gCode] ? generalRecruitMap[gCode].title : 3;
       resData.general = { id: g.general_id, code: g.code, level: gLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), title: gTitle, forceHp: 0 };
       console.log('[RecruitFlip] ' + p.role_name + ' got general: ' + gCode + ' Lv' + gLv);
     } else if (resType === 1) {
@@ -1927,6 +1908,7 @@ function handleRequest(socket, req) {
       console.log('[RecruitFlip] ' + p.role_name + ' got money: ' + moneyAmt);
     }
 
+    deck.results[cardIndex] = resData;
     save();
     return jsonRawResponse(socket, {
       success: true, head: String(data.head), data: resData

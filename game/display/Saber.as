@@ -91,16 +91,11 @@ package game.display
       private function afterTempMoveHandler(param1:SoldierEvent) : *
       {
          removeEventListener(SoldierEvent.MOVE_COMPLETE,this.afterTempMoveHandler);
-         if(_world.getAllDistance(this,_locked) > _armyInfo.attackDistance * Config.MERIC)
-         {
-            this.fire();
-         }
-         else
-         {
-            this.fire2({"target":_locked});
-         }
+         if(_locked == null || _locked.isDead) _locked = _world.findSoldier(-_direct);
+         if(_locked == null) { this.stand(); return; }
+         this.fire2({target:_locked});
       }
-      
+
       override public function fire(param1:Object = null) : void
       {
          if(_isDead)
@@ -201,6 +196,7 @@ package game.display
          removeEventListener(Event.ENTER_FRAME,this.goLeftHandler);
          removeEventListener(Event.ENTER_FRAME,this.goRightHandler);
          removeEventListener(SoldierEvent.MOVE_COMPLETE,this.afterTempMoveHandler);
+         removeEventListener(SoldierEvent.MOVE_COMPLETE,this.onMoveCompleteHandler);
          removeEventListener(SoldierEvent.FILL_COMPLETE,this.afterTempFireHandler);
          _skin.gotoAndStop("_stand");
          _walking = false;
