@@ -9,7 +9,7 @@
 	<SWFLoader url="/client/ui.swf" name="game01.skin.ui" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="/client/superGeneral.swf" name="game01.skin.superGeneral" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="/client/face.swf" name="game01.skin.face" load="true" autoPlay="false" context="own"/>
-	<SWFLoader url="/client/general.swf" name="game01.skin.general" load="true" autoPlay="false" context="own"/>
+	<SWFLoader url="/client/general.swf?v=4.9.3" name="game01.skin.general" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="/client/sound.swf" name="game01.sound" load="true" autoPlay="false" context="own"/>
 	<SWFLoader url="/client/fubenui.swf" name="game01.skin.fubenui" load="true" autoPlay="false" context="own"/>
 

@@ -1,3 +1,10 @@
+## v4.9.3 (2026-09-24)
+
+- Losslessly re-encode 72 general bitmap tags as PNG, reducing general.swf from 113,612,274 to 83,744,823 bytes (26.29%).
+- Preserve all 1,406 tags, bitmap IDs/dimensions/alpha, and reconstructed premultiplied pixels; all non-bitmap data unchanged.
+- Version the web general resource URL to invalidate the previous cached asset.
+- Add reproducible optimization and independent verification scripts.
+
 ## v4.9.2 (2026-09-24)
 
 - Restore the original native Flash object/embed page and Chinese client.
