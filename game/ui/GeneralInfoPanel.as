@@ -1793,7 +1793,7 @@ package game.ui
                {
                   _loc2_ = TextFactory.makeKezhiJinjie(RoleModel.getInstance().roleName,this._armyInfo.name,Type.createType(this._armyInfo.kezhi1),this._armyInfo.kezhiLevel1.toString());
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc2_
                   }));
                }
@@ -1801,7 +1801,7 @@ package game.ui
                {
                   _loc2_ = TextFactory.makeKezhiJinjie(RoleModel.getInstance().roleName,this._armyInfo.name,Type.createType(this._armyInfo.kezhi2),this._armyInfo.kezhiLevel2.toString());
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc2_
                   }));
                }
@@ -1809,7 +1809,7 @@ package game.ui
                {
                   _loc2_ = TextFactory.makeKezhiJinjie(RoleModel.getInstance().roleName,this._armyInfo.name,Type.createType(this._armyInfo.kezhi3),this._armyInfo.kezhiLevel3.toString());
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc2_
                   }));
                }
@@ -1856,7 +1856,7 @@ package game.ui
                {
                   _loc3_ = TextFactory.makeTianfu(RoleModel.getInstance().roleName,this._armyInfo);
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc3_
                   }));
                }

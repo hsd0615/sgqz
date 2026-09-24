@@ -2377,7 +2377,7 @@ package game
                   if(int(param1.data.general.title) <= 1)
                   {
                      dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                        "type":NetInfoType.SYSTEM,
+                        "type":NetInfoType.SYSTEM, "serverOwned":true,
                         "text":TextFactory.makeZhaomu(RoleModel.getInstance().roleName,_gi)
                      }));
                   }
@@ -3064,6 +3064,7 @@ package game
       
       private function onTalkEventHandler(param1:TalkEvent) : *
       {
+         if(param1.data.serverOwned == true) return;
          var _loc2_:ByteArray = new ByteArray();
          _loc2_.writeInt(Head.NET_INFO);
          switch(param1.data.type)
@@ -3082,7 +3083,7 @@ package game
                break;
             case NetInfoType.SYSTEM:
                _loc2_.writeInt(NetInfoType.SYSTEM);
-               this.netInfoProcess(param1.data);
+               break;
          }
          _loc2_.writeObject(param1.data);
          _loc2_.writeFloat(Math.random());
@@ -3093,17 +3094,14 @@ package game
          }
          else
          {
-            ChatManager.getInstance().worldPost(_loc2_, _plainText);
+            ChatManager.getInstance().worldPost(_loc2_, _plainText, param1.data.type == NetInfoType.SYSTEM);
          }
       }
 
       /** 接收纯文本聊天消息（绕过ByteArray解码） */
       private function onChatPlainHandler(param1:TalkEvent) : *
       {
-         if(this._map != null)
-         {
-            this._map.recieveNetInfo(param1.data);
-         }
+         this.netInfoProcess(param1.data);
       }
 
       private function netInfoProcess(param1:Object) : *
@@ -3480,7 +3478,7 @@ package game
                RoleModel.getInstance().modiBagItem(param1.data.item.id,param1.data.item.code,_bagTotal2);
                _loc3_ = TextFactory.makeFuben(RoleModel.getInstance().roleName,param1.data.item.code,_loc2_);
                dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                  "type":NetInfoType.SYSTEM,
+                  "type":NetInfoType.SYSTEM, "serverOwned":true,
                   "text":_loc3_
                }));
                // 本地提示

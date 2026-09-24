@@ -59,6 +59,7 @@ package game
    import game.ui.SkinCode;
    import game.ui.TalkFrame;
 import game.ui.OnlineCountUI;
+import game.ui.BroadcastUI;
 import game.ui.UpdateChecker;
    import game.ui.ChangelogPanel;
    import game.ui.EquipPanel;
@@ -79,6 +80,7 @@ import game.ui.UpdateChecker;
       private var _fight:Fight;
       private var _pendingGateData:Object;
       private var _onlineCountUI:OnlineCountUI;
+      private var _broadcastUI:BroadcastUI;
       
       private var _tipsLayer:Sprite;
       
@@ -1611,6 +1613,7 @@ import game.ui.UpdateChecker;
          {
             setChildIndex(this._onlineCountUI, this.numChildren - 1);
          }
+         if(this._broadcastUI == null) { this._broadcastUI = new BroadcastUI(); addChild(this._broadcastUI); }
          // 自动更新检查 - 仅桌面版，网页版每次刷新即最新
          if(!Config.IS_WEB)
          {
@@ -2006,7 +2009,7 @@ import game.ui.UpdateChecker;
             {
                _loc3_ = TextFactory.makeStageStr(RoleModel.getInstance().roleName,_loc2_);
                this._ui.dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                  "type":NetInfoType.SYSTEM,
+                  "type":NetInfoType.SYSTEM, "serverOwned":true,
                   "text":_loc3_
                }));
             }
@@ -2014,7 +2017,7 @@ import game.ui.UpdateChecker;
             {
                _loc3_ = TextFactory.makeDixi(RoleModel.getInstance().roleName,_loc2_);
                this._ui.dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                  "type":NetInfoType.SYSTEM,
+                  "type":NetInfoType.SYSTEM, "serverOwned":true,
                   "text":_loc3_
                }));
             }

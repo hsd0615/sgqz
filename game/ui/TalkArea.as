@@ -1,5 +1,6 @@
 package game.ui
 {
+   import com.iflashigame.net.ChatManager;
    import com.iflashigame.controller.AESController;
    import com.iflashigame.net.ChatManager;
    import com.iflashigame.talk.FaceList;
@@ -157,6 +158,7 @@ package game.ui
          if(_pa && _pa.length > 0) {
             for(var _pai:int = 0; _pai < _pa.length; _pai++) {
                var _pao:Object = _pa[_pai];
+               if(!ChatManager.getInstance().rememberAnnouncement(_pao.id)) continue;
                var _pat:String = new Date(_pao.time).toLocaleTimeString();
                var _pam:String = _pao.msg as String;
                this._allArr.push("<font color='#00ff00'>【世界】</font><font color='#ffffff'>[通告][" + _pat + "]：" + _pam + "</font>\n");

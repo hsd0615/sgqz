@@ -188,6 +188,7 @@ function loadXishuMap() {
 
 // 全局关卡ID映射 (part_level → stage_id, 从stage.xml加载)
 var STAGE_MAP = {};
+var STAGE_NAMES = {};
 function loadStageMap() {
   if (!fs.existsSync('/opt/stage.xml')) return;
   var xml = fs.readFileSync('/opt/stage.xml','utf8');
@@ -196,7 +197,11 @@ function loadStageMap() {
     var pm = blocks[i].match(/part="(\d+)"/);
     var lm = blocks[i].match(/level="(\d+)"/);
     var im = blocks[i].match(/id="(\d+)"/);
-    if (pm && lm && im) STAGE_MAP[pm[1]+'_'+lm[1]] = parseInt(im[1]);
+    if (pm && lm && im) {
+      STAGE_MAP[pm[1]+'_'+lm[1]] = parseInt(im[1]);
+      var name = blocks[i].match(/name="([^"]+)"/);
+      if (name) STAGE_NAMES[pm[1]+'_'+lm[1]] = name[1];
+    }
   }
   console.log('[StageMap] Loaded ' + Object.keys(STAGE_MAP).length + ' stage IDs');
 }
@@ -822,7 +827,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.6';
+  _cachedClientVersion = '4.9.7';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -845,53 +850,68 @@ function sendRawHttpResponse(socket, statusCode, statusText, headers, body) {
 }
 
 var BROADCASTS = [];
-// 统一消息发送: 双通道投递 (poll优先, TCP同步)
+// Full JSON + per-player sequence cursors: do not discard unread bursts.
 function sendToPlayer(p, msg) {
   if (!p) return false;
-  // poll: 转义方括号(防HttpPollConnection JSON截断)
-  var pollMsg = msg;
-  if (msg.text && typeof msg.text === 'string') {
-    pollMsg = Object.assign({}, msg, { text: msg.text.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
-  }
-  if (msg.plain && typeof msg.plain === 'string') {
-    pollMsg = Object.assign({}, pollMsg, { plain: msg.plain.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;') });
-  }
   if (!p._pollQueue) p._pollQueue = [];
-  p._pollQueue.push({ time: Date.now(), msg: pollMsg });
-  // TCP: 原始消息(不转义) — AIR客户端不需要
-  var sessions = Array.from(tcpSessions.values());
-  for (var si = 0; si < sessions.length; si++) {
-    if (String(sessions[si].playerId) === String(p.id)) {
-      tcpSend(sessions[si], msg);
-    }
+  p._pollQueue = p._pollQueue.filter(entry => entry.time > Date.now() - 3600000);
+  p._pollQueue.push({ time: Date.now(), msg: msg });
+  for (const session of tcpSessions.values()) {
+    if (String(session.playerId) === String(p.id)) tcpSend(session, msg);
   }
   return true;
 }
-function broadcastToAll(msg) {
-  var now = Date.now();
-  BROADCASTS.push({time:now,msg:msg});
-  if(BROADCASTS.length>50) BROADCASTS.shift();
-  // 持久化存储
-  if(!db.announcements) db.announcements = [];
-  db.announcements.push({time:now, msg:msg});
-  var cutoff = now - 3600000;
-  db.announcements = db.announcements.filter(function(a){return a.time > cutoff});
-  if(db.announcements.length > 100) db.announcements = db.announcements.slice(-50);
-  save();
-  // 实时投递给所有在线玩家
-  var chatMsg = { type: 'chat', room: 'world', from: 'system', fromName: '系统', text: msg, plain: msg };
-  for (var bpi = 0; bpi < db.players.length; bpi++) {
-    sendToPlayer(db.players[bpi], chatMsg);
+function readPollMessages(p, data) {
+  const now = Date.now();
+  p._pollQueue = (p._pollQueue || []).filter(m => (m.time || 0) > now - 3600000);
+  for (const relay of p._tcpRelayQueue || []) {
+    p._pollQueue.push(relay.msg ? relay : {time:now, msg:relay});
   }
-  console.log('[Broadcast] '+msg);
+  p._tcpRelayQueue = [];
+  let seq = Math.max(Number(p._pollNextSeq) || 0, now * 1000);
+  for (const entry of p._pollQueue) {
+    if (entry.seq == null) entry.seq = ++seq;
+    else seq = Math.max(seq, entry.seq);
+  }
+  p._pollNextSeq = seq;
+  const cursor = Math.max(0, Number(data.cursor) || 0);
+  const useCursor = data.cursor != null;
+  const messages = p._pollQueue.filter(m => useCursor ? m.seq > cursor : m.time > (Number(data.since) || 0)).slice(0,100);
+  return {success:true, messages:messages, cursor:messages.length ? messages[messages.length-1].seq : cursor,
+    serverTime:messages.length ? messages[messages.length-1].time : now};
+}
+function broadcastToAll(msg) {
+  if (typeof msg !== 'string' || !msg.trim()) return;
+  const notice = {id:uuidv4(), time:Date.now(), msg:msg};
+  if (!db.announcements) db.announcements = [];
+  db.announcements = db.announcements.filter(a => a.time > notice.time - 3600000);
+  db.announcements.push(notice);
+  const chat = {type:'chat', room:'world', from:'system', fromName:'系统', text:msg, plain:msg, announcementId:notice.id};
+  for (const player of db.players) sendToPlayer(player, chat);
+  save();
+  console.log('[Broadcast] ' + msg);
+}
+function getRecentAnnouncements() {
+  return (db.announcements || []).filter(a => a.time > Date.now() - 3600000);
+}
+function escapeNotice(value) {
+  return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function announceGeneral(player, code) {
+  const def = generalRecruitMap[code];
+  if (def && (def.title === 0 || def.title === 1))
+    broadcastToAll('【系统】玩家 [' + escapeNotice(player.role_name) + '] 获得' + (def.title === 0 ? '超级武将' : '一流武将') + ' [' + escapeNotice(def.name) + ']！');
+}
+function announceEquipment(player, code, count) {
+  const def = EQUIP_DATA[code];
+  if (def && def.quality >= 5)
+    broadcastToAll('【装备】玩家 [' + escapeNotice(player.role_name) + '] 获得' + (def.quality >= 10 ? '彩色装备' : '极品装备') + ' [' + escapeNotice(def.name) + '] ×' + (count || 1) + '（品质' + def.quality + '）！');
+}
+function announceStage(player, part, level) {
+  if (part !== 9 && part !== 10) return;
+  broadcastToAll('【快报】玩家 [' + escapeNotice(player.role_name) + '] 通关 [' + escapeNotice(STAGE_NAMES[part+'_'+level] || (part+'章第'+level+'关')) + ']！');
 }
 
-// 获取最近公告(登录时调用)
-function getRecentAnnouncements() {
-  if(!db.announcements) return [];
-  var cutoff = Date.now() - 3600000;
-  return db.announcements.filter(function(a){return a.time > cutoff});
-}
 function jsonRawResponse(socket, data) {
   const body = JSON.stringify(data);
   const bodyLen = Buffer.byteLength(body, 'utf-8');
@@ -1108,6 +1128,7 @@ function handleRequest(socket, req) {
         data: { token: existing.token, dianka: existing.dianka, armyModel: existArmy, bagModel: existBag,
           process: { history: existing.history||'', finished: existing.finished_stages||'' },
           roleModel: makeRoleModel(existing),
+          announcements: getRecentAnnouncements(),
         }
       });
     }
@@ -1131,7 +1152,7 @@ function handleRequest(socket, req) {
     return jsonRawResponse(socket, {
       success: true, stamp: data.stamp, head: '10000',
       data: { token: p.token, dianka: 0, armyModel: army, bagModel: [],
-        process: { history: '', finished: '' }, roleModel: makeRoleModel(p),
+        process: { history: '', finished: '' }, roleModel: makeRoleModel(p), announcements: getRecentAnnouncements(),
       }
     });
   }
@@ -1205,7 +1226,6 @@ function handleRequest(socket, req) {
         fpenemyEquips[dropEnemyIdx].equips[5] = fpcode;
         fpenemyEquips[dropEnemyIdx].dropEquip = true;
         fpequipDrop = { code: fpcode, name: fpdef.name, quality: fpmeqQ, enemyIdx: dropEnemyIdx };
-		if (fpmeqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 即将获得彩色装备 [' + fpdef.name + ']，击败敌人即可获得！');
       }
     }
     }
@@ -1291,6 +1311,7 @@ function handleRequest(socket, req) {
               if (!found) {
                 db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: itemCode, count: itemCount });
               }
+              announceEquipment(p, itemCode, itemCount);
             }
           });
         }
@@ -1309,6 +1330,7 @@ function handleRequest(socket, req) {
         // 奖励武将也加到玩家身上
         if (stageAward.soldier && stageAward.soldier.length > 0) {
           var newG = createGeneral(p.id, stageAward.soldier, '', Math.max(1, Math.min(30, (p.level||1)-10)), 0, 0, null, 0, 1, 0, 1, 0, 1);
+          announceGeneral(p, newG.code);
           console.log('[Fight] Award general ' + stageAward.soldier + ' to ' + p.role_name + ' id=' + newG.general_id);
         }
       } else {
@@ -1388,11 +1410,12 @@ function handleRequest(socket, req) {
             if (!db.bagItems) db.bagItems = [];
             db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: meqCode, count: 1 });
             equipDrop = { code: meqCode, name: meqDef.name, quality: meqQ };
-			if (meqQ >= 10) broadcastToAll('[系统] 彩虹 ' + p.role_name + ' 获得彩色装备 [' + meqDef.name + '](品质10)！');
           }
         }
       }
     }
+    if (equipDrop) announceEquipment(p, equipDrop.code, 1);
+    if (isWin) announceStage(p, fpart, flevel);
     // 战斗计数器
     if (!p.battle_total) p.battle_total = 0;
     if (!p.battle_wins) p.battle_wins = 0;
@@ -1607,6 +1630,7 @@ function handleRequest(socket, req) {
       }
       resp.data.pai = pai;
     }
+    if (fi === 3 && parseInt(data.result) === 1) broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 通关 [' + (data.stageID == 1 ? '袭杀匈奴' : '荡平倭寇') + ']！');
     // 副本通关持久化日志
     if (!p._fubenLogs) p._fubenLogs = [];
     p._fubenLogs.push({
@@ -1651,6 +1675,10 @@ function handleRequest(socket, req) {
         db.bagItems.push({ id: db.nextId.bagItems++, player_id: p.id, code: itemCode, count: itemCount });
       }
       console.log('[Fuben] Fanpai ' + p.role_name + ' item=' + fpResult[1] + 'x' + fpResult[2]);
+    }
+    if (resp.data.item) {
+      if (EQUIP_DATA[resp.data.item.code]) announceEquipment(p, resp.data.item.code, resp.data.item.count);
+      else broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 获得 [' + escapeNotice((PROTO_DATA[resp.data.item.code] || {}).name || resp.data.item.code) + '] ×' + resp.data.item.count + '！');
     }
     p._fubenFlipped = true;
     save();
@@ -1709,9 +1737,10 @@ function handleRequest(socket, req) {
     if (sKParts.length >= 2) { var skp2 = sKParts[1].split(':'); sk2 = parseInt(skp2[0])||0; sk2l = parseInt(skp2[1])||1; }
     if (sKParts.length >= 3) { var skp3 = sKParts[2].split(':'); sk3 = parseInt(skp3[0])||0; sk3l = parseInt(skp3[1])||1; }
     var sg = createGeneral(p.id, superCode, '', sGLv, 0, 0, null, sk1, sk1l, sk2, sk2l, sk3, sk3l);
+    announceGeneral(p, sg.code);
     save();
     console.log('[FubenRecruitSuper] ' + p.role_name + ' recruited ' + superCode + ' Lv' + sGLv);
-    var sGTitle = generalRecruitMap[superCode] ? (generalRecruitMap[superCode].title || 3) : 3;
+    var sGTitle = generalRecruitMap[superCode] ? generalRecruitMap[superCode].title : 3;
     return jsonRawResponse(socket, {
       success: true,
       data: {
@@ -1819,6 +1848,7 @@ function handleRequest(socket, req) {
       var recruitLv = plv >= 50 ? 30 : Math.max(1, plv - 20);
       const g = createGeneral(p.id, data.code, '', recruitLv, 0, 0, null,
         parseInt(String(data.kezhi1||0)), 1, parseInt(String(data.kezhi2||0)), 1, parseInt(String(data.kezhi3||0)), 1);
+      announceGeneral(p, g.code);
       generalData = { id: g.general_id, code: g.code, level: recruitLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), genius: null };
       console.log('[Recruit] ' + p.role_name + ' 招募成功: ' + data.code + ' Lv' + recruitLv + ' id=' + g.general_id);
     } else {
@@ -1914,6 +1944,7 @@ function handleRequest(socket, req) {
       if (kParts.length >= 2) { var kp2 = kParts[1].split(':'); k2 = parseInt(kp2[0]) || 0; k2l = parseInt(kp2[1]) || 1; }
       if (kParts.length >= 3) { var kp3 = kParts[2].split(':'); k3 = parseInt(kp3[0]) || 0; k3l = parseInt(kp3[1]) || 1; }
       const g = createGeneral(p.id, gCode, '', gLv, 0, 0, null, k1, k1l, k2, k2l, k3, k3l);
+      announceGeneral(p, g.code);
       var gTitle = generalRecruitMap[gCode] ? generalRecruitMap[gCode].title : 3;
       resData.general = { id: g.general_id, code: g.code, level: gLv, evolution: 0, feature: 0, kezhi: getKezhiStr(g), title: gTitle, forceHp: 0 };
       console.log('[RecruitFlip] ' + p.role_name + ' got general: ' + gCode + ' Lv' + gLv);
@@ -1925,6 +1956,7 @@ function handleRequest(socket, req) {
       var bagId = db.nextId.bagItems++;
       db.bagItems.push({ id: bagId, player_id: p.id, code: eqCode, count: eqCount });
       resData.item = { id: bagId, code: eqCode, count: eqCount };
+      announceEquipment(p, eqCode, eqCount);
       console.log('[RecruitFlip] ' + p.role_name + ' got equip: ' + eqCode);
     } else if (resType === 2) {
       // 银两卡
@@ -2086,6 +2118,7 @@ function handleRequest(socket, req) {
       var evoSuccess = Math.random() < evoProb;
       if (evoSuccess) {
         g.evolution = (g.evolution || 0) + 1;
+        if (g.evolution >= 2) broadcastToAll('【系统】玩家 [' + escapeNotice(p.role_name) + '] 的武将 [' + escapeNotice((generalRecruitMap[g.code] || {}).name || g.name) + '] 进化至' + g.evolution + '级！');
         if (g.evolution === 1 && (g.feature||0) === 0) {
           g.feature = Math.floor(Math.random() * 4) + 1;
         }
@@ -2144,6 +2177,7 @@ function handleRequest(socket, req) {
         var kezhiRate = kezhiTable[Math.min(curLv, 10)];
         var kezhiOk = Math.random() < kezhiRate;
         if (kezhiOk) {
+          if (ki >= 0 && ki <= 2) broadcastToAll('【系统】玩家 [' + escapeNotice(p.role_name) + '] 的武将 [' + escapeNotice((generalRecruitMap[g.code] || {}).name || g.name) + '] 第' + (ki+1) + '项克制进阶至' + (curLv+1) + '级！');
           if (ki === 0) { g.kezhi1_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
           else if (ki === 1) { g.kezhi2_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
           else if (ki === 2) { g.kezhi3_level = curLv + 1; respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu||null, kezhi: getKezhiStr(g) }; respData.index = ki; }
@@ -2160,6 +2194,7 @@ function handleRequest(socket, req) {
           ? ['tf_1','tf_2','tf_3','tf_4','tf_5','tf_6','tf_7','tf_8','tf_9','tf_10','tf_11','tf_12','tf_13','tf_14','tf_15','tf_16','tf_17','tf_18','tf_19','tf_20','tf_21']
           : ['tf_1','tf_4','tf_7','tf_10','tf_13','tf_16','tf_19'];
         g.tianfu = tfPool[Math.floor(Math.random() * tfPool.length)];
+        if (parseInt(g.tianfu.split('_')[1]) % 3 === 0) broadcastToAll('【系统】玩家 [' + escapeNotice(p.role_name) + '] 的武将 [' + escapeNotice((generalRecruitMap[g.code] || {}).name || g.name) + '] 获得三级天赋！');
         if (isReroll) { p.dianka -= 100; }  // 重洗扣100点卡
         respData.dianka = p.dianka;
         respData.general = { id: g.general_id, code: g.code, level: g.level, evolution: g.evolution||0, feature: g.feature||0, genius: g.tianfu, kezhi: getKezhiStr(g) };
@@ -2902,29 +2937,7 @@ function handleRequest(socket, req) {
     }
     p.lastSeen = Date.now();
     if (p._pollSession) p._pollSession.lastActivity = Date.now();
-    if (!p._pollQueue) p._pollQueue = [];
-    if (p._pollQueue.length > 10) p._pollQueue = p._pollQueue.slice(-5);
-    const since = data.since || 0;
-    const newMsgs = p._pollQueue.filter(m => (m.time || 0) > since);
-    // 转义消息中的方括号 — HttpPollConnection用indexOf(']')截JSON会因消息内]而截断
-    for (var nmi = 0; nmi < newMsgs.length; nmi++) {
-      var nm = newMsgs[nmi];
-      if (nm.msg) {
-        var raw = JSON.stringify(nm.msg);
-        if (raw.indexOf('[') >= 0 || raw.indexOf(']') >= 0) {
-          var cleaned = JSON.parse(raw.replace(/\[/g, '&#91;').replace(/\]/g, '&#93;'));
-          nm.msg = cleaned;
-        }
-      }
-    }
-    // 同时检查TCP relay消息 — 必须包装为 {msg: ...} 格式
-    if (p._tcpRelayQueue) {
-      for (const rm of p._tcpRelayQueue) {
-        newMsgs.push(rm.msg ? rm : { time: Date.now(), msg: rm.msg || rm });
-      }
-      p._tcpRelayQueue = [];
-    }
-    return jsonRawResponse(socket, { success: true, messages: newMsgs, serverTime: Date.now() });
+    return jsonRawResponse(socket, readPollMessages(p, data));
   }
 
   // 强制重载装备数据(部署后调用)
@@ -3170,6 +3183,7 @@ function processPollMessage(player, msg) {
   else if (msg.type === 'chat') {
     // Flash客户端text是ByteArray, 真实文字在plain
     const realText = (typeof msg.plain === 'string' && msg.plain) || (typeof msg.text === 'string' && msg.text) || '';
+    if (msg.systemNotice === true && realText) { broadcastToAll(realText); return; }
     var chatMsg = { type: 'chat', room: msg.room || 'world', from: session.peerId, fromName: session.roleName, text: realText, plain: realText };
     // 世界频道: sendToPlayer发给所有玩家
     if ((msg.room || 'world') === 'world') {
@@ -3354,6 +3368,7 @@ function tcpHandleMessage(session, msg) {
       const room = tcpRooms.get(msg.room);
       // Flash客户端text是ByteArray(序列化为对象), 真实文字在plain字段
       const realText = (typeof msg.plain === 'string' && msg.plain) || (typeof msg.text === 'string' && msg.text) || '';
+      if (msg.systemNotice === true && realText) { broadcastToAll(realText); break; }
       const plainPreview = realText.replace(/<[^>]*>/g,'').substring(0,50);
       console.log('[TCP] ' + session.roleName + ' chat: "' + plainPreview + '" in ' + msg.room);
       var chatMsg = { type: 'chat', room: msg.room, from: session.peerId, fromName: session.roleName, text: realText, plain: realText };

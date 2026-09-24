@@ -1,0 +1,39 @@
+{
+  "verifiedAt": "2026-09-24T15:56:48.900Z",
+  "server": "http://47.114.59.65:3000",
+  "version": "4.9.7",
+  "checks": {
+    "client/main.swf": {
+      "sha256": "bd9cc30590f919481fdacb1019c0303b187f2de510f6dc6527efd22a6e9a8865",
+      "bytes": 1116135,
+      "embeddedVersion": "4.9.7"
+    },
+    "client/sanguo_web.swf": {
+      "sha256": "bd9cc30590f919481fdacb1019c0303b187f2de510f6dc6527efd22a6e9a8865",
+      "bytes": 1116135,
+      "embeddedVersion": "4.9.7"
+    },
+    "client/staticgeneral.xml": {
+      "sha256": "c99999826210a3cb05ca6498d81042f000997cc188bf0b88245ebba1e7e8ca33",
+      "bytes": 108025
+    },
+    "client/index.html": {
+      "sha256": "20061406a38d3444f1adb654f79bd8f22398726519886d70776db71b1202594f",
+      "bytes": 6223
+    },
+    "client/version": {
+      "sha256": "e0518621af09f6617e06a66178822a7232b9e7a0b75a30dc3d05731264701726",
+      "bytes": 6
+    }
+  },
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.7",
+  "broadcastTest": {
+    "deployedSource": true,
+    "isolated": true,
+    "realPlayersMessaged": false,
+    "simulatedRecipients": 3,
+    "messagesPerRecipient": 125,
+    "tcpDelivered": 125
+  },
+  "databaseBackup": "C:\\sgqz\\backup-before-fix-4.9.7\\data\\sanguo.json"
+}

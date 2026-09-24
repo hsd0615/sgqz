@@ -220,7 +220,7 @@ package game.ui
                {
                   _loc2_ = TextFactory.makeJinhua(RoleModel.getInstance().roleName,this._armyInfo);
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc2_
                   }));
                }

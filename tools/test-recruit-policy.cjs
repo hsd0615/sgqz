@@ -17,6 +17,7 @@ const ctx = {
   AWARD_MAP:{a:{recruit:'甲、乙、普通将'}, b:{recruit:'未解锁'}}, STAGE_MAP:{a:90,b:91},
   EQUIP_DATA:{lowEquip:{quality:1}, highEquip:{quality:10}}, KEZHI_MAP:{},
   findPlayerByRequest:()=>p, jsonRawResponse:(_,response)=>response, socket:{}, save(){},
+  notices:[], announceGeneral(player,code){ctx.notices.push(code);}, announceEquipment(){},
   getKezhiStr:()=>'',
   createGeneral:(id,code,unused,level)=>{const g={player_id:id,code,level,general_id:100};ctx.db.generals.push(g);return g;}
 };
@@ -52,6 +53,7 @@ assert.equal(flip(6).success,false);
 assert.equal(ctx.request('/api/recruit/flip',{deckId:'wrong',cardIndex:2}).success,false);
 ctx.Math.random=()=>0;
 assert.equal(flip(2).data.general.title,0,'Preserve title zero');
+const noticesBeforeRetry=ctx.notices.length; flip(2); assert.equal(ctx.notices.length,noticesBeforeRetry,'Retry must not broadcast again');
 assert.equal(ctx.recruitSuperPool(p).some(g=>g.name==='甲'),false,'Exclude already-owned aliases');
 for(let i=3;i<6;i++)assert.equal(flip(i).success,true);
 assert.equal(ctx.db.bagItems.some(b=>b.code==='proto_3_3'),false);

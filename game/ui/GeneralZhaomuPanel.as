@@ -350,7 +350,7 @@ package game.ui
                {
                   _loc4_ = TextFactory.makeZhaomu(RoleModel.getInstance().roleName,this._armyInfo);
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc4_
                   }));
                }
@@ -401,7 +401,7 @@ package game.ui
                {
                   _loc4_ = TextFactory.makeZhaomu(RoleModel.getInstance().roleName,this._armyInfo);
                   dispatchEvent(new TalkEvent(TalkEvent.NET_INFO,true,{
-                     "type":NetInfoType.SYSTEM,
+                     "type":NetInfoType.SYSTEM, "serverOwned":true,
                      "text":_loc4_
                   }));
                }

@@ -344,11 +344,11 @@ package com.iflashigame.net
       /**
        * 世界频道广播（替代 NetGroup.post）
        */
-      public function worldPost(param1:Object, plainText:String = null) : *
+      public function worldPost(param1:Object, plainText:String = null, systemNotice:Boolean = false) : *
       {
          if(_connected)
          {
-            sendWS({type: "chat", room: "world", text: param1, plain: plainText});
+            sendWS({type: "chat", room: "world", text: param1, plain: plainText, systemNotice: systemNotice});
          }
       }
 
@@ -715,16 +715,29 @@ package com.iflashigame.net
          }
       }
 
+      private var _seenAnnouncements:Object = {};
+      private var _seenAnnouncementIds:Array = [];
+      public function rememberAnnouncement(id:String):Boolean
+      {
+         if(!id) return true;
+         if(_seenAnnouncements[id]) return false;
+         _seenAnnouncements[id] = true;
+         _seenAnnouncementIds.push(id);
+         if(_seenAnnouncementIds.length > 2000) delete _seenAnnouncements[_seenAnnouncementIds.shift()];
+         return true;
+      }
       private function handleChat(msg:Object):void
       {
+         if(msg.announcementId && !rememberAnnouncement(String(msg.announcementId))) return;
          // 如果有纯文本，直接派发 TalkEvent 给 UI 显示
          if(msg.plain != null && msg.plain != "")
          {
             var chatData:Object = {
-               type: msg.room == "world" ? 5 : 2,  // NetInfoType.WORLD=5, PUBLIC=2
+               type: msg.from == "system" ? NetInfoType.SYSTEM : (msg.room == "world" ? 5 : 2),  // NetInfoType.WORLD=5, PUBLIC=2
                text: msg.plain
             };
             dispatchEvent(new TalkEvent(TalkEvent.CHAT_PLAIN, false, chatData));
+            return;
          }
 
          var ba:ByteArray = new ByteArray();

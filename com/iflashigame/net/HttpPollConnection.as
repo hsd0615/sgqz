@@ -3,6 +3,9 @@ package com.iflashigame.net
    import flash.events.Event;
    import flash.events.EventDispatcher;
    import flash.events.TimerEvent;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.utils.getTimer;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
    import flash.net.URLRequestMethod;
@@ -15,6 +18,9 @@ package com.iflashigame.net
       private var _token:String;
       private var _pollTimer:Timer;
       private var _lastPollTime:Number = 0;
+      private var _cursor:Number = 0;
+      private var _pollLoader:URLLoader;
+      private var _pollStarted:int = 0;
       private var _connected:Boolean = false;
 
       private static var _debugTF:* = null;
@@ -31,7 +37,8 @@ package com.iflashigame.net
          this._baseURL = "http://" + host + ":" + port;
          this._token = Config.token || "";
          this._connected = true;
-         this._lastPollTime = new Date().getTime();
+         this._lastPollTime = 0;
+         this._cursor = 0;
 
          this._pollTimer = new Timer(150);
          this._pollTimer.addEventListener(TimerEvent.TIMER, this.doPoll);
@@ -78,56 +85,56 @@ package com.iflashigame.net
          return '{' + p.join(',') + '}';
       }
 
+      private function acceptPollResponse(raw:String):Boolean
+      {
+         var response:Object = JSON.parse(raw);
+         if(response == null || response.success !== true || !(response.messages is Array)) return false;
+         if(response.cursor == null || isNaN(Number(response.cursor)) || Number(response.cursor) < this._cursor) return false;
+         for each(var message:Object in response.messages)
+         {
+            if(message && message.msg) dispatchEvent(new SocketEvent(SocketEvent.DATA, message.msg));
+         }
+         this._cursor = Number(response.cursor);
+         return true;
+      }
+
       private function doPoll(evt:TimerEvent) : void
       {
-         if (!this._connected) return;
-         var _self:HttpPollConnection = this;
-         var _since:Number = this._lastPollTime;
+         if(!this._connected) return;
+         if(this._pollLoader != null)
+         {
+            if(getTimer() - this._pollStarted < 10000) return;
+            try { this._pollLoader.close(); } catch(closeError:Error) {}
+            this._pollLoader = null;
+         }
+         var self:HttpPollConnection = this;
+         var loader:URLLoader = new URLLoader();
+         this._pollLoader = loader;
+         this._pollStarted = getTimer();
+         var fail:Function = function(event:Event):void {
+            if(self._pollLoader == loader) self._pollLoader = null;
+         };
+         loader.addEventListener(IOErrorEvent.IO_ERROR, fail);
+         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, fail);
+         loader.addEventListener(Event.COMPLETE, function(event:Event):void {
+            if(self._pollLoader != loader || !self._connected) return;
+            try { self.acceptPollResponse(String(loader.data)); }
+            catch(parseError:Error) { self.log("poll response invalid; retrying same cursor"); }
+            self._pollLoader = null;
+         });
          try {
-            var _l:URLLoader = new URLLoader();
-            var _r:URLRequest = new URLRequest(this._baseURL + "/api/poll/recv");
-            _r.method = URLRequestMethod.POST;
-            _r.contentType = "application/json";
-            _r.data = this.toJson({ token: this._token, since: _since });
-            _l.addEventListener(Event.COMPLETE, function(e:Event):void {
-               try {
-                  var _raw:String = _l.data as String;
-                  var _b:int = _raw.indexOf("{");
-                  if (_b < 0) return;
-                  _raw = _raw.substring(_b);
-                  var _msgs:Array = [];
-                  var _svrTime:Number = 0;
-                  var _ms:int = _raw.indexOf('"messages"');
-                  if (_ms > 0) {
-                     var _as:int = _raw.indexOf('[', _ms);
-                     var _ae:int = _as >= 0 ? _raw.indexOf(']', _as) : -1;
-                     if (_as >= 0 && _ae >= 0) {
-                        try {
-                           var _obj:* = (JSON.parse is Function) ? JSON.parse(_raw.substring(_as, _ae + 1)) : null;
-                           if (_obj is Array) _msgs = _obj as Array;
-                        } catch(_e:Error) {}
-                     }
-                  }
-                  var _ts:int = _raw.indexOf('"serverTime"');
-                  if (_ts > 0) {
-                     var _tc:int = _raw.indexOf(':', _ts);
-                     var _te:int = _raw.indexOf(',', _tc);
-                     if (_te < 0) _te = _raw.indexOf('}', _tc);
-                     if (_tc > 0 && _te > 0) _svrTime = Number(_raw.substring(_tc + 1, _te));
-                  }
-                  for each (var _m:Object in _msgs) {
-                     if (_m && _m.msg) _self.dispatchEvent(new SocketEvent(SocketEvent.DATA, _m.msg));
-                  }
-                  _self._lastPollTime = _svrTime > 0 ? _svrTime : new Date().getTime();
-               } catch(_e:Error) {}
-            });
-            _l.load(_r);
-         } catch(_e:Error) {}
+            var request:URLRequest = new URLRequest(this._baseURL + "/api/poll/recv");
+            request.method = URLRequestMethod.POST;
+            request.contentType = "application/json";
+            request.data = this.toJson({token:this._token, cursor:this._cursor});
+            loader.load(request);
+         } catch(loadError:Error) { this._pollLoader = null; }
       }
 
       public function close() : void
       {
          this._connected = false;
+         if(this._pollLoader != null) { try { this._pollLoader.close(); } catch(e:Error) {} this._pollLoader = null; }
          if (this._pollTimer != null) { this._pollTimer.stop(); this._pollTimer.removeEventListener(TimerEvent.TIMER, this.doPoll); this._pollTimer = null; }
          dispatchEvent(new SocketEvent(SocketEvent.CLOSED));
       }
