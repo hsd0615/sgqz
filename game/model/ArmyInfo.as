@@ -410,6 +410,7 @@ package game.model
 
       private function getEquipBonus(param1:String, param2:String):int
       {
+         if(this.type == Type.TOUSHICHE) return 0;
          if(param1 == "" || param1 == null || param1 == "0") return 0;
          var _val:* = EquipData.get(param1,param2);
          if(!_val) return 0;

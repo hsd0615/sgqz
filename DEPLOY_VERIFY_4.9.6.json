@@ -1,0 +1,38 @@
+{
+  "verifiedAt": "2026-09-24T15:09:27.061Z",
+  "server": "http://47.114.59.65:3000",
+  "version": "4.9.6",
+  "checks": {
+    "client/main.swf": {
+      "sha256": "21bd8eba97a2e6269998a8403e2b89d5d879cf0f4edd600a3e70307bd8b95117",
+      "bytes": 1115196,
+      "embeddedVersion": "4.9.6"
+    },
+    "client/sanguo_web.swf": {
+      "sha256": "21bd8eba97a2e6269998a8403e2b89d5d879cf0f4edd600a3e70307bd8b95117",
+      "bytes": 1115196,
+      "embeddedVersion": "4.9.6"
+    },
+    "client/staticgeneral.xml": {
+      "sha256": "c99999826210a3cb05ca6498d81042f000997cc188bf0b88245ebba1e7e8ca33",
+      "bytes": 108025
+    },
+    "client/index.html": {
+      "sha256": "41659f429de9ead6c20ed8f7ed2bd0fb7ac01d2f852978e96e4fdbdaad36cb5c",
+      "bytes": 6223
+    },
+    "client/version": {
+      "sha256": "3ecc4132fea7159a50f1ebfcc2841f3f520ac2fc315e4153cd67c6e2ee06d965",
+      "bytes": 6
+    }
+  },
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.6",
+  "equipment": {
+    "whiteRecordsVerified": 12,
+    "returnedCatapultItems": 12,
+    "remainingCatapultEquippedItems": 0,
+    "postMigrationDataBackup": "C:\\sgqz\\backup-after-fix-4.9.6\\data\\sanguo.json"
+  },
+  "npcRecordsRestored": 4,
+  "taskState": "Running"
+}

@@ -25,7 +25,7 @@ package game.model {
          _data["proto_4_14"]={slot:2,name:"龙鳞甲",defense:221,defensePct:3,levelReq:55,quality:4,iconIdx:8};
          _data["proto_4_15"]={slot:2,name:"玄武战甲",defense:323,defensePct:6,dmgReduce:1,levelReq:75,quality:5,iconIdx:8};
          // 战靴 Q1-5
-         _data["proto_4_16"]={slot:5,name:"草鞋",levelReq:3,quality:1,iconIdx:5};
+         _data["proto_4_16"]={slot:5,name:"草鞋",defense:14,levelReq:3,quality:1,iconIdx:5};
          _data["proto_4_17"]={slot:5,name:"皮靴",defense:14,levelReq:16,quality:2,iconIdx:5};
          _data["proto_4_18"]={slot:5,name:"铁靴",defense:31,levelReq:32,quality:3,iconIdx:6};
          _data["proto_4_19"]={slot:5,name:"银靴",defense:58,levelReq:50,quality:4,iconIdx:6};

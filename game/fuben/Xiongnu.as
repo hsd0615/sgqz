@@ -293,7 +293,7 @@ package game.fuben
       
       private function showJuqing() : *
       {
-         removeChild(this._cover);
+         if(this._cover != null && this._cover.parent == this) removeChild(this._cover);
          this._cover = null;
          switch(this._currentStageID)
          {

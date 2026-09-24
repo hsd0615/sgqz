@@ -302,6 +302,7 @@ package game.ui
          {
             var _slot:DisplayObject = this._equipSlots[_si] as DisplayObject;
             if(_slot == null) { _si++; continue; }
+            _slot.visible = this._armyInfo.type != Type.TOUSHICHE;
             var _eqCode:String = this._armyInfo.getEquipSlot(_si);
 
             if(_slot is Sprite)
@@ -485,6 +486,7 @@ package game.ui
 
       private function onEquipSlotClick(param1:MouseEvent) : void
       {
+         if(this._armyInfo.type == Type.TOUSHICHE) return;
          param1.stopImmediatePropagation();
          var _slotName:String = (param1.currentTarget as DisplayObject).name;
          var _slotIdx:int = int(_slotName.replace("equipSlot",""));
@@ -1028,6 +1030,7 @@ package game.ui
 
       private function equipItem(param1:int, param2:String) : void
       {
+         if(this._armyInfo.type == Type.TOUSHICHE) return;
          var _self:GeneralInfoPanel = this;
          var _obj:Object = {};
          _obj.head = Head.HTTP_NEW_EQUIP;

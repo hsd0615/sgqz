@@ -325,6 +325,27 @@ function loadProtoData() {
 
 // 装备数据 (staticequip.xml)
 var EQUIP_DATA = {};
+// Catapults cannot equip items. Return legacy equipment once, preserving every item.
+function isCatapult(g) {
+  return !!g && !!GENERAL_BASE_STATS[g.code] && GENERAL_BASE_STATS[g.code].type === 0;
+}
+function migrateCatapultEquipment() {
+  var returned = 0;
+  if (!db.bagItems) db.bagItems = [];
+  db.generals.forEach(function(g) {
+    if (!isCatapult(g)) return;
+    for (var slot = 1; slot <= 6; slot++) {
+      var code = g['equip' + slot];
+      if (!code || code === '0') continue;
+      db.bagItems.push({ id: db.nextId.bagItems++, player_id: g.player_id, code: code, count: 1 });
+      g['equip' + slot] = '0';
+      returned++;
+    }
+  });
+  console.log('[CatapultEquipment] Returned ' + returned + ' items');
+  return returned;
+}
+
 function loadEquipData() {
   if (!fs.existsSync('/opt/staticequip.xml')) return;
   var xml = fs.readFileSync('/opt/staticequip.xml','utf8');
@@ -354,6 +375,10 @@ function loadEquipData() {
         levelReq: parseInt(lvrm?lvrm[1]:'1'),
         quality: parseInt(qm?qm[1]:'1')
       };
+      ['dmgBonus','critRate','critDmg','lifesteal','dmgReduce','atkInterval'].forEach(function(key) {
+        var value = blocks[i].match(new RegExp('<' + key + '>(-?\\d+)</' + key + '>'));
+        EQUIP_DATA[cm[1]][key] = value ? parseInt(value[1], 10) : 0;
+      });
     }
   }
   console.log('[EquipData] Loaded ' + Object.keys(EQUIP_DATA).length + ' items');
@@ -680,6 +705,7 @@ initLeitai();       // 2. 初始化擂台
 createTestAccounts(); // 3. 创建测试账号
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
 migrateEquipment();
+migrateCatapultEquipment();
 	migrateBagItems();  // 统一背包旧格式
 	//cleanLowQualityEquip(); // 4b. 补充装备字段
 save();             // 5. 保存
@@ -796,7 +822,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.5';
+  _cachedClientVersion = '4.9.6';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -2143,6 +2169,7 @@ function handleRequest(socket, req) {
       // === 装备物品 ===
       var g = findGeneralByGid(data.id);
       if (!g) return jsonRawResponse(socket, { success: false, message: '武将不存在' });
+      if (isCatapult(g)) return jsonRawResponse(socket, { success: false, message: '投石车不能装备物品' });
       var slotMap = { 0: 'equip1', 1: 'equip2', 2: 'equip3', 3: 'equip4', 4: 'equip5', 5: 'equip6' };
       var slotIdx = parseInt(data.slot) || 0;
       if (slotIdx < 0 || slotIdx > 5) return jsonRawResponse(socket, { success: false, message: '槽位无效' });
@@ -2964,7 +2991,7 @@ function handleRequest(socket, req) {
         var bAtk=calcBase(bs.attack,lvl,xishu.attack,bs.title,30);
         var bDef=calcBase(bs.defense,lvl,xishu.defence,bs.title,30);
 
-        var eq=calcEquipBonus([_g.equip1,_g.equip2,_g.equip3,_g.equip4,_g.equip5,_g.equip6]);
+        var eq=calcEquipBonus(isCatapult(_g) ? [] : [_g.equip1,_g.equip2,_g.equip3,_g.equip4,_g.equip5,_g.equip6]);
 
         var atk=bAtk+Math.floor(bAtk*evAdd)+eq.a;
         var def=bDef+Math.floor(bDef*evAdd)+eq.d;
