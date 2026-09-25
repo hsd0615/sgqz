@@ -104,6 +104,7 @@ package game.ui.fuben
          else if(_loc2_ == 3)
          {
             var _gname:String = Data.getInstance().getAttributes("general",_loc1_[1],"name");
+            if((_gname == null || _gname == "") && _loc1_.length > 4) _gname = _loc1_[4];
             this.__nameTF.text = _gname || _loc1_[1];
             this.__countTF.text = "Lv." + _loc1_[3];
             this.createGeneralIcon(_loc1_[1]);

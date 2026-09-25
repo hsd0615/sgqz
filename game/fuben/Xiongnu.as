@@ -163,32 +163,32 @@ package game.fuben
 
       private var _superGeneralAlive:Boolean;
 
-      // 第三关可能出现的魔化超级武将候选池(所有title=0的超级武将)
+      // 第三关可能出现的反叛超级武将候选池(所有title=0的超级武将)
       private static const SUPER_BOSS_POOL:Array = [
-         {code:"general_1_15", name:"魔化黄忠"},
-         {code:"general_1_22", name:"魔化邓艾"},
-         {code:"general_2_11", name:"魔化貂蝉"},
-         {code:"general_3_13", name:"魔化关羽"},
-         {code:"general_4_14", name:"魔化许褚"},
-         {code:"general_4_19", name:"魔化夏侯霸"},
-         {code:"general_5_14", name:"魔化典韦"},
-         {code:"general_5_18", name:"魔化孙策"},
-         {code:"general_5_19", name:"魔化董卓"},
-         {code:"general_6_15", name:"魔化魏延"},
-         {code:"general_6_18", name:"魔化文鸯"},
-         {code:"general_7_14", name:"魔化张飞"},
-         {code:"general_7_19", name:"魔化赵云"},
-         {code:"general_8_13", name:"魔化兀突骨"},
-         {code:"general_9_16", name:"魔化夏侯惇"},
-         {code:"general_9_17", name:"魔化太史慈"},
-         {code:"general_9_18", name:"魔化吕布"},
-         {code:"general_9_20", name:"魔化马超"},
-         {code:"general_9_32", name:"魔化孙权"},
-         {code:"general_9_33", name:"魔化刘备"},
-         {code:"general_9_34", name:"魔化曹操"},
-         {code:"general_20_1", name:"魔化孙权"},
-         {code:"general_20_2", name:"魔化刘备"},
-         {code:"general_20_3", name:"魔化曹操"}
+         {code:"general_1_15", name:"反叛黄忠"},
+         {code:"general_1_22", name:"反叛邓艾"},
+         {code:"general_2_11", name:"反叛貂蝉"},
+         {code:"general_3_13", name:"反叛关羽"},
+         {code:"general_4_14", name:"反叛许褚"},
+         {code:"general_4_19", name:"反叛夏侯霸"},
+         {code:"general_5_14", name:"反叛典韦"},
+         {code:"general_5_18", name:"反叛孙策"},
+         {code:"general_5_19", name:"反叛董卓"},
+         {code:"general_6_15", name:"反叛魏延"},
+         {code:"general_6_18", name:"反叛文鸯"},
+         {code:"general_7_14", name:"反叛张飞"},
+         {code:"general_7_19", name:"反叛赵云"},
+         {code:"general_8_13", name:"反叛兀突骨"},
+         {code:"general_9_16", name:"反叛夏侯惇"},
+         {code:"general_9_17", name:"反叛太史慈"},
+         {code:"general_9_18", name:"反叛吕布"},
+         {code:"general_9_20", name:"反叛马超"},
+         {code:"general_9_32", name:"反叛孙权"},
+         {code:"general_9_33", name:"反叛刘备"},
+         {code:"general_9_34", name:"反叛曹操"},
+         {code:"general_20_1", name:"反叛孙权"},
+         {code:"general_20_2", name:"反叛刘备"},
+         {code:"general_20_3", name:"反叛曹操"}
       ];
 
       public function Xiongnu(param1:Vector.<ArmyInfo>, param2:int = 1, param3:int = 1, param4:int = 1)
@@ -868,7 +868,7 @@ package game.fuben
          _loc1_.x = 550;
          _loc1_.y = Xiongnu.POS2.y;
          addChild(_loc1_);
-         // 15%概率额外出现魔化超级武将
+         // 15%概率额外出现反叛超级武将
          if(Math.random() < 0.15)
          {
             var _superEntry:Object = SUPER_BOSS_POOL[int(Math.random() * SUPER_BOSS_POOL.length)];

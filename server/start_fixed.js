@@ -851,7 +851,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.11';
+  _cachedClientVersion = '4.9.12';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1655,7 +1655,9 @@ function handleRequest(socket, req) {
       }
       if (resp.data.superRecruit) {
         var superLevel = Math.max(1, Math.min(30, flv - 20));
-        pai[Math.floor(Math.random() * pai.length)] = '3|' + resp.data.superRecruit.code + '|0|' + superLevel;
+        // Card title stays the recruitable general's real name; the encounter/result
+        // panels add the "反叛" prefix only for the enemy encounter.
+        pai[Math.floor(Math.random() * pai.length)] = '3|' + resp.data.superRecruit.code + '|0|' + superLevel + '|' + sName;
       }
       resp.data.pai = pai;
       resp.data.maxFlips = 3;
@@ -1699,8 +1701,9 @@ function handleRequest(socket, req) {
     if (fpResult[0] === '3') {
       var sgCode = fpResult[1];
       var sgDef = GENERAL_BASE_STATS[sgCode] || {};
-      var sg = { id: db.nextId.generals++, player_id: p.id, code: sgCode, level: parseInt(fpResult[3]) || 1, evolution: 0, feature: 0, title: 1, forceHp: 0, name: sgDef.name || sgCode };
-      db.generals.push(sg); resp.data.general = sg;
+      var sg = { id: db.nextId.generals++, player_id: p.id, code: sgCode, level: parseInt(fpResult[3]) || 1, evolution: 0, feature: 0, title: 0, forceHp: 0, name: sgDef.name || sgCode };
+      db.generals.push(sg);
+      resp.data.general = Object.assign({}, sg, { title: 0, name: sg.name, kezhi: getKezhiStr(sg) });
       delete p._xiongnuSuperBoss;
       broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 获得反叛超级武将 [' + escapeNotice(sg.name) + ']！');
     } else if (fpResult[0] === '2') {

@@ -176,7 +176,7 @@ package game.ui.fuben
          if(this._superRecruitCode != "")
          {
             _loc2_ += "\n\n<font color='#FF6600' size='16'>击败了" + this._superRecruitName + "！</font>\n";
-            _loc2_ += "<font color='#FFD700'>可以使用1个求贤令直接招募该超级武将</font>";
+            _loc2_ += "<font color='#FFD700'>你有3次机会招降" + this._superRecruitName + "，每次翻牌消耗点卡：0/100/200</font>";
          }
          this.__tf.htmlText = _loc2_;
          this.__okBtn.visible = true;
@@ -257,7 +257,7 @@ package game.ui.fuben
          else
          {
             this._recruitBtn.alpha = 1.0;
-            this._recruitBtnTF.text = "使用求贤令招募 " + this._superRecruitName + " (剩余:" + _count + ")";
+            this._recruitBtnTF.text = "使用求贤令招降 " + this._superRecruitName + " (剩余:" + _count + ")";
          }
          this._recruitBtnTF.x = (200 - this._recruitBtnTF.width) / 2;
       }
