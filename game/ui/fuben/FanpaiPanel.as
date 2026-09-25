@@ -175,7 +175,7 @@ package game.ui.fuben
       public function resolveRecruit(success:Boolean, data:Object = null) : Boolean
       {
          if(this._pendingIndex < 0) return false;
-         if(success && data != null && data.deckId != null && data.deckId != this._deckId) return false;
+         if(success && data != null && data.deckId != null && String(data.deckId) != String(this._deckId)) return false;
          if(success && data != null && data.cardIndex != null && int(data.cardIndex) != this._pendingIndex) return false;
          if(this._requestTimer != null) this._requestTimer.stop();
          if(success)

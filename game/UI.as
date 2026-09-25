@@ -2211,6 +2211,7 @@ package game
       private var _appliedRecruitResults:Object = {};
       private var _recruitSendCount:int = 0; // 已发送翻牌计数(多求贤令模式)
       private var _isMultiFlip:Boolean = false; // 是否多翻模式
+      private var _recruitDeckId:String = "";
 
       private function onQiuxianCardClick(param1:UIEvent) : *
       {
@@ -2323,6 +2324,7 @@ package game
       {
          if(param1.success == true && param1.data.pai != null)
          {
+            this._recruitDeckId = param1.data.deckId == null ? "" : String(param1.data.deckId);
             this.closeBagPanel();
             this.openFanpaiPanel();
             this._fanpaiPanel.initData({
@@ -3451,7 +3453,7 @@ package game
          {
             _loc2_.head = Head.HTTP_NEW_RECRUIT_FLIP;
             _loc2_.callback = this.onRecruitFlipResponse;
-            _loc2_.deckId = param1.data.deckId;
+            _loc2_.deckId = (param1.data.deckId == null || String(param1.data.deckId).length == 0) ? this._recruitDeckId : String(param1.data.deckId);
             _loc2_.cardIndex = param1.data.cardIndex;
          }
          else

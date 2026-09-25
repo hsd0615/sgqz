@@ -870,7 +870,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.19';
+  _cachedClientVersion = '4.9.20';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1974,8 +1974,11 @@ function handleRequest(socket, req) {
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
 
     const deck = p._recruitDeck;
+    // Deck ids are opaque strings; normalize transport values before validation.
+    const requestDeckId = String(data.deckId == null ? '' : data.deckId);
+    const activeDeckId = deck && String(deck.id == null ? '' : deck.id);
     const cardIndex = Number(data.cardIndex);
-    if (!deck || data.deckId !== deck.id || !Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex > 5) {
+    if (!deck || !activeDeckId || requestDeckId !== activeDeckId || !Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex > 5) {
       return jsonRawResponse(socket, {success:false, message:'牌局已失效，请重新打开抽卡界面'});
     }
     if (deck.results[cardIndex]) {
