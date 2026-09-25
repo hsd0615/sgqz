@@ -75,7 +75,6 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 必须从线上读取 `/api/version`，重新下载两个 SWF 校验 SHA256 与本次编译产物一致，并确认 SWF 内的版本字符串；记录验证结果和备份位置。不能只验证本地文件。
 - 部署受阻时明确说明未部署及实际原因，不得声称已经完成。
 - Git 只提交本次修复和发布产物，不要夹带工作区中用户尚未提交的其他修改。
-- 每次更新完成线上部署与验证后，必须提交本次变更并推送到用户的 GitHub 仓库 `origin`，使默认分支保留对应版本；推送前确认远端分支可快进，失败时明确报告未上传。用户明确要求仅本地修改或暂不上传时除外。
 
 ### 第一步：版本号
 同时修改3处版本号（以当前线上 `/api/version` 为准，修复版本递增，例如 `4.9.3` → `4.9.4`）：
@@ -118,6 +117,16 @@ node tools/cloud-deploy.js --status
 git add <本次修改及发布文件>
 git commit -m "vX.Y.Z: <描述>"
 ```
+
+## 三端发布与自动更新（强制）
+
+凡是客户端版本更新，必须同时处理三个运行端：桌面 AIR 客户端、网页版 SWF、Android AIR APK。不能只更新其中一个端后宣布完成。
+
+1. 版本号必须与线上 `/api/version` 对齐。接口需要同时返回 `downloadUrl`（桌面/网页 SWF）和 `mobileDownloadUrl`（Android APK）。
+2. 桌面端使用 `UpdateChecker` 下载并替换 `main.swf`，网页版检测到新版本后提示刷新页面，移动端下载 `mobileDownloadUrl` 到应用沙盒并交给 Android 系统安装器。
+3. 每次发布必须上传并验证三个产物：`/client/main.swf`、`/client/sanguo_web.swf`、`/client/sanguoqz-android-arm64.apk`。移动 APK 必须递增 Android `versionNumber`，否则系统不会接受覆盖安装。
+4. 线上验证必须读取 `/api/version`，分别下载三个客户端文件并校验 SHA256；同时核对 SWF 内版本字符串、APK manifest 的版本号和 ARM64 ABI。
+5. 如果 Android APK 尚未上传到线上 `/client/` 目录，移动端自动更新只能检测到版本，不能完成下载安装；发布流程必须把 APK 上传后再报告更新完成。
 
 ## 工具脚本
 

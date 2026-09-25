@@ -1078,7 +1078,7 @@ function handleRequest(socket, req) {
   // 客户端版本号 - 动态读取 /opt/client/version，确保与已部署 SWF 同步
   if (url === '/api/version') {
     var _ts = Date.now();
-    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.114.59.65:3000/client/main.swf?v=' + _ts });
+    return jsonRawResponse(socket, { success: true, version: getClientVersion(), downloadUrl: 'http://47.114.59.65:3000/client/main.swf?v=' + _ts, mobileDownloadUrl: 'https://github.com/hsd0615/sgqz/raw/master/output/android/sanguoqz-android-arm64.apk?v=' + _ts });
   }
 
   // 更新公告 - 返回最近版本更新内容（面向玩家）
