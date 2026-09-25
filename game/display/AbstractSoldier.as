@@ -638,25 +638,31 @@ package game.display
       
       public function getRectangle(param1:DisplayObject) : Rectangle
       {
-         // The imported super-general timelines contain long weapons and effects.
-         // Combat distance must use the body footprint, as the ordinary soldiers do.
+         // Use measured visible footprints from the imported standing-frame bitmaps.
+         // Their transparent canvases and effects make MovieClip.getRect unsuitable.
          switch(this._armyInfo.code)
          {
             case "general_18_0": // 魏延
+               return this.getBodyRectangle(param1,-42,42,-100,12);
             case "general_19_0": // 夏侯渊
+               return this.getBodyRectangle(param1,-52,74,-118,16);
             case "general_21_0": // 姜维
+               return this.getBodyRectangle(param1,-84,74,-135,12);
             case "general_22_0": // 陆逊
+               return this.getBodyRectangle(param1,-47,60,-125,16);
             case "general_23_0": // 吕蒙
+               return this.getBodyRectangle(param1,-57,71,-132,20);
             case "general_24_0": // 曹彰
-               return this.getBodyRectangle(param1);
+               return this.getBodyRectangle(param1,-57,55,-133,12);
          }
          return this._skin.getRect(param1);
       }
 
-      protected function getBodyRectangle(param1:DisplayObject) : Rectangle
+      protected function getBodyRectangle(param1:DisplayObject, left:Number = -42, right:Number = 42,
+                                           top:Number = -100, bottom:Number = 0) : Rectangle
       {
-         var topLeft:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(-42,-100)));
-         var bottomRight:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(42,0)));
+         var topLeft:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(left,top)));
+         var bottomRight:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(right,bottom)));
          return new Rectangle(Math.min(topLeft.x,bottomRight.x),Math.min(topLeft.y,bottomRight.y),
             Math.abs(bottomRight.x-topLeft.x),Math.abs(bottomRight.y-topLeft.y));
       }

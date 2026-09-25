@@ -809,7 +809,7 @@
          }
          var _loc2_:AbstractSoldier = this.findSoldier(1);
          var _loc3_:Number = this.getAllDistance(param1,_loc2_);
-         if(_loc3_ <= 0)
+         if(_loc3_ <= param1.speed)
          {
             return false;
          }
@@ -824,7 +824,7 @@
          }
          var _loc2_:AbstractSoldier = this.findSoldier(-1);
          var _loc3_:Number = this.getAllDistance(param1,_loc2_);
-         if(_loc3_ <= 0)
+         if(_loc3_ <= param1.speed)
          {
             return false;
          }
@@ -1790,6 +1790,5 @@
       }
    }
 }
-
 
 
