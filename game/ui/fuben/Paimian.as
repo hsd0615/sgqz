@@ -1,11 +1,15 @@
 package game.ui.fuben
 {
    import com.iflashigame.ui.BaseUI;
+   import com.greensock.loading.LoaderMax;
+   import com.greensock.loading.SWFLoader;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
+   import flash.geom.Rectangle;
    import flash.system.ApplicationDomain;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -61,6 +65,7 @@ package game.ui.fuben
          this.disable = false;
          this._isShow = false;
          this.filters = [];
+         if(this.__body != null) this.__body.filters = [];
          this.__nameTF.text = "";
          this.__countTF.text = "";
          if(this._icon != null && this._icon.parent == this) removeChild(this._icon);
@@ -108,29 +113,67 @@ package game.ui.fuben
 
       private function createGeneralIcon(param1:String) : *
       {
-         var _title:int = 3;
-         try { _title = int(Data.getInstance().getAttributes("general",param1,"title")); } catch(_e:Error) {}
-         // 品质颜色: 超级=橙金, 一流=蓝, 二流=绿, 三流=灰白
-         var _qualityColors:Array = [0xFF6600,0x3399FF,0x66CC33,0xCCCCCC];
-         var _qualityNames:Array = ["超级","一流","二流","三流"];
-         var _color:uint = _qualityColors[_title] || 0xCCCCCC;
-         // 画品质色块+边框
-         var _bd:BitmapData = new BitmapData(50,50,false,_color);
+         // Render a bust from the same model the general uses in battle.
+         var _bd:BitmapData = new BitmapData(64,64,false,0x1D1523);
+         var _rendered:Boolean = false;
+         var _skinName:String = Data.getInstance().getAttributes("general",param1,"skin");
+         if(param1 == "general_6_15") _skinName = "generalSkin_18_0";
+         var _skinClass:Class = null;
+         var _loader:SWFLoader = LoaderMax.getLoader("game01.skin.general") as SWFLoader;
+         var _names:Array = [_skinName + "_0",_skinName];
+         for each(var _name:String in _names)
+         {
+            try {
+               if(_loader != null) _skinClass = _loader.getClass(_name);
+               if(_skinClass == null) _skinClass = ApplicationDomain.currentDomain.getDefinition(_name) as Class;
+               if(_skinClass != null) break;
+            } catch(_err:Error) {}
+         }
+         if(_skinClass != null)
+         {
+            try {
+               var _general:MovieClip = new _skinClass() as MovieClip;
+               if(_general != null)
+               {
+                  _general.gotoAndStop(1);
+                  var _canvas:BitmapData = new BitmapData(320,320,true,0);
+                  var _position:Matrix = new Matrix();
+                  _position.translate(160,220);
+                  _canvas.draw(_general,_position,null,null,null,true);
+                  var _visible:Rectangle = _canvas.getColorBoundsRect(0xFF000000,0x00000000,false);
+                  if(!_visible.isEmpty())
+                  {
+                     var _cropW:Number = Math.max(24,_visible.width * 0.6);
+                     var _cropH:Number = Math.max(24,_visible.height * 0.65);
+                     var _cropX:Number = _visible.x + (_visible.width - _cropW) / 2;
+                     var _cropY:Number = _visible.y;
+                     var _scale:Number = Math.min(56 / _cropW,56 / _cropH);
+                     var _portrait:Matrix = new Matrix();
+                     _portrait.scale(_scale,_scale);
+                     _portrait.translate(4 + (56 - _cropW * _scale) / 2 - _cropX * _scale,
+                                         4 + (56 - _cropH * _scale) / 2 - _cropY * _scale);
+                     _bd.draw(_canvas,_portrait,null,null,new Rectangle(4,4,56,56),true);
+                     _rendered = true;
+                  }
+                  _canvas.dispose();
+               }
+            } catch(_drawError:Error) {}
+         }
+         if(!_rendered)
+         {
+            var _fallback:TextField = new TextField();
+            _fallback.defaultTextFormat = new TextFormat("SimHei",32,0xEED9A0,true);
+            _fallback.text = this.__nameTF.text.substr(0,1);
+            _fallback.width = 56;
+            _fallback.height = 48;
+            var _fallbackPosition:Matrix = new Matrix();
+            _fallbackPosition.translate(8,9);
+            _bd.draw(_fallback,_fallbackPosition);
+         }
          this._icon = new Bitmap(_bd);
          this._icon.smoothing = true;
-         this.fitIconToCard();
+         this.fitIconToCard(true);
          addChild(this._icon);
-         // 品质标签
-         var _qTf:TextField = new TextField();
-         _qTf.defaultTextFormat = new TextFormat("SimHei",10,0xFFFFFF,true);
-         _qTf.text = _qualityNames[_title] || "";
-         _qTf.selectable = false;
-         _qTf.mouseEnabled = false;
-         _qTf.width = 36;
-         _qTf.height = 16;
-         _qTf.x = 7;
-         _qTf.y = 17;
-         addChild(_qTf);
       }
 
       private function addQualityBorder(param1:int) : *
@@ -183,15 +226,15 @@ package game.ui.fuben
          }
       }
 
-      private function fitIconToCard() : void
+      private function fitIconToCard(param1:Boolean = false) : void
       {
          if(this.__body == null) return;
          var _bodyW:Number = this.__body.width;
          var _bodyH:Number = this.__body.height;
          if(_bodyW <= 0 || _bodyH <= 0) return;
          // 图标不超过卡面的60%宽、45%高
-         var _maxW:Number = _bodyW * 0.6;
-         var _maxH:Number = _bodyH * 0.45;
+         var _maxW:Number = _bodyW * (param1 ? 0.68 : 0.6);
+         var _maxH:Number = _bodyH * (param1 ? 0.52 : 0.45);
          var _baseW:Number = this._icon.bitmapData != null ? this._icon.bitmapData.width : this._icon.width;
          var _baseH:Number = this._icon.bitmapData != null ? this._icon.bitmapData.height : this._icon.height;
          var _scale:Number = Math.min(_maxW / Math.max(1,_baseW), _maxH / Math.max(1,_baseH));

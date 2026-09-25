@@ -1,0 +1,11 @@
+{
+  "server": "http://47.114.59.65:3000",
+  "version": "4.9.10",
+  "health": "ok",
+  "taskState": "Running",
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.10",
+  "checks": {
+    "client/main.swf": {"sha256": "d00c516e5268290a882f7131e87928f82ad9e58da5ce9d1507083578d195ac85", "bytes": 1116755, "embeddedVersion": "4.9.10"},
+    "client/sanguo_web.swf": {"sha256": "d00c516e5268290a882f7131e87928f82ad9e58da5ce9d1507083578d195ac85", "bytes": 1116755, "embeddedVersion": "4.9.10"}
+  }
+}

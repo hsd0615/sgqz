@@ -108,8 +108,14 @@ package game.ai
          var _loc3_:Gunner = Tools.randomFromArr(this._gunnerArr) as Gunner;
          var _loc4_:Shooter = Tools.randomFromArr(this._shooterArr) as Shooter;
          var _loc5_:Junzhu = Tools.randomFromArr(this._junzhuArr) as Junzhu;
-         // 投石车必须由玩家手动操作，自动战斗不替它发射。
-         var _loc6_:int = int(Math.round(Math.random() * 3)) + 2;
+         // Player catapults stay manual; enemy catapults still need their AI turn.
+         var _available:Array = [];
+         if(_loc3_ != null && !_loc3_.isPlayer && _loc3_.canAI) _available.push(1);
+         if(_loc4_ != null && _loc4_.canAI) _available.push(2);
+         if(_loc2_ != null && _loc2_.canAI) _available.push(3);
+         if(_loc5_ != null && _loc5_.canAI) _available.push(4);
+         if(_available.length == 0) return;
+         var _loc6_:int = _available[int(Math.random() * _available.length)];
          switch(_loc6_)
          {
             case 4:
@@ -134,25 +140,10 @@ package game.ai
                }
                break;
             case 1:
-               if(false && _loc3_ != null && _loc3_.canAI)
+               if(_loc3_ != null && !_loc3_.isPlayer && _loc3_.canAI)
                {
-                  if(_loc3_.isPlayer == true)
-                  {
-                     if(this._fight.ammo == "")
-                     {
-                        this._fight.setAmmoTips(_loc3_);
-                     }
-                     else
-                     {
-                        this._busy = true;
-                        this.gunnerAttack(_loc3_);
-                     }
-                  }
-                  else
-                  {
-                     this._busy = true;
-                     this.gunnerAttack(_loc3_);
-                  }
+                  this._busy = true;
+                  this.gunnerAttack(_loc3_);
                }
          }
       }

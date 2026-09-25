@@ -149,7 +149,6 @@ function loadKezhiMap() {
 
 // 超级武将招募池(匈奴副本第三关可用)
 var XIONGNU_SUPER_GENERALS = [];
-var XIONGNU_SUPER_BOSS_RATE = 0.1; // 10%概率
 function buildSuperGeneralPool() {
   var codes = Object.keys(generalRecruitMap);
   for (var i = 0; i < codes.length; i++) {
@@ -157,8 +156,8 @@ function buildSuperGeneralPool() {
     var info = generalRecruitMap[code];
     if (info.title === 0 && GENERAL_BASE_STATS[code]) {
       var bt = GENERAL_BASE_STATS[code].type;
-      // 排除投石车(type=0)、NPC头目(type=13/15)、君主(type=20)
-      if (bt !== 0 && bt !== 13 && bt !== 15 && bt !== 20) {
+      // Exclude catapults and NPC bosses; the client encounter pool also has three rulers.
+      if (bt !== 0 && bt !== 13 && bt !== 15) {
         XIONGNU_SUPER_GENERALS.push(code);
       }
     }
@@ -852,7 +851,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.9';
+  _cachedClientVersion = '4.9.11';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1606,14 +1605,15 @@ function handleRequest(socket, req) {
       for (var sgi = 0; sgi < XIONGNU_SUPER_GENERALS.length; sgi++) {
         if (XIONGNU_SUPER_GENERALS[sgi] === clientSC) { isValidSuper = true; break; }
       }
-      // 服务端独立概率验证(防作弊)
-      if (isValidSuper && Math.random() < XIONGNU_SUPER_BOSS_RATE) {
+      // The encounter already rolled on the client; every defeated rebel boss
+      // must place exactly one general card into the six-card reward deck.
+      if (isValidSuper) {
         p._xiongnuSuperBoss = clientSC;
         var sName = generalRecruitMap[clientSC] ? (generalRecruitMap[clientSC].name || '') : '';
         resp.data.superRecruit = { code: clientSC, name: '反叛' + sName };
         console.log('[Fuben] Super boss validated: ' + clientSC + ' for ' + p.role_name);
       } else {
-        // 客户端声称遇到超级武将但服务端验证不通过
+        // Reject codes outside the configured super-general pool.
         delete p._xiongnuSuperBoss;
       }
     }
