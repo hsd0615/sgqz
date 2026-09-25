@@ -104,7 +104,7 @@ package game.ai
                _loc4_.obj = {"distance":param2.getAllDistance(param1,param2.findSoldier(-1))};
                ChatManager.getInstance().p2pSend(_loc4_);
             }
-            param1.fire({"distance":param2.getAllDistance(param1,param2.findSoldier(-1))});
+            param1.fire2({"target":param2.findSoldier(-1)});
          }
          else
          {
@@ -113,7 +113,7 @@ package game.ai
                _loc4_.obj = {"distance":param2.getAllDistance(param1,param2.findSoldier(1))};
                ChatManager.getInstance().p2pSend(_loc4_);
             }
-            param1.fire({"distance":param2.getAllDistance(param1,param2.findSoldier(1))});
+            param1.fire2({"target":param2.findSoldier(1)});
          }
       }
       

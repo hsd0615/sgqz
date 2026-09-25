@@ -45,6 +45,7 @@ package game.ui.fuben
       private var _maxFlips:int = 1;
       private var _flipsRemaining:int = 1;
       private var _flippedCards:Array;
+      private var _flipCosts:Array;
 
       public function FanpaiPanel(param1:String, param2:ApplicationDomain = null)
       {
@@ -90,6 +91,7 @@ package game.ui.fuben
          this._pendingIndex = -1;
          for each(var card:Paimian in this._cards) card.deferReveal = this._stageID == 0;
          this._maxFlips = int(param1.maxFlips) || 1;
+         this._flipCosts = param1.flipCosts as Array;
          this._flipsRemaining = this._maxFlips;
          this._choosed = false;
          this._flippedCards = [];
@@ -103,10 +105,10 @@ package game.ui.fuben
          this._pai6.initData(_loc2_[5]);
 
          this.updateFlipsText();
-         Tools.setDisabled(this.__okBtn,this._stageID != 0);
+         Tools.setDisabled(this.__okBtn,true);
 
-         // 非求贤令模式(stageID!=0)保持原有10秒倒计时逻辑
-         if(this._stageID != 0)
+         // 匈奴通关翻牌也支持多次翻牌；只有旧单翻模式保留倒计时。
+         if(this._stageID != 0 && this._maxFlips <= 1)
          {
             this.__tf.text = "翻牌倒计时：10";
             var _loc3_:Timer = new Timer(1000,10);
@@ -143,16 +145,7 @@ package game.ui.fuben
          param1.stopImmediatePropagation();
          var _target:Paimian = param1.target as Paimian;
          var _cardData:String = _target.data;
-         if(this._stageID == 0)
-         {
-            this.requestRecruitCard(_target);
-            return;
-         }
-
-         removeEventListener(UIEvent.CHOOSE_PAIMIAN,this.choosPaiHandler);
-         this._flippedCards.push({data:_cardData, target:_target});
-         for each(var card:Paimian in this._cards) card.disable = true;
-         Tools.setDisabled(this.__okBtn,false);
+         this.requestRecruitCard(_target);
       }
 
       private function requestRecruitCard(card:Paimian) : void
@@ -169,7 +162,8 @@ package game.ui.fuben
          this._requestTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onRequestTimeout);
          this._requestTimer.start();
          dispatchEvent(new UIEvent(UIEvent.SEND_PAIMIAN,true,{
-            stageID:0, deckId:this._deckId, cardIndex:index
+            stageID:this._stageID, deckId:this._deckId, cardIndex:index,
+            flipIndex:this._maxFlips - this._flipsRemaining, data:card.data
          }));
       }
 
@@ -184,12 +178,13 @@ package game.ui.fuben
       public function resolveRecruit(success:Boolean, data:Object = null) : void
       {
          if(this._pendingIndex < 0) return;
-         if(success && (data == null || data.deckId != this._deckId || int(data.cardIndex) != this._pendingIndex)) return;
+         if(success && data != null && data.deckId != null && data.deckId != this._deckId) return;
+         if(success && data != null && data.cardIndex != null && int(data.cardIndex) != this._pendingIndex) return;
          if(this._requestTimer != null) this._requestTimer.stop();
          if(success)
          {
             var card:Paimian = this._cards[this._pendingIndex] as Paimian;
-            card.initData(String(data.result));
+            card.initData(String(data.result || (data.general != null ? "3|" + data.general.code + "|0|" + data.general.level : "1|" + data.item.code + "|" + data.item.count)));
             card.show();
             this._flippedCards.push({target:card});
             this._flipsRemaining--;
@@ -202,6 +197,11 @@ package game.ui.fuben
          }
          this.updateFlipsText();
          Tools.setDisabled(this.__okBtn,false);
+      }
+
+      public function hasMoreFlips() : Boolean
+      {
+         return this._maxFlips > 1 && this._flipsRemaining > 0;
       }
 
       private function onRemoved(event:Event) : void
@@ -249,10 +249,8 @@ package game.ui.fuben
          {
             this._choosed = true;
 
-            if(this._stageID == 0)
+            if(this._stageID == 0 || this._maxFlips > 1)
             {
-               // 多翻模式：所有翻牌已通过choosPaiHandler逐个发送
-               // 只需关闭面板
                dispatchEvent(new UIEvent(UIEvent.CLOSE,true));
             }
             else

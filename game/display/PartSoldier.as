@@ -489,14 +489,10 @@ package game.display
          {
             return super.getRectangle(param1);
          }
-         var _topLeft:Point = this._skin.localToGlobal(new Point(
-            this._visualBounds.x - ORIGIN_X,
-            this._visualBounds.y - ORIGIN_Y
-         ));
-         var _bottomRight:Point = this._skin.localToGlobal(new Point(
-            this._visualBounds.right - ORIGIN_X,
-            this._visualBounds.bottom - ORIGIN_Y
-         ));
+         // Use the body hitbox for contact distance. The spear artwork extends far
+         // beyond the body and must not make Lu Meng collide at weapon-tip distance.
+         var _topLeft:Point = this._skin.localToGlobal(new Point(-42, -100));
+         var _bottomRight:Point = this._skin.localToGlobal(new Point(42, 0));
          _topLeft = param1.globalToLocal(_topLeft);
          _bottomRight = param1.globalToLocal(_bottomRight);
          return new Rectangle(

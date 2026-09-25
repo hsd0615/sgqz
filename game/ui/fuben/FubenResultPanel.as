@@ -46,6 +46,8 @@ package game.ui.fuben
       private var _index:int;
       
       private var _paiArr:Array;
+      private var _maxFlips:int = 1;
+      private var _flipCosts:Array;
       
       public function FubenResultPanel(param1:String, param2:ApplicationDomain = null)
       {
@@ -92,6 +94,8 @@ package game.ui.fuben
          {
             this._paiArr = param1.pai;
          }
+         this._maxFlips = int(param1.maxFlips) || 1;
+         this._flipCosts = param1.flipCosts as Array;
          if(param1.superRecruit != null)
          {
             this._superRecruitCode = param1.superRecruit.code;
@@ -209,7 +213,9 @@ package game.ui.fuben
          param1.stopImmediatePropagation();
          dispatchEvent(new UIEvent(UIEvent.OPEN_FANPAI,true,{
             "pai":this._paiArr,
-            "stageID":this._stageID
+            "stageID":this._stageID,
+            "maxFlips":this._maxFlips,
+            "flipCosts":this._flipCosts || [0,100,200]
          }));
       }
 

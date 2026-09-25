@@ -827,7 +827,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.7';
+  _cachedClientVersion = '4.9.8';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1585,7 +1585,7 @@ function handleRequest(socket, req) {
       if (isValidSuper && Math.random() < XIONGNU_SUPER_BOSS_RATE) {
         p._xiongnuSuperBoss = clientSC;
         var sName = generalRecruitMap[clientSC] ? (generalRecruitMap[clientSC].name || '') : '';
-        resp.data.superRecruit = { code: clientSC, name: '魔化' + sName };
+        resp.data.superRecruit = { code: clientSC, name: '反叛' + sName };
         console.log('[Fuben] Super boss validated: ' + clientSC + ' for ' + p.role_name);
       } else {
         // 客户端声称遇到超级武将但服务端验证不通过
@@ -1628,7 +1628,15 @@ function handleRequest(socket, req) {
           }
         }
       }
+      if (resp.data.superRecruit) {
+        var superLevel = Math.max(1, Math.min(30, flv - 20));
+        pai[Math.floor(Math.random() * pai.length)] = '3|' + resp.data.superRecruit.code + '|0|' + superLevel;
+      }
       resp.data.pai = pai;
+      resp.data.maxFlips = 3;
+      resp.data.flipCosts = [0, 100, 200];
+      p._fubenFlipState = { remaining: 3, stageID: String(data.stageID), costs: [0, 100, 200], results: {} };
+      for (var fsi = 0; fsi < pai.length; fsi++) p._fubenFlipState.results[fsi] = pai[fsi];
     }
     if (fi === 3 && parseInt(data.result) === 1) broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 通关 [' + (data.stageID == 1 ? '袭杀匈奴' : '荡平倭寇') + ']！');
     // 副本通关持久化日志
@@ -1650,11 +1658,36 @@ function handleRequest(socket, req) {
   if (url === '/api/fuben/flip') {
     const p = findPlayerByRequest(data);
     if (!p) return jsonRawResponse(socket, { success: false, message: '请先登录' });
-    // 每个副本只能翻牌一次
-    if (p._fubenFlipped) return jsonRawResponse(socket, { success: false, message: '已经翻过牌了' });
-    var fpResult = String(data.result||'').split('|');
-    var resp = { success: true, data: {} };
-    if (fpResult[0] === '2') {
+    var fs = p._fubenFlipState;
+    if (!fs) {
+      if (p._fubenFlipped) return jsonRawResponse(socket, { success: false, message: '已经翻过牌了' });
+      var legacy = String(data.result||'').split('|'), legacyResp = { success: true, data: {} };
+      if (legacy[0] === '2') { p.money += parseInt(legacy[1]||'0'); legacyResp.data.money = p.money; }
+      else {
+        legacyResp.data.item = { id: Math.floor(Math.random()*10000), code: legacy[1], count: parseInt(legacy[2]||'1') };
+        if (EQUIP_DATA[legacy[1]]) announceEquipment(p, legacy[1], legacyResp.data.item.count);
+        else broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 获得 [' + escapeNotice((PROTO_DATA[legacy[1]] || {}).name || legacy[1]) + '] ×' + legacyResp.data.item.count + '！');
+      }
+      p._fubenFlipped = true; save(); return jsonRawResponse(socket, legacyResp);
+    }
+    var flipIndex = parseInt(data.flipIndex);
+    if (isNaN(flipIndex)) flipIndex = 0;
+    if (flipIndex < 0 || flipIndex >= 3 || fs.results[flipIndex] == null) return jsonRawResponse(socket, { success: false, message: '该牌已失效' });
+    if (fs.results[flipIndex] && fs.results[flipIndex].claimed) return jsonRawResponse(socket, fs.results[flipIndex].response);
+    var flipCost = fs.costs[flipIndex] || 0;
+    if ((p.card || 0) < flipCost) return jsonRawResponse(socket, { success: false, message: '点卡不足' });
+    if (flipCost > 0) p.card -= flipCost;
+    var fpResult = String(fs.results[flipIndex].value || fs.results[flipIndex]).split('|');
+    var resp = { success: true, data: { flipIndex: flipIndex, cardIndex: parseInt(data.cardIndex), cost: flipCost } };
+    if (fpResult[0] === '3') {
+      var sgCode = fpResult[1];
+      if (db.generals.some(function(g){ return g.player_id === p.id && g.code === sgCode; })) return jsonRawResponse(socket, { success: false, message: '已拥有该超级武将' });
+      var sgDef = GENERAL_BASE_STATS[sgCode] || {};
+      var sg = { id: db.nextId.generals++, player_id: p.id, code: sgCode, level: parseInt(fpResult[3]) || 1, evolution: 0, feature: 0, title: 1, forceHp: 0, name: sgDef.name || sgCode };
+      db.generals.push(sg); resp.data.general = sg;
+      delete p._xiongnuSuperBoss;
+      broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 获得反叛超级武将 [' + escapeNotice(sg.name) + ']！');
+    } else if (fpResult[0] === '2') {
       p.money += parseInt(fpResult[1]||'0');
       resp.data.money = p.money;
       console.log('[Fuben] Fanpai ' + p.role_name + ' money+=' + fpResult[1]);
@@ -1680,7 +1713,9 @@ function handleRequest(socket, req) {
       if (EQUIP_DATA[resp.data.item.code]) announceEquipment(p, resp.data.item.code, resp.data.item.count);
       else broadcastToAll('【副本】玩家 [' + escapeNotice(p.role_name) + '] 获得 [' + escapeNotice((PROTO_DATA[resp.data.item.code] || {}).name || resp.data.item.code) + '] ×' + resp.data.item.count + '！');
     }
-    p._fubenFlipped = true;
+    fs.results[flipIndex] = { claimed: true, value: fs.results[flipIndex].value || fs.results[flipIndex], response: resp };
+    fs.remaining--;
+    if (fs.remaining <= 0) delete p._fubenFlipState;
     save();
     return jsonRawResponse(socket, resp);
   }
@@ -2094,7 +2129,7 @@ function handleRequest(socket, req) {
       // 消耗进化卷: 根据武将code中的type确定进化卷 (与客户端一致)
       // general code格式: general_<type>_<variant>, 如 general_1_0 → type=1 → proto_1_1
       var _codeParts = g.code.split('_');
-      var _generalType = _codeParts[1];
+      var _generalType = GENERAL_BASE_STATS[g.code] ? GENERAL_BASE_STATS[g.code].type : parseInt(_codeParts[1]);
       var evoItemCode = 'proto_1_' + _generalType;
       var evoItemIdx = -1;
       for (var _evi = 0; _evi < (db.bagItems||[]).length; _evi++) {
@@ -3537,4 +3572,6 @@ setInterval(() => {
 }, 60000); // 60秒心跳
 
 console.log('Ready: HTTP ' + HTTP_PORT + ' + TCP ' + TCP_PORT + ' (raw TCP)');
+
+
 

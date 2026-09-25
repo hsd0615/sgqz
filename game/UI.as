@@ -3431,7 +3431,10 @@ package game
          this.openFanpaiPanel();
          this._fanpaiPanel.initData({
             "pai":param1.data.pai,
-            "stageID":param1.data.stageID
+            "stageID":param1.data.stageID,
+            "maxFlips":param1.data.maxFlips || 1,
+            "flipCosts":param1.data.flipCosts,
+            "deckId":param1.data.deckId
          });
       }
       
@@ -3450,6 +3453,9 @@ package game
          {
             _loc2_.head = Head.HTTP_NEW_FUBEN_FANPAI;
             _loc2_.callback = this.sendPaimianResponse;
+            _loc2_.stageID = param1.data.stageID;
+            _loc2_.flipIndex = param1.data.flipIndex;
+            _loc2_.cardIndex = param1.data.cardIndex;
          }
          _loc2_.agent = Config.AGENT;
          _loc2_.ver = Config.VER;
@@ -3486,6 +3492,13 @@ package game
                if(!_eqName) _eqName = Data.getInstance().getAttributes("proto",param1.data.item.code,"name");
                this.showMsg({type:0, text:"获得装备: " + (_eqName || param1.data.item.code)});
             }
+            if(param1.data.general != null)
+            {
+               var _fgi:ArmyInfo = Data.getInstance().getArmyInfo(param1.data.general.code, int(param1.data.general.level));
+               if(_fgi != null) { _fgi.id = Number(param1.data.general.id); RoleModel.getInstance().addSoldier(_fgi); }
+               this.showMsg({type:0, text:"获得反叛超级武将: " + param1.data.general.code});
+            }
+            if(this._fanpaiPanel != null && this._fanpaiPanel.hasMoreFlips()) return;
             this.closeFanpaiPanel();
          }
          else

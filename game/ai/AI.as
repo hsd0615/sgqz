@@ -108,7 +108,8 @@ package game.ai
          var _loc3_:Gunner = Tools.randomFromArr(this._gunnerArr) as Gunner;
          var _loc4_:Shooter = Tools.randomFromArr(this._shooterArr) as Shooter;
          var _loc5_:Junzhu = Tools.randomFromArr(this._junzhuArr) as Junzhu;
-         var _loc6_:int = int(Math.round(Math.random() * 4)) + 1;
+         // 投石车必须由玩家手动操作，自动战斗不替它发射。
+         var _loc6_:int = int(Math.round(Math.random() * 3)) + 2;
          switch(_loc6_)
          {
             case 4:
@@ -133,7 +134,7 @@ package game.ai
                }
                break;
             case 1:
-               if(_loc3_ != null && _loc3_.canAI)
+               if(false && _loc3_ != null && _loc3_.canAI)
                {
                   if(_loc3_.isPlayer == true)
                   {
@@ -258,11 +259,11 @@ package game.ai
             _loc2_.posY = param1.y;
             if(param1.direct == 1)
             {
-               param1.fire({"distance":this._fight.getAllDistance(param1,this._fight.findSoldier(-1))});
+               param1.fire2({"target":this._fight.findSoldier(-1)});
             }
             else
             {
-               param1.fire({"distance":this._fight.getAllDistance(param1,this._fight.findSoldier(1))});
+               param1.fire2({"target":this._fight.findSoldier(1)});
             }
             this.sleep(param1.delay);
          }

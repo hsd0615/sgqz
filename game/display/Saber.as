@@ -25,7 +25,7 @@ package game.display
       public function Saber(param1:ArmyInfo, param2:int = 1, param3:Boolean = false, param4:IWorld = null)
       {
          super(param1,param2,param3,param4);
-         _speed = 3;
+         _speed = param1.type == Type.WUDOUBING ? 1.8 : 3;
          _timer = new Timer(40);
          addEventListener(Event.REMOVED_FROM_STAGE,this.onRemoveFromStageHandler);
       }

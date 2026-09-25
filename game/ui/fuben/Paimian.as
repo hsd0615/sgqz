@@ -89,6 +89,7 @@ package game.ui.fuben
             this.__nameTF.text = _pname || _loc1_[1];
             this.__countTF.text = "x " + _loc1_[2];
             this.createIcon(_loc1_[1]);
+            this.addQualityBorder(int(EquipData.get(_loc1_[1],"quality")));
          }
          else if(_loc2_ == 2)
          {
@@ -191,12 +192,14 @@ package game.ui.fuben
          // 图标不超过卡面的60%宽、45%高
          var _maxW:Number = _bodyW * 0.6;
          var _maxH:Number = _bodyH * 0.45;
-         var _scale:Number = Math.min(_maxW / this._icon.width, _maxH / this._icon.height);
+         var _baseW:Number = this._icon.bitmapData != null ? this._icon.bitmapData.width : this._icon.width;
+         var _baseH:Number = this._icon.bitmapData != null ? this._icon.bitmapData.height : this._icon.height;
+         var _scale:Number = Math.min(_maxW / Math.max(1,_baseW), _maxH / Math.max(1,_baseH));
          if(_scale > 1) _scale = 1;
          this._icon.scaleX = _scale;
          this._icon.scaleY = _scale;
          // 居中放置, y轴略靠上留出名称空间
-         this._icon.x = int((_bodyW - this._icon.width * _scale) / 2) + this.__body.x;
+         this._icon.x = int((_bodyW - _baseW * _scale) / 2) + this.__body.x;
          this._icon.y = this.__body.y + int(_bodyH * 0.08);
       }
 

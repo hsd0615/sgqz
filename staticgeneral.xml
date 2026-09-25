@@ -325,10 +325,10 @@
   <RECORD>
     <code>general_1_13</code>
     <name>吕蒙</name>
-    <type>1</type>
+    <type>7</type>
     <title>1</title>
     <kezhi>5:1|7:1|9:1</kezhi>
-    <skin>generalSkin_1</skin>
+    <skin>generalSkin_23_0</skin>
     <hp>770</hp>
     <attack>400</attack>
     <defense>280</defense>
@@ -343,7 +343,7 @@
     <dianka>20</dianka>
     <coint>10</coint>
     <price>-1</price>
-    <proto>proto_1_1</proto>
+    <proto>proto_1_7</proto>
   </RECORD>
   <RECORD>
     <code>general_1_14</code>

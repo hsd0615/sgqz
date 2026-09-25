@@ -243,11 +243,11 @@
       
       private function createTF() : *
       {
-         this._advanceBtn = this.createOriginalArmyButton(false);
+         this._advanceBtn = this.createOriginalArmyButton(true);
          this._advanceBtn.x = 570; this._advanceBtn.y = 0;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
-         this._armyRetreatBtn = this.createOriginalArmyButton(true);
+         this._armyRetreatBtn = this.createOriginalArmyButton(false);
          this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 0;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
