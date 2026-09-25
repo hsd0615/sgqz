@@ -24,17 +24,17 @@
 
 - SWF 编译成功，原有 UI.as 类型转换警告仍存在。
 - ADT 生成内置运行时 ARM64 APK 成功。
-- jarsigner：jar verified；自签名证书和无时间戳提示是测试签名的预期结果。
+- apksigner：APK 签名校验通过；测试证书有效期至 2051 年。
 - aapt：包名、ARM64 ABI、最低 API 23、目标 API 33、联网权限、明文 HTTP 放行配置均正确。
 - APK 内 main.swf、6 个资源 SWF、game_mobile.xml 与构建文件逐一 SHA256 一致。
-- SWF 包含 4.9.8-android.1、当前服务器地址、移动配置路径，不含旧服务器 IP。
-- APK SHA256：2f07407dd51cc211133d2ed5c8ce81b3ef4fedd46bf233b87d2557c6fa2f841d。
-- 线上 POST /api/version 返回 4.9.8（仅只读查询）。
+- SWF 包含 4.9.15-android.1、当前服务器地址、移动配置路径，不含旧服务器 IP。
+- APK SHA256：93662c7b6dd1707df864b39d0f9d4a8161ebee4d8a521a74494fa57c732be386。
+- 线上 POST /api/version 返回 4.9.15；当前线上响应尚未包含 mobileDownloadUrl。
 - adb 无设备；本机 MuMu 启动返回 errcode 2，未完成安装启动、登录、对战真机验证。
 
 ## 限制
 
-这是现有工作区源码的 Android 移植测试包，不表示与线上 4.9.8 全部修复完全一致。
+这是现有工作区源码的 Android 移植测试包，不表示与线上 4.9.15 全部修复完全一致。
 桌面鼠标悬停说明、滚轮、后台恢复与所有战斗触控尚未逐项完成真机验收。
 现有服务使用 HTTP，本包仅对该协议做兼容，尚未迁移 HTTPS。
 使用 AIR 免费层会保留其品牌启动画面；SDK 许可适用性请按实际用途核对。

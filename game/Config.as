@@ -22,7 +22,7 @@ package game
       public static const GAME:String = "Sanguo";
       
       public static const VER:String = "2.1.4";
-      public static const CLIENT_VER:String = "4.8.9";
+      public static const CLIENT_VER:String = "4.9.15";
       
       public static var token:String = "";
       
@@ -41,11 +41,11 @@ package game
       public static const CHONGZHI:String = "http://my.4399.com/pay.php?ac=exchange&union=176";
       
       // 新版服务器配置（替代旧的局域网地址和 Adobe Cirrus）
-      public static var SERVER_URL:String = "http://47.96.41.243:3000";
+      public static var SERVER_URL:String = "http://47.114.59.65:3000";
       public static const MOBILE_SERVER_URL:String = "http://47.114.59.65:3000";
-      public static var SERVER_HOST:String = "47.96.41.243";
+      public static var SERVER_HOST:String = "47.114.59.65";
       public static var SERVER_PORT:int = 3001;
-      public static var API_URL:String = "http://47.96.41.243:3000";
+      public static var API_URL:String = "http://47.114.59.65:3000";
       public static var USE_NEW_NETWORK:Boolean = true;
 
       // 网页版标志：通过 flashvars 传入 (isWeb=1)，桌面版默认 false

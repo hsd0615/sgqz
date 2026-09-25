@@ -1629,8 +1629,8 @@ import game.ui.UpdateChecker;
          {
             setChildIndex(this._onlineCountUI, this.numChildren - 1);
          }
-         // 自动更新检查 - 仅桌面版，网页版每次刷新即最新
-         if(!Config.IS_WEB && !Config.IS_MOBILE)
+         // 三端统一检测更新：桌面替换 SWF，网页版提示刷新，移动版下载 APK。
+         if(true)
          {
             var _updateChecker:UpdateChecker = new UpdateChecker();
             _updateChecker.x = (stage.stageWidth - 200) / 2;
