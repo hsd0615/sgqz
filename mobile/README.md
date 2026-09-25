@@ -28,6 +28,7 @@
 - aapt：包名、ARM64 ABI、最低 API 23、目标 API 33、联网权限、明文 HTTP 放行配置均正确。
 - APK 内 main.swf、6 个资源 SWF、game_mobile.xml 与构建文件逐一 SHA256 一致。
 - SWF 包含 4.9.15-android.1、当前服务器地址、移动配置路径，不含旧服务器 IP。
+- 移动端改用 SHOW_ALL 保证 770x500 界面完整显示，非 16:10 屏幕以深色背景填充空白区域。
 - APK SHA256：93662c7b6dd1707df864b39d0f9d4a8161ebee4d8a521a74494fa57c732be386。
 - 线上 POST /api/version 返回 4.9.15；当前线上响应尚未包含 mobileDownloadUrl。
 - adb 无设备；本机 MuMu 启动返回 errcode 2，未完成安装启动、登录、对战真机验证。

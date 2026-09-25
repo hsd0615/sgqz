@@ -162,9 +162,9 @@ import game.ui.UpdateChecker;
             Config.API_URL = Config.MOBILE_SERVER_URL;
             Config.SERVER_HOST = "47.114.59.65";
             Config.SERVER_PORT = 3000;
-            // 手机横屏通常比 770:500 更宽；SHOW_ALL 会产生明显的两侧白边。
-            // NO_BORDER 以屏幕宽度填充，顶部对齐保留 HUD，舞台底色覆盖被裁切区域。
-            stage.scaleMode = StageScaleMode.NO_BORDER;
+            // 移动端必须完整显示 770x500 逻辑画面，NO_BORDER 会裁掉上下或左右内容。
+            // SHOW_ALL 保留完整界面，深色舞台背景填充不同屏幕比例产生的空白区域。
+            stage.scaleMode = StageScaleMode.SHOW_ALL;
             stage.align = StageAlign.TOP;
             stage.color = 0x111122;
             stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
