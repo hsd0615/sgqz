@@ -152,6 +152,13 @@ package game.fuben
       private var _pause:Boolean;
       
       private var _pauseMC:BaseUI;
+
+      private var _advanceBtn:Sprite;
+      private var _armyRetreatBtn:Sprite;
+      private var _armyOrders:Array = [];
+
+      [Embed(source="../retreat_icon.png")]
+      private static var _retreatIcon:Class;
       
       private var _fightUI:FightUI;
       
@@ -546,6 +553,14 @@ package game.fuben
       
       private function createTF() : *
       {
+         this._advanceBtn = this.createOriginalArmyButton(true);
+         this._advanceBtn.x = 570; this._advanceBtn.y = 0;
+         this._advanceBtn.addEventListener(MouseEvent.CLICK,this.advanceArmyClickHandler);
+         addChild(this._advanceBtn);
+         this._armyRetreatBtn = this.createOriginalArmyButton(false);
+         this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 0;
+         this._armyRetreatBtn.addEventListener(MouseEvent.CLICK,this.armyRetreatClickHandler);
+         addChild(this._armyRetreatBtn);
          if(this._currentStageID == 1)
          {
             this._tf = new TextField();
@@ -560,6 +575,68 @@ package game.fuben
             this._tf.filters = [new GlowFilter(0,1,2,2,50)];
             addChild(this._tf);
          }
+      }
+
+      private function createOriginalArmyButton(param1:Boolean) : Sprite
+      {
+         var result:Sprite = new Sprite();
+         var icon:Bitmap = new _retreatIcon() as Bitmap;
+         icon.width = 52; icon.height = 62;
+         result.addChild(icon);
+         result.buttonMode = true;
+         if(param1) result.scaleX = -1;
+         return result;
+      }
+
+      private function advanceArmyClickHandler(param1:MouseEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         this.moveArmy(true);
+      }
+
+      private function armyRetreatClickHandler(param1:MouseEvent) : void
+      {
+         param1.stopImmediatePropagation();
+         this.moveArmy(false);
+      }
+
+      private function moveArmy(param1:Boolean) : void
+      {
+         if(this._isOver) return;
+         this._armyOrders = [];
+         var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
+         for each(var soldier:AbstractSoldier in own)
+         {
+            // Forward does not auto-fire player catapults; retreat can move them.
+            if(soldier != null && !soldier.isDead && (!param1 || !(soldier is Gunner)))
+               this._armyOrders.push({soldier:soldier,forward:param1,started:false,target:null});
+         }
+         addEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
+         this.updateArmyOrders(null);
+      }
+
+      private function updateArmyOrders(param1:Event) : void
+      {
+         if(this._isOver) { this._armyOrders=[]; removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders); return; }
+         var target:AbstractSoldier = this.findSoldier(-this._direct);
+         for(var i:int=this._armyOrders.length-1;i>=0;i--)
+         {
+            var order:Object=this._armyOrders[i];
+            var soldier:AbstractSoldier=order.soldier as AbstractSoldier;
+            if(soldier==null || soldier.isDead){this._armyOrders.splice(i,1);continue;}
+            if(soldier.fireing) continue;
+            if(!order.forward)
+            {
+               soldier.stand();
+               if(soldier.direct==1) soldier.goLeft(soldier.moveDistance*Config.MERIC); else soldier.goRight(soldier.moveDistance*Config.MERIC);
+               this._armyOrders.splice(i,1); continue;
+            }
+            if(target==null){soldier.stand();this._armyOrders.splice(i,1);continue;}
+            soldier.stand();
+            soldier.fire2({target:target});
+            this._armyOrders.splice(i,1);
+         }
+         if(this._armyOrders.length==0) removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
       }
       
       private function createGIcon() : *
@@ -1685,6 +1762,20 @@ package game.fuben
       
       public function clear() : *
       {
+         removeEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
+         this._armyOrders = [];
+         if(this._advanceBtn != null)
+         {
+            this._advanceBtn.removeEventListener(MouseEvent.CLICK,this.advanceArmyClickHandler);
+            if(this._advanceBtn.parent) this._advanceBtn.parent.removeChild(this._advanceBtn);
+            this._advanceBtn = null;
+         }
+         if(this._armyRetreatBtn != null)
+         {
+            this._armyRetreatBtn.removeEventListener(MouseEvent.CLICK,this.armyRetreatClickHandler);
+            if(this._armyRetreatBtn.parent) this._armyRetreatBtn.parent.removeChild(this._armyRetreatBtn);
+            this._armyRetreatBtn = null;
+         }
          if(this._timer != null)
          {
             this._timer.reset();
