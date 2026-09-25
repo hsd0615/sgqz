@@ -695,7 +695,21 @@ package game
                var _sitem:Object = this._shopJSON[_j];
                if(int(_sitem.category) != mycategory) continue;
                var _dup:Boolean = false;
-               for(var _k:int = 0; _k < arr.length; _k++) { if(arr[_k].id == _sitem.id) { _dup = true; break; } }
+               for(var _k:int = 0; _k < arr.length; _k++) {
+                  if(arr[_k].id == _sitem.id) {
+                     // Server data is authoritative for price and payment currency.
+                     // Update embedded XML entries too; otherwise old payType=3
+                     // remains visible as 功勋 after the server switches to 点卡.
+                     arr[_k].code = _sitem.code;
+                     arr[_k].count = int(_sitem.count);
+                     arr[_k].payType = int(_sitem.payType);
+                     arr[_k].oldPrice = int(_sitem.oldPrice);
+                     arr[_k].newPrice = int(_sitem.newPrice);
+                     if(_sitem.name) arr[_k].name = _sitem.name;
+                     _dup = true;
+                     break;
+                  }
+               }
                if(!_dup) arr.push({id:_sitem.id, code:_sitem.code, count:int(_sitem.count), payType:int(_sitem.payType), oldPrice:int(_sitem.oldPrice), newPrice:int(_sitem.newPrice), name:_sitem.name, icon:_sitem.icon||"proto_1_0", desc:_sitem.desc||_sitem.name});
             }
          }

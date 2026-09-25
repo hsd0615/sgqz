@@ -226,6 +226,12 @@ function loadStageMap() {
 }
 // BEGIN RECRUIT_POLICY
 function recruitSuperPool(player) {
+  // title=0 is shared by imported super generals, the catapult, rulers and NPC bosses.
+  const excludedCodes = new Set([
+    'general_0_1',
+    'general_20_1','general_20_2','general_20_3',
+    'general_13_1','general_15_1'
+  ]);
   const unlockedNames = new Set();
   for (const code of player._unlockedRecruits || []) {
     if (generalRecruitMap[code]) unlockedNames.add(generalRecruitMap[code].name);
@@ -240,7 +246,7 @@ function recruitSuperPool(player) {
   const ownedNames = new Set(db.generals.filter(g => g.player_id === player.id).map(g => (generalRecruitMap[g.code] || {}).name));
   const byName = new Map();
   for (const [code, info] of Object.entries(generalRecruitMap)) {
-    if (info.title !== 0 || !unlockedNames.has(info.name) || ownedNames.has(info.name)) continue;
+    if (info.title !== 0 || excludedCodes.has(code) || !unlockedNames.has(info.name) || ownedNames.has(info.name)) continue;
     if (!byName.has(info.name) || generalNameToCode[info.name] === code) byName.set(info.name, {code, title:0, name:info.name});
   }
   return Array.from(byName.values());

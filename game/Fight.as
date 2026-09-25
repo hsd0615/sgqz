@@ -359,7 +359,7 @@
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
          for each(var soldier:AbstractSoldier in own)
          {
-            if(soldier != null && !soldier.isDead && (!forward || Config.IS_MOBILE || !(soldier is Gunner)))
+            if(soldier != null && !soldier.isDead && (!forward || !(soldier is Gunner)))
                this._armyOrders.push({soldier:soldier, forward:forward, started:false, target:null});
          }
          addEventListener(Event.ENTER_FRAME,this.updateArmyOrders);
