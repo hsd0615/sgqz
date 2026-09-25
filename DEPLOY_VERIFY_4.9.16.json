@@ -1,0 +1,23 @@
+{
+  "version": "4.9.16",
+  "target": "47.114.59.65:3000",
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.16",
+  "serverVersion": "4.9.16",
+  "serverSha": "f0459948d1e9becd4fb5c3c45a709407df88a30486b83584ddf9088c4fc40eeb",
+  "migration": {
+    "missingGeneralId": 0,
+    "generals": 212,
+    "zhangfei": [
+      {
+        "general_id": 37922,
+        "id": 6,
+        "player_id": 1
+      },
+      {
+        "general_id": 100184,
+        "id": 184,
+        "player_id": 8
+      }
+    ]
+  }
+}

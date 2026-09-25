@@ -80,6 +80,24 @@ function dedupeGenerals(pid) {
   db.generals = toKeep;
   if (removed > 0) { console.log('[Dedupe] Removed ' + removed + ' duplicate generals for player ' + pid + ', kept ' + Object.keys(map).length); save(); }
 }
+// Repair legacy generals created by the Xiongnu flip bug. Those rows had only
+// the internal database id and no playable general_id, so the client could not
+// select them and reported “武将不存在”.
+function migrateGeneralIds() {
+  var used = {};
+  db.generals.forEach(function(g) { if (Number.isInteger(g.general_id)) used[g.general_id] = true; });
+  var repaired = 0;
+  db.generals.forEach(function(g) {
+    if (!Number.isInteger(g.general_id)) {
+      var candidate = 100000 + (parseInt(g.id) || 0);
+      while (used[candidate]) candidate++;
+      g.general_id = candidate;
+      used[candidate] = true;
+      repaired++;
+    }
+  });
+  if (repaired) { console.log('[Migration] repaired ' + repaired + ' generals missing general_id'); save(); }
+}
 function createGeneral(pid, code, name, level, evo, feat, tf, k1, k1l, k2, k2l, k3, k3l, eq1, eq2, eq3, eq4, eq5, eq6) {
   const g = { id: db.nextId.generals++, player_id: pid, general_id: Math.floor(Math.random()*100000), code, name, level:level||1, evolution:evo||0, feature:feat||0, tianfu:tf||null, kezhi1:k1||0, kezhi1_level:k1l||1, kezhi2:k2||0, kezhi2_level:k2l||1, kezhi3:k3||0, kezhi3_level:k3l||1, is_deployed: 0, equip1: eq1||'0', equip2: eq2||'0', equip3: eq3||'0', equip4: eq4||'0', equip5: eq5||'0', equip6: eq6||'0' };
   db.generals.push(g);
@@ -733,6 +751,7 @@ initLeitai();       // 2. 初始化擂台
 createTestAccounts(); // 3. 创建测试账号
 removeLegacyLuMeng(); // 删除旧弓兵吕蒙，保留新模型超级武将
 migrateKezhi();     // 4. 修复DB中不完整的克制数据
+ migrateGeneralIds();  // 修复旧匈奴翻牌武将缺少 playable general_id
 migrateEquipment();
 migrateCatapultEquipment();
 	migrateBagItems();  // 统一背包旧格式
@@ -851,7 +870,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.15';
+  _cachedClientVersion = '4.9.16';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -1701,7 +1720,7 @@ function handleRequest(socket, req) {
     if (fpResult[0] === '3') {
       var sgCode = fpResult[1];
       var sgDef = GENERAL_BASE_STATS[sgCode] || {};
-      var sg = { id: db.nextId.generals++, player_id: p.id, code: sgCode, level: parseInt(fpResult[3]) || 1, evolution: 0, feature: 0, title: 0, forceHp: 0, name: sgDef.name || sgCode };
+      var sg = { id: db.nextId.generals++, player_id: p.id, general_id: Math.floor(Math.random()*100000), code: sgCode, level: parseInt(fpResult[3]) || 1, evolution: 0, feature: 0, title: 0, forceHp: 0, name: sgDef.name || sgCode };
       db.generals.push(sg);
       // The client uses general_id for all subsequent general operations. The
       // internal database row id must never be sent as the playable id.
@@ -3597,6 +3616,8 @@ setInterval(() => {
 }, 60000); // 60秒心跳
 
 console.log('Ready: HTTP ' + HTTP_PORT + ' + TCP ' + TCP_PORT + ' (raw TCP)');
+
+
 
 
 
