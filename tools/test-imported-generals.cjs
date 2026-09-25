@@ -1,0 +1,34 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const xml=fs.readFileSync('staticgeneral.xml','utf8');
+const server=fs.readFileSync('server/start_fixed.js','utf8');
+const stage=fs.readFileSync('stage.xml','utf8');
+const skin=fs.readFileSync('game/display/AbstractSoldier.as','utf8');
+const codes=['general_18_0','general_19_0','general_21_0','general_22_0','general_23_0','general_24_0'];
+const records=[...xml.matchAll(/<RECORD>([\s\S]*?)<\/RECORD>/g)].map(m=>m[1]);
+const field=(record,key)=>record.match(new RegExp('<'+key+'>([^<]+)</'+key+'>'))?.[1];
+assert.equal(records.filter(r=>field(r,'name')==='吕蒙').length,1);
+assert.equal(records.some(r=>field(r,'code')==='general_1_13'),false);
+assert.equal(stage.includes('general_1_13'),false);
+assert(stage.includes('general_23_0'));
+const ctx={fs:{existsSync:()=>true,readFileSync:()=>xml},KEZHI_MAP:{},generalRecruitMap:{},generalNameToCode:{},GENERAL_BASE_STATS:{},console:{log(){}}};
+vm.createContext(ctx);
+vm.runInContext(server.slice(server.indexOf('function loadKezhiMap()'),server.indexOf('// 超级武将招募池')),ctx);
+ctx.loadKezhiMap();
+for(const code of codes){
+ const r=records.find(r=>field(r,'code')===code);
+ assert(r,code);assert.equal(field(r,'title'),'0');
+ assert.equal(ctx.GENERAL_BASE_STATS[code].proto,field(r,'proto'),code);
+ assert.equal(ctx.GENERAL_BASE_STATS[code].proto,'proto_1_'+field(r,'type'),code);
+ assert(skin.includes('case "'+code+'"'),code+' body hitbox');
+}
+assert(!ctx.GENERAL_BASE_STATS.general_1_13);
+assert(server.includes('var evoItemCode = evoStats.proto;'));
+const migration=server.slice(server.indexOf('function removeLegacyLuMeng()'),server.indexOf('function loadEquipData()'));
+ctx.db={players:[{id:1,choose:'general_1_13|general_23_0'}],generals:[{player_id:1,code:'general_1_13',equip1:'proto_4_1'},{player_id:1,code:'general_23_0'}],bagItems:[],nextId:{bagItems:10}};
+vm.runInContext(migration,ctx);ctx.removeLegacyLuMeng();
+assert.equal(ctx.db.generals.length,1);assert.equal(ctx.db.generals[0].code,'general_23_0');
+assert.equal(ctx.db.players[0].choose,'general_23_0');
+assert.equal(ctx.db.bagItems[0].code,'proto_4_1');
+console.log('PASS: six imported supers use configured evolution scrolls and body hitboxes; legacy Lu Meng removed with equipment returned');

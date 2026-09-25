@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-09-25T05:42:00.867Z",
+  "server": "http://47.114.59.65:3000",
+  "version": "4.9.8",
+  "health": "ok",
+  "checks": {
+    "client/main.swf": {
+      "sha256": "4576fb6dfb0ba4ab11839cc90a4182848996b24a68a5c7e8e0b7d70f79feebfd",
+      "bytes": 1116616,
+      "embeddedVersion": "4.9.8"
+    },
+    "client/sanguo_web.swf": {
+      "sha256": "4576fb6dfb0ba4ab11839cc90a4182848996b24a68a5c7e8e0b7d70f79feebfd",
+      "bytes": 1116616,
+      "embeddedVersion": "4.9.8"
+    },
+    "client/staticgeneral.xml": {
+      "sha256": "bf6e2cea4878c06c7430d6e5e54f48016b29079a4555620d890b116493918108",
+      "bytes": 103213
+    },
+    "client/stage.xml": {
+      "sha256": "a7c754eccb482ba0991fea3a722abdeb78b1fbdaeb76e3d71ed700b63e4d95d2",
+      "bytes": 98830
+    },
+    "client/index.html": {
+      "sha256": "08d94061556e88eb9b235f6e11854409edde61d7b1605798003b85175e478740",
+      "bytes": 6225
+    },
+    "client/version": {
+      "sha256": "4a3193c78941167c8dd099237c19316bfb6e4f5a32a997992676a796e3a6c5f1",
+      "bytes": 8
+    }
+  },
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.8-full"
+}

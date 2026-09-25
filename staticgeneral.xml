@@ -323,29 +323,6 @@
     <proto>proto_1_1</proto>
   </RECORD>
   <RECORD>
-    <code>general_1_13</code>
-    <name>吕蒙</name>
-    <type>7</type>
-    <title>1</title>
-    <kezhi>5:1|7:1|9:1</kezhi>
-    <skin>generalSkin_23_0</skin>
-    <hp>770</hp>
-    <attack>400</attack>
-    <defense>280</defense>
-    <cd>6</cd>
-    <mcd>6</mcd>
-    <baoji>5</baoji>
-    <attackDistance>6.5</attackDistance>
-    <moveDistance>2.5</moveDistance>
-    <recruitLevel>76</recruitLevel>
-    <money>10</money>
-    <jinbi>5</jinbi>
-    <dianka>20</dianka>
-    <coint>10</coint>
-    <price>-1</price>
-    <proto>proto_1_7</proto>
-  </RECORD>
-  <RECORD>
     <code>general_1_14</code>
     <name>陆逊</name>
     <type>1</type>

@@ -379,7 +379,7 @@
   <gate id="46" part="5" partName="鏖战三国" level="76" name="白衣渡江" group="孙权" ai="90" delay="2400">
     <award soldier="" recruit="吕蒙" proto="proto_2_6:3" money="8000" reverence="2000" exploit="1000"/>
     <general code="general_0_1" level="82" name="魔焰战车" feature="3" evolution="4"/>
-    <general code="general_1_13" level="88" name="吕蒙" feature="2" evolution="3"/>
+    <general code="general_23_0" level="88" name="吕蒙" feature="2" evolution="3"/>
     <general code="general_2_1" level="82" name="凤舞战将" feature="4" evolution="2"/>
     <general code="general_5_13" level="88" name="甘宁" feature="1" evolution="3"/>
     <general code="general_6_12" level="88" name="周泰" feature="2" evolution="3"/>

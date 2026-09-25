@@ -3473,6 +3473,8 @@ package game
          var _loc3_:String = null;
          if(param1.success == true)
          {
+            if(this._fanpaiPanel == null || !this._fanpaiPanel.resolveRecruit(true,param1.data)) return;
+            if(param1.data.dianka != null) RoleModel.getInstance().dianka = int(param1.data.dianka);
             if(param1.data.money != null)
             {
                RoleModel.getInstance().money = int(param1.data.money);
@@ -3503,6 +3505,7 @@ package game
          }
          else
          {
+            if(this._fanpaiPanel != null) this._fanpaiPanel.resolveRecruit(false);
             dispatchEvent(new UIEvent(UIEvent.MESSAGE,true,{
                "type":0,
                "text":param1.message

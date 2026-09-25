@@ -93,7 +93,6 @@ export function createTestAccounts() {
   const proGenerals = [
     { code: 'general_9_15', name: '张辽', kezhi: '6:1|1:1|8:1' },
     { code: 'general_9_13', name: '徐晃', kezhi: '6:1|1:1|8:1' },
-    { code: 'general_1_13', name: '吕蒙', kezhi: '5:1|7:1|9:1' },
     { code: 'general_1_11', name: '黄盖', kezhi: '5:1|7:1|9:1' },
     { code: 'general_9_0', name: '鞠义', kezhi: '3:1|4:1|8:1' },
     { code: 'general_1_0', name: '王平', kezhi: '5:1|7:1|9:1' },

@@ -89,7 +89,7 @@ package game.ui.fuben
          this._stageID = int(param1.stageID);
          this._deckId = param1.deckId == null ? "" : String(param1.deckId);
          this._pendingIndex = -1;
-         for each(var card:Paimian in this._cards) card.deferReveal = this._stageID == 0;
+         for each(var card:Paimian in this._cards) card.deferReveal = this._stageID == 0 || int(param1.maxFlips) > 1;
          this._maxFlips = int(param1.maxFlips) || 1;
          this._flipCosts = param1.flipCosts as Array;
          this._flipsRemaining = this._maxFlips;
@@ -116,22 +116,19 @@ package game.ui.fuben
             _loc3_.addEventListener(TimerEvent.TIMER_COMPLETE,this.onTimerCompleteHandler);
             _loc3_.start();
          }
-         else if(this._maxFlips > 1)
-         {
-            // 求贤令多翻模式：无倒计时，显示翻牌次数
-            this.__tf.text = "剩余翻牌：" + this._maxFlips + " 次；5%已解锁超级武将，其余普通装备";
-         }
+         else this.updateFlipsText();
          addEventListener(UIEvent.CHOOSE_PAIMIAN,this.choosPaiHandler);
       }
 
       private function updateFlipsText() : void
       {
-         if(this._stageID == 0)
+         if(this._maxFlips > 1 || this._stageID == 0)
          {
             var _left:int = this._flipsRemaining;
             if(_left > 0)
             {
-               this.__tf.text = "剩余翻牌：" + _left + "/" + this._maxFlips + " 次";
+               var _cost:int = this._stageID == 0 || this._flipCosts == null ? 0 : int(this._flipCosts[this._maxFlips - _left]);
+               this.__tf.text = "剩余翻牌：" + _left + "/" + this._maxFlips + " 次" + (this._stageID == 0 ? "" : "；本次消耗 " + _cost + " 点卡");
             }
             else
             {
@@ -175,11 +172,11 @@ package game.ui.fuben
          this.__tf.text = "请求未确认，点击原卡重试（不会重复扣令），或点击确定关闭";
       }
 
-      public function resolveRecruit(success:Boolean, data:Object = null) : void
+      public function resolveRecruit(success:Boolean, data:Object = null) : Boolean
       {
-         if(this._pendingIndex < 0) return;
-         if(success && data != null && data.deckId != null && data.deckId != this._deckId) return;
-         if(success && data != null && data.cardIndex != null && int(data.cardIndex) != this._pendingIndex) return;
+         if(this._pendingIndex < 0) return false;
+         if(success && data != null && data.deckId != null && data.deckId != this._deckId) return false;
+         if(success && data != null && data.cardIndex != null && int(data.cardIndex) != this._pendingIndex) return false;
          if(this._requestTimer != null) this._requestTimer.stop();
          if(success)
          {
@@ -197,6 +194,7 @@ package game.ui.fuben
          }
          this.updateFlipsText();
          Tools.setDisabled(this.__okBtn,false);
+         return success;
       }
 
       public function hasMoreFlips() : Boolean

@@ -485,22 +485,7 @@ package game.display
 
       override public function getRectangle(param1:DisplayObject) : Rectangle
       {
-         if(this._visualBounds == null || this._visualBounds.isEmpty())
-         {
-            return super.getRectangle(param1);
-         }
-         // Use the body hitbox for contact distance. The spear artwork extends far
-         // beyond the body and must not make Lu Meng collide at weapon-tip distance.
-         var _topLeft:Point = this._skin.localToGlobal(new Point(-42, -100));
-         var _bottomRight:Point = this._skin.localToGlobal(new Point(42, 0));
-         _topLeft = param1.globalToLocal(_topLeft);
-         _bottomRight = param1.globalToLocal(_bottomRight);
-         return new Rectangle(
-            Math.min(_topLeft.x,_bottomRight.x),
-            Math.min(_topLeft.y,_bottomRight.y),
-            Math.abs(_bottomRight.x - _topLeft.x),
-            Math.abs(_bottomRight.y - _topLeft.y)
-         );
+         return this.getBodyRectangle(param1);
       }
 
       override public function get canLeft() : Boolean

@@ -21,7 +21,22 @@ const payload=ctx.readPollMessages(players[1],{cursor:0});assert(accept.call(cli
 // Run real reward routes with isolated data; never send live broadcast test messages.
 ctx.Math=Object.create(Math);ctx.Math.random=()=>0.99;ctx.findPlayerByRequest=()=>players[0];ctx.jsonRawResponse=(_,r)=>r;ctx.socket={};ctx.PROTO_DATA={token:{name:'求贤令'}};ctx.save=()=>{};
 const fuben=source.slice(source.indexOf("  if (url === '/api/fuben/flip')"),source.indexOf('  // Fuben recruit super general'));
-vm.runInContext('function flip(data){var url="/api/fuben/flip";'+fuben+'}',ctx);count=ctx.db.announcements.length;assert(ctx.flip({result:'1|q10|1'}).success);assert.equal(ctx.db.announcements.length,count+1);assert(!ctx.flip({result:'1|q10|1'}).success);assert.equal(ctx.db.announcements.length,count+1);
+vm.runInContext('function flip(data){var url="/api/fuben/flip";'+fuben+'}',ctx);
+players[0]._fubenFlipState={remaining:3,stageID:'1',costs:[0,100,200],results:{0:'1|q10|1',1:'1|q5|1',2:'1|q1|1'},claimed:{}};
+players[0].dianka=300;
+count=ctx.db.announcements.length;
+assert(ctx.flip({stageID:1,flipIndex:0,cardIndex:0,result:'1|fake|999'}).success);
+assert.equal(ctx.db.announcements.length,count+1);
+assert.equal(ctx.flip({stageID:1,flipIndex:0,cardIndex:0}).success,true);
+assert.equal(ctx.db.announcements.length,count+1);
+assert.equal(players[0].dianka,300);
+assert.equal(ctx.flip({stageID:1,flipIndex:1,cardIndex:1,result:'1|fake|999'}).data.item.code,'q5');
+assert(ctx.flip({stageID:1,flipIndex:1,cardIndex:1}).success);
+assert.equal(players[0].dianka,200);
+assert(ctx.flip({stageID:1,flipIndex:2,cardIndex:2}).success);
+assert.equal(players[0].dianka,0);
+assert.equal(ctx.flip({stageID:1,flipIndex:2,cardIndex:2}).success,true);
+assert.equal(players[0].dianka,0);
 // Main battle: prepared drop and fallback share the award broadcast, loss emits neither.
 const fight=source.slice(source.indexOf("  if (url === '/api/game/fight-result')"),source.indexOf('  // 每日重置副本数据'));
 ctx.getStageId=()=>81;ctx.AWARD_MAP={};ctx.CRYSTAL_MAP={};ctx.GENERAL_BASE_STATS={};ctx.generalNameToCode={};

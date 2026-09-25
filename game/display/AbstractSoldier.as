@@ -193,7 +193,6 @@ package game.display
          {
             case "general_6_15": _skinName = "generalSkin_18_0"; break;
             case "general_6_13": _skinName = "generalSkin_24_0"; break;
-            case "general_1_13": _skinName = "generalSkin_23_0"; break;
             case "general_9_14": _skinName = "generalSkin_21_0"; break;
             case "general_1_14": _skinName = "generalSkin_22_0"; break;
             case "general_9_7": _skinName = "generalSkin_19_0"; break;
@@ -639,7 +638,27 @@ package game.display
       
       public function getRectangle(param1:DisplayObject) : Rectangle
       {
+         // The imported super-general timelines contain long weapons and effects.
+         // Combat distance must use the body footprint, as the ordinary soldiers do.
+         switch(this._armyInfo.code)
+         {
+            case "general_18_0": // 魏延
+            case "general_19_0": // 夏侯渊
+            case "general_21_0": // 姜维
+            case "general_22_0": // 陆逊
+            case "general_23_0": // 吕蒙
+            case "general_24_0": // 曹彰
+               return this.getBodyRectangle(param1);
+         }
          return this._skin.getRect(param1);
+      }
+
+      protected function getBodyRectangle(param1:DisplayObject) : Rectangle
+      {
+         var topLeft:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(-42,-100)));
+         var bottomRight:Point = param1.globalToLocal(this._skin.localToGlobal(new Point(42,0)));
+         return new Rectangle(Math.min(topLeft.x,bottomRight.x),Math.min(topLeft.y,bottomRight.y),
+            Math.abs(bottomRight.x-topLeft.x),Math.abs(bottomRight.y-topLeft.y));
       }
       
       public function get canAI() : Boolean
