@@ -945,8 +945,8 @@ package game.fuben
          _loc1_.x = 550;
          _loc1_.y = Xiongnu.POS2.y;
          addChild(_loc1_);
-         // 15%概率额外出现反叛超级武将
-         if(Math.random() < 0.15)
+         // 10%概率额外出现反叛超级武将
+         if(Math.random() < 0.10)
          {
             var _superEntry:Object = SUPER_BOSS_POOL[int(Math.random() * SUPER_BOSS_POOL.length)];
             var _superCode:String = _superEntry.code;
@@ -2464,3 +2464,4 @@ package game.fuben
       }
    }
 }
+

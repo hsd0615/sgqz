@@ -1,0 +1,10 @@
+{
+  "version": "4.9.15",
+  "target": "47.114.59.65:3000",
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.15",
+  "serverVersion": "4.9.15",
+  "mainSha": "6560c71f565d60f522d7ce9333d092c25324bf9cd323b3cf06c80b3bd1164f1b",
+  "webSha": "6560c71f565d60f522d7ce9333d092c25324bf9cd323b3cf06c80b3bd1164f1b",
+  "bytes": 1117781,
+  "embeddedVersion": "4.9.15"
+}

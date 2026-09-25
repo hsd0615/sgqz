@@ -851,7 +851,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.14';
+  _cachedClientVersion = '4.9.15';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -3597,6 +3597,7 @@ setInterval(() => {
 }, 60000); // 60秒心跳
 
 console.log('Ready: HTTP ' + HTTP_PORT + ' + TCP ' + TCP_PORT + ' (raw TCP)');
+
 
 
 
