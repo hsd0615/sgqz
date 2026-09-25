@@ -15,6 +15,7 @@ package game.ui
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
+   import flash.external.ExternalInterface;
    import game.Config;
 
    public class UpdateChecker extends Sprite
@@ -24,6 +25,7 @@ package game.ui
       private var _downloading:Boolean = false;
       private var _appDir:String = "";
       private var _expectedVersion:String = "";
+      private var _downloadUrl:String = "";
 
       public function UpdateChecker()
       {
@@ -42,8 +44,14 @@ package game.ui
          _loader.addEventListener(Event.COMPLETE, function(param1:Event):void {
             try {
                var _json:Object = JSON.parse(_loader.data as String);
-               if(_json.success && _json.version && _json.version != Config.CLIENT_VER) {
+               var localVersion:String = Config.CLIENT_VER;
+               if(Config.IS_MOBILE && localVersion.indexOf("-android") >= 0)
+               {
+                  localVersion = localVersion.split("-android")[0];
+               }
+               if(_json.success && _json.version && _json.version != localVersion) {
                   _self._expectedVersion = _json.version;
+                  _self._downloadUrl = _json.mobileDownloadUrl ? String(_json.mobileDownloadUrl) : (Config.SERVER_URL + "/client/sanguoqz-android-arm64.apk?v=" + new Date().time);
                   _self.showUpdatePrompt(_json.version);
                }
             } catch(_e:Error) {}
@@ -77,6 +85,20 @@ package game.ui
          this._downloading = true;
          this._infoTF.text = "正在验证版本...";
 
+         if(Config.IS_WEB)
+         {
+            this._infoTF.text = "检测到新版本，点击刷新页面";
+            try { if(ExternalInterface.available) ExternalInterface.call("location.reload"); } catch(err:Error) {}
+            this._downloading = false;
+            return;
+         }
+
+         if(Config.IS_MOBILE)
+         {
+            this.downloadMobileAPK();
+            return;
+         }
+
          // 先下载版本文件，确认服务端 SWF 版本与 /api/version 一致
          var _self:UpdateChecker = this;
          var _verLoader:URLLoader = new URLLoader();
@@ -107,6 +129,38 @@ package game.ui
             _self.downloadSWF();
          });
          _verLoader.load(_verReq);
+      }
+
+      /** Android APK cannot replace the read-only app:/ directory. Download it
+       * to the application sandbox and hand it to the system package installer. */
+      private function downloadMobileAPK() : void
+      {
+         var loader:URLLoader = new URLLoader();
+         loader.dataFormat = URLLoaderDataFormat.BINARY;
+         var req:URLRequest = new URLRequest(this._downloadUrl);
+         var self:UpdateChecker = this;
+         loader.addEventListener(Event.COMPLETE, function(e:Event):void {
+            try {
+               var apk:File = File.applicationStorageDirectory.resolvePath("sanguoqz-update.apk");
+               var fs:FileStream = new FileStream();
+               fs.open(apk, FileMode.WRITE);
+               Object(fs)["writeBytes"](loader.data as ByteArray, 0, (loader.data as ByteArray).length);
+               fs.close();
+               self._infoTF.text = "正在打开安装程序...";
+               Object(apk)["openWithDefaultApplication"]();
+            } catch(err:Error) {
+               self._infoTF.text = "更新失败: " + err.message.substring(0, 24);
+               self._downloading = false;
+            }
+         });
+         loader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
+            self._infoTF.text = "更新包暂未发布，请稍后重试";
+            self._downloading = false;
+         });
+         try { loader.load(req); } catch(err:Error) {
+            this._infoTF.text = "更新请求失败";
+            this._downloading = false;
+         }
       }
 
       private function downloadSWF() : void

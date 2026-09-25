@@ -244,11 +244,11 @@
       private function createTF() : *
       {
          this._advanceBtn = this.createOriginalArmyButton(true);
-         this._advanceBtn.x = 570; this._advanceBtn.y = 0;
+         this._advanceBtn.x = Config.IS_MOBILE ? 610 : 570; this._advanceBtn.y = 0;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
          this._armyRetreatBtn = this.createOriginalArmyButton(false);
-         this._armyRetreatBtn.x = 650; this._armyRetreatBtn.y = 0;
+         this._armyRetreatBtn.x = Config.IS_MOBILE ? 500 : 650; this._armyRetreatBtn.y = 0;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
          // 鎾ら€€鎸夐挳 鈥?鍙ら摐椋庢牸鍖归厤娓告垙UI
@@ -257,7 +257,7 @@
          drum.width = 50; drum.height = 50;
          this._retreatBtn.addChild(drum);
          this._retreatBtn.buttonMode = true;
-         this._retreatBtn.x = 730; this._retreatBtn.y = 0;
+         this._retreatBtn.x = Config.IS_MOBILE ? 720 : 730; this._retreatBtn.y = 0;
          this._retreatBtn.addEventListener(MouseEvent.CLICK, this.retreatClickHandler);
          addChild(this._retreatBtn);
          /*
@@ -359,7 +359,7 @@
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
          for each(var soldier:AbstractSoldier in own)
          {
-            if(soldier != null && !soldier.isDead && (!forward || !(soldier is Gunner)))
+            if(soldier != null && !soldier.isDead && (!forward || Config.IS_MOBILE || !(soldier is Gunner)))
                this._armyOrders.push({soldier:soldier, forward:forward, started:false, target:null});
          }
          addEventListener(Event.ENTER_FRAME,this.updateArmyOrders);

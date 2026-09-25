@@ -7,6 +7,7 @@ package game.ui
    import flash.system.ApplicationDomain;
    import game.display.AbstractSoldier;
    import game.events.ConEvent;
+   import game.Config;
    
    public class AngleController extends Sprite
    {
@@ -87,6 +88,7 @@ package game.ui
       
       private function onFireHandler(param1:MouseEvent) : *
       {
+         if(Config.IS_MOBILE) this.setAngle(Math.atan2(mouseY,mouseX) * 180 / Math.PI);
          stage.removeEventListener(MouseEvent.CLICK,this.onFireHandler,true);
          this.stopBar();
          dispatchEvent(new ConEvent(ConEvent.FIRE,true,{

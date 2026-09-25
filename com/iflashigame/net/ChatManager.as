@@ -122,7 +122,7 @@ package com.iflashigame.net
       public function connectToServer(host:String, port:int, authData:Object):void
       {
          trace(RoleModel.getInstance().roleName, "connectToServer:", host, port, "web=" + Config.IS_WEB);
-         _isWeb = Config.IS_WEB;
+         _isWeb = Config.IS_WEB || Config.IS_MOBILE;
 
          if(_socketConn != null)
          {

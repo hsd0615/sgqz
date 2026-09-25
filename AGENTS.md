@@ -127,6 +127,7 @@ git commit -m "vX.Y.Z: <描述>"
 3. 每次发布必须上传并验证三个产物：`/client/main.swf`、`/client/sanguo_web.swf`、`/client/sanguoqz-android-arm64.apk`。移动 APK 必须递增 Android `versionNumber`，否则系统不会接受覆盖安装。
 4. 线上验证必须读取 `/api/version`，分别下载三个客户端文件并校验 SHA256；同时核对 SWF 内版本字符串、APK manifest 的版本号和 ARM64 ABI。
 5. 如果 Android APK 尚未上传到线上 `/client/` 目录，移动端自动更新只能检测到版本，不能完成下载安装；发布流程必须把 APK 上传后再报告更新完成。
+6. 发布前必须运行 `powershell -File tools/check-three-platform-release.ps1`。该检查会核对桌面/网页 SWF、APK 版本、签名和 SHA256；检查失败不得发布。APK 本体使用 Git LFS 提交并上传 GitHub，不能只提交 `.sha256` 文件。
 
 ## 工具脚本
 

@@ -22,6 +22,9 @@ package game
    import flash.display.Shape;
    import flash.display.SimpleButton;
    import flash.display.Sprite;
+   import flash.display.StageAlign;
+   import flash.display.StageDisplayState;
+   import flash.display.StageScaleMode;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.KeyboardEvent;
@@ -157,6 +160,18 @@ import game.ui.UpdateChecker;
                trace("[Web] ExternalInterface 不可用!");
             }
          }
+         Config.IS_MOBILE = Capabilities.version.indexOf("AND ") == 0 || Capabilities.version.indexOf("IOS ") == 0;
+         if(Config.IS_MOBILE)
+         {
+            Config.SERVER_URL = Config.MOBILE_SERVER_URL;
+            Config.API_URL = Config.MOBILE_SERVER_URL;
+            Config.SERVER_HOST = "47.114.59.65";
+            Config.SERVER_PORT = 3000;
+            stage.scaleMode = StageScaleMode.SHOW_ALL;
+            stage.align = StageAlign.TOP;
+            stage.color = 0x111122;
+            stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+         }
          stage.tabChildren = false;
          stage.stageFocusRect = false;
          tabChildren = false;
@@ -167,11 +182,14 @@ import game.ui.UpdateChecker;
          MySound.getInstance().bkDisabled = false;
          MySound.getInstance().eventDisabled = false;
 
-         testServerConnection();
+         if(!Config.IS_MOBILE) testServerConnection();
          RoleModel.getInstance().agent = Config.AGENT;
-         var _loc2_:ContextMenu = new ContextMenu();
-         _loc2_.customItems.push(new ContextMenuItem(Config.IS_WEB ? "三国Q战" : "三国Q战4399版V" + Config.VER + " 网络版"));
-         this.contextMenu = _loc2_;
+         if(!Config.IS_MOBILE)
+         {
+            var _loc2_:ContextMenu = new ContextMenu();
+            _loc2_.customItems.push(new ContextMenuItem(Config.IS_WEB ? "三国Q战" : "三国Q战4399版V" + Config.VER + " 网络版"));
+            this.contextMenu = _loc2_;
+         }
          LoaderMax.activate([SWFLoader,DataLoader]);
          if(DEBUG == true)
          {
@@ -1050,7 +1068,7 @@ import game.ui.UpdateChecker;
       
       private function loadData() : *
       {
-         var _gameXmlFile:String = Config.IS_WEB ? "game_web.xml" : "game.xml";
+         var _gameXmlFile:String = Config.IS_WEB ? "game_web.xml" : (Config.IS_MOBILE ? "game_mobile.xml" : "game.xml");
          var _loc1_:XMLLoader = new XMLLoader(_gameXmlFile,{
             "name":"config",
             "estimatedBytes":5000000,
@@ -1614,8 +1632,8 @@ import game.ui.UpdateChecker;
             setChildIndex(this._onlineCountUI, this.numChildren - 1);
          }
          if(this._broadcastUI == null) { this._broadcastUI = new BroadcastUI(); addChild(this._broadcastUI); }
-         // 自动更新检查 - 仅桌面版，网页版每次刷新即最新
-         if(!Config.IS_WEB)
+         // 三端统一检测更新。
+         if(true)
          {
             var _updateChecker:UpdateChecker = new UpdateChecker();
             _updateChecker.x = (stage.stageWidth - 200) / 2;

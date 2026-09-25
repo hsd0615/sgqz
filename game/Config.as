@@ -41,7 +41,8 @@ package game
       public static const CHONGZHI:String = "http://my.4399.com/pay.php?ac=exchange&union=176";
       
       // 新版服务器配置（替代旧的局域网地址和 Adobe Cirrus）
-      public static const SERVER_URL:String = "http://47.114.59.65:3000";
+      public static var SERVER_URL:String = "http://47.114.59.65:3000";
+      public static const MOBILE_SERVER_URL:String = "http://47.114.59.65:3000";
       public static var SERVER_HOST:String = "47.114.59.65";
       public static var SERVER_PORT:int = 3001;
       public static var API_URL:String = "http://47.114.59.65:3000";
@@ -49,6 +50,7 @@ package game
 
       // 网页版标志：通过 flashvars 传入 (isWeb=1)，桌面版默认 false
       public static var IS_WEB:Boolean = false;
+      public static var IS_MOBILE:Boolean = false;
       
       public static const GAME_URL:String = "http://my.4399.com/game_sgqz.html";
       
