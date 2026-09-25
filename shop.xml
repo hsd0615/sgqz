@@ -85,7 +85,7 @@
     <category>2</category>
     <code>proto_1_0</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -95,7 +95,7 @@
     <category>2</category>
     <code>proto_1_0</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -105,7 +105,7 @@
     <category>2</category>
     <code>proto_1_1</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -115,7 +115,7 @@
     <category>2</category>
     <code>proto_1_1</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -125,7 +125,7 @@
     <category>2</category>
     <code>proto_1_2</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -135,7 +135,7 @@
     <category>2</category>
     <code>proto_1_2</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -145,7 +145,7 @@
     <category>2</category>
     <code>proto_1_3</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -155,7 +155,7 @@
     <category>2</category>
     <code>proto_1_3</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -165,7 +165,7 @@
     <category>2</category>
     <code>proto_1_4</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -175,7 +175,7 @@
     <category>2</category>
     <code>proto_1_4</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -185,7 +185,7 @@
     <category>2</category>
     <code>proto_1_5</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -195,7 +195,7 @@
     <category>2</category>
     <code>proto_1_5</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -205,7 +205,7 @@
     <category>2</category>
     <code>proto_1_6</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -215,7 +215,7 @@
     <category>2</category>
     <code>proto_1_6</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -225,7 +225,7 @@
     <category>2</category>
     <code>proto_1_7</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -235,7 +235,7 @@
     <category>2</category>
     <code>proto_1_7</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -245,7 +245,7 @@
     <category>2</category>
     <code>proto_1_8</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -255,7 +255,7 @@
     <category>2</category>
     <code>proto_1_8</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -265,7 +265,7 @@
     <category>2</category>
     <code>proto_1_9</code>
     <count>1</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>4000</oldPrice>
     <newPrice>2000</newPrice>
   </RECORD>
@@ -275,7 +275,7 @@
     <category>2</category>
     <code>proto_1_9</code>
     <count>5</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>16000</oldPrice>
     <newPrice>8000</newPrice>
   </RECORD>
@@ -315,7 +315,7 @@
     <category>5</category>
     <code>proto_3_2</code>
     <count>11</count>
-    <payType>3</payType>
+    <payType>2</payType>
     <oldPrice>880</oldPrice>
     <newPrice>4000</newPrice>
   </RECORD>

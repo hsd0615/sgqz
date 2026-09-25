@@ -870,7 +870,7 @@ function getClientVersion() {
     console.log('[Version] 读取 /opt/client/version 失败: ' + e.message);
   }
   // 兜底：部署脚本未写入 version 文件时用此值（仅作为最后手段）
-  _cachedClientVersion = '4.9.16';
+  _cachedClientVersion = '4.9.19';
   _cachedClientVersionTime = now;
   return _cachedClientVersion;
 }
@@ -2489,6 +2489,41 @@ function handleRequest(socket, req) {
       }
     }
     const res = getResourceData(p);
+    // 主线大关礼包：每个已通关大关只可领取一次，服务端随机发放 50/100/200 点卡。
+    // 大关完成条件取该 part 的最高 level，避免客户端伪造进度。
+    if (parseInt(data.head) === 10022) {
+      var giftClaims = p._mainlineGiftClaims || {};
+      var finishedSet = new Set(String(p.finished_stages || '').split('|').filter(Boolean));
+      var maxLevels = {};
+      Object.keys(STAGE_MAP).forEach(function(sk) {
+        var sp = sk.split('_');
+        if (sp.length !== 2) return;
+        var partNo = parseInt(sp[0]), lvNo = parseInt(sp[1]);
+        if (!Number.isFinite(partNo) || !Number.isFinite(lvNo)) return;
+        if (!maxLevels[partNo] || lvNo > maxLevels[partNo]) maxLevels[partNo] = lvNo;
+      });
+      var available = [];
+      Object.keys(maxLevels).forEach(function(partKey) {
+        var finalKey = partKey + '_' + maxLevels[partKey];
+        var finalStageId = String(STAGE_MAP[finalKey]);
+        if (finishedSet.has(finalStageId) && !giftClaims[partKey]) available.push(parseInt(partKey));
+      });
+      if (available.length === 0) {
+        return jsonRawResponse(socket, { success: false, stamp: data.stamp, head: String(data.head), message: '暂无可领取的主线关卡礼包' });
+      }
+      var claimPart = available[0];
+      var giftOptions = [50, 100, 200];
+      var giftAmount = giftOptions[Math.floor(Math.random() * giftOptions.length)];
+      giftClaims[String(claimPart)] = giftAmount;
+      p._mainlineGiftClaims = giftClaims;
+      p.dianka = (p.dianka || 0) + giftAmount;
+      save();
+      console.log('[MainlineGift] ' + p.role_name + ' part=' + claimPart + ' dianka+=' + giftAmount);
+      var giftRes = getResourceData(p);
+      giftRes.giftPart = claimPart;
+      giftRes.giftDianka = giftAmount;
+      return jsonRawResponse(socket, { success: true, stamp: data.stamp, head: String(data.head), data: giftRes });
+    }
     const headCode = parseInt(data.head) || 0;
     let extra = {};
 
@@ -3616,6 +3651,10 @@ setInterval(() => {
 }, 60000); // 60秒心跳
 
 console.log('Ready: HTTP ' + HTTP_PORT + ' + TCP ' + TCP_PORT + ' (raw TCP)');
+
+
+
+
 
 
 

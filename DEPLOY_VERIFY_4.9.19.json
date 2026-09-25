@@ -1,0 +1,28 @@
+{
+  "version": "4.9.19",
+  "target": "47.114.59.65:3000",
+  "backup": "C:\\sgqz\\backup-before-fix-4.9.19",
+  "serverVersion": "4.9.19",
+  "swfSha": "f811184f62a8a8da69538cdfc1a4cb8db6a9e7b14a8ce8d2e3c97414a6b09b52",
+  "swfBytes": 1117834,
+  "embeddedVersion": "4.9.19",
+  "icons": {
+    "时空漩涡": {
+      "bytes": 148715,
+      "sha256": "b2b0a5c955fc4727018563dd14b2bf2065e8867c73258d40faa6f026d29fcb0b"
+    },
+    "邪魔入侵": {
+      "bytes": 95395,
+      "sha256": "50430f051bfeea67e3d1caf430c8ef60945c53b9814d563236ff62d5414726a1"
+    }
+  },
+  "shopPayType": {
+    "shop031_032": "dianka",
+    "shop009_028": "dianka"
+  },
+  "giftEndpointTest": {
+    "firstClaim": "100",
+    "secondClaim": "100",
+    "duplicateProtection": "per_part"
+  }
+}
