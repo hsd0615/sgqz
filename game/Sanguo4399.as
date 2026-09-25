@@ -22,6 +22,9 @@ package game
    import flash.display.Shape;
    import flash.display.SimpleButton;
    import flash.display.Sprite;
+   import flash.display.StageAlign;
+   import flash.display.StageDisplayState;
+   import flash.display.StageScaleMode;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.KeyboardEvent;
@@ -148,6 +151,21 @@ import game.ui.UpdateChecker;
             {
                trace("[Web] ExternalInterface 不可用!");
             }
+         }
+         // AIR Android/iOS：自动识别移动运行时并启用触摸友好的全屏缩放。
+         // 保留 770x500 的逻辑坐标，避免重写现有 UI 和战斗布局。
+         var _manufacturer:String = Capabilities.manufacturer ? Capabilities.manufacturer.toLowerCase() : "";
+         Config.IS_MOBILE = Capabilities.version.indexOf("AND ") == 0 || Capabilities.version.indexOf("IOS ") == 0;
+         if(Config.IS_MOBILE)
+         {
+            Config.SERVER_URL = Config.MOBILE_SERVER_URL;
+            Config.API_URL = Config.MOBILE_SERVER_URL;
+            Config.SERVER_HOST = "47.114.59.65";
+            Config.SERVER_PORT = 3000;
+            stage.scaleMode = StageScaleMode.SHOW_ALL;
+            stage.align = StageAlign.TOP;
+            stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+            trace("[Mobile] AIR mobile mode enabled");
          }
          stage.tabChildren = false;
          stage.stageFocusRect = false;
@@ -1042,7 +1060,7 @@ import game.ui.UpdateChecker;
       
       private function loadData() : *
       {
-         var _gameXmlFile:String = Config.IS_WEB ? "game_web.xml" : "game.xml";
+         var _gameXmlFile:String = Config.IS_WEB ? "game_web.xml" : (Config.IS_MOBILE ? "game_mobile.xml" : "game.xml");
          var _loc1_:XMLLoader = new XMLLoader(_gameXmlFile,{
             "name":"config",
             "estimatedBytes":5000000,
@@ -1605,7 +1623,7 @@ import game.ui.UpdateChecker;
             setChildIndex(this._onlineCountUI, this.numChildren - 1);
          }
          // 自动更新检查 - 仅桌面版，网页版每次刷新即最新
-         if(!Config.IS_WEB)
+         if(!Config.IS_WEB && !Config.IS_MOBILE)
          {
             var _updateChecker:UpdateChecker = new UpdateChecker();
             _updateChecker.x = (stage.stageWidth - 200) / 2;

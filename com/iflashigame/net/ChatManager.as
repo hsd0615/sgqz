@@ -122,7 +122,9 @@ package com.iflashigame.net
       public function connectToServer(host:String, port:int, authData:Object):void
       {
          trace(RoleModel.getInstance().roleName, "connectToServer:", host, port, "web=" + Config.IS_WEB);
-         _isWeb = Config.IS_WEB;
+         // Android/iOS AIR 客户端沿用网页版的 HTTP 轮询协议，避免移动网络下
+         // 直接建立桌面 TCP 长连接。
+         _isWeb = Config.IS_WEB || Config.IS_MOBILE;
 
          if(_socketConn != null)
          {
@@ -154,7 +156,7 @@ package com.iflashigame.net
             _helloMode = true;
             _peerID = "web_" + new Date().getTime().toString(36);
             _currentRooms = ["server:web", "world", "area:web"];
-            trace("[Web] 直接完成连接，peerID=" + _peerID);
+            trace((Config.IS_MOBILE ? "[Mobile]" : "[Web]") + " 直接完成连接，peerID=" + _peerID);
             dispatchEvent(new P2PEvent(P2PEvent.CIRRUS_CONNECT_SUCCESS));
             var _self:ChatManager = this;
             var _t:Timer = new Timer(400, 1);

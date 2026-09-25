@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<application xmlns="http://ns.adobe.com/air/application/50.2">
+  <id>com.sanguoqz.online</id>
+  <versionNumber>4.9.8</versionNumber>
+  <filename>三国Q战</filename>
+  <name>三国Q战</name>
+  <description>三国Q战联机版 Android 客户端</description>
+  <initialWindow>
+    <content>main.swf</content>
+    <visible>true</visible>
+    <fullScreen>true</fullScreen>
+    <aspectRatio>landscape</aspectRatio>
+    <autoOrients>false</autoOrients>
+    <renderMode>direct</renderMode>
+  </initialWindow>
+  <android>
+    <manifestAdditions><![CDATA[
+      <manifest android:installLocation="auto">
+        <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="33" />
+        <application android:usesCleartextTraffic="true" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+      </manifest>
+    ]]></manifestAdditions>
+  </android>
+</application>
