@@ -8,10 +8,15 @@ package game.ui
    import flash.filesystem.FileMode;
    import flash.filesystem.FileStream;
    import flash.net.URLLoader;
+   import flash.net.navigateToURL;
+   import flash.events.SecurityErrorEvent;
    import flash.net.URLRequest;
    import flash.net.URLRequestMethod;
    import flash.net.URLLoaderDataFormat;
    import flash.utils.ByteArray;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
+   import flash.system.Capabilities;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
@@ -26,6 +31,12 @@ package game.ui
       private var _appDir:String = "";
       private var _expectedVersion:String = "";
       private var _downloadUrl:String = "";
+      private var _verifyTimer:Timer;
+
+      private function isMobileRuntime() : Boolean
+      {
+         return Config.IS_MOBILE || Capabilities.version.indexOf("AND ") == 0 || Capabilities.version.indexOf("IOS ") == 0;
+      }
 
       public function UpdateChecker()
       {
@@ -45,7 +56,7 @@ package game.ui
             try {
                var _json:Object = JSON.parse(_loader.data as String);
                var localVersion:String = Config.CLIENT_VER;
-               if(Config.IS_MOBILE && localVersion.indexOf("-android") >= 0)
+               if(_self.isMobileRuntime() && localVersion.indexOf("-android") >= 0)
                {
                   localVersion = localVersion.split("-android")[0];
                }
@@ -93,7 +104,7 @@ package game.ui
             return;
          }
 
-         if(Config.IS_MOBILE)
+         if(this.isMobileRuntime())
          {
             this.downloadMobileAPK();
             return;
@@ -105,6 +116,7 @@ package game.ui
          var _verReq:URLRequest = new URLRequest(AESController.getInstance().serverURL + "/client/version");
          _verReq.method = URLRequestMethod.GET;
          _verLoader.addEventListener(Event.COMPLETE, function(p:*):void {
+            if(_self._verifyTimer) _self._verifyTimer.stop();
             var _serverSWFVersion:String = "";
             try {
                _serverSWFVersion = (_verLoader.data as String).replace(/^\s+|\s+$/g, "");
@@ -124,45 +136,58 @@ package game.ui
             }
          });
          _verLoader.addEventListener(IOErrorEvent.IO_ERROR, function(p:*):void {
+            if(_self._verifyTimer) _self._verifyTimer.stop();
             // 版本文件不存在(老服务器)，直接下载 SWF 兼容
             _self._infoTF.text = "正在下载...";
             _self.downloadSWF();
          });
-         _verLoader.load(_verReq);
-      }
-
-      /** Android APK cannot replace the read-only app:/ directory. Download it
-       * to the application sandbox and hand it to the system package installer. */
-      private function downloadMobileAPK() : void
-      {
-         var loader:URLLoader = new URLLoader();
-         loader.dataFormat = URLLoaderDataFormat.BINARY;
-         var req:URLRequest = new URLRequest(this._downloadUrl);
-         var self:UpdateChecker = this;
-         loader.addEventListener(Event.COMPLETE, function(e:Event):void {
-            try {
-               var apk:File = File.applicationStorageDirectory.resolvePath("sanguoqz-update.apk");
-               var fs:FileStream = new FileStream();
-               fs.open(apk, FileMode.WRITE);
-               Object(fs)["writeBytes"](loader.data as ByteArray, 0, (loader.data as ByteArray).length);
-               fs.close();
-               self._infoTF.text = "正在打开安装程序...";
-               Object(apk)["openWithDefaultApplication"]();
-            } catch(err:Error) {
-               self._infoTF.text = "更新失败: " + err.message.substring(0, 24);
-               self._downloading = false;
-            }
+         this._verifyTimer = new Timer(10000, 1);
+         this._verifyTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(p:TimerEvent):void {
+            _self._infoTF.text = "版本验证超时，直接下载...";
+            try { _verLoader.close(); } catch(e:Error) {}
+            _self.downloadSWF();
          });
-         loader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
-            self._infoTF.text = "更新包暂未发布，请稍后重试";
-            self._downloading = false;
+         this._verifyTimer.start();
+         _verLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(e:Event):void {
+            _self._verifyTimer.stop();
+            _self._infoTF.text = "版本验证失败，点击重试";
+            _self._downloading = false;
          });
-         try { loader.load(req); } catch(err:Error) {
-            this._infoTF.text = "更新请求失败";
+         try { _verLoader.load(_verReq); } catch(err:Error) {
+            this._verifyTimer.stop();
+            this._infoTF.text = "版本请求失败，点击重试";
             this._downloading = false;
          }
       }
 
+      /** The browser saves a public APK for the device installer or compatibility app. */
+      private function downloadMobileAPK() : void
+      {
+         try {
+            navigateToURL(new URLRequest(this._downloadUrl), "_blank");
+            this.showMobileDownloadHelp("请在浏览器下载，完成后安装或导入卓易通");
+         } catch(err:Error) {
+            this.showMobileDownloadHelp("无法打开浏览器，请复制地址下载");
+         }
+         this._downloading = false;
+      }
+
+      private function showMobileDownloadHelp(message:String) : void
+      {
+         this.graphics.clear();
+         this.graphics.beginFill(0x1a1008, 0.96);
+         this.graphics.lineStyle(1.5, 0xFF8800, 0.9);
+         this.graphics.drawRoundRect(0, 0, 260, 82, 6, 6);
+         this.graphics.endFill();
+         this._infoTF.autoSize = TextFieldAutoSize.NONE;
+         this._infoTF.width = 240;
+         this._infoTF.height = 70;
+         this._infoTF.multiline = true;
+         this._infoTF.wordWrap = true;
+         this._infoTF.selectable = true;
+         this._infoTF.text = message + String.fromCharCode(10) + this._downloadUrl;
+         this.mouseChildren = true;
+      }
       private function downloadSWF() : void
       {
          var _loader:URLLoader = new URLLoader();

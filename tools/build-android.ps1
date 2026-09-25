@@ -30,7 +30,7 @@ Get-ChildItem $source -Recurse -Filter '*.as' | ForEach-Object {
 }
 $config = Join-Path $source 'game\Config.as'
 $code = [IO.File]::ReadAllText($config)
-$code = $code -replace 'CLIENT_VER:String = "[^"]+"','CLIENT_VER:String = "4.9.20-android.1"'
+$code = $code -replace 'CLIENT_VER:String = "[^"]+"','CLIENT_VER:String = "4.9.21-android.1"'
 [IO.File]::WriteAllText($config,$code,[Text.UTF8Encoding]::new($false))
 Push-Location $source
 try {
@@ -40,12 +40,13 @@ try {
 $assets = @('ui.swf','general.swf','superGeneral.swf','face.swf','fubenui.swf','sound.swf','game_mobile.xml')
 foreach ($asset in $assets) { Copy-Item (Join-Path $root $asset) $package -Force }
 Copy-Item (Join-Path $root 'mobile\application-android.xml') (Join-Path $package 'application.xml') -Force
+Copy-Item (Join-Path $root 'mobile/icons') $package -Recurse -Force
 $suffix = if ($Architecture -eq 'armv8') { 'arm64' } else { 'arm32' }
 $apk = Join-Path $build "sanguoqz-android-$suffix.apk"
 $env:JAVA_HOME = 'D:\jdk'
 Push-Location $package
 try {
-  & java -Xmx2048m -jar $adt -package -target apk-captive-runtime -arch $Architecture -storetype pkcs12 -keystore $sign.certificate -storepass $sign.password $apk application.xml main.swf @assets
+  & java -Xmx2048m -jar $adt -package -target apk-captive-runtime -arch $Architecture -storetype pkcs12 -keystore $sign.certificate -storepass $sign.password $apk application.xml main.swf @assets icons
   if ($LASTEXITCODE -ne 0) { throw "APK packaging failed: $LASTEXITCODE" }
 } finally { Pop-Location }
 $hash = (Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant()

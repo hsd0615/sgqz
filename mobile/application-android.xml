@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <application xmlns="http://ns.adobe.com/air/application/50.2">
   <id>com.sanguoqz.online</id>
-  <versionNumber>4.9.20</versionNumber>
+  <versionNumber>4.9.21</versionNumber>
   <filename>三国Q战</filename>
   <name>三国Q战</name>
   <description>三国Q战联机版 Android 客户端</description>
@@ -13,6 +13,15 @@
     <autoOrients>false</autoOrients>
     <renderMode>direct</renderMode>
   </initialWindow>
+  <icon>
+    <image36x36>icons/icon36.png</image36x36>
+    <image48x48>icons/icon48.png</image48x48>
+    <image72x72>icons/icon72.png</image72x72>
+    <image96x96>icons/icon96.png</image96x96>
+    <image144x144>icons/icon144.png</image144x144>
+    <image192x192>icons/icon192.png</image192x192>
+    <image512x512>icons/icon512.png</image512x512>
+  </icon>
   <android>
     <manifestAdditions><![CDATA[
       <manifest android:installLocation="auto">

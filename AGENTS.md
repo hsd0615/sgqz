@@ -123,7 +123,7 @@ git commit -m "vX.Y.Z: <描述>"
 凡是客户端版本更新，必须同时处理三个运行端：桌面 AIR 客户端、网页版 SWF、Android AIR APK。不能只更新其中一个端后宣布完成。
 
 1. 版本号必须与线上 `/api/version` 对齐。接口需要同时返回 `downloadUrl`（桌面/网页 SWF）和 `mobileDownloadUrl`（Android APK）。
-2. 桌面端使用 `UpdateChecker` 下载并替换 `main.swf`，网页版检测到新版本后提示刷新页面，移动端下载 `mobileDownloadUrl` 到应用沙盒并交给 Android 系统安装器。
+2. 桌面端使用 `UpdateChecker` 下载并替换 `main.swf`，网页版检测到新版本后提示刷新页面，移动端通过系统浏览器下载 `mobileDownloadUrl` ，由下载管理器交给系统安装器或卓易通；不能依赖 AIR 私有沙盒文件唤起安装。
 3. 每次发布必须上传并验证三个产物：`/client/main.swf`、`/client/sanguo_web.swf`、`/client/sanguoqz-android-arm64.apk`。移动 APK 必须递增 Android `versionNumber`，否则系统不会接受覆盖安装。
 4. 线上验证必须读取 `/api/version`，分别下载三个客户端文件并校验 SHA256；同时核对 SWF 内版本字符串、APK manifest 的版本号和 ARM64 ABI。
 5. 如果 Android APK 尚未上传到线上 `/client/` 目录，移动端自动更新只能检测到版本，不能完成下载安装；发布流程必须把 APK 上传后再报告更新完成。
