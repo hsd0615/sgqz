@@ -177,11 +177,15 @@ import game.ui.UpdateChecker;
          MySound.getInstance().bkDisabled = false;
          MySound.getInstance().eventDisabled = false;
 
-         testServerConnection();
+         // Android 上不在首帧执行桌面诊断请求；旧诊断地址也不属于当前线上服。
+         if(!Config.IS_MOBILE) testServerConnection();
          RoleModel.getInstance().agent = Config.AGENT;
-         var _loc2_:ContextMenu = new ContextMenu();
-         _loc2_.customItems.push(new ContextMenuItem(Config.IS_WEB ? "三国Q战" : "三国Q战4399版V" + Config.VER + " 网络版"));
-         this.contextMenu = _loc2_;
+         if(!Config.IS_MOBILE)
+         {
+            var _loc2_:ContextMenu = new ContextMenu();
+            _loc2_.customItems.push(new ContextMenuItem(Config.IS_WEB ? "三国Q战" : "三国Q战4399版V" + Config.VER + " 网络版"));
+            this.contextMenu = _loc2_;
+         }
          LoaderMax.activate([SWFLoader,DataLoader]);
          if(DEBUG == true)
          {
