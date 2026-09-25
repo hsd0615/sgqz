@@ -2451,7 +2451,12 @@ package game
                   _loc2_ += _loc4_ + "功勋、";
                }
             }
-            if(param1.data.reverence != null)
+            if(param1.data.dianka != null)
+            {
+               var _giftDianka:int = int(param1.data.dianka) - RoleModel.getInstance().dianka;
+               RoleModel.getInstance().dianka = int(param1.data.dianka);
+               if(_giftDianka > 0) _loc2_ += _giftDianka + "点卡、";
+            }            if(param1.data.reverence != null)
             {
                _loc5_ = int(param1.data.reverence) - RoleModel.getInstance().reverence;
                RoleModel.getInstance().reverence = int(param1.data.reverence);
@@ -4090,3 +4095,5 @@ package game
       }
    }
 }
+
+
