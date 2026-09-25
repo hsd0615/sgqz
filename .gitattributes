@@ -1,1 +1,2 @@
 general.swf filter=lfs diff=lfs merge=lfs -text
+output/android/sanguoqz-android-arm64.apk filter=lfs diff=lfs merge=lfs -text
