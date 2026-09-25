@@ -30,7 +30,7 @@ Get-ChildItem $source -Recurse -Filter '*.as' | ForEach-Object {
 }
 $config = Join-Path $source 'game\Config.as'
 $code = [IO.File]::ReadAllText($config)
-$code = $code -replace 'CLIENT_VER:String = "[^"]+"','CLIENT_VER:String = "4.9.19-android.1"'
+$code = $code -replace 'CLIENT_VER:String = "[^"]+"','CLIENT_VER:String = "4.9.20-android.1"'
 [IO.File]::WriteAllText($config,$code,[Text.UTF8Encoding]::new($false))
 Push-Location $source
 try {

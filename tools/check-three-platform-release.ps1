@@ -22,4 +22,8 @@ $actual = (Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant()
 $recorded = (Get-Content "$apk.sha256" -Raw).Split(' ')[0].Trim().ToLowerInvariant()
 if ($actual -ne $recorded) { throw 'APK SHA256 mismatch' }
 if ((Get-FileHash $desktop -Algorithm SHA256).Hash -ne (Get-FileHash $web -Algorithm SHA256).Hash) { throw 'Desktop and web SWF mismatch' }
+foreach ($file in @($desktop,$web)) {
+  & node (Join-Path $root 'tools\check-swf-version.js') $file $version
+  if ($LASTEXITCODE -ne 0) { throw "SWF version check failed: $file" }
+}
 Write-Output "Three-platform release artifacts OK: $version / APK SHA256 $actual"
