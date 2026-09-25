@@ -24,3 +24,6 @@ game/Sanguo4399.swf
 main.swf
 client/sanguo_web.swf
 tools/cloud-config.json
+
+# Android release APK is versioned through Git LFS
+
