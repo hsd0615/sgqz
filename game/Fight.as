@@ -244,11 +244,11 @@
       private function createTF() : *
       {
          this._advanceBtn = this.createOriginalArmyButton(false);
-         this._advanceBtn.x = Config.IS_MOBILE ? 500 : 570; this._advanceBtn.y = 0;
+         this._advanceBtn.x = Config.IS_MOBILE ? 610 : 570; this._advanceBtn.y = 0;
          this._advanceBtn.addEventListener(MouseEvent.CLICK, this.advanceArmyClickHandler);
          addChild(this._advanceBtn);
          this._armyRetreatBtn = this.createOriginalArmyButton(true);
-         this._armyRetreatBtn.x = Config.IS_MOBILE ? 610 : 650; this._armyRetreatBtn.y = 0;
+         this._armyRetreatBtn.x = Config.IS_MOBILE ? 500 : 650; this._armyRetreatBtn.y = 0;
          this._armyRetreatBtn.addEventListener(MouseEvent.CLICK, this.armyRetreatClickHandler);
          addChild(this._armyRetreatBtn);
          // 鎾ら€€鎸夐挳 鈥?鍙ら摐椋庢牸鍖归厤娓告垙UI
@@ -342,12 +342,18 @@
          param1.stopImmediatePropagation();
          if(this._isOver) return;
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         var target:AbstractSoldier = this.findSoldier(-this._direct);
-         if(target == null) return;
-         for(var i:int = 0; i < own.length; i++)
-         {
-            if(own[i] && !own[i].isDead) own[i].fire2({"target":target});
-         }
+         if(own == null || own.length == 0 || this.findSoldier(-this._direct) == null) return;
+         // Stagger commands so every surviving unit receives an attack command.
+         // Re-resolve the front enemy for each unit: if the previous hit kills it,
+         // the next unit immediately targets the next enemy in front.
+         var index:int = 0;
+         var commandTimer:Timer = new Timer(120, own.length);
+         commandTimer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
+            while(index < own.length && (!own[index] || own[index].isDead)) index++;
+            var target:AbstractSoldier = findSoldier(-_direct);
+            if(index < own.length && target != null) own[index++].fire2({"target":target});
+         });
+         commandTimer.start();
       }
       private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
       private function moveArmy(param1:Boolean) : void

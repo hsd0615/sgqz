@@ -154,7 +154,7 @@ package game.ui
             }
          });
          loader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
-            self._infoTF.text = "更新包下载失败";
+            self._infoTF.text = "更新包暂未发布，请稍后重试";
             self._downloading = false;
          });
          try { loader.load(req); } catch(err:Error) {
