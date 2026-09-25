@@ -340,11 +340,7 @@
       private function advanceArmyClickHandler(param1:MouseEvent) : void
       {
          param1.stopImmediatePropagation();
-         if(this._isOver) return;
-         var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         var target:AbstractSoldier = this.findSoldier(-this._direct);
-         if(target == null) return;
-         for(var i:int = 0; i < own.length; i++) if(own[i] && !own[i].isDead) own[i].fire2({"target":target});
+         moveArmy(true);
       }
       private function armyRetreatClickHandler(param1:MouseEvent) : void { param1.stopImmediatePropagation(); moveArmy(false); }
       private function moveArmy(param1:Boolean) : void
@@ -353,14 +349,20 @@
          var all:Vector.<AbstractSoldier> = new Vector.<AbstractSoldier>();
          var i:int;
          var own:Array = this._direct == 1 ? this._leftSoldiers : this._rightSoldiers;
-         for(i = 0; i < own.length; i++) if(own[i]) all.push(own[i]);
+         for(i = 0; i < own.length; i++)
+         {
+            if(own[i] && !own[i].isDead) all.push(own[i]);
+         }
          for(i = 0; i < all.length; i++)
          {
             var soldier:AbstractSoldier = all[i];
-            var forward:Boolean = param1;
-            if(soldier.direct == -1) forward = !forward;
-            if(forward) soldier.goRight(soldier.moveDistance * Config.MERIC);
-            else soldier.goLeft(soldier.moveDistance * Config.MERIC);
+            // direct is the screen-facing direction: left army = +1, right army = -1.
+            // Convert the command to a signed screen displacement once so that
+            // forward/retreat stay correct even when the player is on the right side.
+            var distance:Number = Math.max(0, soldier.moveDistance) * Config.MERIC;
+            var displacement:Number = soldier.direct * (param1 ? distance : -distance);
+            if(displacement > 0) soldier.goRight(displacement);
+            else if(displacement < 0) soldier.goLeft(-displacement);
          }
       }
 
@@ -673,7 +675,8 @@
             case Type.QIBING:
                return new Saber(param1,param2,param3,this);
             case Type.WUDOUBING:
-               // 澶栭儴鐗堟湰鐨勯瓘寤跺睘浜庤繎鎴樻鏂楀叺锛屾部鐢ㄥ師鐗?Saber 鍔ㄤ綔鎺ュ彛銆?               return new Saber(param1,param2,param3,this);
+               // Keep the return separate: falling through selects the long-spear atlas.
+               return new Saber(param1,param2,param3,this);
             case Type.PART_SOLDIER:
                return new PartSoldier(param1,param2,param3,this);
             case Type.JUNZHU:

@@ -162,8 +162,11 @@ import game.ui.UpdateChecker;
             Config.API_URL = Config.MOBILE_SERVER_URL;
             Config.SERVER_HOST = "47.114.59.65";
             Config.SERVER_PORT = 3000;
-            stage.scaleMode = StageScaleMode.SHOW_ALL;
+            // 手机横屏通常比 770:500 更宽；SHOW_ALL 会产生明显的两侧白边。
+            // NO_BORDER 以屏幕宽度填充，顶部对齐保留 HUD，舞台底色覆盖被裁切区域。
+            stage.scaleMode = StageScaleMode.NO_BORDER;
             stage.align = StageAlign.TOP;
+            stage.color = 0x111122;
             stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
             trace("[Mobile] AIR mobile mode enabled");
          }
